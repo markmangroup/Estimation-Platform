@@ -1,0 +1,826 @@
+{% extends "base.html" %} {% load static %} {% block page_content %}
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between mb-5">
+        <h4 class="card-title">Proposal Preview</h4>
+      </div>
+      <div class="form-group">
+        <div id="invoice-template" class="card-body pb-0">
+          <!-- Invoice Company Details starts -->
+          <div
+            id="invoice-company-details"
+            class="row"
+            style="margin-bottom: 35px"
+          >
+            <div class="col-md-6 col-12">
+              <img
+                src="{% static 'app/img/logos/logo.png' %}"
+                alt=""
+                class="img-fluid"
+                width="100"
+                height="100"
+              />
+              {% comment %}
+              <div class="media">
+                <div class="media-body ml-4">
+                  <ul class="m-0 list-unstyled">
+                    <li class="text-bold-800">Pixinvent Creative Studio</li>
+                    <li>4025 Oak Avenue, Melbourne,</li>
+                    <li>Florida 32940, USA</li>
+                  </ul>
+                </div>
+              </div>
+              {% endcomment %}
+            </div>
+            <div class="col-md-6 col-12 text-right">
+              <h2 class="primary text-uppercase">Exhibit A - Project Detail</h2>
+              <p class="pb-3"># INV-001001</p>
+            </div>
+          </div>
+          <!-- Invoice Company Details ends -->
+          <!-- Invoice Customer Details starts -->
+          <div id="invoice-customer-details" class="row">
+            <div class="col-12 text-left">
+              <p class="text-muted mb-1">To</p>
+            </div>
+            <div class="col-md-6 col-12">
+              <ul class="m-0 list-unstyled">
+                <li class="text-bold-800">Marth Waterman</li>
+                <li>2241 Old Airline Highway</li>
+                <li>Paicines Ca 95043</li>
+              </ul>
+            </div>
+            <div class="col-md-6 col-12 text-right">
+              <p>
+                <span class="text-muted">Date :</span>
+                May 13, 2024
+              </p>
+              <p>
+                <span class="text-muted">Job #</span>
+                Existi
+              </p>
+              <p>
+                <span class="text-muted">Job Name:</span> Existing Pump
+                Relocation And New 10" Discharge
+              </p>
+            </div>
+          </div>
+          <!-- Invoice Customer Details ends -->
+          <!-- Invoice Items Details starts -->
+          <div id="invoice-items-details">
+            <div class="row">
+              <div class="table-responsive col-12">
+                <table class="table mt-3">
+                  <thead>
+                    <tr>
+                      <th>Task Code</th>
+                      <th>Task Description</th>
+                      <th class="text-right">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">DR-001</th>
+                      <td>
+                        <p>
+                          Design, Material and Installation of Connection to
+                          Mainline
+                        </p>
+                        <div class="table-responsive">
+                          <table
+                            class="table table-striped table-bordered zero-configuration"
+                          >
+                            <thead>
+                              <tr class="text-center">
+                                <th>Item Code</th>
+                                <th>Item Description</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>2800-117465</td>
+                                <td>Ball Repalcement</td>
+                                <td>95</td>
+                                <td>$0.8125</td>
+                                <td>$59.124</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <p class="text-muted">
+                          - Connection From 10" Discharge to Existing 15"
+                          Mainline
+                        </p>
+                        <p class="text-muted">
+                          - Excavation and Connection with 10" PVC From New
+                          Discharge to 15" Mainline With Repair Coupler and Tee
+                        </p>
+                      </td>
+                      <td class="text-right">$9,936.32</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">EL-000</th>
+                      <td>
+                        <p>
+                          Design, Material and Installation of Electrical
+                          Extension
+                        </p>
+                        <p class="text-muted">
+                          - Extension of Electrical from Existing Cabinet to New
+                          Well Location
+                        </p>
+                        <p class="text-muted">
+                          - Trench Conduit and Wire Approx 100'
+                        </p>
+                        <p class="text-muted">
+                          - Retain Existing Backboard, Cabinet, and On/Off
+                          Switch
+                        </p>
+                        <p class="text-muted">
+                          - See VFD Option Below - Includes New Backboard and
+                          Wire Extension
+                        </p>
+                      </td>
+                      <td class="text-right">$4,572.02</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">FI-000</th>
+                      <td>
+                        <p>
+                          Design, Material and Installation of Filter Station
+                          and Well Discharge
+                        </p>
+                        <p class="text-muted">
+                          - Followed Example Photo for Discharge
+                        </p>
+                        <p class="text-muted">
+                          - Use Existing 10" Netafim Filter and 10" Water Meter
+                        </p>
+                        <p class="text-muted">
+                          - 10" New Black Steel Discharge with Double Chem Check
+                          Valve
+                        </p>
+                        <p class="text-muted">
+                          - Injection Ports Supplied Before and After Filter
+                        </p>
+                        <p class="text-muted">
+                          - Butterfly Valves at Input, Output and In the Center
+                          For Flushing
+                        </p>
+                        <p class="text-muted">
+                          - Pipe Supports to be Set In Concrete
+                        </p>
+                      </td>
+                      <td class="text-right">$15,295.07</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">PU-000</th>
+                      <td>
+                        <p>
+                          Design, Material and Installation of Moving Existing
+                          Pump to New Well Location
+                        </p>
+                        <p class="text-muted">
+                          - 20' Extension to Sit at 140' Depth
+                        </p>
+                        <p class="text-muted">
+                          - Remove Existing Pump and Re-Install In New Well
+                        </p>
+                        <p class="text-muted">
+                          - Connect Pump to New Discharge
+                        </p>
+                      </td>
+                      <td class="text-right">$7,194.73</td>
+                    </tr>
+
+                    <tr>
+                      <td scope="row">FRT</td>
+                      <td>
+                        <p>FRT : Frieght</p>
+                      </td>
+                      <td class="text-right">$500.00</td>
+                    </tr>
+
+                    <tr>
+                      <th scope="row"></th>
+                      <th class="text-right">
+                        <p>TOTAL ESTIMATE - ITEMS LISTED :</p>
+                      </th>
+                      <th class="text-right">$37,498.13</th>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <table class="table mt-2">
+                  <p class="font-weight-bold">Options</p>
+                  <tbody>
+                    <tr>
+                      <th scope="row">Approve & Initial</th>
+                      <th>Task</th>
+                      <th>Task Description</th>
+                      <th class="text-right">Totals</th>
+                    </tr>
+
+                    <tr>
+                      <td scope="row">Yes / No ________</td>
+                      <td>EL-000:EL002 -R69</td>
+                      <td>100 HP VFD Backboard Addition</td>
+                      <td class="text-right">$26,648.89</td>
+                    </tr>
+
+                    <tr>
+                      <th scope="row"></th>
+                      <th scope="row"></th>
+                      <th class="text-right">
+                        <p>TOTAL OPTIONS - ITEMS LISTED :</p>
+                      </th>
+                      <th class="text-right">$26,648.89</th>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <td></td>
+                      <td class="text-center">
+                        (This job proposal will proceed forward when both a
+                        <strong>signed contract</strong> and
+                        <strong>deposit</strong> have been received.)
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        This proposal is good for 14 days from presentation date
+                        of _______________.
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        Additional Labor to be Billed for Unforeseen Column Tube
+                        and Shaft Condition
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>*</td>
+                      <td>System flushing & start-up is included.</td>
+                    </tr>
+
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        Any alteration or deviation from the contract
+                        specifications will become an additional charge over and
+                        above the original price.
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        Sub-surfaces not free of obstructions, obstacles, or
+                        unusual conditions of any kind including, by way of
+                        example and not limited to high water table, mud, large
+                        and/or excessive rock, roots, water, or utility lines
+                        will increase the cost of trenching or other
+                        installation work.
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        Laurel Ag & Water is not responsible for the replacement
+                        of marking pegs which can be disrupted during
+                        installation.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        All rocks removed from excavated soil to be placed along
+                        the side of the ditch.
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        Trench cave-in due to unstable ground will require
+                        additional labor.
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        This proposal does not include shading the ditch with
+                        sand. Backfill with existing soil.
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>*</td>
+                      <td>Repair of the road crossing not included.</td>
+                    </tr>
+
+                    <tr>
+                      <td>*</td>
+                      <td>Trench compaction not included.</td>
+                    </tr>
+
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        All existing irrigation & utility lines to be located &
+                        exposed by the customer.
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        The customer is responsible for any materials delivered
+                        by Laurel Ag & Water, or its suppliers, and stored on
+                        the job site. Customer shall indemnify and hold Laurel
+                        Ag & Water harmless for any losses or damages to said
+                        materials.
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        Preliminary Notice to be furnished to Landowner,
+                        Contractor, and Lender (if applicable).
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        Any alteration or deviation from the contract
+                        specifications will become an additional charge over and
+                        above the original price.
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        Preliminary Notice to be furnished to Landowner,
+                        Contractor, and Lender (if applicable).
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <th>*</th>
+                      <th class="text-danger">PUMP INSTALLATION TERMS</th>
+                    </tr>
+
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        This proposal does not include utility connection fees.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>*</td>
+                      <td>Concrete pad to be provided by Customer.</td>
+                    </tr>
+                    <tr>
+                      <td>*</td>
+                      <td>Tank plumbing and connection not included.</td>
+                    </tr>
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        Labor to remove existing pump and install new pump
+                        included.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>*</td>
+                      <td>Labor to install new pump is included.</td>
+                    </tr>
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        Verification on well log/pump test is not included.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>*</td>
+                      <td>Customer to provide power to operate system.</td>
+                    </tr>
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        This quote is based on connection to an existing pump
+                        panel and electrical service.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        Proposal does not include any permits if required.
+                        Owner/Manager is responsible for obtaining all permits.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        This price does not include new electrical service,
+                        meter main, permit, or inspection if required.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        Cave-in due to unstable ground will require additional
+                        labor.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        Sub-surfaces not free of obstructions, obstacles, or
+                        unusual conditions of any kind including, by way of
+                        example and not limited to, high water table, mud, large
+                        and/or excessive rock, roots, water, or utility lines
+                        will increase the cost of trenching or other
+                        installation work.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        Not responsible for any issues with the well that may be
+                        the result of unknown conditions.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        Pump Discharge Modification not included (available at
+                        an additional cost).
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>*</td>
+                      <td>Motor reconditioning not included.</td>
+                    </tr>
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        Quote based on using existing pump hardware. Anything
+                        requiring replacement will be an additional cost to the
+                        job.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        Preliminary Notice to be furnished to Landowner,
+                        Contractor, and Lender (if applicable).
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        The customer is responsible for any materials delivered
+                        by Laurel Ag & Water, or its suppliers, and stored on
+                        the jobsite. Customer shall indemnify and hold Laurel Ag
+                        & Water harmless for any losses or damages to said
+                        materials.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        Laurel Ag & Water is not responsible for theft or
+                        vandalism of components or facilities that are under
+                        repair (for example; motor, bowls, column pipe and tube
+                        & shaft) and are stored at the customer's location.
+                        Laurel Ag & Water can transport to our location and
+                        store, at the customer's request, for an additional
+                        charge.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>*</td>
+                      <td>
+                        Customer Responsible for Determination of Flood Plain
+                        Requirements at Construction Site.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div>
+                  <hr />
+                  <h4 class="text-center">SALES AND APPROVAL AGREEMENT</h4>
+                  <p class="mb-3">
+                    This Agreement is made and entered on
+                    ________________________ by and between Laurel Ag & Water
+                    (“Seller”) and Martha Waterman, (“Buyer”), (collectively
+                    referred to as the “Parties”).
+                  </p>
+                  <p class="mb-3">The Parties agree as follows:</p>
+                  <p class="mb-3">
+                    SELLER AGREES TO SELL and Buyer agrees to buy all material
+                    and services more fully described in the attached Exhibit A,
+                    “Project Detail” (the “Goods”), Job #Existi.
+                  </p>
+                  <p class="mb-3">
+                    BUYER SHALL PAY SELLER $37,498 for the Goods, the “Purchase
+                    Price”. Buyer shall make an initial deposit of 30% of the
+                    Purchase Price in the amount of $11,249 for Seller to secure
+                    materials. Buyer shall make a second installment payment of
+                    30% in the amount of $11,249 upon first delivery of
+                    materials. Buyer shall make a third installment payment of
+                    30% in the amount of $11,249 at commencement of infield
+                    work. Buyer shall make a final installment payment of 10% in
+                    the amount of $3,749 upon successful testing of system. All
+                    payments shall be fully applied to the Purchase Price. In
+                    addition to the Purchase Price, BUYER AGREES TO PAY for all
+                    approved and initialed options in the attached Exhibit A,
+                    "Project Detail."
+                  </p>
+                  <p class="mb-3">
+                    THE BUYER SHALL PAY THE PURCHASE PRICE, less the initial
+                    deposit, upon the completion of the job, or upon receipt of
+                    Invoice, whichever is first. Buyer agrees to pay 1.5%
+                    monthly interest (18% annual rate) on any unpaid balance
+                    remaining due more than thirty (30) days. Buyer agrees to
+                    pay for any collection or legal expenses incurred by Seller
+                    due to late payment or non-payment.
+                  </p>
+                  <p class="mb-3">
+                    SELLER SHALL DELIVER the Goods to Buyer at the following
+                    address or parcel number: ___________
+                    _______________________________________________________. At
+                    that time, Buyer has the right to inspect the Goods. Buyer
+                    must give notice to Seller of any defect, damage or other
+                    problems with the Goods. If Buyer does not notify Seller
+                    within 48 hours after delivery of the Goods, Buyer shall
+                    conclusively be presumed to have inspected and accepted
+                    them. Buyer assumes all liability for loss due to acts of
+                    God, earthquake, fire, explosion, vandalism, storm, flood,
+                    theft or other similar occurrence.
+                  </p>
+
+                  <p class="mb-3">
+                    PRELIMINARY NOTICE will be furnished to the Landowner,
+                    Contractor and Lender.
+                  </p>
+                  <p class="mb-3">
+                    ANY CHANGES OR ADDITIONS made to the original Project Detail
+                    including the charges associated with them will subsequently
+                    be referred to as “Change Order(s)” and/or “Addition
+                    Order(s)” and become part of this Agreement including all of
+                    its terms and conditions.
+                  </p>
+                  <p class="mb-3">
+                    BUYER AGREES that the design and specifications as described
+                    in the Project Detail are accurate and will be governed by
+                    the remaining terms of this Agreement.
+                  </p>
+                  <p class="mb-5">
+                    IN WITNESS WHEREOF, the parties have caused this Agreement
+                    to be executed the day and year first above written.
+                  </p>
+                  <div class="d-flex justify-content-between">
+                    <div class="d-flex w-50 justify-content-between">
+                      <p class="w-50">Buyer:</p>
+                      <p class="w-50">Date:</p>
+                    </div>
+
+                    <div class="d-flex w-50 justify-content-between">
+                      <p class="w-50">Seller :</p>
+                      <p class="w-50">Date:</p>
+                    </div>
+                  </div>
+                  <div
+                    class="d-flex justify-content-between my-4"
+                    style="gap: 50px"
+                  >
+                    <div class="w-50">
+                      <p class="mb-0 text-center" style="visibility: collapse">
+                        <strong>Lochlan</strong>
+                      </p>
+                      <p class="w-100" style="border-top: 1px solid">
+                        (Print Name)
+                      </p>
+                    </div>
+
+                    <div class="w-50">
+                      <p class="mb-0 text-center">
+                        <strong>Lochlan Buckingham</strong>
+                      </p>
+                      <p class="w-100" style="border-top: 1px solid">
+                        (Print Name)
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="d-flex justify-content-between my-4"
+                    style="gap: 50px"
+                  >
+                    <div class="w-50">
+                      <p class="mb-0 text-center" style="visibility: collapse">
+                        <strong>Sales Consultant </strong>
+                      </p>
+                      <p class="w-100" style="border-top: 1px solid">
+                        (Position)
+                      </p>
+                    </div>
+
+                    <div class="w-50">
+                      <p class="mb-0 text-center">
+                        <strong>Sales Consultant </strong>
+                      </p>
+                      <p class="w-100" style="border-top: 1px solid">
+                        (Position)
+                      </p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <hr />
+                    <h4 class="text-center">DEPOSIT INVOICE</h4>
+                    <strong>Customer #: </strong>
+
+                    <div
+                      class="d-flex justify-content-between my-4"
+                      style="gap: 50px"
+                    >
+                      <div class="w-50">
+                        <strong class="w-100"> Date :</strong>
+                        <span class="ml-3"> May 13, 2024 </span>
+                      </div>
+
+                      <div class="w-50">
+                        <strong class="w-100"> Job# :</strong>
+                        <span class="ml-3"> Existi </span>
+                      </div>
+                    </div>
+
+                    <div
+                      class="d-flex justify-content-between my-4"
+                      style="gap: 50px"
+                    >
+                      <div class="w-50 d-flex">
+                        <strong> To: </strong>
+                        <p class="ml-3">
+                          Martha Waterman
+                          <br />
+                          2241 Old Airline Highway
+                          <br />
+                          Paicines Ca 95043
+                        </p>
+                      </div>
+
+                      <div class="w-50">
+                        <strong class="w-100"> Ranch Name:</strong>
+
+                        <div class="w-100 d-flex">
+                          <strong> Job Name: </strong>
+                          <p class="text-wrap ml-3">
+                            Existing Pump Relocation And New 10" Discharge
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <table class="table">
+                      <thead class="thead-light">
+                        <th>DESCRIPTION</th>
+                        <th></th>
+                        <th class="text-right">Amount</th>
+                      </thead>
+
+                      <tbody>
+                        <tr>
+                          <td>Deposit for:</td>
+                          <td></td>
+                          <td class="text-right">$11,249.44</td>
+                        </tr>
+
+                        <tr>
+                          <td class="text-right">Job#:</td>
+                          <td>Existi</td>
+                          <td></td>
+                        </tr>
+
+                        <tr>
+                          <td class="text-right">Ranch:</td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+
+                        <tr>
+                          <td class="text-right">Job Name:</td>
+                          <td>
+                            Existing Pump Relocation And New 10" Discharge
+                          </td>
+                          <td></td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                    <table class="table">
+                      <tbody>
+                        <tr>
+                          <th>
+                            Contract Terms: As per your contract, this job
+                            billing is due upon receipt.
+                          </th>
+                          <th></th>
+                        </tr>
+
+                        <tr>
+                          <td class="text-center">Remit to:</td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td class="text-center">
+                            10000 Stockdale Hwy. Suite 100, Bakersfield, CA
+                            93311
+                          </td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td class="text-right">SUBTOTAL</td>
+                          <td class="text-right">$11,249.44</td>
+                        </tr>
+
+                        <tr>
+                          <td class="text-right">TAX RATE</td>
+                          <td class="text-right">0%</td>
+                        </tr>
+
+                        <tr>
+                          <td class="text-right">SALES TAX</td>
+                          <td class="text-right">$0.00</td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            <div class="d-flex justify-content-between">
+                              <strong> THANK YOU FOR YOUR BUSINESS! </strong>
+                              <p>OTHER</p>
+                            </div>
+                          </td>
+                          <td class="text-right"></td>
+                        </tr>
+
+                        <tr>
+                          <th class="text-right">TOTAL</th>
+                          <th class="text-right">$11,249.44</th>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <br />
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="float-right">
+                        {% comment %}
+                        <a
+                          href="#"
+                          role="menuitem"
+                          class="btn btn-primary btn-success"
+                          >Submit</a
+                        >
+                        {% endcomment %}
+                        <a href="#" role="menuitem" class="btn bg-light-primary"
+                          >Print Invoice</a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Invoice Items Details ends -->
+                <!-- Invoice Footer starts -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock page_content %}

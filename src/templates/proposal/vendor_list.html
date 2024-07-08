@@ -1,0 +1,712 @@
+{% load static %}
+
+<div class="row">
+  <div class="col-12">
+    <div class="content-header">Vendor List</div>
+  </div>
+</div>
+
+<!-- Wizard Starts -->
+<section id="icon-tabs">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <h4 class="card-title"></h4>
+          <div class="float-right">
+            <button
+              type="button"
+              class="btn bg-light-secondary"
+              data-toggle="modal"
+              data-target="#inlineForm"
+            >
+              <i class="fa ft-briefcase mr-1"></i> Import Vendor
+            </button>
+
+            <!-- Modal -->
+            <div
+              class="modal fade text-left"
+              id="inlineForm"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="myModalLabel33"
+              aria-hidden="true"
+              data-backdrop="false"
+            >
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel5">
+                      Import Vendor
+                    </h4>
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true"
+                        ><i class="ft-x font-medium-2 text-bold-700"></i
+                      ></span>
+                    </button>
+                  </div>
+                  <form action="#">
+                    <div class="modal-body">
+                      <label>Upload File </label>
+                      <div class="form-group">
+                        <div class="custom-file">
+                          <input
+                            type="file"
+                            class="custom-file-input"
+                            id="inputGroupFile01"
+                          />
+                          <label
+                            class="custom-file-label"
+                            for="inputGroupFile01"
+                            >Choose file</label
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <a role="menuitem" class="btn btn-primary">Upload </a>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table
+                  class="table table-striped table-bordered zero-configuration"
+                >
+                  <thead>
+                    <tr>
+                      <th>Internal ID</th>
+                      <th>Name</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Row 1 -->
+                    <tr>
+                      <td>301159</td>
+                      <td>River Septic LLC</td>
+                    </tr>
+
+                    <!-- Row 2 -->
+                    <tr>
+                      <td>301141</td>
+                      <td>B & S Supply Company LLC</td>
+                    </tr>
+
+                    <!-- Row 3 -->
+                    <tr>
+                      <td>301113</td>
+                      <td>Salvador Gomez</td>
+                    </tr>
+
+                    <!-- Row 4 -->
+                    <tr>
+                      <td>301078</td>
+                      <td>Windsor - Holiday Inn Express Conde Ln</td>
+                    </tr>
+
+                    <!-- Row 5 -->
+                    <tr>
+                      <td>301066</td>
+                      <td>Border Valley Trading</td>
+                    </tr>
+
+                    <!-- Row 6 -->
+                    <tr>
+                      <td>301036</td>
+                      <td>Capital Industrial Medical Supply Co.</td>
+                    </tr>
+
+                    <!-- Row 7 -->
+                    <tr>
+                      <td>300995</td>
+                      <td>Wonderful Laboratories LLC</td>
+                    </tr>
+
+                    <!-- Row 8 -->
+                    <tr>
+                      <td>300970</td>
+                      <td>Corning - Inn At Rolling Hills Casino</td>
+                    </tr>
+
+                    <!-- Row 9 -->
+                    <tr>
+                      <td>300968</td>
+                      <td>Michael Tarnowski</td>
+                    </tr>
+
+                    <!-- Row 10 -->
+                    <tr>
+                      <td>300964</td>
+                      <td>101 Trailer Sales</td>
+                    </tr>
+
+                    <!-- Row 11 -->
+                    <tr>
+                      <td>300873</td>
+                      <td>Coast Engineering and Design, Inc.</td>
+                    </tr>
+
+                    <!-- Row 12 -->
+                    <tr>
+                      <td>300855</td>
+                      <td>Hollister - Holiday Inn</td>
+                    </tr>
+
+                    <!-- Row 13 -->
+                    <tr>
+                      <td>300768</td>
+                      <td>Raptor Fire Protection</td>
+                    </tr>
+
+                    <!-- Row 14 -->
+                    <tr>
+                      <td>300748</td>
+                      <td>MGM Concrete Ukiah</td>
+                    </tr>
+
+                    <!-- Row 15 -->
+                    <tr>
+                      <td>300714</td>
+                      <td>OperationsInc., LLC</td>
+                    </tr>
+
+                    <!-- Row 16 -->
+                    <tr>
+                      <td>300677</td>
+                      <td>Markman Group LLC</td>
+                    </tr>
+
+                    <!-- Row 17 -->
+                    <tr>
+                      <td>300627</td>
+                      <td>All Valley Fence & Materials</td>
+                    </tr>
+
+                    <!-- Row 18 -->
+                    <tr>
+                      <td>300526</td>
+                      <td>PG&E 7803988682-1 (Colusa Pump Shop)</td>
+                    </tr>
+
+                    <!-- Row 19 -->
+                    <tr>
+                      <td>300512</td>
+                      <td>JD Equipment</td>
+                    </tr>
+
+                    <!-- Row 20 -->
+                    <tr>
+                      <td>300472</td>
+                      <td>The Hose Shop LLC</td>
+                    </tr>
+
+                    <!-- Row 21 -->
+                    <tr>
+                      <td>300426</td>
+                      <td>Juan Garcia-Calderon</td>
+                    </tr>
+
+                    <!-- Row 22 -->
+                    <tr>
+                      <td>300392</td>
+                      <td>Elijah's Equipment Diagnostics</td>
+                    </tr>
+
+                    <!-- Row 23 -->
+                    <tr>
+                      <td>300206</td>
+                      <td>Valley Pressure Pros, Inc</td>
+                    </tr>
+
+                    <!-- Row 24 -->
+                    <tr>
+                      <td>300192</td>
+                      <td>Victor Garcia</td>
+                    </tr>
+
+                    <!-- Row 25 -->
+                    <tr>
+                      <td>300132</td>
+                      <td>Julian Rodriguez Welding</td>
+                    </tr>
+
+                    <!-- Row 26 -->
+                    <tr>
+                      <td>300113</td>
+                      <td>Sonoma - Best Western</td>
+                    </tr>
+
+                    <!-- Row 27 -->
+                    <tr>
+                      <td>300095</td>
+                      <td>Crown Hill Stone Supply</td>
+                    </tr>
+
+                    <!-- Row 28 -->
+                    <tr>
+                      <td>299995</td>
+                      <td>Paul Martin Automotive</td>
+                    </tr>
+
+                    <!-- Row 29 -->
+                    <tr>
+                      <td>299687</td>
+                      <td>Swiss Club of Imperial Valley</td>
+                    </tr>
+
+                    <!-- Row 30 -->
+                    <tr>
+                      <td>299605</td>
+                      <td>West Hills Oil, Inc.</td>
+                    </tr>
+
+                    <!-- Row 31 -->
+                    <tr>
+                      <td>299595</td>
+                      <td>Visalia Rawhide Ballclub</td>
+                    </tr>
+
+                    <!-- Row 32 -->
+                    <tr>
+                      <td>299544</td>
+                      <td>Vermeer Mountain West, Inc.</td>
+                    </tr>
+
+                    <!-- Row 33 -->
+                    <tr>
+                      <td>299418</td>
+                      <td>Evcon</td>
+                    </tr>
+
+                    <!-- Row 34 -->
+                    <tr>
+                      <td>299417</td>
+                      <td>Express Transpro LLC</td>
+                    </tr>
+
+                    <!-- Row 35 -->
+                    <tr>
+                      <td>299378</td>
+                      <td>Machado Backhoe, Inc.</td>
+                    </tr>
+
+                    <!-- Row 36 -->
+                    <tr>
+                      <td>299309</td>
+                      <td>North Kern Water Storage District</td>
+                    </tr>
+
+                    <!-- Row 37 -->
+                    <tr>
+                      <td>299300</td>
+                      <td>Oregon Secretary of State - Corporation Division</td>
+                    </tr>
+
+                    <!-- Row 38 -->
+                    <tr>
+                      <td>299299</td>
+                      <td>New Mexico Secretary of State</td>
+                    </tr>
+
+                    <!-- Row 39 -->
+                    <tr>
+                      <td>299297</td>
+                      <td>Power Machinery Center</td>
+                    </tr>
+
+                    <!-- Row 40 -->
+                    <tr>
+                      <td>299291</td>
+                      <td>Sierra Flowers</td>
+                    </tr>
+
+                    <!-- Row 41 -->
+                    <tr>
+                      <td>299289</td>
+                      <td>Eclipse Mapping and GIS LLC</td>
+                    </tr>
+
+                    <!-- Row 42 -->
+                    <tr>
+                      <td>299257</td>
+                      <td>Desert Valley, Inc</td>
+                    </tr>
+
+                    <!-- Row 43 -->
+                    <tr>
+                      <td>299256</td>
+                      <td>Precision Welding Solutions Inc.</td>
+                    </tr>
+
+                    <!-- Row 44 -->
+                    <tr>
+                      <td>299239</td>
+                      <td>Shepherds Home Improvements</td>
+                    </tr>
+
+                    <!-- Row 45 -->
+                    <tr>
+                      <td>299188</td>
+                      <td>Regina Lunsford</td>
+                    </tr>
+
+                    <!-- Row 46 -->
+                    <tr>
+                      <td>299162</td>
+                      <td>D&M Ready Mix Service Inc.</td>
+                    </tr>
+
+                    <!-- Row 47 -->
+                    <tr>
+                      <td>299139</td>
+                      <td>DIG Corporation</td>
+                    </tr>
+
+                    <!-- Row 48 -->
+                    <tr>
+                      <td>299136</td>
+                      <td>Sonoma - El Pueblo Inn</td>
+                    </tr>
+
+                    <!-- Row 49 -->
+                    <tr>
+                      <td>299103</td>
+                      <td>Nucor Cold Finish - Nebraska</td>
+                    </tr>
+
+                    <!-- Row 50 -->
+                    <tr>
+                      <td>299085</td>
+                      <td>BLT Companies</td>
+                    </tr>
+
+                    <!-- Row 51 -->
+                    <tr>
+                      <td>299077</td>
+                      <td>Keith Gardiner Farms, LLC</td>
+                    </tr>
+
+                    <!-- Row 52 -->
+                    <tr>
+                      <td>299040</td>
+                      <td>Yolo-Solano Air Quality Management District</td>
+                    </tr>
+
+                    <!-- Row 53 -->
+                    <tr>
+                      <td>299031</td>
+                      <td>Jefre Bugni</td>
+                    </tr>
+
+                    <!-- Row 54 -->
+                    <tr>
+                      <td>299029</td>
+                      <td>ALL-STATE Utility Supply Inc.</td>
+                    </tr>
+
+                    <!-- Row 55 -->
+                    <tr>
+                      <td>299020</td>
+                      <td>Carrillo Mobil Tire Service LLC</td>
+                    </tr>
+
+                    <!-- Row 56 -->
+                    <tr>
+                      <td>298952</td>
+                      <td>Fenner Valley Farms LLC</td>
+                    </tr>
+
+                    <!-- Row 57 -->
+                    <tr>
+                      <td>298934</td>
+                      <td>Red Truck Rock Yard, LLC</td>
+                    </tr>
+
+                    <!-- Row 58 -->
+                    <tr>
+                      <td>298891</td>
+                      <td>PRW Steel Supply</td>
+                    </tr>
+
+                    <!-- Row 59 -->
+                    <tr>
+                      <td>298872</td>
+                      <td>Lochlan Buckingham</td>
+                    </tr>
+
+                    <!-- Row 60 -->
+                    <tr>
+                      <td>298830</td>
+                      <td>M & S Trailers and Fabrication</td>
+                    </tr>
+
+                    <!-- Row 61 -->
+                    <tr>
+                      <td>298788</td>
+                      <td>Tulare - Best Western</td>
+                    </tr>
+
+                    <!-- Row 62 -->
+                    <tr>
+                      <td>298691</td>
+                      <td>Imperial Printers</td>
+                    </tr>
+
+                    <!-- Row 63 -->
+                    <tr>
+                      <td>298670</td>
+                      <td>Custom Threads Inc.</td>
+                    </tr>
+
+                    <!-- Row 64 -->
+                    <tr>
+                      <td>298560</td>
+                      <td>John's Engine Services</td>
+                    </tr>
+
+                    <!-- Row 65 -->
+                    <tr>
+                      <td>298550</td>
+                      <td>Yuba City Scrap & Steel Inc.</td>
+                    </tr>
+
+                    <!-- Row 66 -->
+                    <tr>
+                      <td>298549</td>
+                      <td>Mark Dowden Welding</td>
+                    </tr>
+
+                    <!-- Row 67 -->
+                    <tr>
+                      <td>298519</td>
+                      <td>Travelers</td>
+                    </tr>
+
+                    <!-- Row 68 -->
+                    <tr>
+                      <td>298505</td>
+                      <td>Gerardo Rodriguez</td>
+                    </tr>
+
+                    <!-- Row 69 -->
+                    <tr>
+                      <td>298437</td>
+                      <td>US Standard Products Corp</td>
+                    </tr>
+
+                    <!-- Row 70 -->
+                    <tr>
+                      <td>297630</td>
+                      <td>Andres Quintero</td>
+                    </tr>
+
+                    <!-- Row 71 -->
+                    <tr>
+                      <td>296992</td>
+                      <td>Geyserville - Geyserville Inn</td>
+                    </tr>
+
+                    <!-- Row 72 -->
+                    <tr>
+                      <td>296991</td>
+                      <td>Reynoso Brothers Construction Inc.</td>
+                    </tr>
+
+                    <!-- Row 73 -->
+                    <tr>
+                      <td>296878</td>
+                      <td>SOCOM Underground Inc.</td>
+                    </tr>
+
+                    <!-- Row 74 -->
+                    <tr>
+                      <td>296830</td>
+                      <td>Agriculture Groundwater Users of Butte County</td>
+                    </tr>
+
+                    <!-- Row 75 -->
+                    <tr>
+                      <td>296771</td>
+                      <td>Stoney Creek Production Inc.</td>
+                    </tr>
+
+                    <!-- Row 76 -->
+                    <tr>
+                      <td>296770</td>
+                      <td>Les Schwab Tire Centers</td>
+                    </tr>
+
+                    <!-- Row 77 -->
+                    <tr>
+                      <td>296769</td>
+                      <td>Superior Tire Service</td>
+                    </tr>
+
+                    <!-- Row 78 -->
+                    <tr>
+                      <td>296768</td>
+                      <td>Meridian Diesel</td>
+                    </tr>
+
+                    <!-- Row 79 -->
+                    <tr>
+                      <td>296754</td>
+                      <td>Graeson Bell</td>
+                    </tr>
+
+                    <!-- Row 80 -->
+                    <tr>
+                      <td>296748</td>
+                      <td>Wheeler Ridge-Maricopa Water Storage District</td>
+                    </tr>
+
+                    <!-- Row 81 -->
+                    <tr>
+                      <td>296743</td>
+                      <td>Jeffrey Miller</td>
+                    </tr>
+
+                    <!-- Row 82 -->
+                    <tr>
+                      <td>296635</td>
+                      <td>Southwest Valve & Equipment, LLC</td>
+                    </tr>
+
+                    <!-- Row 83 -->
+                    <tr>
+                      <td>296626</td>
+                      <td>Coachella Valley Ranch Development</td>
+                    </tr>
+
+                    <!-- Row 84 -->
+                    <tr>
+                      <td>296601</td>
+                      <td>Andres Varela</td>
+                    </tr>
+
+                    <!-- Row 85 -->
+                    <tr>
+                      <td>296597</td>
+                      <td>Alternators and Starters Rebuilders LLC</td>
+                    </tr>
+
+                    <!-- Row 86 -->
+                    <tr>
+                      <td>296570</td>
+                      <td>Credit Card Fleet</td>
+                    </tr>
+
+                    <!-- Row 87 -->
+                    <tr>
+                      <td>296569</td>
+                      <td>Credit Card Inventory</td>
+                    </tr>
+
+                    <!-- Row 88 -->
+                    <tr>
+                      <td>296553</td>
+                      <td>Heriberto Herrera</td>
+                    </tr>
+
+                    <!-- Row 89 -->
+                    <tr>
+                      <td>296464</td>
+                      <td>Verduzco Farms Labor Contractor</td>
+                    </tr>
+
+                    <!-- Row 90 -->
+                    <tr>
+                      <td>296420</td>
+                      <td>Mario A. Jaques</td>
+                    </tr>
+
+                    <!-- Row 91 -->
+                    <tr>
+                      <td>296381</td>
+                      <td>International Trade Asset Group, Inc.</td>
+                    </tr>
+
+                    <!-- Row 92 -->
+                    <tr>
+                      <td>296356</td>
+                      <td>Simflo</td>
+                    </tr>
+
+                    <!-- Row 93 -->
+                    <tr>
+                      <td>296349</td>
+                      <td>National Trench Safety</td>
+                    </tr>
+
+                    <!-- Row 94 -->
+                    <tr>
+                      <td>296336</td>
+                      <td>Butte Sand and Gravel</td>
+                    </tr>
+
+                    <!-- Row 95 -->
+                    <tr>
+                      <td>296335</td>
+                      <td>A-1 Grit Company</td>
+                    </tr>
+
+                    <!-- Row 96 -->
+                    <tr>
+                      <td>296324</td>
+                      <td>Main Auto Body & Paint</td>
+                    </tr>
+
+                    <!-- Row 97 -->
+                    <tr>
+                      <td>296294</td>
+                      <td>Superior Ready Mix, LP</td>
+                    </tr>
+
+                    <!-- Row 98 -->
+                    <tr>
+                      <td>296281</td>
+                      <td>Delaney & Ahlf Diesel Service Inc.</td>
+                    </tr>
+
+                    <!-- Row 99 -->
+                    <tr>
+                      <td>296279</td>
+                      <td>AG Personnel Management, Inc</td>
+                    </tr>
+
+                    <!-- Row 100 -->
+                    <tr>
+                      <td>296277</td>
+                      <td>Lorenzo's Portable Welding</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+    <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+    <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+    <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+    <!-- BEGIN PAGE LEVEL JS-->
+    <!-- <script src="{% static 'app/js/data-tables/dt-data-sources.min.js' %}"></script> -->
+    <!-- END PAGE LEVEL JS-->
+
+    <script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
+  </div>
+</section>

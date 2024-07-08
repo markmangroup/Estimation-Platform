@@ -1,0 +1,158 @@
+{% extends "base.html" %} {% load static %} {% block page_content %}
+
+<div class="row">
+  <div class="col-12">
+    <div class="content-header">Material List Directly from Irricad</div>
+  </div>
+</div>
+
+<!-- Wizard Starts -->
+<section id="configuration">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title"></h4>
+        </div>
+        <div class="card-content">
+          <div class="card-body">
+            <p></p>
+            <div class="table-responsive">
+              <table
+                class="table table-striped table-bordered zero-configuration"
+              >
+                <thead>
+                  <tr>
+                    <th>Quantity</th>
+                    <th>Description</th>
+                    <th>Item Number</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>3</td>
+                    <td>TEE S40 2"</td>
+                    <td>401020</td>
+                  </tr>
+                  <tr>
+                    <td>15</td>
+                    <td>ELBOW S40 2" X 90</td>
+                    <td>406020</td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td>ELBOW S40 2" X 45</td>
+                    <td>417020</td>
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>CAP S40 2"</td>
+                    <td>447020</td>
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>FLUSHOUT DRIP ABOVE 2"</td>
+                    <td>1100-001000</td>
+                  </tr>
+                  <tr>
+                    <td>64</td>
+                    <td>PERMA-LOC X SWIVEL-W TEE 062</td>
+                    <td>2800-006000</td>
+                  </tr>
+                  <tr>
+                    <td>63</td>
+                    <td>SADDLE 1/2" X 2"</td>
+                    <td>2800-105000</td>
+                  </tr>
+                  <tr>
+                    <td>64</td>
+                    <td>MALE HOSE ADAP X 1/2"S(3/4"SP)</td>
+                    <td>2800-114000</td>
+                  </tr>
+                  <tr>
+                    <td>64</td>
+                    <td>Ball Valve Riser 3/4" FHTxMHT</td>
+                    <td>2800-117500</td>
+                  </tr>
+                  <tr>
+                    <td>128</td>
+                    <td>FIGURE 8 062</td>
+                    <td>2800-118500</td>
+                  </tr>
+                  <tr>
+                    <td>24000</td>
+                    <td>UNIRAM .62/45 E.5336 COIL</td>
+                    <td>4400-458500</td>
+                  </tr>
+                  <tr>
+                    <td>2000</td>
+                    <td>PIPE PVC IPS CL125 2" SW</td>
+                    <td>5400-007500</td>
+                  </tr>
+                  <tr>
+                    <td>20</td>
+                    <td>PIPE PVC IPS S40 2" SW</td>
+                    <td>5400-027000</td>
+                  </tr>
+                  <tr>
+                    <td>64</td>
+                    <td>FLEX RISER 1/2" X 48"</td>
+                    <td>6200-008000</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>NELSON VLV 2" GR 18-80 PR</td>
+                    <td>6350-001550</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>VENT-1"CAV X 2"COUP</td>
+                    <td>ASSM-0625</td>
+                  </tr>
+                  <tr>
+                    <td>7675</td>
+                    <td>DRIP IN-Netafim UniRam Inline 0.5gph PC</td>
+                    <td>NURAM0.5</td>
+                  </tr>
+                  <tr>
+                    <td>7675</td>
+                    <td>Netafim Ram 0.5 gph</td>
+                    <td>RAM0.5</td>
+                  </tr>
+                  <tr>
+                    <td>1485</td>
+                    <td>Trench: Chain - One pipe in trench</td>
+                    <td>SINGLE-C</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <br />
+            <div class="row">
+              <div class="col-12">
+                <div class="float-right">
+                  <a
+                    href="{% url 'proposal:material_list' %}"
+                    role="menuitem"
+                    class="btn btn-primary btn-secondary"
+                    >Previous</a
+                  >
+                  <a
+                    href="{% url 'proposal:glue_material_list' %}"
+                    role="menuitem"
+                    class="btn btn-primary"
+                    >Next</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
+
+{% endblock page_content%}

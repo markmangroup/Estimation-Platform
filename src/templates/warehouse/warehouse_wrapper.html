@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block page_content %}
+{% include 'warehouse/sidebar.html'%}
+<div class="main-panel">
+  <!-- BEGIN : Main Content-->
+  <div class="main-content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        {% include template_name %}
+      <!-- Wizard Ends -->
+    </div>
+  </div>
+  <!-- END : End Main Content-->
+  <!-- BEGIN : Footer-->
+  {% include "footer.html" %}
+  <!-- End : Footer--><!-- Scroll to top button -->
+  <button class="btn btn-primary scroll-top" type="button">
+    <i class="ft-arrow-up"></i>
+  </button>
+</div>
+{% endblock page_content%}

@@ -1,0 +1,147 @@
+<section id="icons-tab-steps">
+  <div class="col-xl-12 col-lg-12">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a
+          class="nav-link active"
+          id="base-tab11"
+          data-toggle="tab"
+          aria-controls="tab1"
+          href="#tab1"
+          aria-expanded="true"
+        >
+          Upload CAD File</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          id="base-tab12"
+          data-toggle="tab"
+          aria-controls="tab2"
+          href="#tab2"
+          aria-expanded="false"
+        >
+          Task Mapping
+        </a>
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          id="base-tab13"
+          data-toggle="tab"
+          aria-controls="tab3"
+          href="#tab3"
+          aria-expanded="false"
+        >
+          Generate Estimate
+        </a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div
+        role="tabpanel"
+        class="tab-pane active"
+        id="tab1"
+        aria-expanded="true"
+        aria-labelledby="base-tab11"
+      >
+        <fieldset>
+          {% include "./upload_file.html" %}
+          {% include './assign_to.html' %}
+          {% include './comment_table.html' %}
+          <div class="accordion" id="accordionExample1">
+            <div>
+              <div
+                id="headingAccordion1"
+                class="card-header border-bottom pb-3"
+              >
+                <a
+                  data-toggle="collapse"
+                  href="#accordion1"
+                  aria-expanded="false"
+                  aria-controls="accordion1"
+                  class="card-title"
+                  >Material List</a
+                >
+              </div>
+              <div
+                id="accordion1"
+                class="collapse"
+                aria-labelledby="headingAccordion1"
+                data-parent="#accordionExample1"
+              >
+                <div class="card-body">
+                  {% include "./material_list.html" %}
+                </div>
+              </div>
+            </div>
+            <div>
+              <div
+                id="headingAccordion3"
+                class="card-header border-bottom pb-3"
+              >
+                <a
+                  data-toggle="collapse"
+                  href="#accordion3"
+                  aria-expanded="false"
+                  aria-controls="accordion3"
+                  class="card-title collapsed"
+                  >Glue & Additional Material</a
+                >
+              </div>
+              <div
+                id="accordion3"
+                class="collapse"
+                aria-labelledby="headingAccordion3"
+                data-parent="#accordionExample1"
+              >
+                <div class="card-body">
+                  {% include "./glue_material.html" %}
+                </div>
+              </div>
+            </div>
+            <div>
+              <div id="headingAccordion4" class="card-header">
+                <a
+                  data-toggle="collapse"
+                  href="#accordion4"
+                  aria-expanded="false"
+                  aria-controls="accordion4"
+                  class="card-title collapsed"
+                  >Final Material List</a
+                >
+              </div>
+              <div
+                id="accordion4"
+                class="collapse"
+                aria-labelledby="headingAccordion4"
+                data-parent="#accordionExample1"
+              >
+                <div class="card-body pb-0">
+                  {% include "./final_material.html" %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      <div class="tab-pane" id="tab2" aria-labelledby="base-tab12">
+        <fieldset>{% include "./tasks.html" %}
+          {% include "./file_upload.html" %}
+          {% include './assign_to.html' %}
+          {% include './comment_table.html' %}
+        </fieldset>
+      </div>
+      <div class="tab-pane" id="tab3" aria-labelledby="base-tab13">
+        <fieldset>{% include "./estimate.html" %}
+          {% include "./file_upload.html" %}
+          {% include './assign_to.html' %}
+          {% include './comment_table.html' %}
+
+        </fieldset>
+      </div>
+    </div>
+
+  </div>
+</section>

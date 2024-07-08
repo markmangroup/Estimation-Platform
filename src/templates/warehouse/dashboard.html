@@ -1,0 +1,870 @@
+{% load static %}
+
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'vendors/css/chartist.min.css' %}"
+/>
+<!-- END VENDOR CSS-->
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'app/css/pages/dashboard1.min.css' %}"
+/>
+<div class="row">
+  <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+    <div class="card gradient-purple-love">
+      <div class="card-content">
+        <div class="card-body py-0">
+          <div class="media pb-1">
+            <div class="media-body white text-left">
+              <h3 class="font-large-1 white mb-0">$45,668</h3>
+              <span>YTD Revenue</span>
+            </div>
+            <div class="media-right white text-right">
+              <i class="ft-activity font-large-1"></i>
+            </div>
+          </div>
+        </div>
+        <div
+          id="Widget-line-chart"
+          class="height-75 WidgetlineChart WidgetlineChartshadow mb-2"
+        ></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+    <div class="card gradient-ibiza-sunset">
+      <div class="card-content">
+        <div class="card-body py-0">
+          <div class="media pb-1">
+            <div class="media-body white text-left">
+              <h3 class="font-large-1 white mb-0">$8,475</h3>
+              <span>Current Month Revenue</span>
+            </div>
+            <div class="media-right white text-right">
+              <i class="ft-percent font-large-1"></i>
+            </div>
+          </div>
+        </div>
+        <div
+          id="Widget-line-chart1"
+          class="height-75 WidgetlineChart WidgetlineChartshadow mb-2"
+        ></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+    <div class="card gradient-mint">
+      <div class="card-content">
+        <div class="card-body py-0">
+          <div class="media pb-1">
+            <div class="media-body white text-left">
+              <h3 class="font-large-1 white mb-0">$32,454</h3>
+              <span>YTD Profit</span>
+            </div>
+            <div class="media-right white text-right">
+              <i class="ft-trending-up font-large-1"></i>
+            </div>
+          </div>
+        </div>
+        <div
+          id="Widget-line-chart2"
+          class="height-75 WidgetlineChart WidgetlineChartshadow mb-2"
+        ></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+    <div class="card gradient-king-yna">
+      <div class="card-content">
+        <div class="card-body py-0">
+          <div class="media pb-1">
+            <div class="media-body white text-left">
+              <h3 class="font-large-1 white mb-0">$2,678</h3>
+              <span>Current Month Profit</span>
+            </div>
+            <div class="media-right white text-right">
+              <i class="ft-credit-card font-large-1"></i>
+            </div>
+          </div>
+        </div>
+        <div
+          id="Widget-line-chart3"
+          class="height-75 WidgetlineChart WidgetlineChartshadow mb-2"
+        ></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Statistics cards Ends-->
+
+<!--Line with Area Chart 1 Starts-->
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Rent Orders</h4>
+      </div>
+      <div class="card-content">
+        <div class="card-body">
+          <div class="chart-info mb-3 ml-3">
+            <span
+              class="gradient-purple-bliss d-inline-block rounded-circle mr-1"
+              style="width: 15px; height: 15px"
+            ></span>
+            Orders
+            <!-- <span
+              class="gradient-mint d-inline-block rounded-circle mr-1 ml-2"
+              style="width: 15px; height: 15px"
+            ></span>
+            Visits -->
+          </div>
+          <div id="line-area" class="height-350 lineArea"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Line with Area Chart 1 Ends-->
+
+<!--Warehouse Count, Total Products & Damaged Products KPIs-->
+<div class="row match-height align-items-center justify-content-center">
+  <div class="col-md-4 col-12">
+    <div class="card gradient-flickr">
+      <div class="card-header text-center pb-0">
+        <span class="font-medium-2 white">Warehouse Count</span>
+      </div>
+      <div class="card-content">
+        <div class="card-body text-center">
+          <h3 class="font-large-2 white mt-4">10</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 col-12">
+    <div class="card gradient-mint">
+      <div class="card-header text-center pb-0">
+        <span class="font-medium-2 white">Total Products</span>
+      </div>
+      <div class="card-content">
+        <div class="card-body text-center">
+          <h3 class="font-large-2 white mt-4">5845</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 col-12">
+    <div class="card gradient-pomegranate">
+      <div class="card-header text-center pb-0">
+        <span class="font-medium-2 white">Damaged Products</span>
+      </div>
+      <div class="card-content">
+        <div class="card-body text-center">
+          <h3 class="font-large-2 white mt-4">127</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Stock Movement report-->
+<section id="icon-tabs">
+  <div class="card">
+    <div class="card-header">
+      <h4 class="card-title">Stock Movement Report</h4>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-bordered zero-configuration">
+          <thead>
+            <tr>
+              <th>Internal ID</th>
+              <th>Family</th>
+              <th>Parent</th>
+              <th>Movement</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>5</td>
+              <td>2x- HOSE, TAPE & EMISSION DEVICES</td>
+              <td>MICRO JETS</td>
+              <td>
+                <a
+                  href=""
+                  data-toggle="modal"
+                  data-target="#stock_movement_report"
+                >
+                  <i class="ft-move font-medium-3 mr-2"></i>
+                </a>
+              </td>
+            </tr>
+
+            <!-- Row 2 -->
+            <tr>
+              <td>107</td>
+              <td>8x-PANELS, PUMPS, INJECTORS, DRIVE UNITS & ELECTRICAL</td>
+              <td>ELECTRICAL SUPPLIES</td>
+              <td>
+                <a
+                  href=""
+                  data-toggle="modal"
+                  data-target="#stock_movement_report"
+                >
+                  <i class="ft-move font-medium-3 mr-2"></i>
+                </a>
+              </td>
+            </tr>
+
+            <!-- Row 3 -->
+            <tr>
+              <td>108</td>
+              <td>7x-SENSORS</td>
+              <td>PRESSURE TRANSDUCRS</td>
+              <td>
+                <a
+                  href=""
+                  data-toggle="modal"
+                  data-target="#stock_movement_report"
+                >
+                  <i class="ft-move font-medium-3 mr-2"></i>
+                </a>
+              </td>
+            </tr>
+
+            <!-- Row 4 -->
+            <tr>
+              <td>109</td>
+              <td>2x- HOSE, TAPE & EMISSION DEVICES</td>
+              <td>SPRINKLERS</td>
+              <td>
+                <a
+                  href=""
+                  data-toggle="modal"
+                  data-target="#stock_movement_report"
+                >
+                  <i class="ft-move font-medium-3 mr-2"></i>
+                </a>
+              </td>
+            </tr>
+
+            <!-- Row 5 -->
+            <tr>
+              <td>111</td>
+              <td>MOD ASSM FLAT WHT 18</td>
+              <td>Netafim Irrigation Inc.</td>
+              <td>
+                <a
+                  href=""
+                  data-toggle="modal"
+                  data-target="#stock_movement_report"
+                >
+                  <i class="ft-move font-medium-3 mr-2"></i>
+                </a>
+              </td>
+            </tr>
+
+            <!-- Row 6 -->
+            <tr>
+              <td>112</td>
+              <td>4x-VALVES & VENTS</td>
+              <td>MANUAL VALVES</td>
+              <td>
+                <a
+                  href=""
+                  data-toggle="modal"
+                  data-target="#stock_movement_report"
+                >
+                  <i class="ft-move font-medium-3 mr-2"></i>
+                </a>
+              </td>
+            </tr>
+
+            <!-- Row 7 -->
+            <tr>
+              <td>113</td>
+              <td>2x- HOSE, TAPE & EMISSION DEVICES</td>
+              <td>PUNCH ON EMITTERS</td>
+              <td>
+                <a
+                  href=""
+                  data-toggle="modal"
+                  data-target="#stock_movement_report"
+                >
+                  <i class="ft-move font-medium-3 mr-2"></i>
+                </a>
+              </td>
+            </tr>
+
+            <!-- Row 8 -->
+            <tr>
+              <td>114</td>
+              <td>2x- HOSE, TAPE & EMISSION DEVICES</td>
+              <td>PUNCH ON EMITTERS</td>
+              <td>
+                <a
+                  href=""
+                  data-toggle="modal"
+                  data-target="#stock_movement_report"
+                >
+                  <i class="ft-move font-medium-3 mr-2"></i>
+                </a>
+              </td>
+            </tr>
+
+            <!-- Row 9 -->
+            <tr>
+              <td>115</td>
+              <td>COMPANION FLG GALV 4" FLGXFPT</td>
+              <td>Stockton Pipe & Supply</td>
+              <td>
+                <a
+                  href=""
+                  data-toggle="modal"
+                  data-target="#stock_movement_report"
+                >
+                  <i class="ft-move font-medium-3 mr-2"></i>
+                </a>
+              </td>
+            </tr>
+
+            <!-- Row 10 -->
+            <tr>
+              <td>116</td>
+              <td>0x-FITTINGS</td>
+              <td>METAL FITTINGS</td>
+              <td>
+                <a
+                  href=""
+                  data-toggle="modal"
+                  data-target="#stock_movement_report"
+                >
+                  <i class="ft-move font-medium-3 mr-2"></i>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--Last 6 Months Sales & Statistics-->
+<div class="row match-height">
+  <div class="col-xl-6 col-lg-12 col-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Statistics</h4>
+      </div>
+      <div class="card-body">
+        <p class="font-medium-2 text-center my-2">Last 6 Months Sales</p>
+        <div id="Stack-bar-chart" class="height-300 Stackbarchart mb-2"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6 col-lg-12 col-12">
+    <div class="card gradient-purple-bliss">
+      <div class="card-content">
+        <div class="card-body">
+          <h4 class="card-title white">Statistics</h4>
+          <div class="p-2 text-center">
+            <a class="white font-medium-1">Month</a>
+            <a class="btn round bg-light-info mx-3 px-3">Week</a>
+            <a class="white font-medium-1">Day</a>
+          </div>
+          <div class="my-3 text-center white">
+            <div class="font-large-2 d-block mb-1">
+              <span>$78.89</span>
+              <i class="ft-arrow-up font-large-2"></i>
+            </div>
+            <span class="font-medium-1">Week2 +15.44</span>
+          </div>
+        </div>
+        <div id="lineChart" class="height-250 lineChart lineChartShadow"></div>
+      </div>
+    </div>
+  </div>
+
+  <!--Opportunity Stats-->
+  {% comment %}
+  <div class="col-xl-12 col-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Opportunity Stats</h4>
+      </div>
+
+      <div class="row ml-1">
+        <div class="col-2">
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control pickadate-selectors"
+              placeholder="Select Date"
+            />
+            <div class="input-group-append">
+              <span class="input-group-text">
+                <span class="ft-calendar font-medium-2"></span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-content">
+        <p class="font-medium-2 text-center mb-0 mt-2">Opportunity Tasks</p>
+        <div class="row">
+          <div class="col-4">
+            <div id="donut-dashboard-chart" class="height-250 donut"></div>
+          </div>
+          <div class="col-8">
+            <div class="card-body">
+              <div class="row mb-3">
+                <div class="col">
+                  <span class="mb-1 text-muted d-block"
+                    >2 (5%)- Pre-Data Acquisition</span
+                  >
+                  <div class="progress" style="height: 5px">
+                    <div
+                      class="progress-bar bg-info"
+                      role="progressbar"
+                      style="width: 5%"
+                      aria-valuenow="5"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                  </div>
+                </div>
+                <div class="col">
+                  <span class="mb-1 text-muted d-block"
+                    >7 (15%)- Data Acquisition</span
+                  >
+                  <div class="progress" style="height: 5px">
+                    <div
+                      class="progress-bar bg-success"
+                      role="progressbar"
+                      style="width: 15%"
+                      aria-valuenow="15"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="col">
+                  <span class="mb-1 text-muted d-block">10 (20%)- Design</span>
+                  <div class="progress" style="height: 5px">
+                    <div
+                      class="progress-bar bg-secondary"
+                      role="progressbar"
+                      style="width: 20%"
+                      aria-valuenow="20"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                  </div>
+                </div>
+                <div class="col">
+                  <span class="mb-1 text-muted d-block"
+                    >5 (10%)- Design Review - Sales</span
+                  >
+                  <div class="progress" style="height: 5px">
+                    <div
+                      class="progress-bar bg-warning"
+                      role="progressbar"
+                      style="width: 10%"
+                      aria-valuenow="10"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col">
+                  <span class="mb-1 text-muted d-block"
+                    >4 (8%)- Estimation</span
+                  >
+                  <div class="progress" style="height: 5px">
+                    <div
+                      class="progress-bar bg-info"
+                      role="progressbar"
+                      style="width: 8%"
+                      aria-valuenow="8"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                  </div>
+                </div>
+                <div class="col">
+                  <span class="mb-1 text-muted d-block"
+                    >6 (12%)- Proposal Prep</span
+                  >
+                  <div class="progress" style="height: 5px">
+                    <div
+                      class="progress-bar bg-danger"
+                      role="progressbar"
+                      style="width: 12%"
+                      aria-valuenow="12"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="col">
+                  <span class="mb-1 text-muted d-block"
+                    >5 (10%)- Negotiation Review</span
+                  >
+                  <div class="progress" style="height: 5px">
+                    <div
+                      class="progress-bar bg-success"
+                      role="progressbar"
+                      style="width: 10%"
+                      aria-valuenow="10"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                  </div>
+                </div>
+                <div class="col">
+                  <span class="mb-1 text-muted d-block"
+                    >10 (20%)- Prep to Launch</span
+                  >
+                  <div class="progress" style="height: 5px">
+                    <div
+                      class="progress-bar bg-primary"
+                      role="progressbar"
+                      style="width: 20%"
+                      aria-valuenow="20"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endcomment %}
+</div>
+
+<!--Orders & Recurring Orders-->
+<div class="row match-height">
+  <div class="col-xl-12 col-lg-12 col-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title mb-0">Orders & Recurring Orders</h4>
+      </div>
+      <div class="card-content">
+        <div class="card-body">
+          <div class="chart-info mb-2">
+            <span class="text-uppercase mr-3"
+              ><i class="fa fa-circle success font-small-2 mr-1"></i>
+              Orders</span
+            >
+            <span class="text-uppercase"
+              ><i class="fa fa-circle info font-small-2 mr-1"></i> Recurring
+              Orders</span
+            >
+          </div>
+          <div id="line-area2" class="height-400 lineAreaDashboard"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Stock Movement Report Model Start-->
+<div class="card-header">
+  <div class="float-right">
+    <div
+      class="modal fade text-left"
+      id="stock_movement_report"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="myModalLabel33"
+      aria-hidden="true"
+      data-backdrop="false"
+    >
+      <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Stock Movement Report</h4>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true"
+                ><i class="ft-x font-medium-2 text-bold-700"></i
+              ></span>
+            </button>
+          </div>
+          <form action="#">
+            <div class="model-body">
+              <!--Horizontal Timeline Starts-->
+              <section class="cd-horizontal-timeline">
+                <div class="timeline">
+                  <div class="events-wrapper">
+                    <div class="events">
+                      <ol>
+                        <li>
+                          <a data-date="16/01/2023" class="selected">16 Jan</a>
+                        </li>
+                        <li><a data-date="28/02/2023">28 Feb</a></li>
+                        <li><a data-date="20/03/2023">20 Mar</a></li>
+                        <li><a data-date="20/05/2023">20 May</a></li>
+                        <li><a data-date="09/07/2023">09 Jul</a></li>
+                        <li><a data-date="30/08/2023">30 Aug</a></li>
+                        <li><a data-date="15/09/2023">15 Sep</a></li>
+                        <li><a data-date="01/11/2023">01 Nov</a></li>
+                        <li><a data-date="10/12/2023">10 Dec</a></li>
+                        <li><a data-date="29/01/2024">29 Jan</a></li>
+                        <li><a data-date="03/03/2024">3 Mar</a></li>
+                      </ol>
+                      <span class="filling-line" aria-hidden="true"></span>
+                    </div>
+                  </div>
+
+                  <ul class="cd-timeline-navigation">
+                    <li><a href="#" class="prev inactive">Prev</a></li>
+                    <li><a href="#" class="next">Next</a></li>
+                  </ul>
+                </div>
+
+                <div class="events-content">
+                  <ol>
+                    <!-- Row 16/01/2023 data -->
+                    <li class="selected" data-date="16/01/2023">
+                      <h1 class="text-bold-700 mb-2">Shipping Order</h1>
+                      <h2 class="mb-2">Pre-Processing</h2>
+                      <h4 class="mb-2">January 16th, 2023</h4>
+                      <p>
+                        Processing has commenced for the shipping order
+                        involving 7x-SENSORS. This initial phase marks the
+                        beginning of logistics preparation to ensure timely
+                        delivery to the customer's location, enhancing
+                        operational efficiency and customer satisfaction. The
+                        focus is on meticulous handling and scheduling to meet
+                        delivery commitments seamlessly.
+                      </p>
+                    </li>
+
+                    <!-- Row 28/02/2023 data -->
+                    <li data-date="28/02/2023">
+                      <h1 class="text-bold-700 mb-2">Shipping Order</h1>
+                      <h2 class="mb-2">Customer Delivery</h2>
+                      <h4 class="mb-2">February 28th, 2023</h4>
+                      <p>
+                        Successfully delivered, a shipment of 7x-SENSORS has
+                        reached the customer as planned, confirming fulfillment
+                        of the order. This milestone underscores our commitment
+                        to reliability and service excellence, ensuring products
+                        arrive in pristine condition. It reflects our dedication
+                        to prompt execution and fulfillment of customer
+                        expectations without compromise.
+                      </p>
+                    </li>
+
+                    <!-- Row 20/03/2023 data -->
+                    <li data-date="20/03/2023">
+                      <h1 class="text-bold-700 mb-2">Return Order</h1>
+                      <h2 class="mb-2">Final Pick-up and Inspection</h2>
+                      <h4 class="mb-2">March 20th, 2023</h4>
+                      <p>
+                        Picked up for return and undergoing thorough inspection,
+                        7x-SENSORS are in the process of evaluation to maintain
+                        product quality standards. This step ensures that any
+                        necessary adjustments or replacements are swiftly
+                        addressed, reinforcing our commitment to product
+                        integrity and customer satisfaction through diligent
+                        inspection and refurbishment processes.
+                      </p>
+                    </li>
+
+                    <!-- Row 20/05/2023 data -->
+                    <li data-date="20/05/2023">
+                      <h1 class="text-bold-700 mb-2">Return Order</h1>
+                      <h2 class="mb-2">In Transit - Inbound</h2>
+                      <h4 class="mb-2">May 20th, 2023</h4>
+                      <p>
+                        In transit back to the warehouse for storage, 7x-SENSORS
+                        are carefully handled to ensure safe and efficient
+                        return logistics. This phase focuses on seamless
+                        integration into warehouse operations, optimizing
+                        inventory management and ensuring readiness for future
+                        orders. It highlights our meticulous approach to
+                        logistics and inventory control for sustained
+                        operational efficiency.
+                      </p>
+                    </li>
+
+                    <!-- Row 09/07/2023 data -->
+                    <li data-date="09/07/2023">
+                      <h1 class="text-bold-700 mb-2">Return Order</h1>
+                      <h2 class="mb-2">Warehouse Storage</h2>
+                      <h4 class="mb-2">July 09th, 2023</h4>
+                      <p>
+                        Safely stored in the warehouse following the return
+                        process completion, 7x-SENSORS are securely housed to
+                        maintain product integrity and availability. This step
+                        ensures efficient inventory management, supporting quick
+                        access and fulfillment of future orders. It underscores
+                        our commitment to organized logistics and effective
+                        warehouse management practices for optimal operational
+                        performance.
+                      </p>
+                    </li>
+
+                    <!-- Row 30/08/2023 data -->
+                    <li data-date="30/08/2023">
+                      <h1 class="text-bold-700 mb-2">Shipping Order</h1>
+                      <h2 class="mb-2">Pre-Processing</h2>
+                      <h4 class="mb-2">August 30th, 2023</h4>
+                      <p>
+                        Processing initiated for a new shipping order of
+                        7x-SENSORS marks the beginning of a streamlined
+                        logistics process aimed at timely delivery. This phase
+                        emphasizes proactive planning and scheduling to meet
+                        customer demands efficiently. It reflects our commitment
+                        to operational excellence and customer satisfaction
+                        through precise execution and fulfillment of shipping
+                        requirements.
+                      </p>
+                    </li>
+
+                    <!-- Row 15/09/2023 data -->
+                    <li data-date="15/09/2023">
+                      <h1 class="text-bold-700 mb-2">Shipping Order</h1>
+                      <h2 class="mb-2">In Transit - Outbound</h2>
+                      <h4 class="mb-2">September 15th, 2023</h4>
+                      <p>
+                        Currently in transit to the customer location,
+                        7x-SENSORS are en route to ensure prompt delivery and
+                        meet customer expectations. This phase focuses on
+                        efficient logistics execution and timely transportation
+                        to enhance customer satisfaction. It underscores our
+                        dedication to reliable delivery services and operational
+                        efficiency in meeting customer demands promptly.
+                      </p>
+                    </li>
+
+                    <!-- Row 01/11/2023 data -->
+                    <li data-date="01/11/2023">
+                      <h1 class="text-bold-700 mb-2">Shipping Order</h1>
+                      <h2 class="mb-2">Warehouse Storage</h2>
+                      <h4 class="mb-2">November 01st, 2023</h4>
+                      <p>
+                        Safely stored in the warehouse after delivery,
+                        7x-SENSORS are securely housed to maintain availability
+                        and readiness for future orders. This step emphasizes
+                        our commitment to organized inventory management and
+                        efficient warehouse practices. It ensures quick access
+                        and fulfillment capabilities, supporting continued
+                        operational excellence and customer satisfaction through
+                        seamless logistics management.
+                      </p>
+                    </li>
+
+                    <!-- Row 10/12/2023 data -->
+                    <li data-date="10/12/2023">
+                      <h1 class="text-bold-700 mb-2">Return Order</h1>
+                      <h2 class="mb-2">Final Pick-up and Inspection</h2>
+                      <h4 class="mb-2">December 10th, 2023</h4>
+                      <p>
+                        Final pick-up and inspection completed for the return
+                        process of 7x-SENSORS ensures meticulous handling and
+                        evaluation to maintain product quality standards. This
+                        phase underscores our commitment to thorough inspection
+                        and refurbishment, ensuring products meet stringent
+                        quality criteria before returning to inventory. It
+                        reflects our dedication to product excellence and
+                        customer satisfaction through meticulous quality control
+                        processes.
+                      </p>
+                    </li>
+
+                    <!-- Row 29/01/2024 data -->
+                    <li data-date="29/01/2024">
+                      <h1 class="text-bold-700 mb-2">Shipping Order</h1>
+                      <h2 class="mb-2">In Transit - Outbound</h2>
+                      <h4 class="mb-2">January 29th, 2024</h4>
+                      <p>
+                        On its way to customer delivery location, 7x-SENSORS are
+                        in transit to ensure prompt delivery and meet customer
+                        expectations effectively. This phase highlights our
+                        commitment to efficient logistics execution and timely
+                        transportation, enhancing customer satisfaction through
+                        reliable delivery services. It underscores our
+                        dedication to operational excellence and seamless
+                        logistics management.
+                      </p>
+                    </li>
+
+                    <!-- Row 03/03/2024 data -->
+                    <li data-date="03/03/2024">
+                      <h1 class="text-bold-700 mb-2">Shipping Order</h1>
+                      <h2 class="mb-2">Customer Delivery</h2>
+                      <h4 class="mb-2">March 03rd, 2024</h4>
+                      <p>
+                        Successfully delivered once again, 7x-SENSORS have
+                        reached the customer as planned, reaffirming our
+                        commitment to service excellence and reliability. This
+                        achievement underscores our dedication to meeting
+                        customer expectations through prompt delivery and
+                        product fulfillment. It reflects our commitment to
+                        operational efficiency and customer satisfaction through
+                        consistent service excellence.
+                      </p>
+                    </li>
+                  </ol>
+                </div>
+              </section>
+              <!--Horizontal Timeline Starts-->
+            </div>
+
+            <div class="modal-footer">
+              <input
+                type="reset"
+                class="btn bg-light-secondary"
+                data-dismiss="modal"
+                value="Close"
+              />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Stock Movement Report Model End-->
+
+<!-- BEGIN VENDOR JS-->
+
+<script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+<script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+<script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+<script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+
+<!-- BEGIN VENDOR JS-->
+<script src="{% static 'vendors/js/horizontal-timeline.js' %}"></script>
+<!-- BEGIN PAGE LEVEL JS-->
+
+<!-- BEGIN VENDOR JS-->
+<script src="{% static 'vendors/js/chartist.min.js' %}"></script>
+<!-- BEGIN PAGE LEVEL JS-->
+<script src="{% static 'app/js/dashboard1.min.js' %}"></script>
+
+<!-- END PAGE LEVEL JS-->

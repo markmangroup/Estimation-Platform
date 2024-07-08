@@ -1,0 +1,125 @@
+<div class="card-header">
+  <div class="float-right">
+    <div
+      class="modal fade text-left"
+      id="update_delivery"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="myModalLabel33"
+      aria-hidden="true"
+      data-backdrop="false"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Create Order Delivery</h4>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true"
+                ><i class="ft-x font-medium-2 text-bold-700"></i
+              ></span>
+            </button>
+          </div>
+          <form action="#">
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-6">
+                  <label>Customer Name: </label>
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      placeholder="Customer"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+                <div class="col-6">
+                    <label>Order ID: </label>
+                    <div class="form-group">
+                      <input
+                        type="text"
+                        placeholder="Order ID"
+                        class="form-control"
+                      />
+                    </div>
+                  </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <label>Delivery Location: </label>
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      placeholder="Delivery Location"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+                <div class="col-6">
+                    <label>Status: </label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Status"
+                    />
+                  </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                    <label>Select Product</label>
+                    <fieldset class="form-group">
+                        <select class="form-control" id="countrySelect" multiple>
+                            <option selected="selected">COMPANION FLG GALV 4" FLGXFPT</option>
+                            <option>METAL FITTINGS</option>
+                            <option selected="selected">MISTER BLU NOZZEL W/ CHECK VALVE NETAFIM VIBRONET	</option>
+                            <option>SN BL10.6GPH STK30" LD LRSS	</option>
+                            <option>SN HEAD 7.4GPH LT-GRN W/DFLT	</option>
+                            <option>SN PC HEAD 18.5GPH BLU W/DFLTR	</option>
+                            <option selected="selected">SN PC HEAD LT GRN LR W/DFLTR	</option>
+                            <option>SN PRP SWVL LR ORG NZ W/30" ST	</option>
+                            <option>SUPERNET PC 7.5GPH LR</option>
+                            <option>VIBRONET BLU SPK 10.4GPH CV</option>
+                        </select>
+                    </fieldset>
+                    </div>
+                </div>
+
+              <div class="row">
+                <div class="col-6">
+                  <label>Order Date:</label>
+                  <input type="date" class="form-control">
+                </div>
+                <div class="col-6">
+                    <label>Expected Delivery Date:</label>
+                    <input type="date" class="form-control">
+                  </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <label>Delivery Date:</label>
+                  <input type="date" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+              <input
+                type="reset"
+                class="btn bg-light-secondary"
+                data-dismiss="modal"
+                value="Close"
+              />
+              <input
+                type="submit"
+                class="btn btn-primary"
+                value="Add Order Delivery"
+              />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

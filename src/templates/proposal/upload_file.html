@@ -1,0 +1,47 @@
+<div class="form-group">
+  <div class="row">
+    <div class="col-12">
+      <div
+        action="#"
+        class="dropzone dropzone-area"
+        style="
+          min-height: 300px;
+          border: 2px dashed #975aff;
+          background: #f7f7f8;
+        "
+        id="dpz-single-file"
+      ></div>
+    </div>
+  </div>
+
+  <div class="col-12 my-2">
+    <label for="file-upload" class="btn btn-primary mb-1">
+      <input id="file-upload" type="file" style="display: none" />
+      Upload
+    </label>
+  </div>
+</div>
+
+
+
+
+
+<script>
+  // define Dropzone options for dpzSingleFile
+  Dropzone.options.dpzSingleFile = {
+    paramName: "file",
+    maxFiles: 1,
+    init: function () {
+      this.on("maxfilesexceeded", function (e) {
+        this.removeAllFiles(), this.addFile(e);
+      });
+    },
+  };
+
+  // initialize Dropzone on the element with the ID dpz-single-file
+  new Dropzone("#dpz-single-file", {
+    url: "/your-upload-url",
+    paramName: "file",
+    maxFiles: 1,
+  });
+</script>

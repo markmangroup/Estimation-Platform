@@ -1,0 +1,67 @@
+{% extends "base.html" %} {% load static %} {% block page_content %}
+
+<!-- Opportunity Details Starts -->
+<section id="icon-tabs">
+  <div class="card">
+    <div class="card-content">
+      <div class="content-header px-3">Opportunity Details</div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-12 col-xl-6">
+            <table class="table table-borderless">
+              <tbody>
+                <tr>
+                  <td><b>Opportunity No:</b></td>
+                  <td>000001</td>
+                </tr>
+                <tr>
+                  <td><b>Customer Name:</b></td>
+                  <td class="users-view-latest-activity">Lazare Hyde</td>
+                </tr>
+                <tr>
+                  <td><b>Customer Address:</b></td>
+                  <td class="users-view-verified">
+                    3886 Bryan Avenue, White Bear Lake, Minnesota, USA
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-12 col-xl-6 users-module">
+            <div class="table-responsive">
+              <table class="table table-borderless">
+                <tbody>
+                  <tr>
+                    <td><b>Stage:</b></td>
+                    <td class="users-view-verified">
+                      <span class="badge bg-light-warning">
+                        Pre-Data Acquisition
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><b>Last Updated Date:</b></td>
+                    <td class="users-view-role">10/01/2024</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Opportunity Details End -->
+
+  <!-- Proposal List End -->
+  <fieldset>{% include 'app/proposal_list.html' %}</fieldset>
+  <!-- Proposal List End -->
+
+  <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+  <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+  <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+  <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+
+  <script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
+  {% endblock page_content%}
+</section>

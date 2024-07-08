@@ -1,0 +1,172 @@
+{% load static %}
+
+<div class="row">
+  <div class="col-12">
+    <div class="content-header">Warehouse List</div>
+  </div>
+</div>
+
+<!-- Wizard Starts -->
+<section id="icon-tabs">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <h4 class="card-title"></h4>
+          <div class="float-right">
+            <button
+              type="button"
+              class="btn bg-light-secondary"
+              data-toggle="modal"
+              data-target="#inlineForm"
+            >
+              <i class="fa ft-briefcase mr-1"></i> Import Warehouse
+            </button>
+
+            <!-- Modal -->
+            <div
+              class="modal fade text-left"
+              id="inlineForm"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="myModalLabel33"
+              aria-hidden="true"
+              data-backdrop="false"
+            >
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel5">
+                      Import Warehouse
+                    </h4>
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true"
+                        ><i class="ft-x font-medium-2 text-bold-700"></i
+                      ></span>
+                    </button>
+                  </div>
+                  <form action="#">
+                    <div class="modal-body">
+                      <label>Upload File </label>
+                      <div class="form-group">
+                        <div class="custom-file">
+                          <input
+                            type="file"
+                            class="custom-file-input"
+                            id="inputGroupFile01"
+                          />
+                          <label
+                            class="custom-file-label"
+                            for="inputGroupFile01"
+                            >Choose file</label
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <a role="menuitem" class="btn btn-primary">Upload </a>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table
+                  class="table table-striped table-bordered zero-configuration"
+                >
+                  <thead>
+                    <tr>
+                      <th>Location</th>
+                      <th>Address</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Row 1 -->
+                    <tr>
+                      <td>Old River</td>
+                      <td>9213 Old River Rd. Bakersfield, CA 93311</td>
+                    </tr>
+
+                    <!-- Row 2 -->
+                    <tr>
+                      <td>Bakersfield</td>
+                      <td>3876 Allen Rd, Bakersfield, CA 93314</td>
+                    </tr>
+
+                    <!-- Row 3 -->
+                    <tr>
+                      <td>Delano</td>
+                      <td>325 Rd 192, Delano, CA 93215</td>
+                    </tr>
+
+                    <!-- Row 4 -->
+                    <tr>
+                      <td>Hanford</td>
+                      <td>10757 Energy St, Hanford, CA 93230</td>
+                    </tr>
+
+                    <!-- Row 5 -->
+                    <tr>
+                      <td>Hollister</td>
+                      <td>2241 OLD AIRLINE HWY, PAICINES, CA 95043</td>
+                    </tr>
+
+                    <!-- Row 6 -->
+                    <tr>
+                      <td>Yuma</td>
+                      <td>8853 S Avenue 7 E, Yuma, AZ 85365</td>
+                    </tr>
+
+                    <!-- Row 7 -->
+                    <tr>
+                      <td>Brawley</td>
+                      <td>803 CA-78, Brawley, CA 92227</td>
+                    </tr>
+
+                    <!-- Row 8 -->
+                    <tr>
+                      <td>Lodi</td>
+                      <td>1301 Armstrong Rd, Lodi, CA 95242</td>
+                    </tr>
+
+                    <!-- Row 9 -->
+                    <tr>
+                      <td>Corning</td>
+                      <td>2920 Hwy 99 W, Corning, CA 96021</td>
+                    </tr>
+
+                    <!-- Row 10 -->
+                    <tr>
+                      <td>Colusa</td>
+                      <td>2959 Davison Ct, Colusa, CA 95932</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+    <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+    <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+    <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+    <!-- BEGIN PAGE LEVEL JS-->
+    <!-- <script src="{% static 'app/js/data-tables/dt-data-sources.min.js' %}"></script> -->
+    <!-- END PAGE LEVEL JS-->
+
+    <script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
+  </div>
+</section>

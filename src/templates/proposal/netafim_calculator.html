@@ -1,0 +1,31 @@
+{% extends "app/calculator_base.html" %} {% load static %} {% block page_content %}
+
+<div class="row">
+  <div class="col-12">
+    <div class="content-header">Netafim Calculator</div>
+  </div>
+</div>
+
+<!-- Wizard Starts -->
+<section id="icon-tabs">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-content">
+          <div class="card-body">
+            <iframe
+              src="https://www.netafim.com/en/products-and-solutions/tools/hydrocalc-3.0"
+              width="100%"
+              height="700px"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BEGIN PAGE LEVEL JS-->
+    <!-- <script src="{% static 'app/js/data-tables/dt-data-sources.min.js' %}"></script> -->
+    <!-- END PAGE LEVEL JS-->
+  </div>
+</section>
+{% endblock page_content%}

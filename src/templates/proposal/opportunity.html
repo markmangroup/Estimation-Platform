@@ -1,0 +1,307 @@
+{% load static %}
+
+<div class="ml-3">
+  <div class="row">
+    <h5>
+      Customer
+    </h5>
+    <span class="ml-1 border-right pr-2">
+      John Parker
+    </span>
+    <h5 class="border-left pl-2">
+      Internal ID
+    </h5>
+    <span class="ml-1">
+      950676
+    </span>
+  </div>
+</div>
+
+<!-- Wizard Starts -->
+<section id="icon-tabs">
+  <div class="row">
+    <div class="col-12">
+      <div class="card p-0 m-0">
+        {% comment %} <div class="card-header">
+          <h4 class="card-title">Upload CAD File</h4>
+        </div> {% endcomment %}
+        <div class="card-content">
+          <div class="card-body py-0">
+            <form class="icons-tab-steps">
+              {% comment %} <h6>Pre-Data Acquisition</h6>
+              <fieldset style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                {% include "./file_upload.html" %}
+                {% include './assign_to.html' %}
+                {% include './comment_table.html' %}
+              </fieldset>
+
+              <h6>Data Acquisition</h6>
+              <fieldset style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                {% include "./file_upload.html" %}
+                {% include './assign_to.html' %}
+                {% include './comment_table.html' %}
+              </fieldset>
+
+              <h6>Design</h6>
+              <fieldset style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                {% include "./file_upload.html" %}
+                {% include './assign_to.html' %}
+                {% include './comment_table.html' %}
+              </fieldset>
+
+              <h6>Design Review - Sales</h6>
+              <fieldset style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                {% include "./file_upload.html" %}
+                {% include './assign_to.html' %}
+                {% include './comment_table.html' %}
+              </fieldset> {% endcomment %}
+
+              <h6>Upload CAD File</h6>
+              <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                  {% include "./upload_file.html" %}
+
+                  {% include "./file_upload.html" %}
+                  {% comment %} {% include './assign_to.html' %} {% endcomment %}
+
+                  {% include './comment_table.html' %}
+                  {% comment %} <div class="accordion" id="accordionExample1">
+                    <div>
+                      <div
+                        id="headingAccordion1"
+                        class="card-header border-bottom pb-3"
+                      >
+                        <a
+                          data-toggle="collapse"
+                          href="#accordion1"
+                          aria-expanded="false"
+                          aria-controls="accordion1"
+                          class="card-title"
+                          >Material List</a
+                        >
+                      </div>
+                      <div
+                        id="accordion1"
+                        class="collapse"
+                        aria-labelledby="headingAccordion1"
+                        data-parent="#accordionExample1"
+                      >
+                        <div class="card-body">
+                          {% include "./material_list.html" %}
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div
+                        id="headingAccordion3"
+                        class="card-header border-bottom pb-3"
+                      >
+                        <a
+                          data-toggle="collapse"
+                          href="#accordion3"
+                          aria-expanded="false"
+                          aria-controls="accordion3"
+                          class="card-title collapsed"
+                          >Glue & Additional Material</a
+                        >
+                      </div>
+                      <div
+                        id="accordion3"
+                        class="collapse"
+                        aria-labelledby="headingAccordion3"
+                        data-parent="#accordionExample1"
+                      >
+                        <div class="card-body">
+                          {% include "./glue_material.html" %}
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div id="headingAccordion4" class="card-header">
+                        <a
+                          data-toggle="collapse"
+                          href="#accordion4"
+                          aria-expanded="false"
+                          aria-controls="accordion4"
+                          class="card-title collapsed"
+                          >Final Material List</a
+                        >
+                      </div>
+                      <div
+                        id="accordion4"
+                        class="collapse"
+                        aria-labelledby="headingAccordion4"
+                        data-parent="#accordionExample1"
+                      >
+                        <div class="card-body pb-0">
+                          {% include "./final_material.html" %}
+                        </div>
+                      </div>
+                    </div>
+                  </div> {% endcomment %}
+              </fieldset>
+
+              <h6>Material List</h6>
+              <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                  <div class="accordion" id="accordionExample1">
+                    <div>
+                      <div
+                        id="headingAccordion1"
+                        class="card-header border-bottom pb-3"
+                      >
+                        <a
+                          data-toggle="collapse"
+                          href="#accordion1"
+                          aria-expanded="false"
+                          aria-controls="accordion1"
+                          class="card-title"
+                          >Material List</a
+                        >
+                      </div>
+                      <div
+                        id="accordion1"
+                        class="collapse"
+                        aria-labelledby="headingAccordion1"
+                        data-parent="#accordionExample1"
+                      >
+                        <div class="card-body">
+                          {% include "./material_list.html" %}
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div
+                        id="headingAccordion3"
+                        class="card-header border-bottom pb-3"
+                      >
+                        <a
+                          data-toggle="collapse"
+                          href="#accordion3"
+                          aria-expanded="false"
+                          aria-controls="accordion3"
+                          class="card-title collapsed"
+                          >Glue & Additional Material</a
+                        >
+                      </div>
+                      <div
+                        id="accordion3"
+                        class="collapse"
+                        aria-labelledby="headingAccordion3"
+                        data-parent="#accordionExample1"
+                      >
+                        <div class="card-body">
+                          {% include "./glue_material.html" %}
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div id="headingAccordion4" class="card-header">
+                        <a
+                          data-toggle="collapse"
+                          href="#accordion4"
+                          aria-expanded="false"
+                          aria-controls="accordion4"
+                          class="card-title collapsed"
+                          >Final Material List</a
+                        >
+                      </div>
+                      <div
+                        id="accordion4"
+                        class="collapse"
+                        aria-labelledby="headingAccordion4"
+                        data-parent="#accordionExample1"
+                      >
+                        <div class="card-body pb-0">
+                          {% include "./final_material.html" %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {% include "./file_upload.html" %}
+                  {% comment %} {% include './assign_to.html' %} {% endcomment %}
+                  {% include './comment_table.html' %}
+              </fieldset>
+
+              <h6>Labor List</h6>
+              <fieldset class="mt-1" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                {% include "./labor_list.html" %}
+                {% include "./file_upload.html" %}
+                {% comment %} {% include './assign_to.html' %} {% endcomment %}
+                {% include './comment_table.html' %}
+              </fieldset>
+
+
+              <h6>Task Mapping</h6>
+              <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                  {% include "./tasks.html" %}
+                  {% include "./file_upload.html" %}
+                  {% comment %} {% include './assign_to.html' %} {% endcomment %}
+                  {% include './comment_table.html' %}
+              </fieldset>
+              
+              <h6>Generate Estimate</h6>
+              <fieldset class="mt-0" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                {% include "./estimate.html" %}
+                {% include "./file_upload.html" %}
+                {% comment %} {% include './assign_to.html' %} {% endcomment %}
+                {% include './comment_table.html' %}
+              </fieldset>
+
+              <h6>Proposal Creation</h6>
+              <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                {% include './based_on_task.html' %}
+                {% include "./file_upload.html" %}
+                {% comment %} {% include './assign_to.html' %} {% endcomment %}
+                {% include './comment_table.html' %}
+              </fieldset>              
+
+              <h6>Proposal Preview</h6>
+              <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                {% include "./proposal.html" %}
+                {% include "./file_upload.html" %}
+                {% comment %} {% include './assign_to.html' %} {% endcomment %}
+                {% include './comment_table.html' %}
+              </fieldset>
+
+              <h6>Final Documents</h6>
+              <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                {% include "./proposal_final_documents.html" %}
+                {% include "./file_upload.html" %}
+                {% comment %} {% include './assign_to.html' %} {% endcomment %}
+                {% include './comment_table.html' %}
+              </fieldset>
+
+              {% comment %} <h6>Estimation</h6>
+              <fieldset style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                {% include "./estimation_steps.html" %}
+              </fieldset>
+              
+              <h6>Proposal Prep</h6>
+              <fieldset style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                {% include 'app/proposal_steps.html' %}
+              </fieldset> {% endcomment %}
+
+              {% comment %} <h6>Negotiation Review</h6>
+              <fieldset style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                {% include "./file_upload.html" %}
+                {% include './assign_to.html' %}
+                {% include './comment_table.html' %}
+              </fieldset>
+
+              <h6>Prep to Launch</h6>
+              <fieldset style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                {% include "./prep_to_launch.html" %}
+                {% include "./file_upload.html" %}
+                {% include './comment_table.html' %}
+              </fieldset> {% endcomment %}
+              <form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
+

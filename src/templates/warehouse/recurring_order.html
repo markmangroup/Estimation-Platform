@@ -1,0 +1,946 @@
+{% load static %}
+
+<div class="row">
+  <div class="col-12">
+    <div class="content-header">Recurring Orders</div>
+  </div>
+</div>
+
+<!-- Wizard Starts -->
+<section id="multiple-select2">
+  <div class="row">
+    <div class="col-xl-12 col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-content">
+            <!-- Buttons -->
+            <div class="float-right mb-3">
+              <div class="row">
+                <button
+                  type="button"
+                  class="btn bg-light-primary ml-1"
+                  data-toggle="modal"
+                  data-target="#create_recurring_order"
+                >
+                  <i class="fa ft-plus-circle mr-1"></i>Create Recurring Order
+                </button>
+
+                <div
+                  class="modal fade text-left"
+                  id="create_recurring_order"
+                  tabindex="-1"
+                  role="dialog"
+                  aria-labelledby="myModalLabel33"
+                  aria-hidden="true"
+                  data-backdrop="false"
+                >
+                  <div
+                    class="modal-dialog modal-lg modal-dialog-centered"
+                    role="document"
+                  >
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h4 class="modal-title">Create Recurring Order</h4>
+                        <button
+                          type="button"
+                          class="close"
+                          data-dismiss="modal"
+                          aria-label="Close"
+                        >
+                          <span aria-hidden="true"
+                            ><i class="ft-x font-medium-2 text-bold-700"></i
+                          ></span>
+                        </button>
+                      </div>
+                      <form action="#">
+                        <div class="modal-body">
+                          <div class="row">
+                            <div class="col">
+                              <label>Customer </label>
+                              <div class="form-group">
+                                <input
+                                  type="text"
+                                  placeholder="Customer"
+                                  class="form-control"
+                                />
+                              </div>
+                            </div>
+                            <div class="col">
+                              <label>Order Date </label>
+                              <div class="form-group">
+                                <input
+                                  type="text"
+                                  placeholder="Order Date"
+                                  class="form-control"
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="row">
+                            <div class="col">
+                              <label>Location </label>
+                              <div class="form-group">
+                                <input
+                                  type="text"
+                                  placeholder="Location"
+                                  class="form-control"
+                                />
+                              </div>
+                            </div>
+                            <div class="col">
+                              <label>Products </label>
+                              <div class="form-group">
+                                <select class="select2 form-control" multiple>
+                                  <option value="River Septic LLC">
+                                    River Septic LLC"
+                                  </option>
+                                  <option value="B & S Supply Company LLC">
+                                    B & S Supply Company LLC"
+                                  </option>
+                                  <option value="Salvador Gomez">
+                                    Salvador Gomez"
+                                  </option>
+                                  <option
+                                    value="Windsor - Holiday Inn Express   Conde Ln"
+                                  >
+                                    Windsor - Holiday Inn Express Conde Ln"
+                                  </option>
+                                  <option value="Border Valley Trading">
+                                    Border Valley Trading"
+                                  </option>
+                                  <option
+                                    value="Capital Industrial Medical Supply Co."
+                                  >
+                                    Capital Industrial Medical Supply Co."
+                                  </option>
+                                  <option value="Wonderful Laboratories LLC">
+                                    Wonderful Laboratories LLC"
+                                  </option>
+                                  <option
+                                    value="Corning - Inn At Rolling Hills Casino"
+                                  >
+                                    Corning - Inn At Rolling Hills Casino"
+                                  </option>
+                                  <option value="Michael Tarnowski">
+                                    Michael Tarnowski"
+                                  </option>
+                                  <option value="101 Trailer Sales">
+                                    101 Trailer Sales"
+                                  </option>
+                                  <option
+                                    value="Coast Engineering and Design, Inc."
+                                  >
+                                    Coast Engineering and Design, Inc."
+                                  </option>
+                                  <option value="Hollister - Holiday Inn">
+                                    Hollister - Holiday Inn"
+                                  </option>
+                                  <option value="Raptor Fire Protection">
+                                    Raptor Fire Protection"
+                                  </option>
+                                  <option value="MGM Concrete Ukiah">
+                                    MGM Concrete Ukiah"
+                                  </option>
+                                  <option value="OperationsInc., LLC">
+                                    OperationsInc., LLC"
+                                  </option>
+                                  <option value="Markman Group LLC">
+                                    Markman Group LLC"
+                                  </option>
+                                  <option value="All Valley Fence & Materials">
+                                    All Valley Fence & Materials"
+                                  </option>
+                                  <option
+                                    value="PG&E 7803988682-1 (Colusa Pump Shop)"
+                                  >
+                                    PG&E 7803988682-1 (Colusa Pump Shop)"
+                                  </option>
+                                  <option value="JD Equipment">
+                                    JD Equipment"
+                                  </option>
+                                  <option value="The Hose Shop LLC">
+                                    The Hose Shop LLC"
+                                  </option>
+                                  <option value="Juan Garcia-Calderon">
+                                    Juan Garcia-Calderon"
+                                  </option>
+                                  <option
+                                    value="Elijah's Equipment Diagnostics"
+                                  >
+                                    Elijah's Equipment Diagnostics"
+                                  </option>
+                                  <option value="Valley Pressure Pros, Inc">
+                                    Valley Pressure Pros, Inc"
+                                  </option>
+                                  <option value="Victor Garcia">
+                                    Victor Garcia"
+                                  </option>
+                                  <option value="Julian Rodriguez Welding">
+                                    Julian Rodriguez Welding"
+                                  </option>
+                                  <option value="Sonoma - Best Western">
+                                    Sonoma - Best Western"
+                                  </option>
+                                  <option value="Crown Hill Stone Supply">
+                                    Crown Hill Stone Supply"
+                                  </option>
+                                  <option value="Paul Martin Automotive">
+                                    Paul Martin Automotive"
+                                  </option>
+                                  <option value="Swiss Club of Imperial Valley">
+                                    Swiss Club of Imperial Valley"
+                                  </option>
+                                  <option value="West Hills Oil, Inc.">
+                                    West Hills Oil, Inc."
+                                  </option>
+                                  <option value="Visalia Rawhide Ballclub">
+                                    Visalia Rawhide Ballclub"
+                                  </option>
+                                  <option value="Vermeer Mountain West, Inc.">
+                                    Vermeer Mountain West, Inc."
+                                  </option>
+                                  <option value="Evcon">Evcon"</option>
+                                  <option value="Express Transpro LLC">
+                                    Express Transpro LLC"
+                                  </option>
+                                  <option value="Machado Backhoe, Inc.">
+                                    Machado Backhoe, Inc."
+                                  </option>
+                                  <option
+                                    value="North Kern Water Storage District"
+                                  >
+                                    North Kern Water Storage District"
+                                  </option>
+                                  <option
+                                    value="Oregon Secretary of State - Corporation Division"
+                                  >
+                                    Oregon Secretary of State - Corporation
+                                    Division"
+                                  </option>
+                                  <option value="New Mexico Secretary of State">
+                                    New Mexico Secretary of State"
+                                  </option>
+                                  <option value="Power Machinery Center">
+                                    Power Machinery Center"
+                                  </option>
+                                  <option value="Sierra Flowers">
+                                    Sierra Flowers"
+                                  </option>
+                                  <option value="Eclipse Mapping and GIS LLC">
+                                    Eclipse Mapping and GIS LLC"
+                                  </option>
+                                  <option value="Desert Valley, Inc">
+                                    Desert Valley, Inc"
+                                  </option>
+                                  <option
+                                    value="Precision Welding Solutions Inc."
+                                  >
+                                    Precision Welding Solutions Inc."
+                                  </option>
+                                  <option value="Shepherds Home Improvements">
+                                    Shepherds Home Improvements"
+                                  </option>
+                                  <option value="Regina Lunsford">
+                                    Regina Lunsford"
+                                  </option>
+                                  <option value="D&M Ready Mix Service Inc.">
+                                    D&M Ready Mix Service Inc."
+                                  </option>
+                                  <option value="DIG Corporation">
+                                    DIG Corporation"
+                                  </option>
+                                  <option value="Sonoma - El Pueblo Inn">
+                                    Sonoma - El Pueblo Inn"
+                                  </option>
+                                  <option value="Nucor Cold Finish - Nebraska">
+                                    Nucor Cold Finish - Nebraska"
+                                  </option>
+                                  <option value="BLT Companies">
+                                    BLT Companies"
+                                  </option>
+                                  <option value="Keith Gardiner Farms, LLC">
+                                    Keith Gardiner Farms, LLC"
+                                  </option>
+                                  <option
+                                    value="Yolo-Solano Air Quality Management District"
+                                  >
+                                    Yolo-Solano Air Quality Management District"
+                                  </option>
+                                  <option value="Jefre Bugni">
+                                    Jefre Bugni"
+                                  </option>
+                                  <option value="ALL-STATE Utility Supply Inc.">
+                                    ALL-STATE Utility Supply Inc."
+                                  </option>
+                                  <option
+                                    value="Carrillo Mobil Tire Service LLC"
+                                  >
+                                    Carrillo Mobil Tire Service LLC"
+                                  </option>
+                                  <option value="Fenner Valley Farms LLC">
+                                    Fenner Valley Farms LLC"
+                                  </option>
+                                  <option value="Red Truck Rock Yard, LLC">
+                                    Red Truck Rock Yard, LLC"
+                                  </option>
+                                  <option value="PRW Steel Supply">
+                                    PRW Steel Supply"
+                                  </option>
+                                  <option value="Lochlan Buckingham">
+                                    Lochlan Buckingham"
+                                  </option>
+                                  <option
+                                    value="M & S Trailers and Fabrication"
+                                  >
+                                    M & S Trailers and Fabrication"
+                                  </option>
+                                  <option value="Tulare - Best Western">
+                                    Tulare - Best Western"
+                                  </option>
+                                  <option value="Imperial Printers">
+                                    Imperial Printers"
+                                  </option>
+                                  <option value="Custom Threads Inc.">
+                                    Custom Threads Inc."
+                                  </option>
+                                  <option value="John's Engine Services">
+                                    John's Engine Services"
+                                  </option>
+                                  <option value="Yuba City Scrap & Steel Inc.">
+                                    Yuba City Scrap & Steel Inc."
+                                  </option>
+                                  <option value="Mark Dowden Welding">
+                                    Mark Dowden Welding"
+                                  </option>
+                                  <option value="Travelers">Travelers"</option>
+                                  <option value="Gerardo Rodriguez">
+                                    Gerardo Rodriguez"
+                                  </option>
+                                  <option value="US Standard Products Corp">
+                                    US Standard Products Corp"
+                                  </option>
+                                  <option value="Andres Quintero">
+                                    Andres Quintero"
+                                  </option>
+                                  <option value="Geyserville - Geyserville Inn">
+                                    Geyserville - Geyserville Inn"
+                                  </option>
+                                  <option
+                                    value="Reynoso Brothers Construction Inc."
+                                  >
+                                    Reynoso Brothers Construction Inc."
+                                  </option>
+                                  <option value="SOCOM Underground Inc.">
+                                    SOCOM Underground Inc."
+                                  </option>
+                                  <option
+                                    value="Agriculture Groundwater Users of Butte County"
+                                  >
+                                    Agriculture Groundwater Users of Butte
+                                    County"
+                                  </option>
+                                  <option value="Stoney Creek Production Inc.">
+                                    Stoney Creek Production Inc."
+                                  </option>
+                                  <option value="Les Schwab Tire Centers">
+                                    Les Schwab Tire Centers"
+                                  </option>
+                                  <option value="Superior Tire Service">
+                                    Superior Tire Service"
+                                  </option>
+                                  <option value="Meridian Diesel">
+                                    Meridian Diesel"
+                                  </option>
+                                  <option value="Graeson Bell">
+                                    Graeson Bell"
+                                  </option>
+                                  <option
+                                    value="Wheeler Ridge-Maricopa Water Storage District"
+                                  >
+                                    Wheeler Ridge-Maricopa Water Storage
+                                    District"
+                                  </option>
+                                  <option value="Jeffrey Miller">
+                                    Jeffrey Miller"
+                                  </option>
+                                  <option
+                                    value="Southwest Valve & Equipment, LLC"
+                                  >
+                                    Southwest Valve & Equipment, LLC"
+                                  </option>
+                                  <option
+                                    value="Coachella Valley Ranch Development"
+                                  >
+                                    Coachella Valley Ranch Development"
+                                  </option>
+                                  <option value="Andres Varela">
+                                    Andres Varela"
+                                  </option>
+                                  <option
+                                    value="Alternators and Starters Rebuilders LLC"
+                                  >
+                                    Alternators and Starters Rebuilders LLC"
+                                  </option>
+                                  <option value="Credit Card Fleet">
+                                    Credit Card Fleet"
+                                  </option>
+                                  <option value="Credit Card Inventory">
+                                    Credit Card Inventory"
+                                  </option>
+                                  <option value="Heriberto Herrera">
+                                    Heriberto Herrera"
+                                  </option>
+                                  <option
+                                    value="Verduzco Farms Labor Contractor"
+                                  >
+                                    Verduzco Farms Labor Contractor"
+                                  </option>
+                                  <option value="Mario A. Jaques">
+                                    Mario A. Jaques"
+                                  </option>
+                                  <option
+                                    value="International Trade Asset Group, Inc."
+                                  >
+                                    International Trade Asset Group, Inc."
+                                  </option>
+                                  <option value="Simflo">Simflo"</option>
+                                  <option value="National Trench Safety">
+                                    National Trench Safety"
+                                  </option>
+                                  <option value="Butte Sand and Gravel">
+                                    Butte Sand and Gravel"
+                                  </option>
+                                  <option value="A-1 Grit Company">
+                                    A-1 Grit Company"
+                                  </option>
+                                  <option value="Main Auto Body & Paint">
+                                    Main Auto Body & Paint"
+                                  </option>
+                                  <option value="Superior Ready Mix, LP">
+                                    Superior Ready Mix, LP"
+                                  </option>
+                                  <option
+                                    value="Delaney & Ahlf Diesel Service Inc."
+                                  >
+                                    Delaney & Ahlf Diesel Service Inc."
+                                  </option>
+                                  <option value="AG Personnel Management, Inc">
+                                    AG Personnel Management, Inc"
+                                  </option>
+                                  <option value="Lorenzo's Portable Welding">
+                                    Lorenzo's Portable Welding"
+                                  </option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="row">
+                            <div class="col">
+                              <label>Amount </label>
+                              <div class="form-group">
+                                <input
+                                  type="number"
+                                  placeholder="Amount"
+                                  class="form-control"
+                                />
+                              </div>
+                            </div>
+                            <div class="col">
+                              <label>Type </label>
+                              <div class="form-group">
+                                <input
+                                  type="text"
+                                  placeholder="Type"
+                                  class="form-control"
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="row">
+                            <div class="col">
+                              <label>Recurrence Start </label>
+                              <div class="form-group">
+                                <input
+                                  type="text"
+                                  placeholder="Recurrence Start"
+                                  class="form-control"
+                                />
+                              </div>
+                            </div>
+                            <div class="col">
+                              <label>Recurrence End </label>
+                              <div class="form-group">
+                                <input
+                                  type="text"
+                                  placeholder="Recurrence End"
+                                  class="form-control"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <input
+                            type="reset"
+                            class="btn bg-light-secondary"
+                            data-dismiss="modal"
+                            value="Close"
+                          />
+                          <input
+                            type="submit"
+                            class="btn btn-primary"
+                            data-dismiss="modal"
+                            value="Add Recurring Order"
+                          />
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-content">
+            <div class="table-responsive">
+              <table
+                class="table table-striped table-bordered zero-configuration"
+              >
+                <thead>
+                  <tr>
+                    <th>Customer</th>
+                    <th>Order Date</th>
+                    <th>Location</th>
+                    <th>No of Products</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                    <th>Recurrence Start</th>
+                    <th>Recurrence End</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Row 1 -->
+                  <tr>
+                    <td class="text-nowrap">Saint-Gobain</td>
+                    <td class="text-nowrap">01/04/2024</td>
+                    <td class="text-nowrap">Paris</td>
+                    <td class="text-nowrap">10</td>
+                    <td class="text-nowrap">$1500.00</td>
+                    <td class="text-nowrap">Yearly</td>
+                    <td class="text-nowrap">01/05</td>
+                    <td class="text-nowrap">31/12</td>
+                    <td class="text-truncate">
+                      <a href="javascript:;" class="success p-0">
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- Row 2 -->
+                  <tr>
+                    <td class="text-nowrap">Wavin</td>
+                    <td class="text-nowrap">02/07/2024</td>
+                    <td class="text-nowrap">Amsterdam</td>
+                    <td class="text-nowrap">8</td>
+                    <td class="text-nowrap">$1200.00</td>
+                    <td class="text-nowrap">Yearly</td>
+                    <td class="text-nowrap">01/05</td>
+                    <td class="text-nowrap">30/09</td>
+                    <td class="text-truncate">
+                      <a href="javascript:;" class="success p-0">
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- Row 3 -->
+                  <tr>
+                    <td class="text-nowrap">Uponor</td>
+                    <td class="text-nowrap">03/01/2024</td>
+                    <td class="text-nowrap">Helsinki</td>
+                    <td class="text-nowrap">6</td>
+                    <td class="text-nowrap">$900.00</td>
+                    <td class="text-nowrap">Yearly</td>
+                    <td class="text-nowrap">15/05</td>
+                    <td class="text-nowrap">31/10</td>
+                    <td class="text-truncate">
+                      <a href="javascript:;" class="success p-0">
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- Row 4 -->
+                  <tr>
+                    <td class="text-nowrap">Georg Fischer</td>
+                    <td class="text-nowrap">04/10/2024</td>
+                    <td class="text-nowrap">Zurich</td>
+                    <td class="text-nowrap">12</td>
+                    <td class="text-nowrap">$1800.00</td>
+                    <td class="text-nowrap">Yearly</td>
+                    <td class="text-nowrap">01/05</td>
+                    <td class="text-nowrap">30/11</td>
+                    <td class="text-truncate">
+                      <a href="javascript:;" class="success p-0">
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- Row 5 -->
+                  <tr>
+                    <td class="text-nowrap">Mueller Water Products</td>
+                    <td class="text-nowrap">05/05/2024</td>
+                    <td class="text-nowrap">Atlanta</td>
+                    <td class="text-nowrap">15</td>
+                    <td class="text-nowrap">$2250.00</td>
+                    <td class="text-nowrap">Yearly</td>
+                    <td class="text-nowrap">01/05</td>
+                    <td class="text-nowrap">31/12</td>
+                    <td class="text-truncate">
+                      <a href="javascript:;" class="success p-0">
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- Row 6 -->
+                  <tr>
+                    <td class="text-nowrap">JM Eagle</td>
+                    <td class="text-nowrap">06/01/2024</td>
+                    <td class="text-nowrap">Los Angeles</td>
+                    <td class="text-nowrap">20</td>
+                    <td class="text-nowrap">$3000.00</td>
+                    <td class="text-nowrap">Yearly</td>
+                    <td class="text-nowrap">15/05</td>
+                    <td class="text-nowrap">30/09</td>
+                    <td class="text-truncate">
+                      <a href="javascript:;" class="success p-0">
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- Row 7 -->
+                  <tr>
+                    <td class="text-nowrap">Aalberts</td>
+                    <td class="text-nowrap">07/09/2024</td>
+                    <td class="text-nowrap">Utrecht</td>
+                    <td class="text-nowrap">5</td>
+                    <td class="text-nowrap">$7550.00</td>
+                    <td class="text-nowrap">Yearly</td>
+                    <td class="text-nowrap">01/05</td>
+                    <td class="text-nowrap">31/10</td>
+                    <td class="text-truncate">
+                      <a href="javascript:;" class="success p-0">
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- Row 8 -->
+                  <tr>
+                    <td class="text-nowrap">Tenaris</td>
+                    <td class="text-nowrap">08/11/2024</td>
+                    <td class="text-nowrap">Luxembourg</td>
+                    <td class="text-nowrap">18</td>
+                    <td class="text-nowrap">$2700.00</td>
+                    <td class="text-nowrap">Yearly</td>
+                    <td class="text-nowrap">01/05</td>
+                    <td class="text-nowrap">30/11</td>
+                    <td class="text-truncate">
+                      <a href="javascript:;" class="success p-0">
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- Row 9 -->
+                  <tr>
+                    <td class="text-nowrap">Valmont Industries</td>
+                    <td class="text-nowrap">09/02/2024</td>
+                    <td class="text-nowrap">Omaha</td>
+                    <td class="text-nowrap">22</td>
+                    <td class="text-nowrap">$3300.00</td>
+                    <td class="text-nowrap">Yearly</td>
+                    <td class="text-nowrap">01/05</td>
+                    <td class="text-nowrap">31/12</td>
+                    <td class="text-truncate">
+                      <a href="javascript:;" class="success p-0">
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- Row 10 -->
+                  <tr>
+                    <td class="text-nowrap">China Lesso Group</td>
+                    <td class="text-nowrap">10/08/2024</td>
+                    <td class="text-nowrap">Guangzhou</td>
+                    <td class="text-nowrap">25</td>
+                    <td class="text-nowrap">$3750.00</td>
+                    <td class="text-nowrap">Yearly</td>
+                    <td class="text-nowrap">15/05</td>
+                    <td class="text-nowrap">30/09</td>
+                    <td class="text-truncate">
+                      <a href="javascript:;" class="success p-0">
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- Row 11 -->
+                  <tr>
+                    <td class="text-nowrap">McWane</td>
+                    <td class="text-nowrap">11/04/2024</td>
+                    <td class="text-nowrap">Birmingham</td>
+                    <td class="text-nowrap">30</td>
+                    <td class="text-nowrap">$4500.00</td>
+                    <td class="text-nowrap">Yearly</td>
+                    <td class="text-nowrap">01/05</td>
+                    <td class="text-nowrap">31/12</td>
+                    <td class="text-truncate">
+                      <a href="javascript:;" class="success p-0">
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- Row 12 -->
+                  <tr>
+                    <td class="text-nowrap">Mueller Industries</td>
+                    <td class="text-nowrap">12/12/2024</td>
+                    <td class="text-nowrap">Memphis</td>
+                    <td class="text-nowrap">18</td>
+                    <td class="text-nowrap">$2700.00</td>
+                    <td class="text-nowrap">Yearly</td>
+                    <td class="text-nowrap">15/05</td>
+                    <td class="text-nowrap">30/11</td>
+                    <td class="text-truncate">
+                      <a href="javascript:;" class="success p-0">
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- Row 13 -->
+                  <tr>
+                    <td class="text-nowrap">Nord Stream AG</td>
+                    <td class="text-nowrap">13/10/2024</td>
+                    <td class="text-nowrap">Zug</td>
+                    <td class="text-nowrap">12</td>
+                    <td class="text-nowrap">$1800.00</td>
+                    <td class="text-nowrap">Yearly</td>
+                    <td class="text-nowrap">15/05</td>
+                    <td class="text-nowrap">30/11</td>
+                    <td class="text-truncate">
+                      <a href="javascript:;" class="success p-0">
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- Row 14 -->
+                  <tr>
+                    <td class="text-nowrap">Shanghai Baosteel Group</td>
+                    <td class="text-nowrap">14/03/2024</td>
+                    <td class="text-nowrap">Shanghai</td>
+                    <td class="text-nowrap">28</td>
+                    <td class="text-nowrap">$4200.00</td>
+                    <td class="text-nowrap">Yearly</td>
+                    <td class="text-nowrap">01/05</td>
+                    <td class="text-nowrap">31/12</td>
+                    <td class="text-truncate">
+                      <a href="javascript:;" class="success p-0">
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- Row 15 -->
+                  <tr>
+                    <td class="text-nowrap">Nord Stream AG</td>
+                    <td class="text-nowrap">15/04/2024</td>
+                    <td class="text-nowrap">Berlin</td>
+                    <td class="text-nowrap">21</td>
+                    <td class="text-nowrap">$3150.00</td>
+                    <td class="text-nowrap">Yearly</td>
+                    <td class="text-nowrap">15/05</td>
+                    <td class="text-nowrap">31/10</td>
+                    <td class="text-truncate">
+                      <a href="javascript:;" class="success p-0">
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- Row 16 -->
+                  <tr>
+                    <td class="text-nowrap">Wavin</td>
+                    <td class="text-nowrap">16/12/2024</td>
+                    <td class="text-nowrap">London</td>
+                    <td class="text-nowrap">16</td>
+                    <td class="text-nowrap">$2400.00</td>
+                    <td class="text-nowrap">Yearly</td>
+                    <td class="text-nowrap">01/05</td>
+                    <td class="text-nowrap">31/12</td>
+                    <td class="text-truncate">
+                      <a href="javascript:;" class="success p-0">
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- Row 17 -->
+                  <tr>
+                    <td class="text-nowrap">Uponor</td>
+                    <td class="text-nowrap">17/05/2024</td>
+                    <td class="text-nowrap">Helsinki</td>
+                    <td class="text-nowrap">13</td>
+                    <td class="text-nowrap">$1950.00</td>
+                    <td class="text-nowrap">Yearly</td>
+                    <td class="text-nowrap">01/05</td>
+                    <td class="text-nowrap">30/11</td>
+                    <td class="text-truncate">
+                      <a href="javascript:;" class="success p-0">
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- Row 18 -->
+                  <tr>
+                    <td class="text-nowrap">McWane</td>
+                    <td class="text-nowrap">18/06/2024</td>
+                    <td class="text-nowrap">Dallas</td>
+                    <td class="text-nowrap">24</td>
+                    <td class="text-nowrap">$3600.00</td>
+                    <td class="text-nowrap">Yearly</td>
+                    <td class="text-nowrap">15/05</td>
+                    <td class="text-nowrap">30/11</td>
+                    <td class="text-truncate">
+                      <a href="javascript:;" class="success p-0">
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- Row 19 -->
+                  <tr>
+                    <td class="text-nowrap">Tenaris</td>
+                    <td class="text-nowrap">19/04/2024</td>
+                    <td class="text-nowrap">Milan</td>
+                    <td class="text-nowrap">9</td>
+                    <td class="text-nowrap">$1350.00</td>
+                    <td class="text-nowrap">Yearly</td>
+                    <td class="text-nowrap">01/05</td>
+                    <td class="text-nowrap">30/09</td>
+                    <td class="text-truncate">
+                      <a href="javascript:;" class="success p-0">
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- Row 20 -->
+                  <tr>
+                    <td class="text-nowrap">Shanghai Baosteel Group</td>
+                    <td class="text-nowrap">20/01/2024</td>
+                    <td class="text-nowrap">Beijing</td>
+                    <td class="text-nowrap">26</td>
+                    <td class="text-nowrap">$3900.00</td>
+                    <td class="text-nowrap">Yearly</td>
+                    <td class="text-nowrap">01/05</td>
+                    <td class="text-nowrap">31/12</td>
+                    <td class="text-truncate">
+                      <a href="javascript:;" class="success p-0">
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+    <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+    <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+    <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+    <script src="{% static 'vendors/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'app/js/select2.min.js' %}"></script>
+    <!-- BEGIN PAGE LEVEL JS-->
+    <!-- <script src="{% static 'app/js/data-tables/dt-data-sources.min.js' %}"></script> -->
+    <!-- END PAGE LEVEL JS-->
+
+    <script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
+  </div>
+</section>

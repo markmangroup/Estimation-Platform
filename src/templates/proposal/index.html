@@ -1,0 +1,78 @@
+{% extends "base.html" %} {% load static %} {% block page_content %}
+
+<div class="row">
+  <div class="col-12">
+    <div class="content-header">Generate Proposal</div>
+  </div>
+</div>
+
+<!-- Wizard Starts -->
+<section id="icon-tabs">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        {% comment %} <div class="card-header">
+          <h4 class="card-title">Upload CAD File</h4>
+        </div> {% endcomment %}
+        <div class="card-content">
+          <div class="card-body">
+            <form class="icons-tab-steps">
+                <h6>Upload CAD File</h6>
+                <fieldset style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                 {% include "./proposal_first_step.html" %}                 
+                </fieldset>
+
+                {% comment %} <h6>Material List </h6>
+                <fieldset>
+                 {% include "./material_list.html" %}
+                </fieldset>
+
+                <h6>Glue & Additional Material</h6>
+                <fieldset>
+                  {% include "./glue_additional_materail.html" %}
+                </fieldset>
+
+                <h6>Final Material List</h6>
+                <fieldset>
+                  {% include "./final_material.html" %}
+                </fieldset> {% endcomment %}
+
+                <h6>Tasks</h6>
+                <fieldset style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                {% include "./tasks.html" %}
+                </fieldset>
+
+                <h6>Generate Estimate</h6>
+                <fieldset style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                  {% include 'app/estimate_generate.html' %}
+                </fieldset>
+
+                <h6>Estimate</h6>
+               <fieldset style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                {% include "./estimate.html" %}
+               </fieldset>
+
+                <h6>Proposal Creation</h6>
+                <fieldset style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                  {% include './proposel_creation.html' %}
+                </fieldset>
+
+                <h6>Proposal</h6>
+                <fieldset style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                  {% include './proposal.html' %}
+                </fieldset>
+
+              <form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</section>
+
+
+
+<script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
+
+{% endblock page_content%}

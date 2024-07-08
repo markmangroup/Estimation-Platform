@@ -1,0 +1,45 @@
+asgiref<4,>=3.5.2
+certifi==2021.10.8
+charset-normalizer==2.0.10
+Django==4.2
+djangorestframework==3.15.2
+
+
+gunicorn==20.1.0
+psycopg2==2.9.3
+psycopg2-binary==2.9.3
+python-dotenv==0.19.2
+requests==2.27.1
+
+whitenoise==6.7.0
+## Django Form ###
+##===============================
+django-crispy-forms==1.9.0
+
+
+## Development Packages###
+##===============================
+# Code Analysis
+black~=19.10b0
+flake8~=3.7.9
+pre-commit~=2.3.0
+pyflakes~=2.1.1
+pylint-celery~=0.3
+pylint-django~=2.0.15
+pylint~=3.2.4
+
+# Debugging Tools
+django-debug-toolbar~=2.2
+
+# Django Extensions
+django-extensions~=2.2.9
+
+# Documentation
+sphinx~=3.0.3
+
+# Wsgi Handlers
+werkzeug~=1.0.1
+
+fabric3
+# pygraphviz
+

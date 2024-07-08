@@ -1,0 +1,905 @@
+{% load static %}
+
+<div class="row">
+  <div class="col-12">
+    <div class="content-header">Task List</div>
+  </div>
+</div>
+
+<!-- Wizard Starts -->
+<section id="icon-tabs">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <h4 class="card-title"></h4>
+          <div class="float-right">
+            <button
+              type="button"
+              class="btn bg-light-secondary"
+              data-toggle="modal"
+              data-target="#inlineForm"
+            >
+              <i class="fa ft-briefcase mr-1"></i>Import Task
+            </button>
+
+            <!-- Modal -->
+            <div
+              class="modal fade text-left"
+              id="inlineForm"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="myModalLabel33"
+              aria-hidden="true"
+              data-backdrop="false"
+            >
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel5">Import Task</h4>
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true"
+                        ><i class="ft-x font-medium-2 text-bold-700"></i
+                      ></span>
+                    </button>
+                  </div>
+                  <form action="#">
+                    <div class="modal-body">
+                      <label>Upload File </label>
+                      <div class="form-group">
+                        <div class="custom-file">
+                          <input
+                            type="file"
+                            class="custom-file-input"
+                            id="inputGroupFile01"
+                          />
+                          <label
+                            class="custom-file-label"
+                            for="inputGroupFile01"
+                            >Choose file</label
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <a role="menuitem" class="btn btn-primary">Upload </a>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <!-- Add Task Starts -->
+            {% comment %}
+            <button
+              type="button"
+              class="btn bg-light-primary"
+              data-toggle="modal"
+              data-target="#add_customer"
+            >
+              <i class="fa ft-plus-circle mr-1"></i>Add Task
+            </button>
+
+            <div
+              class="modal fade text-left"
+              id="add_customer"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="myModalLabel33"
+              aria-hidden="true"
+              data-backdrop="false"
+            >
+              <div
+                class="modal-dialog modal-md modal-dialog-centered"
+                role="document"
+              >
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title">Add Task</h4>
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true"
+                        ><i class="ft-x font-medium-2 text-bold-700"></i
+                      ></span>
+                    </button>
+                  </div>
+                  <form action="#">
+                    <div class="modal-body">
+                      <div class="col">
+                        <label>Internal ID: </label>
+                        <div class="form-group">
+                          <input
+                            type="text"
+                            placeholder="Enter Internal ID"
+                            class="form-control"
+                            name="NAME"
+                          />
+                        </div>
+                      </div>
+                      <div class="col">
+                        <label>Name: </label>
+                        <div class="form-group">
+                          <input
+                            type="Name"
+                            placeholder="Enter Name"
+                            class="form-control"
+                            name="EMAIL"
+                          />
+                        </div>
+                      </div>
+                      <div class="col">
+                        <label>Description: </label>
+                        <div class="form-group">
+                          <input
+                            type="text"
+                            placeholder="Enter Description"
+                            class="form-control"
+                            name="PHONE NUMBER"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <input
+                        type="reset"
+                        class="btn bg-light-secondary"
+                        data-dismiss="modal"
+                        value="Close"
+                      />
+                      <input
+                        type="submit"
+                        class="btn btn-primary"
+                        value="Add Task"
+                      />
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            {% endcomment %}
+            <!-- Add Task Ends -->
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table
+                  class="table table-striped table-bordered zero-configuration"
+                >
+                  <thead>
+                    <tr>
+                      <th>Internal ID</th>
+                      <th>Name</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Row 1 -->
+                    <tr>
+                      <td>1903</td>
+                      <td>AG-000</td>
+                      <td>Above Ground</td>
+                    </tr>
+
+                    <!-- Row 2 -->
+                    <tr>
+                      <td>2598</td>
+                      <td>AG-000 : AG-001</td>
+                      <td>Above Ground</td>
+                    </tr>
+
+                    <!-- Row 3 -->
+                    <tr>
+                      <td>2599</td>
+                      <td>AG-000 : AG-002</td>
+                      <td>Above Ground</td>
+                    </tr>
+
+                    <!-- Row 4 -->
+                    <tr>
+                      <td>2600</td>
+                      <td>AG-000 : AG-003</td>
+                      <td>Above Ground</td>
+                    </tr>
+
+                    <!-- Row 5 -->
+                    <tr>
+                      <td>2601</td>
+                      <td>AG-000 : AG-004</td>
+                      <td>Above Ground</td>
+                    </tr>
+
+                    <!-- Row 6 -->
+                    <tr>
+                      <td>2602</td>
+                      <td>AG-000 : AG-005</td>
+                      <td>Above Ground</td>
+                    </tr>
+
+                    <!-- Row 7 -->
+                    <tr>
+                      <td>2603</td>
+                      <td>AG-000 : AG-006</td>
+                      <td>Above Ground</td>
+                    </tr>
+
+                    <!-- Row 8 -->
+                    <tr>
+                      <td>2604</td>
+                      <td>AG-000 : AG-007</td>
+                      <td>Above Ground</td>
+                    </tr>
+
+                    <!-- Row 9 -->
+                    <tr>
+                      <td>2605</td>
+                      <td>AG-000 : AG-008</td>
+                      <td>Above Ground</td>
+                    </tr>
+
+                    <!-- Row 10 -->
+                    <tr>
+                      <td>2606</td>
+                      <td>AG-000 : AG-009</td>
+                      <td>Above Ground</td>
+                    </tr>
+
+                    <!-- Row 11 -->
+                    <tr>
+                      <td>2354</td>
+                      <td>AG-500</td>
+                      <td>Above Ground - Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 12 -->
+                    <tr>
+                      <td>2607</td>
+                      <td>AG-500 : AG-501</td>
+                      <td>Above Ground - Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 13 -->
+                    <tr>
+                      <td>2608</td>
+                      <td>AG-500 : AG-502</td>
+                      <td>Above Ground - Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 14 -->
+                    <tr>
+                      <td>2609</td>
+                      <td>AG-500 : AG-503</td>
+                      <td>Above Ground - Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 15 -->
+                    <tr>
+                      <td>2610</td>
+                      <td>AG-500 : AG-504</td>
+                      <td>Above Ground - Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 16 -->
+                    <tr>
+                      <td>2611</td>
+                      <td>AG-500 : AG-505</td>
+                      <td>Above Ground - Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 17 -->
+                    <tr>
+                      <td>2612</td>
+                      <td>AG-500 : AG-506</td>
+                      <td>Above Ground - Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 18 -->
+                    <tr>
+                      <td>2613</td>
+                      <td>AG-500 : AG-507</td>
+                      <td>Above Ground - Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 19 -->
+                    <tr>
+                      <td>2614</td>
+                      <td>AG-500 : AG-508</td>
+                      <td>Above Ground - Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 20 -->
+                    <tr>
+                      <td>2615</td>
+                      <td>AG-500 : AG-509</td>
+                      <td>Above Ground - Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 21 -->
+                    <tr>
+                      <td>2857</td>
+                      <td>AG-600</td>
+                      <td>Above Ground - Non-Billable Additions Order</td>
+                    </tr>
+
+                    <!-- Row 22 -->
+                    <tr>
+                      <td>2858</td>
+                      <td>AG-600 : AG-601</td>
+                      <td>Above Ground - Non-Billable Additions Order</td>
+                    </tr>
+
+                    <!-- Row 23 -->
+                    <tr>
+                      <td>2859</td>
+                      <td>AG-600 : AG-602</td>
+                      <td>Above Ground - Non-Billable Additions Order</td>
+                    </tr>
+
+                    <!-- Row 24 -->
+                    <tr>
+                      <td>2860</td>
+                      <td>AG-600 : AG-603</td>
+                      <td>Above Ground - Non-Billable Additions Order</td>
+                    </tr>
+
+                    <!-- Row 25 -->
+                    <tr>
+                      <td>2861</td>
+                      <td>AG-600 : AG-604</td>
+                      <td>Above Ground - Non-Billable Additions Order</td>
+                    </tr>
+
+                    <!-- Row 26 -->
+                    <tr>
+                      <td>2862</td>
+                      <td>AG-600 : AG-605</td>
+                      <td>Above Ground - Non-Billable Additions Order</td>
+                    </tr>
+
+                    <!-- Row 27 -->
+                    <tr>
+                      <td>2863</td>
+                      <td>AG-600 : AG-606</td>
+                      <td>Above Ground - Non-Billable Additions Order</td>
+                    </tr>
+
+                    <!-- Row 28 -->
+                    <tr>
+                      <td>2864</td>
+                      <td>AG-600 : AG-607</td>
+                      <td>Above Ground - Non-Billable Additions Order</td>
+                    </tr>
+
+                    <!-- Row 29 -->
+                    <tr>
+                      <td>2865</td>
+                      <td>AG-600 : AG-608</td>
+                      <td>Above Ground - Non-Billable Additions Order</td>
+                    </tr>
+
+                    <!-- Row 30 -->
+                    <tr>
+                      <td>2866</td>
+                      <td>AG-600 : AG-609</td>
+                      <td>Above Ground - Non-Billable Additions Order</td>
+                    </tr>
+
+                    <!-- Row 31 -->
+                    <tr>
+                      <td>2867</td>
+                      <td>AG-700</td>
+                      <td>Above Ground - Time & Materials</td>
+                    </tr>
+
+                    <!-- Row 32 -->
+                    <tr>
+                      <td>2868</td>
+                      <td>AG-700 : AG-701</td>
+                      <td>Above Ground - Time & Materials</td>
+                    </tr>
+
+                    <!-- Row 33 -->
+                    <tr>
+                      <td>2869</td>
+                      <td>AG-700 : AG-702</td>
+                      <td>Above Ground - Time & Materials</td>
+                    </tr>
+
+                    <!-- Row 34 -->
+                    <tr>
+                      <td>2870</td>
+                      <td>AG-700 : AG-703</td>
+                      <td>Above Ground - Time & Materials</td>
+                    </tr>
+
+                    <!-- Row 35 -->
+                    <tr>
+                      <td>2871</td>
+                      <td>AG-700 : AG-704</td>
+                      <td>Above Ground - Time & Materials</td>
+                    </tr>
+
+                    <!-- Row 36 -->
+                    <tr>
+                      <td>2872</td>
+                      <td>AG-700 : AG-705</td>
+                      <td>Above Ground - Time & Materials</td>
+                    </tr>
+
+                    <!-- Row 37 -->
+                    <tr>
+                      <td>2873</td>
+                      <td>AG-700 : AG-706</td>
+                      <td>Above Ground - Time & Materials</td>
+                    </tr>
+
+                    <!-- Row 38 -->
+                    <tr>
+                      <td>2874</td>
+                      <td>AG-700 : AG-707</td>
+                      <td>Above Ground - Time & Materials</td>
+                    </tr>
+
+                    <!-- Row 39 -->
+                    <tr>
+                      <td>2875</td>
+                      <td>AG-700 : AG-708</td>
+                      <td>Above Ground - Time & Materials</td>
+                    </tr>
+
+                    <!-- Row 40 -->
+                    <tr>
+                      <td>2876</td>
+                      <td>AG-700 : AG-709</td>
+                      <td>Above Ground - Time & Materials</td>
+                    </tr>
+
+                    <!-- Row 41 -->
+                    <tr>
+                      <td>3695</td>
+                      <td>AG-900</td>
+                      <td>Above Ground - Returns</td>
+                    </tr>
+
+                    <!-- Row 42 -->
+                    <tr>
+                      <td>3696</td>
+                      <td>AG-999</td>
+                      <td>Above Ground - Misc</td>
+                    </tr>
+
+                    <!-- Row 43 -->
+                    <tr>
+                      <td>2958</td>
+                      <td>AS-000</td>
+                      <td>Ag Supply</td>
+                    </tr>
+
+                    <!-- Row 44 -->
+                    <tr>
+                      <td>2965</td>
+                      <td>AS-000 : AS-001</td>
+                      <td>Ag Supply</td>
+                    </tr>
+
+                    <!-- Row 45 -->
+                    <tr>
+                      <td>2966</td>
+                      <td>AS-000 : AS-002</td>
+                      <td>Ag Supply</td>
+                    </tr>
+
+                    <!-- Row 46 -->
+                    <tr>
+                      <td>2967</td>
+                      <td>AS-000 : AS-003</td>
+                      <td>Ag Supply</td>
+                    </tr>
+
+                    <!-- Row 47 -->
+                    <tr>
+                      <td>2968</td>
+                      <td>AS-000 : AS-004</td>
+                      <td>Ag Supply</td>
+                    </tr>
+
+                    <!-- Row 48 -->
+                    <tr>
+                      <td>2969</td>
+                      <td>AS-000 : AS-005</td>
+                      <td>Ag Supply</td>
+                    </tr>
+
+                    <!-- Row 49 -->
+                    <tr>
+                      <td>2970</td>
+                      <td>AS-000 : AS-006</td>
+                      <td>Ag Supply</td>
+                    </tr>
+
+                    <!-- Row 50 -->
+                    <tr>
+                      <td>2971</td>
+                      <td>AS-000 : AS-007</td>
+                      <td>Ag Supply</td>
+                    </tr>
+
+                    <!-- Row 51 -->
+                    <tr>
+                      <td>2972</td>
+                      <td>AS-000 : AS-008</td>
+                      <td>Ag Supply</td>
+                    </tr>
+
+                    <!-- Row 52 -->
+                    <tr>
+                      <td>2973</td>
+                      <td>AS-000 : AS-009</td>
+                      <td>Ag Supply</td>
+                    </tr>
+
+                    <!-- Row 53 -->
+                    <tr>
+                      <td>2962</td>
+                      <td>AS-500</td>
+                      <td>Ag Supply - Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 54 -->
+                    <tr>
+                      <td>2974</td>
+                      <td>AS-500 : AS-501</td>
+                      <td>Ag Supply - Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 55 -->
+                    <tr>
+                      <td>2975</td>
+                      <td>AS-500 : AS-502</td>
+                      <td>Ag Supply - Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 56 -->
+                    <tr>
+                      <td>2976</td>
+                      <td>AS-500 : AS-503</td>
+                      <td>Ag Supply - Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 57 -->
+                    <tr>
+                      <td>2977</td>
+                      <td>AS-500 : AS-504</td>
+                      <td>Ag Supply - Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 58 -->
+                    <tr>
+                      <td>2978</td>
+                      <td>AS-500 : AS-505</td>
+                      <td>Ag Supply - Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 59 -->
+                    <tr>
+                      <td>2979</td>
+                      <td>AS-500 : AS-506</td>
+                      <td>Ag Supply - Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 60 -->
+                    <tr>
+                      <td>2980</td>
+                      <td>AS-500 : AS-507</td>
+                      <td>Ag Supply - Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 61 -->
+                    <tr>
+                      <td>2981</td>
+                      <td>AS-500 : AS-508</td>
+                      <td>Ag Supply - Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 62 -->
+                    <tr>
+                      <td>2982</td>
+                      <td>AS-500 : AS-509</td>
+                      <td>Ag Supply - Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 63 -->
+                    <tr>
+                      <td>2963</td>
+                      <td>AS-600</td>
+                      <td>Ag Supply - Non-Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 64 -->
+                    <tr>
+                      <td>2983</td>
+                      <td>AS-600 : AS-601</td>
+                      <td>Ag Supply - Non-Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 65 -->
+                    <tr>
+                      <td>2984</td>
+                      <td>AS-600 : AS-602</td>
+                      <td>Ag Supply - Non-Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 66 -->
+                    <tr>
+                      <td>2985</td>
+                      <td>AS-600 : AS-603</td>
+                      <td>Ag Supply - Non-Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 67 -->
+                    <tr>
+                      <td>2986</td>
+                      <td>AS-600 : AS-604</td>
+                      <td>Ag Supply - Non-Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 68 -->
+                    <tr>
+                      <td>2987</td>
+                      <td>AS-600 : AS-605</td>
+                      <td>Ag Supply - Non-Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 69 -->
+                    <tr>
+                      <td>2988</td>
+                      <td>AS-600 : AS-606</td>
+                      <td>Ag Supply - Non-Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 70 -->
+                    <tr>
+                      <td>2989</td>
+                      <td>AS-600 : AS-607</td>
+                      <td>Ag Supply - Non-Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 71 -->
+                    <tr>
+                      <td>2990</td>
+                      <td>AS-600 : AS-608</td>
+                      <td>Ag Supply - Non-Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 72 -->
+                    <tr>
+                      <td>2991</td>
+                      <td>AS-600 : AS-609</td>
+                      <td>Ag Supply - Non-Billable Change Order</td>
+                    </tr>
+
+                    <!-- Row 73 -->
+                    <tr>
+                      <td>2964</td>
+                      <td>AS-700</td>
+                      <td>Ag Supply - Time & Materials</td>
+                    </tr>
+
+                    <!-- Row 74 -->
+                    <tr>
+                      <td>2992</td>
+                      <td>AS-700 : AS-701</td>
+                      <td>Ag Supply - Time & Materials</td>
+                    </tr>
+
+                    <!-- Row 75 -->
+                    <tr>
+                      <td>2993</td>
+                      <td>AS-700 : AS-702</td>
+                      <td>Ag Supply - Time & Materials</td>
+                    </tr>
+
+                    <!-- Row 76 -->
+                    <tr>
+                      <td>2994</td>
+                      <td>AS-700 : AS-703</td>
+                      <td>Ag Supply - Time & Materials</td>
+                    </tr>
+
+                    <!-- Row 77 -->
+                    <tr>
+                      <td>2995</td>
+                      <td>AS-700 : AS-704</td>
+                      <td>Ag Supply - Time & Materials</td>
+                    </tr>
+
+                    <!-- Row 78 -->
+                    <tr>
+                      <td>2996</td>
+                      <td>AS-700 : AS-705</td>
+                      <td>Ag Supply - Time & Materials</td>
+                    </tr>
+
+                    <!-- Row 79 -->
+                    <tr>
+                      <td>2997</td>
+                      <td>AS-700 : AS-706</td>
+                      <td>Ag Supply - Time & Materials</td>
+                    </tr>
+
+                    <!-- Row 80 -->
+                    <tr>
+                      <td>2998</td>
+                      <td>AS-700 : AS-707</td>
+                      <td>Ag Supply - Time & Materials</td>
+                    </tr>
+
+                    <!-- Row 81 -->
+                    <tr>
+                      <td>2999</td>
+                      <td>AS-700 : AS-708</td>
+                      <td>Ag Supply - Time & Materials</td>
+                    </tr>
+
+                    <!-- Row 82 -->
+                    <tr>
+                      <td>3000</td>
+                      <td>AS-700 : AS-709</td>
+                      <td>Ag Supply - Time & Materials</td>
+                    </tr>
+
+                    <!-- Row 83 -->
+                    <tr>
+                      <td>3074</td>
+                      <td>AS-900</td>
+                      <td>Ag Supply - Returns</td>
+                    </tr>
+
+                    <!-- Row 84 -->
+                    <tr>
+                      <td>3075</td>
+                      <td>AS-999</td>
+                      <td>Ag Supply - Misc</td>
+                    </tr>
+
+                    <!-- Row 85 -->
+                    <tr>
+                      <td>5</td>
+                      <td>AU-000</td>
+                      <td>Automation</td>
+                    </tr>
+
+                    <!-- Row 86 -->
+                    <tr>
+                      <td>6</td>
+                      <td>AU-000 : AU-001</td>
+                      <td>Automation</td>
+                    </tr>
+
+                    <!-- Row 87 -->
+                    <tr>
+                      <td>7</td>
+                      <td>AU-000 : AU-002</td>
+                      <td>Automation</td>
+                    </tr>
+
+                    <!-- Row 88 -->
+                    <tr>
+                      <td>8</td>
+                      <td>AU-000 : AU-003</td>
+                      <td>Automation</td>
+                    </tr>
+
+                    <!-- Row 89 -->
+                    <tr>
+                      <td>9</td>
+                      <td>AU-000 : AU-004</td>
+                      <td>Automation</td>
+                    </tr>
+
+                    <!-- Row 90 -->
+                    <tr>
+                      <td>10</td>
+                      <td>AU-000 : AU-005</td>
+                      <td>Automation</td>
+                    </tr>
+
+                    <!-- Row 91 -->
+                    <tr>
+                      <td>11</td>
+                      <td>AU-000 : AU-006</td>
+                      <td>Automation</td>
+                    </tr>
+
+                    <!-- Row 92 -->
+                    <tr>
+                      <td>12</td>
+                      <td>AU-000 : AU-007</td>
+                      <td>Automation</td>
+                    </tr>
+
+                    <!-- Row 93 -->
+                    <tr>
+                      <td>13</td>
+                      <td>AU-000 : AU-008</td>
+                      <td>Automation</td>
+                    </tr>
+
+                    <!-- Row 94 -->
+                    <tr>
+                      <td>14</td>
+                      <td>AU-000 : AU-009</td>
+                      <td>Automation</td>
+                    </tr>
+
+                    <!-- Row 95 -->
+                    <tr>
+                      <td>1954</td>
+                      <td>AU-000 : AU-010</td>
+                      <td>Automation</td>
+                    </tr>
+
+                    <!-- Row 96 -->
+                    <tr>
+                      <td>1955</td>
+                      <td>AU-000 : AU-011</td>
+                      <td>Automation</td>
+                    </tr>
+
+                    <!-- Row 97 -->
+                    <tr>
+                      <td>1956</td>
+                      <td>AU-000 : AU-012</td>
+                      <td>Automation</td>
+                    </tr>
+
+                    <!-- Row 98 -->
+                    <tr>
+                      <td>1957</td>
+                      <td>AU-000 : AU-013</td>
+                      <td>Automation</td>
+                    </tr>
+
+                    <!-- Row 99 -->
+                    <tr>
+                      <td>1958</td>
+                      <td>AU-000 : AU-014</td>
+                      <td>Automation</td>
+                    </tr>
+
+                    <!-- Row 100 -->
+                    <tr>
+                      <td>1959</td>
+                      <td>AU-000 : AU-015</td>
+                      <td>Automation</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+    <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+    <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+    <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+    <!-- BEGIN PAGE LEVEL JS-->
+    <!-- <script src="{% static 'app/js/data-tables/dt-data-sources.min.js' %}"></script> -->
+    <!-- END PAGE LEVEL JS-->
+
+    <script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
+  </div>
+</section>

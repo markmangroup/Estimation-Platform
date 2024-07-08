@@ -1,0 +1,1631 @@
+{% load static %}
+
+<div class="row">
+  <div class="col-12">
+    <div class="content-header">Customer List</div>
+  </div>
+</div>
+
+<!-- Wizard Starts -->
+<section id="icon-tabs">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <h4 class="card-title"></h4>
+          <div class="float-right">
+            <button
+              type="button"
+              class="btn bg-light-secondary"
+              data-toggle="modal"
+              data-target="#inlineForm"
+            >
+              <i class="fa ft-briefcase mr-1"></i>Import Customer
+            </button>
+
+            <!-- Modal -->
+            <div
+              class="modal fade text-left"
+              id="inlineForm"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="myModalLabel33"
+              aria-hidden="true"
+              data-backdrop="false"
+            >
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel5">
+                      Import Customer
+                    </h4>
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true"
+                        ><i class="ft-x font-medium-2 text-bold-700"></i
+                      ></span>
+                    </button>
+                  </div>
+                  <form action="#">
+                    <div class="modal-body">
+                      <label>Upload File </label>
+                      <div class="form-group">
+                        <div class="custom-file">
+                          <input
+                            type="file"
+                            class="custom-file-input"
+                            id="inputGroupFile01"
+                          />
+                          <label
+                            class="custom-file-label"
+                            for="inputGroupFile01"
+                            >Choose file</label
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <a role="menuitem" class="btn btn-primary">Upload </a>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <!-- Add Customer Starts -->
+            {% comment %}
+            <button
+              type="button"
+              class="btn bg-light-primary"
+              data-toggle="modal"
+              data-target="#add_customer"
+            >
+              <i class="fa ft-plus-circle mr-1"></i>Add Customer
+            </button>
+
+            <div
+              class="modal fade text-left"
+              id="add_customer"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="myModalLabel33"
+              aria-hidden="true"
+              data-backdrop="false"
+            >
+              <div
+                class="modal-dialog modal-lg modal-dialog-centered"
+                role="document"
+              >
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title">Add Customer</h4>
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true"
+                        ><i class="ft-x font-medium-2 text-bold-700"></i
+                      ></span>
+                    </button>
+                  </div>
+                  <form action="#">
+                    <div class="modal-body">
+                      <div class="row">
+                        <div class="col">
+                          <label>Name: </label>
+                          <div class="form-group">
+                            <input
+                              type="text"
+                              placeholder="Name"
+                              class="form-control"
+                              name="NAME"
+                            />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <label>Email: </label>
+                          <div class="form-group">
+                            <input
+                              type="email"
+                              placeholder="Email"
+                              class="form-control"
+                              name="EMAIL"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col">
+                          <label>Contact Number: </label>
+                          <div class="form-group">
+                            <input
+                              type="text"
+                              placeholder="Contact Number"
+                              class="form-control"
+                              name="PHONE NUMBER"
+                            />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <label>Address: </label>
+                          <div class="form-group">
+                            <input
+                              type="text"
+                              placeholder="Address"
+                              class="form-control"
+                              name="ADDRESS"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <input
+                        type="reset"
+                        class="btn bg-light-secondary"
+                        data-dismiss="modal"
+                        value="Close"
+                      />
+                      <input
+                        type="submit"
+                        class="btn btn-primary"
+                        value="Add Customer"
+                      />
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            {% endcomment %}
+            <!-- Add Customer Ends -->
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table
+                  class="table table-striped table-bordered zero-configuration"
+                >
+                  <thead>
+                    <tr>
+                      <th>Internal ID</th>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Sales Rep</th>
+                      <th>Billing Address 1</th>
+                      <th>Billing Address 2</th>
+                      <th>Billing City</th>
+                      <th>Billing State/Province</th>
+                      <th>Billing Zip</th>
+                      <th>Billing Country</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Row 1 -->
+                    <tr>
+                      <td>301162</td>
+                      <td>C006483</td>
+                      <td>Flint General Enginieering</td>
+                      <td>Patrick Stern</td>
+                      <td>3515 Parker Hill Court</td>
+                      <td>-</td>
+                      <td>Santa Rosa</td>
+                      <td>CA</td>
+                      <td>95404</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 2 -->
+                    <tr>
+                      <td>301149</td>
+                      <td>C006482</td>
+                      <td>California Compaction</td>
+                      <td>Brandon J Kehoe</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 3 -->
+                    <tr>
+                      <td>301110</td>
+                      <td>C006481</td>
+                      <td>Rd 17 LLC</td>
+                      <td>Brooke Marchy</td>
+                      <td>448 W Shaw Ave Ste 448</td>
+                      <td>-</td>
+                      <td>Fresno</td>
+                      <td>CA</td>
+                      <td>93704</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 4 -->
+                    <tr>
+                      <td>301106</td>
+                      <td>C006480</td>
+                      <td>Cal Farm Fresh Produce LLC</td>
+                      <td>Brooke Marchy</td>
+                      <td>1621 Wyncoop</td>
+                      <td>-</td>
+                      <td>Sutter</td>
+                      <td>CA</td>
+                      <td>95982</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 5 -->
+                    <tr>
+                      <td>301022</td>
+                      <td>C006479</td>
+                      <td>Tej Oliver's Ranch</td>
+                      <td>-</td>
+                      <td>3111 Stefano Dr</td>
+                      <td>-</td>
+                      <td>Stockton</td>
+                      <td>CA</td>
+                      <td>95212</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 6 -->
+                    <tr>
+                      <td>301008</td>
+                      <td>C006478</td>
+                      <td>Kevin Giannelli</td>
+                      <td>Brandon J Kehoe</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 7 -->
+                    <tr>
+                      <td>300962</td>
+                      <td>C006477</td>
+                      <td>Bagdasarian Farms, LLC</td>
+                      <td>-</td>
+                      <td>65500 Lincoln St.</td>
+                      <td>-</td>
+                      <td>Mecca</td>
+                      <td>CA</td>
+                      <td>92254</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 8 -->
+                    <tr>
+                      <td>300916</td>
+                      <td>C006476</td>
+                      <td>Lehn Family farms</td>
+                      <td>-</td>
+                      <td>16396 Lacey Blvd</td>
+                      <td>-</td>
+                      <td>Lemoore</td>
+                      <td>CA</td>
+                      <td>93245</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 9 -->
+                    <tr>
+                      <td>300914</td>
+                      <td>C006475</td>
+                      <td>Fowler Packing</td>
+                      <td>Zachary Scott</td>
+                      <td>8570 South Cedar Ave</td>
+                      <td>-</td>
+                      <td>Fresno</td>
+                      <td>CA</td>
+                      <td>93725</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 10 -->
+                    <tr>
+                      <td>300903</td>
+                      <td>C006474</td>
+                      <td>Leatherby Developement LLC</td>
+                      <td>-</td>
+                      <td>2333 Arden Way</td>
+                      <td>-</td>
+                      <td>Sacramento</td>
+                      <td>CA</td>
+                      <td>95825</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 11 -->
+                    <tr>
+                      <td>300883</td>
+                      <td>C006473</td>
+                      <td>Justin Keeling</td>
+                      <td>William Martin</td>
+                      <td>3665 Woodson Avenue</td>
+                      <td>-</td>
+                      <td>Corning</td>
+                      <td>CA</td>
+                      <td>96021</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 12 -->
+                    <tr>
+                      <td>300797</td>
+                      <td>C006472</td>
+                      <td>Reshad Sulymankhel</td>
+                      <td>Patrick Stern</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 13 -->
+                    <tr>
+                      <td>300792</td>
+                      <td>C006471</td>
+                      <td>Barrios Farming</td>
+                      <td>Patrick Stern</td>
+                      <td>P. O. BOC 250</td>
+                      <td>-</td>
+                      <td>YOLO</td>
+                      <td>CA</td>
+                      <td>95697</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 14 -->
+                    <tr>
+                      <td>300770</td>
+                      <td>C006470</td>
+                      <td>CapEx Engineering</td>
+                      <td>Zachary Scott</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 15 -->
+                    <tr>
+                      <td>300754</td>
+                      <td>C006469</td>
+                      <td>Wackman Ranch</td>
+                      <td>-</td>
+                      <td>10686 West Stockton Blvd</td>
+                      <td>-</td>
+                      <td>Elk Grove</td>
+                      <td>CA</td>
+                      <td>95757</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 16 -->
+                    <tr>
+                      <td>300735</td>
+                      <td>C006468</td>
+                      <td>Paramdeep Chohan</td>
+                      <td>-</td>
+                      <td>3580 Lincoln Rd</td>
+                      <td>-</td>
+                      <td>Yuba City</td>
+                      <td>CA</td>
+                      <td>95993</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 17 -->
+                    <tr>
+                      <td>300733</td>
+                      <td>C006467</td>
+                      <td>Paramdeep Chohan</td>
+                      <td>-</td>
+                      <td>3580 Lincoln Rd</td>
+                      <td>-</td>
+                      <td>Yuba City</td>
+                      <td>CA</td>
+                      <td>95993</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 18 -->
+                    <tr>
+                      <td>300720</td>
+                      <td>C006466</td>
+                      <td>Overland Stockyard</td>
+                      <td>-</td>
+                      <td>10565 9th Ave</td>
+                      <td>-</td>
+                      <td>Hanford</td>
+                      <td>CA</td>
+                      <td>95230</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 19 -->
+                    <tr>
+                      <td>300718</td>
+                      <td>C006465</td>
+                      <td>ROBINSON CALF RANCH</td>
+                      <td>Steven Roland</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 20 -->
+                    <tr>
+                      <td>300680</td>
+                      <td>C006464</td>
+                      <td>Bickford Ranch</td>
+                      <td>Brooke Marchy</td>
+                      <td>17830 Hillside Dr</td>
+                      <td>-</td>
+                      <td>Lodi</td>
+                      <td>CA</td>
+                      <td>95240</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 21 -->
+                    <tr>
+                      <td>300672</td>
+                      <td>C006463</td>
+                      <td>Prime Cleaners LLC</td>
+                      <td>-</td>
+                      <td>735 Superior Dr</td>
+                      <td>-</td>
+                      <td>Tracy</td>
+                      <td>CA</td>
+                      <td>95304</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 22 -->
+                    <tr>
+                      <td>300669</td>
+                      <td>C006462</td>
+                      <td>B&G Foods</td>
+                      <td>Paul Leimgruber</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 23 -->
+                    <tr>
+                      <td>300646</td>
+                      <td>C006461</td>
+                      <td>Maruti Ranch Inc.</td>
+                      <td>-</td>
+                      <td>5150 Churn Creek Rd</td>
+                      <td>-</td>
+                      <td>Redding</td>
+                      <td>CA</td>
+                      <td>96002</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 24 -->
+                    <tr>
+                      <td>300596</td>
+                      <td>C006460</td>
+                      <td>Wallace Brothers</td>
+                      <td>-</td>
+                      <td>10800 South Butte Rd</td>
+                      <td>-</td>
+                      <td>Sutter</td>
+                      <td>CA</td>
+                      <td>95982</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 25 -->
+                    <tr>
+                      <td>300576</td>
+                      <td>C006459</td>
+                      <td>Hillside Farms</td>
+                      <td>Paul Leimgruber</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 26 -->
+                    <tr>
+                      <td>300522</td>
+                      <td>C006458</td>
+                      <td>Alvarado Farming Services LLC</td>
+                      <td>-</td>
+                      <td>3329 Hegan Lane</td>
+                      <td>-</td>
+                      <td>Chico</td>
+                      <td>CA</td>
+                      <td>95928</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 27 -->
+                    <tr>
+                      <td>300500</td>
+                      <td>C006457</td>
+                      <td>Sunridge Nurseries, Inc.</td>
+                      <td>Steven Roland</td>
+                      <td>441 Vineland Road</td>
+                      <td>-</td>
+                      <td>Bakersfield</td>
+                      <td>CA</td>
+                      <td>93307</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 28 -->
+                    <tr>
+                      <td>300491</td>
+                      <td>C006456</td>
+                      <td>Yahav Agritech Consulting, LLC</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 29 -->
+                    <tr>
+                      <td>300476</td>
+                      <td>C006455</td>
+                      <td>Hertz Farm Management</td>
+                      <td>Joseph Turner</td>
+                      <td>415 S 11th St</td>
+                      <td>-</td>
+                      <td>Nevada</td>
+                      <td>IA</td>
+                      <td>50201</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 30 -->
+                    <tr>
+                      <td>300475</td>
+                      <td>C006454</td>
+                      <td>TDH Land & Cattle, LLC</td>
+                      <td>Matthew VanWhy</td>
+                      <td>601 W. Grangeville Blvd</td>
+                      <td>-</td>
+                      <td>Hanford</td>
+                      <td>CA</td>
+                      <td>93230</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 31 -->
+                    <tr>
+                      <td>300474</td>
+                      <td>C006453</td>
+                      <td>Silveira Farms</td>
+                      <td>-</td>
+                      <td>6259 County Rd 25</td>
+                      <td>-</td>
+                      <td>Orland</td>
+                      <td>CA</td>
+                      <td>95963</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 32 -->
+                    <tr>
+                      <td>300425</td>
+                      <td>C006452</td>
+                      <td>Robert Knorr</td>
+                      <td>Joseph Turner</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 33 -->
+                    <tr>
+                      <td>300415</td>
+                      <td>C006451</td>
+                      <td>Martha Waterman</td>
+                      <td>Lochlan Buckingham</td>
+                      <td>18018 Cienega Rd</td>
+                      <td>-</td>
+                      <td>Paicines</td>
+                      <td>CA</td>
+                      <td>95043</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 34 -->
+                    <tr>
+                      <td>300400</td>
+                      <td>C006450</td>
+                      <td>Horizon Farms LLC</td>
+                      <td>Paul Leimgruber</td>
+                      <td>1090 E. 5th St.</td>
+                      <td>-</td>
+                      <td>Holtville</td>
+                      <td>CA</td>
+                      <td>92250</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 35 -->
+                    <tr>
+                      <td>300389</td>
+                      <td>C006449</td>
+                      <td>Grant Crum</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 36 -->
+                    <tr>
+                      <td>300303</td>
+                      <td>C006448</td>
+                      <td>AC Foods</td>
+                      <td>Brandon J Kehoe</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 37 -->
+                    <tr>
+                      <td>300301</td>
+                      <td>C006447</td>
+                      <td>J&J Farms</td>
+                      <td>Brandon J Kehoe</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 38 -->
+                    <tr>
+                      <td>300283</td>
+                      <td>C006446</td>
+                      <td>Peterson Farming Inc</td>
+                      <td>-</td>
+                      <td>PO Box 598</td>
+                      <td>-</td>
+                      <td>Durham</td>
+                      <td>CA</td>
+                      <td>95938</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 39 -->
+                    <tr>
+                      <td>300280</td>
+                      <td>C006445</td>
+                      <td>P&J Estes, Inc.</td>
+                      <td>-</td>
+                      <td>17400 N. Tretheway Rd</td>
+                      <td>-</td>
+                      <td>Lockeford</td>
+                      <td>CA</td>
+                      <td>95237</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 40 -->
+                    <tr>
+                      <td>300221</td>
+                      <td>C006444</td>
+                      <td>Roberto Ayala</td>
+                      <td>William Martin</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 41 -->
+                    <tr>
+                      <td>300190</td>
+                      <td>C006443</td>
+                      <td>CTL Forest Management</td>
+                      <td>Patrick Stern</td>
+                      <td>4080 PLAZA GOLDORADO CIRCLE</td>
+                      <td>-</td>
+                      <td>CAMERON PARK</td>
+                      <td>CA</td>
+                      <td>86582</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 42 -->
+                    <tr>
+                      <td>300142</td>
+                      <td>C006442</td>
+                      <td>Delta View Farms</td>
+                      <td>Matthew VanWhy</td>
+                      <td>4845 Ave 304</td>
+                      <td>-</td>
+                      <td>Visalia</td>
+                      <td>CA</td>
+                      <td>93291</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 43 -->
+                    <tr>
+                      <td>300118</td>
+                      <td>C006440</td>
+                      <td>Jay LLC</td>
+                      <td>Brandon J Kehoe</td>
+                      <td>1903 MINERAL CT.</td>
+                      <td>-</td>
+                      <td>Bakersfield</td>
+                      <td>California</td>
+                      <td>93308</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 44 -->
+                    <tr>
+                      <td>300106</td>
+                      <td>C006439</td>
+                      <td>Innovative Produce</td>
+                      <td>Lochlan Buckingham</td>
+                      <td>1615 W Main Street</td>
+                      <td>-</td>
+                      <td>Santa Maria</td>
+                      <td>CA</td>
+                      <td>93458</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 45 -->
+                    <tr>
+                      <td>300090</td>
+                      <td>C006438</td>
+                      <td>Nahal Farms LLC.</td>
+                      <td>Matthew VanWhy</td>
+                      <td>2665 N. 11th Ave</td>
+                      <td>-</td>
+                      <td>Hanford</td>
+                      <td>CA</td>
+                      <td>93230</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 46 -->
+                    <tr>
+                      <td>300078</td>
+                      <td>C006437</td>
+                      <td>The Dutra Group</td>
+                      <td>Brooke Marchy</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 47 -->
+                    <tr>
+                      <td>300045</td>
+                      <td>C006436</td>
+                      <td>Pitigliano Farms</td>
+                      <td>Matthew VanWhy</td>
+                      <td>P.O. BOX 9 - 11586 AVE 120</td>
+                      <td>-</td>
+                      <td>Tipton</td>
+                      <td>CA</td>
+                      <td>93272</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 48 -->
+                    <tr>
+                      <td>300015</td>
+                      <td>C006435</td>
+                      <td>Rockford Elementary School District</td>
+                      <td>Brandon J Kehoe</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 49 -->
+                    <tr>
+                      <td>299994</td>
+                      <td>C006434</td>
+                      <td>Villa Vicencio Vineyard</td>
+                      <td>-</td>
+                      <td>8707 East Harney Lane</td>
+                      <td>-</td>
+                      <td>Lodi</td>
+                      <td>CA</td>
+                      <td>95240</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 50 -->
+                    <tr>
+                      <td>299959</td>
+                      <td>C006433</td>
+                      <td>Gilbert Marroquin</td>
+                      <td>Brandon J Kehoe</td>
+                      <td>5625 W Prospect Dr</td>
+                      <td>-</td>
+                      <td>Bakerfield</td>
+                      <td>CA</td>
+                      <td>93291</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 51 -->
+                    <tr>
+                      <td>299703</td>
+                      <td>C006432</td>
+                      <td>Day Break Pecans</td>
+                      <td>Joseph Turner</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 52 -->
+                    <tr>
+                      <td>299659</td>
+                      <td>C006431</td>
+                      <td>Yuma Union High School District</td>
+                      <td>Paul Leimgruber</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 53 -->
+                    <tr>
+                      <td>299652</td>
+                      <td>C006430</td>
+                      <td>Brad Wright</td>
+                      <td>Matthew VanWhy</td>
+                      <td>27001 Rd 100</td>
+                      <td>-</td>
+                      <td>Visalia</td>
+                      <td>CA</td>
+                      <td>93277</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 54 -->
+                    <tr>
+                      <td>299645</td>
+                      <td>C006429</td>
+                      <td>Tempe Farming / Todd Thelander</td>
+                      <td>Joseph Turner</td>
+                      <td>PO Box 189</td>
+                      <td>-</td>
+                      <td>Maricopa</td>
+                      <td>AZ</td>
+                      <td>85139</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 55 -->
+                    <tr>
+                      <td>299599</td>
+                      <td>C006428</td>
+                      <td>Lomo Cold Storage</td>
+                      <td>Patrick Stern</td>
+                      <td>6005 HWY 99</td>
+                      <td>-</td>
+                      <td>LIVE OAK</td>
+                      <td>CA</td>
+                      <td>95953</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 56 -->
+                    <tr>
+                      <td>299580</td>
+                      <td>C006427</td>
+                      <td>
+                        Lentz Construction General Engineering Contractor Inc
+                      </td>
+                      <td>-</td>
+                      <td>6122 Potenza Lane</td>
+                      <td>-</td>
+                      <td>Bakersfield</td>
+                      <td>CA</td>
+                      <td>93308</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 57 -->
+                    <tr>
+                      <td>299569</td>
+                      <td>C006426</td>
+                      <td>Border Valley Trading</td>
+                      <td>Amanda Daley</td>
+                      <td>PO Box 62</td>
+                      <td>-</td>
+                      <td>Brawley</td>
+                      <td>CA</td>
+                      <td>92227-0062</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 58 -->
+                    <tr>
+                      <td>299565</td>
+                      <td>C006425</td>
+                      <td>Barbara Lauchland</td>
+                      <td>-</td>
+                      <td>22041 N Kennifick Rd</td>
+                      <td>-</td>
+                      <td>Acampo</td>
+                      <td>CA</td>
+                      <td>95220</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 59 -->
+                    <tr>
+                      <td>299414</td>
+                      <td>C006424</td>
+                      <td>Zuckerman Heritage, Inc</td>
+                      <td>Dirk Venn</td>
+                      <td>PO BOX 487</td>
+                      <td>-</td>
+                      <td>STOCKTON</td>
+                      <td>CA</td>
+                      <td>95201</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 60 -->
+                    <tr>
+                      <td>299405</td>
+                      <td>C006423</td>
+                      <td>Colusa Properties Inc.</td>
+                      <td>David W Kistle</td>
+                      <td>4746 River Rd</td>
+                      <td>-</td>
+                      <td>Colusa</td>
+                      <td>CA</td>
+                      <td>95932</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 61 -->
+                    <tr>
+                      <td>299404</td>
+                      <td>C006422</td>
+                      <td>Susan Upton</td>
+                      <td>Matthew VanWhy</td>
+                      <td>13896 14th Ave</td>
+                      <td>-</td>
+                      <td>Hanford</td>
+                      <td>CA</td>
+                      <td>93230</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 62 -->
+                    <tr>
+                      <td>299398</td>
+                      <td>C006421</td>
+                      <td>JOE TEST</td>
+                      <td>Joseph Turner</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 63 -->
+                    <tr>
+                      <td>299389</td>
+                      <td>C006420</td>
+                      <td>Jake & Colleen Cecil</td>
+                      <td>William Martin</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 64 -->
+                    <tr>
+                      <td>299381</td>
+                      <td>C006419</td>
+                      <td>Delta Education Vineyard</td>
+                      <td>Brooke Marchy</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 65 -->
+                    <tr>
+                      <td>299335</td>
+                      <td>C006418</td>
+                      <td>Vido L. Andreotti Special Needs Trust</td>
+                      <td>Steven Roland</td>
+                      <td>PO BOX 252</td>
+                      <td>-</td>
+                      <td>BUTTONWILLOW</td>
+                      <td>CA</td>
+                      <td>93206</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 66 -->
+                    <tr>
+                      <td>299307</td>
+                      <td>C006417</td>
+                      <td>Grobiero Farms</td>
+                      <td>Brooke Marchy</td>
+                      <td>PO Box 49</td>
+                      <td>-</td>
+                      <td>Grimes</td>
+                      <td>CA</td>
+                      <td>95950</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 67 -->
+                    <tr>
+                      <td>299283</td>
+                      <td>C006416</td>
+                      <td>Rebiero Brothers LLC</td>
+                      <td>Brooke Marchy</td>
+                      <td>PO Box 4038</td>
+                      <td>-</td>
+                      <td>Modesto</td>
+                      <td>CA</td>
+                      <td>95352</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 68 -->
+                    <tr>
+                      <td>299281</td>
+                      <td>C006415</td>
+                      <td>Daou Vineyards</td>
+                      <td>Lochlan Buckingham</td>
+                      <td>2777 Hidden Mountain Road</td>
+                      <td>-</td>
+                      <td>Paso Robles</td>
+                      <td>CA</td>
+                      <td>93446</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 69 -->
+                    <tr>
+                      <td>299280</td>
+                      <td>C006414</td>
+                      <td>Bebiero Brothers LLC</td>
+                      <td>-</td>
+                      <td>1519 E. Taylor Rd</td>
+                      <td>-</td>
+                      <td>Ceres</td>
+                      <td>CA</td>
+                      <td>95307</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 70 -->
+                    <tr>
+                      <td>299266</td>
+                      <td>C006413</td>
+                      <td>Mark Kampmann</td>
+                      <td>William Martin</td>
+                      <td>24790 Clark Ave</td>
+                      <td>-</td>
+                      <td>Orland</td>
+                      <td>CA</td>
+                      <td>95963</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 71 -->
+                    <tr>
+                      <td>299253</td>
+                      <td>C006412</td>
+                      <td>University of Arizona</td>
+                      <td>Joseph Turner</td>
+                      <td>888 N Euclid Ave Room 502</td>
+                      <td>-</td>
+                      <td>Tucson</td>
+                      <td>AZ</td>
+                      <td>85721</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 72 -->
+                    <tr>
+                      <td>299234</td>
+                      <td>C006411</td>
+                      <td>Union Cemetery Association</td>
+                      <td>Steven Roland</td>
+                      <td>730 E. Potomac Ave.</td>
+                      <td>-</td>
+                      <td>Bakersfield</td>
+                      <td>CA</td>
+                      <td>93307</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 73 -->
+                    <tr>
+                      <td>299171</td>
+                      <td>C006410</td>
+                      <td>Saul Hernandez</td>
+                      <td>Brooke Marchy</td>
+                      <td>10651 E Ada Avenue</td>
+                      <td>-</td>
+                      <td>Stockton</td>
+                      <td>CA</td>
+                      <td>95215</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 74 -->
+                    <tr>
+                      <td>299150</td>
+                      <td>C006409</td>
+                      <td>Baja Industrial Welding, Inc.</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 75 -->
+                    <tr>
+                      <td>299141</td>
+                      <td>C006408</td>
+                      <td>Gee Singh</td>
+                      <td>William Martin</td>
+                      <td>4495 6th Avenue</td>
+                      <td>-</td>
+                      <td>Orland</td>
+                      <td>CA</td>
+                      <td>95963</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 76 -->
+                    <tr>
+                      <td>299118</td>
+                      <td>C006407</td>
+                      <td>Terry Stowells</td>
+                      <td>-</td>
+                      <td>PO Box 5206</td>
+                      <td>-</td>
+                      <td>La Quinta</td>
+                      <td>CA</td>
+                      <td>92248</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 77 -->
+                    <tr>
+                      <td>299092</td>
+                      <td>C006406</td>
+                      <td>Sunterra Produce</td>
+                      <td>Paul Leimgruber</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 78 -->
+                    <tr>
+                      <td>299089</td>
+                      <td>C006405</td>
+                      <td>Desert Premium Farms</td>
+                      <td>Paul Leimgruber</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 79 -->
+                    <tr>
+                      <td>299086</td>
+                      <td>C006404</td>
+                      <td>Green Line Farming</td>
+                      <td>Paul Leimgruber</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 80 -->
+                    <tr>
+                      <td>299072</td>
+                      <td>C006403</td>
+                      <td>Tyson Howze</td>
+                      <td>Matthew VanWhy</td>
+                      <td>8734 7 1/2 ave</td>
+                      <td>-</td>
+                      <td>Hanford</td>
+                      <td>CA</td>
+                      <td>93230</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 81 -->
+                    <tr>
+                      <td>299068</td>
+                      <td>C006402</td>
+                      <td>Sisson Farms</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 82 -->
+                    <tr>
+                      <td>299062</td>
+                      <td>C006401</td>
+                      <td>The Burchell Nursery</td>
+                      <td>Matthew VanWhy</td>
+                      <td>6705 S. Clovis Ave</td>
+                      <td>-</td>
+                      <td>Fowler</td>
+                      <td>CA</td>
+                      <td>93625</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 83 -->
+                    <tr>
+                      <td>299043</td>
+                      <td>C006400</td>
+                      <td>Pinheiro and Deniz Partnership</td>
+                      <td>William Martin</td>
+                      <td>7735 CR 37</td>
+                      <td>-</td>
+                      <td>Glenn</td>
+                      <td>CA</td>
+                      <td>95943</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 84 -->
+                    <tr>
+                      <td>299026</td>
+                      <td>C006399</td>
+                      <td>Matthew Tweed</td>
+                      <td>Matthew VanWhy</td>
+                      <td>13970 Granite Circle</td>
+                      <td>-</td>
+                      <td>Hanford</td>
+                      <td>CA</td>
+                      <td>93230</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 85 -->
+                    <tr>
+                      <td>299021</td>
+                      <td>C006398</td>
+                      <td>ST. John Family Farms LLC</td>
+                      <td>-</td>
+                      <td>21215 Samson AVE</td>
+                      <td>-</td>
+                      <td>Corning</td>
+                      <td>CA</td>
+                      <td>96021</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 86 -->
+                    <tr>
+                      <td>299008</td>
+                      <td>C006397</td>
+                      <td>Rio Bonito Ranch</td>
+                      <td>William Martin</td>
+                      <td>PO BOX 247</td>
+                      <td>-</td>
+                      <td>Richvale</td>
+                      <td>CA</td>
+                      <td>95974</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 87 -->
+                    <tr>
+                      <td>298984</td>
+                      <td>C006396</td>
+                      <td>Happy Orchards Inc</td>
+                      <td>William Martin</td>
+                      <td>8165 White Oaks Dr</td>
+                      <td>-</td>
+                      <td>Durham</td>
+                      <td>CA</td>
+                      <td>95938</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 88 -->
+                    <tr>
+                      <td>298966</td>
+                      <td>C006395</td>
+                      <td>Catherine-Elizabeth, Inc.</td>
+                      <td>Brooke Marchy</td>
+                      <td>PO Box 317</td>
+                      <td>-</td>
+                      <td>Bodega</td>
+                      <td>CA</td>
+                      <td>94922-0317</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 89 -->
+                    <tr>
+                      <td>298957</td>
+                      <td>C006394</td>
+                      <td>Magnolia West Farms</td>
+                      <td>Amanda Daley</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 90 -->
+                    <tr>
+                      <td>298946</td>
+                      <td>C006393</td>
+                      <td>Richard O'Sullivan</td>
+                      <td>William Martin</td>
+                      <td>247 Wild Rose Circle</td>
+                      <td>-</td>
+                      <td>Chico</td>
+                      <td>CA</td>
+                      <td>95973</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 91 -->
+                    <tr>
+                      <td>298921</td>
+                      <td>C006392</td>
+                      <td>Coastal Vineyard Services</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 92 -->
+                    <tr>
+                      <td>298916</td>
+                      <td>C006391</td>
+                      <td>Venter Family Estate</td>
+                      <td>Brooke Marchy</td>
+                      <td>2144 Las Amigas Rd.</td>
+                      <td>-</td>
+                      <td>Napa</td>
+                      <td>CA</td>
+                      <td>94559</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 93 -->
+                    <tr>
+                      <td>298911</td>
+                      <td>C006390</td>
+                      <td>Waybright Orchards</td>
+                      <td>William Martin</td>
+                      <td>21420 Gaines Ln</td>
+                      <td>-</td>
+                      <td>Anderson</td>
+                      <td>CA</td>
+                      <td>96007</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 94 -->
+                    <tr>
+                      <td>298904</td>
+                      <td>C006389</td>
+                      <td>Colusa Golf & Country Club</td>
+                      <td>Patrick Stern</td>
+                      <td>PO Box 827</td>
+                      <td>-</td>
+                      <td>Colusa</td>
+                      <td>CA</td>
+                      <td>95932</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 95 -->
+                    <tr>
+                      <td>298903</td>
+                      <td>C006388</td>
+                      <td>Fantastic Farms, LLC</td>
+                      <td>Zachary Scott</td>
+                      <td>1621 E 27th St</td>
+                      <td>-</td>
+                      <td>Los Angeles</td>
+                      <td>CA</td>
+                      <td>90011</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 96 -->
+                    <tr>
+                      <td>298902</td>
+                      <td>C006387</td>
+                      <td>FFR Animas, LLC.</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 97 -->
+                    <tr>
+                      <td>298871</td>
+                      <td>C006386</td>
+                      <td>City of Colusa</td>
+                      <td>Patrick Stern</td>
+                      <td>425 Webster Street</td>
+                      <td>-</td>
+                      <td>Colusa</td>
+                      <td>CA</td>
+                      <td>95932</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 98 -->
+                    <tr>
+                      <td>298854</td>
+                      <td>C006385</td>
+                      <td>MAS Property Holdings LLC</td>
+                      <td>Brooke Marchy</td>
+                      <td>506 Couch St</td>
+                      <td>-</td>
+                      <td>Vallejo</td>
+                      <td>CA</td>
+                      <td>94560</td>
+                      <td>United States</td>
+                    </tr>
+
+                    <!-- Row 99 -->
+                    <tr>
+                      <td>298811</td>
+                      <td>C006384</td>
+                      <td>Unit B Irrigation & Drainage</td>
+                      <td>Paul Leimgruber</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+
+                    <!-- Row 100 -->
+                    <tr>
+                      <td>298809</td>
+                      <td>C006383</td>
+                      <td>Anndria Barcelona</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+    <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+    <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+    <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+    <!-- BEGIN PAGE LEVEL JS-->
+    <!-- <script src="{% static 'app/js/data-tables/dt-data-sources.min.js' %}"></script> -->
+    <!-- END PAGE LEVEL JS-->
+
+    <script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
+  </div>
+</section>

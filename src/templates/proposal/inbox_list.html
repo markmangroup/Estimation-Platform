@@ -1,0 +1,414 @@
+{% extends "base.html" %} {% load static %} {% block page_content %}
+
+<div class="email-application overflow-hidden">
+  <div class="row">
+    <div class="email-search-box w-100 p-2">
+      <div class="row ml-2">
+        <div class="email-app-menu">
+          <div class="list-group list-group-messages">
+            <a
+              href="javascript:;"
+              class="list-group-item list-group-item-action active border-0"
+            >
+              <i class="ft-inbox mr-2"></i><span>Inbox</span>
+              <span class="badge bg-light-secondary badge-pill float-right mx-1"
+                >8</span
+              >
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="media px-2 d-flex align-items-center">
+        <span
+          class="email-app-sidebar-toggle ft-menu cursor-pointer font-large-1 mr-3 d-xl-none"
+        ></span>
+        <div class="media-body pr-1">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search for messages..."
+          />
+        </div>
+      </div>
+    </div>
+    <div class="email-app-content-area w-100">
+      <div class="email-app-list-mails p-0">
+        <div class="email-app-list">
+          <div id="users-list">
+            <div class="list-group">
+              <div class="users-list-padding">
+                <a
+                  class="list-group-item list-group-item-action border-0"
+                  data-target="email-content-1"
+                >
+                  <div class="media email-list-text p-0">
+                    <span class="avatar bg-info mr-2">
+                      <span class="avatar-content">T</span>
+                    </span>
+                    <div class="media-body">
+                      <h6 class="list-group-item-heading">
+                        <span>Tonny Deep</span>
+                        <span class="float-right">
+                          <span class="font-small-2 grey darken-1 text-bold-400"
+                            >4:14 AM</span
+                          >
+                        </span>
+                      </h6>
+                      <p class="list-group-item-text text-truncate">
+                        Definition and Application
+                      </p>
+                      <p class="list-group-item-text">
+                        A flexible pipe is a du...
+                      </p>
+                    </div>
+                  </div>
+                </a>
+                <a
+                  class="list-group-item list-group-item-action border-0"
+                  data-target="email-content-2"
+                >
+                  <div class="media email-list-text p-0">
+                    <span class="avatar bg-danger mr-2">
+                      <span class="avatar-content">L</span>
+                    </span>
+                    <div class="media-body">
+                      <h6 class="list-group-item-heading">
+                        <span>Louis Welch</span>
+                        <span class="float-right">
+                          <span class="font-small-2 grey darken-1 text-bold-400"
+                            >2:15 AM</span
+                          >
+                        </span>
+                      </h6>
+                      <p class="list-group-item-text text-truncate">
+                        Trends in Pipe and ...
+                      </p>
+                      <p class="list-group-item-text">
+                        What are the emerging...
+                      </p>
+                    </div>
+                  </div>
+                </a>
+                <a
+                  class="list-group-item list-group-item-action border-0"
+                  data-target="email-content-3"
+                >
+                  <div class="media email-list-text p-0">
+                    <span class="avatar bg-warning mr-2">
+                      <span class="avatar-content">E</span>
+                    </span>
+                    <div class="media-body">
+                      <h6 class="list-group-item-heading">
+                        <span>Envato Market</span>
+                        <span class="float-right">
+                          <span class="font-small-2 grey darken-1 text-bold-400"
+                            >11:18 PM</span
+                          >
+                        </span>
+                      </h6>
+                      <p class="list-group-item-text text-truncate">
+                        Pipe and Pump Industry Ins...
+                      </p>
+                      <p class="list-group-item-text">
+                        What insights can be g...
+                      </p>
+                    </div>
+                  </div>
+                </a>
+                <a
+                  class="list-group-item list-group-item-action border-0"
+                  data-target="email-content-4"
+                >
+                  <div class="media email-list-text p-0">
+                    <span class="avatar bg-success mr-2">
+                      <span class="avatar-content">H</span>
+                    </span>
+                    <div class="media-body">
+                      <h6 class="list-group-item-heading">
+                        <span>Heather Howell</span>
+                        <span class="float-right">
+                          <span class="font-small-2 grey darken-1 text-bold-400"
+                            >15 May</span
+                          >
+                        </span>
+                      </h6>
+                      <p class="list-group-item-text text-truncate">
+                        Key Developments in Pi...
+                      </p>
+                      <p class="list-group-item-text">
+                        What recent engineering...
+                      </p>
+                    </div>
+                  </div>
+                </a>
+                <a
+                  class="list-group-item list-group-item-action border-0"
+                  data-target="email-content-5"
+                >
+                  <div class="media email-list-text p-0">
+                    <span class="avatar bg-warning mr-2">
+                      <span class="avatar-content">V</span>
+                    </span>
+                    <div class="media-body">
+                      <h6 class="list-group-item-heading">
+                        <span>Vincent Nelson</span>
+                        <span class="float-right">
+                          <span class="font-small-2 grey darken-1 text-bold-400"
+                            >11 May</span
+                          >
+                        </span>
+                      </h6>
+                      <p class="list-group-item-text text-truncate">
+                        <i class="ft-check primary font-small-2"></i>Innovations
+                        Driving Pipe...
+                      </p>
+                      <p class="list-group-item-text">
+                        How are recent innovati...
+                      </p>
+                    </div>
+                  </div>
+                </a>
+                <a
+                  class="list-group-item list-group-item-action border-0"
+                  data-target="email-content-6"
+                >
+                  <div class="media email-list-text p-0">
+                    <span class="avatar bg-info mr-2">
+                      <span class="avatar-content">E</span>
+                    </span>
+                    <div class="media-body">
+                      <h6 class="list-group-item-heading">
+                        <span>Elizabeth Elliott</span>
+                        <span class="float-right">
+                          <span class="font-small-2 grey darken-1 text-bold-400"
+                            >8 May</span
+                          >
+                        </span>
+                      </h6>
+                      <p class="list-group-item-text text-truncate">
+                        Harnessing the Po...
+                      </p>
+                      <p class="list-group-item-text">How are cutting-edg...</p>
+                    </div>
+                  </div>
+                </a>
+                <a
+                  class="list-group-item list-group-item-action border-0"
+                  data-target="email-content-7"
+                >
+                  <div class="media email-list-text p-0">
+                    <span class="avatar bg-success mr-2">
+                      <span class="avatar-content">H</span>
+                    </span>
+                    <div class="media-body">
+                      <h6 class="list-group-item-heading">
+                        <span>Heather Howell</span>
+                        <span class="float-right">
+                          <span class="font-small-2 grey darken-1 text-bold-400"
+                            >15 Mar</span
+                          >
+                        </span>
+                      </h6>
+                      <p class="list-group-item-text text-truncate">
+                        Trends Reshaping...
+                      </p>
+                      <p class="list-group-item-text">What emerging tre...</p>
+                    </div>
+                  </div>
+                </a>
+                <a
+                  class="list-group-item list-group-item-action border-0"
+                  data-target="email-content-8"
+                >
+                  <div class="media email-list-text p-0">
+                    <span class="avatar bg-warning mr-2">
+                      <span class="avatar-content">V</span>
+                    </span>
+                    <div class="media-body">
+                      <h6 class="list-group-item-heading">
+                        <span>Vincent Nelson</span>
+                        <span class="float-right">
+                          <span class="font-small-2 grey darken-1 text-bold-400"
+                            >11 Feb</span
+                          >
+                        </span>
+                      </h6>
+                      <p class="list-group-item-text text-truncate">
+                        <i class="ft-check primary font-small-2"></i>The
+                        Evolution of Pi...
+                      </p>
+                      <p class="list-group-item-text">
+                        How are innovative pip...
+                      </p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="email-app-mail-content" id="email-content-1">
+        <div class="email-app-mail-content-detail px-4 py-3 py-md-1">
+          <div class="email-app-title card-body px-0">
+            <h3 class="list-group-item-heading">Definition and Application</h3>
+            <p class="list-group-item-text">
+              A flexible pipe is a durable conduit designed to transport fluids
+              or gases in situations where rigid pipes are impractical, often
+              used in offshore oil and gas extraction operations.
+            </p>
+          </div>
+          <div class="email-app-text-action card-content"></div>
+        </div>
+      </div>
+      <div class="email-app-mail-content" id="email-content-2">
+        <div class="email-app-mail-content-detail px-4 py-3 py-md-1">
+          <div class="email-app-title card-body px-0">
+            <h3 class="list-group-item-heading">
+              Trends in Pipe and Pump Technologies
+            </h3>
+            <p class="list-group-item-text">
+              What are the emerging trends and innovations driving the evolution
+              of pipe and pump technologies, and how do they address challenges
+              such as efficiency, reliability, and environmental sustainability?
+            </p>
+          </div>
+          <div class="email-app-text-action card-content"></div>
+        </div>
+      </div>
+      <div class="email-app-mail-content" id="email-content-3">
+        <div class="email-app-mail-content-detail px-4 py-3 py-md-1">
+          <div class="email-app-title card-body px-0">
+            <h3 class="list-group-item-heading">
+              Pipe and Pump Industry Insights
+            </h3>
+            <p class="list-group-item-text">
+              What insights can be gained from current developments in the pipe
+              and pump industry, and how are they reshaping infrastructure,
+              resource management, and industrial processes?
+            </p>
+          </div>
+          <div class="email-app-text-action card-content"></div>
+        </div>
+      </div>
+      <div class="email-app-mail-content" id="email-content-4">
+        <div class="email-app-mail-content-detail px-4 py-3 py-md-1">
+          <div class="email-app-title card-body px-0">
+            <h3 class="list-group-item-heading">
+              Key Developments in Pipe and Pump Engineering
+            </h3>
+            <p class="list-group-item-text">
+              What recent engineering breakthroughs and advancements in pipe and
+              pump technologies are enhancing performance, durability, and
+              safety standards across various sectors?
+            </p>
+          </div>
+          <div class="email-app-text-action card-content"></div>
+        </div>
+      </div>
+      <div class="email-app-mail-content" id="email-content-5">
+        <div class="email-app-mail-content-detail px-4 py-3 py-md-1">
+          <div class="email-app-title card-body px-0">
+            <h3 class="list-group-item-heading">
+              Innovations Driving Pipe and Pump Sector Growth
+            </h3>
+            <p class="list-group-item-text">
+              How are recent innovations and market trends driving growth and
+              transformation in the pipe and pump industry, and what
+              opportunities do they present for stakeholders?
+            </p>
+          </div>
+          <div class="email-app-text-action card-content"></div>
+        </div>
+      </div>
+      <div class="email-app-mail-content" id="email-content-6">
+        <div class="email-app-mail-content-detail px-4 py-3 py-md-1">
+          <div class="email-app-title card-body px-0">
+            <h3 class="list-group-item-heading">
+              Harnessing the Power of Pipe and Pump Innovations
+            </h3>
+            <p class="list-group-item-text">
+              How are cutting-edge technologies in the pipe and pump sector
+              optimizing resource utilization, reducing energy consumption, and
+              improving operational efficiency?
+            </p>
+          </div>
+          <div class="email-app-text-action card-content"></div>
+        </div>
+      </div>
+      <div class="email-app-mail-content" id="email-content-7">
+        <div class="email-app-mail-content-detail px-4 py-3 py-md-1">
+          <div class="email-app-title card-body px-0">
+            <h3 class="list-group-item-heading">
+              Trends Reshaping the Pipe and Pump Landscape
+            </h3>
+            <p class="list-group-item-text">
+              What emerging trends and technological advancements are shaping
+              the future of pipelines and pumps, and how are they influencing
+              infrastructure development and management strategies?
+            </p>
+          </div>
+          <div class="email-app-text-action card-content"></div>
+        </div>
+      </div>
+      <div class="email-app-mail-content" id="email-content-8">
+        <div class="email-app-mail-content-detail px-4 py-3 py-md-1">
+          <div class="email-app-title card-body px-0">
+            <h3 class="list-group-item-heading">
+              The Evolution of Pipe and Pump Solutions
+            </h3>
+            <p class="list-group-item-text">
+              How are innovative pipe and pump solutions adapting to meet
+              evolving industry demands, regulatory requirements, and
+              sustainability goals, and what impact do they have on global
+              markets?
+            </p>
+          </div>
+          <div class="email-app-text-action card-content"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Get all list items
+  const listItems = document.querySelectorAll(".list-group-item");
+
+  // Function to handle click on list item
+  function handleListItemClick(event) {
+    // Remove selected-email class from all list items
+    listItems.forEach((item) => {
+      item.classList.remove("selected-email");
+    });
+
+    // Add selected-email class to the clicked item
+    event.currentTarget.classList.add("selected-email");
+
+    // Get the data-target attribute value
+    const targetId = event.currentTarget.getAttribute("data-target");
+
+    // Hide all email content blocks
+    const emailContents = document.querySelectorAll(".email-app-mail-content");
+    emailContents.forEach((content) => {
+      content.style.display = "none";
+    });
+
+    // Show the corresponding email content block
+    const targetContent = document.getElementById(targetId);
+    if (targetContent) {
+      targetContent.style.display = "block";
+    }
+  }
+
+  // Add click event listener to each list item
+  listItems.forEach((item) => {
+    item.addEventListener("click", handleListItemClick);
+  });
+</script>
+
+<script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+<script src="{% static 'app/js/app-email.min.js' %}"></script>
+<script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+<script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+{% endblock page_content%}

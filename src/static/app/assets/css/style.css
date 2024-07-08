@@ -1,0 +1,157 @@
+/*================================================================================
+	Item Name: Apex - Angular 4 Bootstrap Admin Template
+	Version: 1.0
+	Author: PIXINVENT
+	Author URL: http://www.themeforest.net/user/pixinvent
+================================================================================
+
+NOTE:
+------
+PLACE HERE YOUR OWN SCSS CODES AND IF NEEDED, OVERRIDE THE STYLES FROM THE OTHER STYLESHEETS.
+WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BETTER LIKE THIS.  */
+.gap-3 {
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+
+textarea {
+  width: 100%;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  padding: 10px;
+  resize: none;
+  margin: 15px;
+  transition: border-color 0.3s ease-in-out;
+}
+
+textarea:focus {
+  border-color: black;
+  outline: none;
+}
+
+.generate_estimate-sticky-task {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background-color: #fff;
+}
+
+.generate_estimate-sticky-description {
+  position: sticky;
+  left: 8em;
+  z-index: 2;
+  background-color: #fff;
+}
+
+/* Hide the table by default */
+#MismatchedProducts {
+  display: none;
+}
+
+/* Define print-specific styles */
+@media print {
+  #MismatchedProducts {
+    display: table; /* Show the table when printing */
+  }
+}
+
+/* Hide the table by default */
+#NetSuiteProducts {
+  display: none;
+}
+
+/* Define print-specific styles */
+@media print {
+  #NetSuiteProducts {
+    display: table; /* Show the table when printing */
+  }
+}
+
+/* Hide the table by default */
+#QuotedPriceProducts {
+  display: none;
+}
+
+/* Define print-specific styles */
+@media print {
+  #QuotedPriceProducts {
+    display: table; /* Show the table when printing */
+  }
+}
+
+.sticky-wrapper {
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 1000;
+  width: 100%;
+}
+
+.opportunity_multiline_truncate {
+  display: -webkit-box;
+  max-width: 150px;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.choose_proposal_btn {
+  padding: 3px 15px;
+  background: #c2b9a3;
+  color: #000;
+  font-weight: 500;
+  border-radius: 30px 30px 0 30px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  transition: 0.2s linear;
+}
+.choose_proposal_btn:hover {
+  background: #aba391;
+  color: #2e2e2e;
+  border-radius: 0 0 30px 0;
+  transition: 0.2s linear;
+}
+
+.choose_calculator_btn {
+  margin: 10px 0;
+  padding: 3px 15px;
+  background: #c2b9a3;
+  color: #000;
+  font-weight: 500;
+  border-radius: 30px 30px 30px 0;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  transition: 0.2s linear;
+}
+.choose_calculator_btn:hover {
+  background: #aba391;
+  color: #2e2e2e;
+  border-radius: 0 0 0 30px;
+  transition: 0.2s linear;
+}
+
+.circle_border {
+  width: 25rem !important;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  transition: box-shadow 0.5s ease;
+  cursor: pointer;
+}
+.circle_border:hover {
+  box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px,
+    rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
+}
+.wizard > .steps > ul > li a {
+  margin-bottom: 0px;
+}
+
+.wizard > .steps > ul > li {
+  line-height: 1;
+}
+
+.timeline-center .timeline-item:nth-child(even) {
+  padding: 0 35px 0px 0;
+}

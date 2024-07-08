@@ -1,0 +1,1059 @@
+{% load static %}
+
+<div class="row">
+  <div class="col-12">
+    <div class="content-header">User List</div>
+  </div>
+</div>
+
+<!-- Wizard Starts -->
+<section id="multiple-select2">
+  <div class="row">
+    <div class="col-xl-12 col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="float-right">
+            <div class="row mb-1">
+              <!-- Permission Matrix Starts -->
+              <button
+                type="button"
+                class="btn bg-light-primary ml-1"
+                data-toggle="modal"
+                data-target="#permission_matrix"
+              >
+                <i class="fa ft-anchor mr-1"></i>Permission Matrix
+              </button>
+
+              <div
+                class="modal fade text-left"
+                id="permission_matrix"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="myModalLabel33"
+                aria-hidden="true"
+                data-backdrop="false"
+              >
+                <div
+                  class="modal-dialog modal-lg modal-dialog-centered"
+                  role="document"
+                >
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h4 class="modal-title">Permission Matrix</h4>
+                      <button
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                      >
+                        <span aria-hidden="true"
+                          ><i class="ft-x font-medium-2 text-bold-700"></i
+                        ></span>
+                      </button>
+                    </div>
+                    <form action="#">
+                      <div class="modal-body">
+                        <div class="card-content">
+                          <div class="card-body">
+                            <ul class="nav nav-tabs">
+                              <li class="nav-item">
+                                <a
+                                  class="nav-link active"
+                                  id="baseIcon-tab1"
+                                  data-toggle="tab"
+                                  aria-controls="tabIcon1"
+                                  href="#tabIcon1"
+                                  aria-expanded="true"
+                                  ><i class="fa fa-user mr-1"></i>Users</a
+                                >
+                              </li>
+                              <li class="nav-item">
+                                <a
+                                  class="nav-link"
+                                  id="baseIcon-tab2"
+                                  data-toggle="tab"
+                                  aria-controls="tabIcon2"
+                                  href="#tabIcon2"
+                                  aria-expanded="false"
+                                  ><i class="fa fa-home mr-1"></i>Warehouse
+                                  List</a
+                                >
+                              </li>
+                              <li class="nav-item">
+                                <a
+                                  class="nav-link"
+                                  id="baseIcon-tab3"
+                                  data-toggle="tab"
+                                  aria-controls="tabIcon3"
+                                  href="#tabIcon3"
+                                  aria-expanded="false"
+                                  ><i class="fa fa-users mr-1"></i>Customer
+                                  List</a
+                                >
+                              </li>
+                              <li class="nav-item">
+                                <a
+                                  class="nav-link"
+                                  id="baseIcon-tab4"
+                                  data-toggle="tab"
+                                  aria-controls="tabIcon4"
+                                  href="#tabIcon4"
+                                  aria-expanded="false"
+                                  ><i class="fa fa-list mr-1"></i>Product
+                                  List</a
+                                >
+                              </li>
+                              <li class="nav-item">
+                                <a
+                                  class="nav-link"
+                                  id="baseIcon-tab5"
+                                  data-toggle="tab"
+                                  aria-controls="tabIcon5"
+                                  href="#tabIcon5"
+                                  aria-expanded="false"
+                                  ><i class="fa fa-shopping-bag mr-1"></i>Order
+                                  List</a
+                                >
+                              </li>
+                            </ul>
+                            <div class="tab-content">
+                              <div
+                                role="tabpanel"
+                                class="tab-pane active"
+                                id="tabIcon1"
+                                aria-expanded="true"
+                                aria-labelledby="baseIcon-tab1"
+                              >
+                                <div class="table-responsive">
+                                  <table
+                                    class="table table-striped table-bordered"
+                                  >
+                                    <thead>
+                                      <tr>
+                                        <th>Role</th>
+                                        <th>Create</th>
+                                        <th>Read</th>
+                                        <th>Update</th>
+                                        <th>Delete</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td class="text-nowrap">Admin</td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-nowrap">
+                                          Warehouse Manager
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input type="checkbox" />
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-nowrap">Gate Keeper</td>
+                                        <td><input type="checkbox" /></td>
+                                        <td><input type="checkbox" /></td>
+                                        <td><input type="checkbox" /></td>
+                                        <td><input type="checkbox" /></td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-nowrap">
+                                          Inspection Engineer
+                                        </td>
+                                        <td><input type="checkbox" /></td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td><input type="checkbox" /></td>
+                                        <td><input type="checkbox" /></td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                              <div
+                                class="tab-pane"
+                                id="tabIcon2"
+                                aria-labelledby="baseIcon-tab2"
+                              >
+                                <div class="table-responsive">
+                                  <table
+                                    class="table table-striped table-bordered"
+                                  >
+                                    <thead>
+                                      <tr>
+                                        <th>Role</th>
+                                        <th>Create</th>
+                                        <th>Read</th>
+                                        <th>Update</th>
+                                        <th>Delete</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td class="text-nowrap">Admin</td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-nowrap">
+                                          Warehouse Manager
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-nowrap">Gate Keeper</td>
+                                        <td><input type="checkbox" /></td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td><input type="checkbox" /></td>
+                                        <td><input type="checkbox" /></td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-nowrap">
+                                          Inspection Engineer
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td><input type="checkbox" /></td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                              <div
+                                class="tab-pane"
+                                id="tabIcon3"
+                                aria-labelledby="baseIcon-tab3"
+                              >
+                                <div class="table-responsive">
+                                  <table
+                                    class="table table-striped table-bordered"
+                                  >
+                                    <thead>
+                                      <tr>
+                                        <th>Role</th>
+                                        <th>Create</th>
+                                        <th>Read</th>
+                                        <th>Update</th>
+                                        <th>Delete</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td class="text-nowrap">Admin</td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-nowrap">
+                                          Warehouse Manager
+                                        </td>
+                                        <td><input type="checkbox" /></td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td><input type="checkbox" /></td>
+                                        <td><input type="checkbox" /></td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-nowrap">Gate Keeper</td>
+                                        <td><input type="checkbox" /></td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td><input type="checkbox" /></td>
+                                        <td><input type="checkbox" /></td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-nowrap">
+                                          Inspection Engineer
+                                        </td>
+                                        <td><input type="checkbox" /></td>
+                                        <td><input type="checkbox" /></td>
+                                        <td><input type="checkbox" /></td>
+                                        <td><input type="checkbox" /></td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                              <div
+                                class="tab-pane"
+                                id="tabIcon4"
+                                aria-labelledby="baseIcon-tab4"
+                              >
+                                <div class="table-responsive">
+                                  <table
+                                    class="table table-striped table-bordered"
+                                  >
+                                    <thead>
+                                      <tr>
+                                        <th>Role</th>
+                                        <th>Create</th>
+                                        <th>Read</th>
+                                        <th>Update</th>
+                                        <th>Delete</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td class="text-nowrap">Admin</td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-nowrap">
+                                          Warehouse Manager
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input type="checkbox" />
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-nowrap">Gate Keeper</td>
+                                        <td><input type="checkbox" /></td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td><input type="checkbox" /></td>
+                                        <td><input type="checkbox" /></td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-nowrap">
+                                          Inspection Engineer
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                              <div
+                                class="tab-pane"
+                                id="tabIcon5"
+                                aria-labelledby="baseIcon-tab5"
+                              >
+                                <div class="table-responsive">
+                                  <table
+                                    class="table table-striped table-bordered"
+                                  >
+                                    <thead>
+                                      <tr>
+                                        <th>Role</th>
+                                        <th>Create</th>
+                                        <th>Read</th>
+                                        <th>Update</th>
+                                        <th>Delete</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td class="text-nowrap">Admin</td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-nowrap">
+                                          Warehouse Manager
+                                        </td>
+                                        <td><input type="checkbox" /></td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td><input type="checkbox" /></td>
+                                        <td><input type="checkbox" /></td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-nowrap">Gate Keeper</td>
+                                        <td><input type="checkbox" /></td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td><input type="checkbox" /></td>
+                                        <td><input type="checkbox" /></td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-nowrap">
+                                          Inspection Engineer
+                                        </td>
+                                        <td><input type="checkbox" /></td>
+                                        <td><input type="checkbox" /></td>
+                                        <td><input type="checkbox" /></td>
+                                        <td><input type="checkbox" /></td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                              <div
+                                class="tab-pane"
+                                id="tabIcon6"
+                                aria-labelledby="baseIcon-tab6"
+                              >
+                                <div class="table-responsive">
+                                  <table
+                                    class="table table-striped table-bordered"
+                                  >
+                                    <thead>
+                                      <tr>
+                                        <th>Role</th>
+                                        <th>Create</th>
+                                        <th>Read</th>
+                                        <th>Update</th>
+                                        <th>Delete</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td class="text-nowrap">Admin</td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-nowrap">
+                                          Warehouse Manager
+                                        </td>
+                                        <td><input type="checkbox" /></td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td><input type="checkbox" /></td>
+                                        <td><input type="checkbox" /></td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-nowrap">Gate Keeper</td>
+                                        <td><input type="checkbox" /></td>
+                                        <td>
+                                          <input checked type="checkbox" />
+                                        </td>
+                                        <td><input type="checkbox" /></td>
+                                        <td><input type="checkbox" /></td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-nowrap">
+                                          Inspection Engineer
+                                        </td>
+                                        <td><input type="checkbox" /></td>
+                                        <td><input type="checkbox" /></td>
+                                        <td><input type="checkbox" /></td>
+                                        <td><input type="checkbox" /></td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <input
+                          type="reset"
+                          class="btn bg-light-secondary"
+                          data-dismiss="modal"
+                          value="Close"
+                        />
+                        <input
+                          type="submit"
+                          class="btn btn-primary"
+                          data-dismiss="modal"
+                          value="Save"
+                        />
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <!-- Permission Matrix Ends -->
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-content">
+            <div class="table-responsive">
+              <table
+                class="table table-striped table-bordered zero-configuration"
+              >
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Contact Number</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>James Peter</td>
+                    <td>jamespeter@laurel.com</td>
+                    <td>+18245456456</td>
+                    <td>
+                      <span class="badge bg-light-success">Gate Keeper</span>
+                    </td>
+                    <td>
+                      <a
+                        data-toggle="modal"
+                        data-target="#update_user"
+                        href="javascript:;"
+                        class="success p-0"
+                      >
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Emily Johnson</td>
+                    <td>emilyjohnson@laurel.com</td>
+                    <td>+19876543210</td>
+                    <td>
+                      <span class="badge bg-light-success">Gate Keeper</span>
+                    </td>
+
+                    <td>
+                      <a
+                        data-toggle="modal"
+                        data-target="#update_user"
+                        href="javascript:;"
+                        class="success p-0"
+                      >
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Michael Brown</td>
+                    <td>michaelbrown@laurel.com</td>
+                    <td>+16504321098</td>
+                    <td>
+                      <span class="badge bg-light-danger"
+                        >Warehouse Manager</span
+                      >
+                    </td>
+
+                    <td>
+                      <a
+                        data-toggle="modal"
+                        data-target="#update_user"
+                        href="javascript:;"
+                        class="success p-0"
+                      >
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Nathan Anderson</td>
+                    <td>nathananderson@laurel.com</td>
+                    <td>+15550987654</td>
+                    <td>
+                      <span class="badge bg-light-info"
+                        >Inspection Engineer</span
+                      >
+                    </td>
+
+                    <td>
+                      <a
+                        data-toggle="modal"
+                        data-target="#update_user"
+                        href="javascript:;"
+                        class="success p-0"
+                      >
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Sarah Smith</td>
+                    <td>sarahsmith@laurel.com</td>
+                    <td>+14058674321</td>
+                    <td>
+                      <span class="badge bg-light-primary">Admin</span>
+                    </td>
+
+                    <td>
+                      <a
+                        data-toggle="modal"
+                        data-target="#update_user"
+                        href="javascript:;"
+                        class="success p-0"
+                      >
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>John Williams</td>
+                    <td>johnwilliams@laurel.com</td>
+                    <td>+12098675432</td>
+                    <td>
+                      <span class="badge bg-light-info"
+                        >Inspection Engineer</span
+                      >
+                    </td>
+
+                    <td>
+                      <a
+                        data-toggle="modal"
+                        data-target="#update_user"
+                        href="javascript:;"
+                        class="success p-0"
+                      >
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Amy Davis</td>
+                    <td>amydavis@laurel.com</td>
+                    <td>+17894562301</td>
+                    <td>
+                      <span class="badge bg-light-danger"
+                        >Warehouse Manager</span
+                      >
+                    </td>
+
+                    <td>
+                      <a
+                        data-toggle="modal"
+                        data-target="#update_user"
+                        href="javascript:;"
+                        class="success p-0"
+                      >
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>David Miller</td>
+                    <td>davidmiller@laurel.com</td>
+                    <td>+15678901234</td>
+                    <td>
+                      <span class="badge bg-light-primary">Admin</span>
+                    </td>
+
+                    <td>
+                      <a
+                        data-toggle="modal"
+                        data-target="#update_user"
+                        href="javascript:;"
+                        class="success p-0"
+                      >
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Emma Wilson</td>
+                    <td>emmawilson@laurel.com</td>
+                    <td>+13456789012</td>
+                    <td>
+                      <span class="badge bg-light-info"
+                        >Inspection Engineer</span
+                      >
+                    </td>
+
+                    <td>
+                      <a
+                        data-toggle="modal"
+                        data-target="#update_user"
+                        href="javascript:;"
+                        class="success p-0"
+                      >
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Olivia Jones</td>
+                    <td>oliviajones@laurel.com</td>
+                    <td>+18901234567</td>
+                    <td>
+                      <span class="badge bg-light-danger"
+                        >Warehouse Manager</span
+                      >
+                    </td>
+
+                    <td>
+                      <a
+                        data-toggle="modal"
+                        data-target="#update_user"
+                        href="javascript:;"
+                        class="success p-0"
+                      >
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>William Taylor</td>
+                    <td>williamtaylor@laurel.com</td>
+                    <td>+17654329870</td>
+                    <td>
+                      <span class="badge bg-light-primary">Admin</span>
+                    </td>
+
+                    <td>
+                      <a
+                        data-toggle="modal"
+                        data-target="#update_user"
+                        href="javascript:;"
+                        class="success p-0"
+                      >
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Isabella Brown</td>
+                    <td>isabellabrown@laurel.com</td>
+                    <td>+19876543210</td>
+                    <td>
+                      <span class="badge bg-light-info"
+                        >Inspection Engineer</span
+                      >
+                    </td>
+
+                    <td>
+                      <a
+                        data-toggle="modal"
+                        data-target="#update_user"
+                        href="javascript:;"
+                        class="success p-0"
+                      >
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Sophia Garcia</td>
+                    <td>sophiagarcia@laurel.com</td>
+                    <td>+12345678901</td>
+                    <td>
+                      <span class="badge bg-light-info"
+                        >Inspection Engineer</span
+                      >
+                    </td>
+
+                    <td>
+                      <a
+                        data-toggle="modal"
+                        data-target="#update_user"
+                        href="javascript:;"
+                        class="success p-0"
+                      >
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Liam Martinez</td>
+                    <td>liammartinez@laurel.com</td>
+                    <td>+19876543210</td>
+                    <td>
+                      <span class="badge bg-light-danger"
+                        >Warehouse Manager</span
+                      >
+                    </td>
+
+                    <td>
+                      <a
+                        data-toggle="modal"
+                        data-target="#update_user"
+                        href="javascript:;"
+                        class="success p-0"
+                      >
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Chloe Rodriguez</td>
+                    <td>chloerodriguez@laurel.com</td>
+                    <td>+17654329870</td>
+                    <td>
+                      <span class="badge bg-light-primary">Admin</span>
+                    </td>
+
+                    <td>
+                      <a
+                        data-toggle="modal"
+                        data-target="#update_user"
+                        href="javascript:;"
+                        class="success p-0"
+                      >
+                        <i class="ft-edit font-medium-3 mr-2"></i>
+                      </a>
+                      <a href="javascript:;" class="danger p-0">
+                        <i class="ft-trash-2 font-medium-3"></i>
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade text-left"
+      id="update_user"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="myModalLabel33"
+      aria-hidden="true"
+      data-backdrop="false"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Update User</h4>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true"
+                ><i class="ft-x font-medium-2 text-bold-700"></i
+              ></span>
+            </button>
+          </div>
+          <form action="#">
+            <div class="modal-body">
+              <div class="card-content">
+                <label>User Name: </label>
+                <div class="form-group">
+                  <input
+                    type="text"
+                    placeholder="User Name"
+                    class="form-control"
+                    value="Amy Davis"
+                  />
+                </div>
+                <label>Email: </label>
+                <div class="form-group">
+                  <input
+                    type="email"
+                    placeholder="email"
+                    class="form-control"
+                    value="amydavis@laurel.com"
+                  />
+                </div>
+                <label>Contact No: </label>
+                <div class="form-group">
+                  <input
+                    type="text"
+                    placeholder="Contact No"
+                    class="form-control"
+                    value="+17894562301"
+                  />
+                </div>
+                <label>Role: </label>
+                <div class="form-group">
+                  <select class="form-control">
+                    <option value="Admin">Admin</option>
+                    <option value="Gate Keeper">Gate Keeper</option>
+                    <option value="Inspection Engineer">
+                      Inspection Engineer
+                    </option>
+                    <option selected value="Warehouse Manager">
+                      Warehouse Manager
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <input
+                type="reset"
+                class="btn bg-light-secondary"
+                data-dismiss="modal"
+                value="Close"
+              />
+              <input
+                type="submit"
+                class="btn btn-primary"
+                data-dismiss="modal"
+                value="Save"
+              />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+    <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+    <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+    <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+    <script src="{% static 'vendors/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'app/js/select2.min.js' %}"></script>
+    <!-- BEGIN PAGE LEVEL JS-->
+    <!-- <script src="{% static 'app/js/data-tables/dt-data-sources.min.js' %}"></script> -->
+    <!-- END PAGE LEVEL JS-->
+
+    <script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
+  </div>
+</section>

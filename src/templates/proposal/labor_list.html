@@ -1,0 +1,230 @@
+<button
+  type="button"
+  class="btn bg-light-primary mb-3"
+  data-backdrop="false"
+  data-toggle="modal"
+  data-target="#addLabor"
+>
+  <em class="ft-plus font-medium-5"></em> Add Labor
+</button>
+<div class="table-responsive">
+  <table
+    id="laborTableBody"
+    class="table table-striped table-bordered zero-configuration"
+  >
+    <thead>
+      <tr>
+        <th>Labor Task</th>
+        <th>Description</th>
+        <th>Task Code</th>
+        <th>Target GP</th>
+        <th>Quantity</th>
+        <th>Units</th>
+        <th>Standard Cost</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Row 1 -->
+      <tr id="newLabor">
+        <td>
+          <select class="select2 form-control">
+            <option selected disabled>Select Labor Task</option>
+            <option value="Air Vent Assembly">Air Vent Assembly"</option>
+            <option value="Air Vent Installation">
+              Air Vent Installation"
+            </option>
+            <option value="Automation: Backflush, Clock, Injector">
+              Automation: Backflush, Clock, Injector"
+            </option>
+            <option
+              value="Clean and Re-nozzle Existing Impact Sprinklers 1 sp/min"
+            >
+              Clean and Re-nozzle Existing Impact Sprinklers 1 sp/min"
+            </option>
+            <option value="Concrete Pad: Form and Pour">
+              Concrete Pad: Form and Pour"
+            </option>
+            <option value="Connect to Existing Pipeline">
+              Connect to Existing Pipeline"
+            </option>
+            <option value="Design Labor">Design Labor"</option>
+            <option value="Fab Part ">Fab Part "</option>
+            <option value="Filter Installation">Filter Installation"</option>
+            <option value="Freight - Hose Coils">Freight - Hose Coils"</option>
+            <option value="Freight - Hose Reels">Freight - Hose Reels"</option>
+            <option value="Freight General">Freight General"</option>
+            <option value="Hose Flush and Start-Up Only">
+              Hose Flush and Start-Up Only"
+            </option>
+            <option value="Injector Installation - Pump & Venturi">
+              Injector Installation - Pump & Venturi"
+            </option>
+            <option value="Install Crossing Under Pipes">
+              Install Crossing Under Pipes"
+            </option>
+            <option value="Install Frost - Plowing">
+              Install Frost - Plowing"
+            </option>
+            <option value="Install Risers Outside End Feed-Hand Dig">
+              Install Risers Outside End Feed-Hand Dig"
+            </option>
+            <option value="Install Solid Set - Plowing">
+              Install Solid Set - Plowing"
+            </option>
+            <option value="Install Solid Set Plow - End of Lateral">
+              Install Solid Set Plow - End of Lateral"
+            </option>
+            <option value="Install Solid Set - Trenching">
+              Install Solid Set - Trenching"
+            </option>
+            <option value="Installation of Micro Sprinklers">
+              Installation of Micro Sprinklers"
+            </option>
+            <option value="PRV Assembly">PRV Assembly"</option>
+            <option value="PRV Installation">PRV Installation"</option>
+            <option value="Pump Installation">Pump Installation"</option>
+            <option value="Punch on Emitters">Punch on Emitters"</option>
+            <option value="Vineyard - Roll & Position Hose without End Post">
+              Vineyard - Roll & Position Hose without End Post"
+            </option>
+            <option value="Vineyard - Roll & Position Hose with End Post">
+              Vineyard - Roll & Position Hose with End Post"
+            </option>
+            <option value="Orchard - Roll & Position Hose">
+              Orchard - Roll & Position Hose"
+            </option>
+            <option value="Trench - Large Excavator">
+              Trench - Large Excavator"
+            </option>
+            <option value="Trench - Lrg Chain">Trench - Lrg Chain"</option>
+            <option value="Trench - Lrg Chain Double Pipe">
+              Trench - Lrg Chain Double Pipe"
+            </option>
+            <option value="Trench - Lrg Chain Triple Pipe">
+              Trench - Lrg Chain Triple Pipe"
+            </option>
+            <option value="Trench - Wheel Digger & Dozer">
+              Trench - Wheel Digger & Dozer"
+            </option>
+            <option value="Trench - Wheel Digger Double Pipe">
+              Trench - Wheel Digger Double Pipe"
+            </option>
+            <option value="Trench - Wheel Digger Triple Pipe">
+              Trench - Wheel Digger Triple Pipe"
+            </option>
+            <option value="Valve Assembly">Valve Assembly"</option>
+            <option value="Valve Installation">Valve Installation"</option>
+            <option value="DOUBLE LABOR FOR CHANGE ORDERS">
+              DOUBLE LABOR FOR CHANGE ORDERS"
+            </option>
+          </select>
+        </td>
+        <td><input type="text" class="form-control" /></td>
+        <td><input type="text" class="form-control" /></td>
+        <td><input type="text" class="form-control" /></td>
+        <td><input type="text" class="form-control" /></td>
+        <td><input type="text" class="form-control" /></td>
+        <td><input type="text" class="form-control" /></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Add Labor Modal -->
+<div
+  class="modal fade text-left"
+  id="addLabor"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel5"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel5">Add Labor</h4>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true"
+            ><i class="ft-x font-medium-2 text-bold-700"></i
+          ></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <section id="multiple-select2">
+          <div class="card">
+            <div class="card-content">
+              <div class="card-body">
+                <div class="form-group">
+                  <label>Number of Labor Rows</label>
+                  <input
+                    id="laborTotalRows"
+                    type="text"
+                    class="form-control mb-1"
+                    placeholder="Enter the number of fields"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn bg-light-secondary"
+          data-dismiss="modal"
+        >
+          Close
+        </button>
+        <button
+          id="addProductRow"
+          type="button"
+          class="btn bg-light-primary"
+          data-backdrop="false"
+          data-toggle="modal"
+          data-target="#addProduct"
+          onclick="copyLaborRow()"
+          data-dismiss="modal"
+        >
+          <em class="ft-plus font-medium-5"></em> Add Product
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BEGIN Copy labor Row based on model value-->
+<script>
+  function copyLaborRow() {
+    console.log("Copying table rows...");
+
+    // Get the value entered in the laborTotalRows input field
+    var laborTotalRows = document.getElementById("laborTotalRows").value;
+    console.log("Total Rows:", laborTotalRows);
+
+    // Get the table body where the new rows will be appended
+    var laborTableBody = document.getElementById("laborTableBody");
+    console.log("Table Body:", laborTableBody);
+
+    // Get the table row to be copied
+    var rowToCopy = document.getElementById("newLabor");
+    console.log("Row to Copy:", rowToCopy);
+
+    // Loop through the number of rows to be copied
+    for (var i = 0; i < laborTotalRows; i++) {
+      console.log("Copying row", i + 1);
+      // Clone the row
+      var clonedRow = rowToCopy.cloneNode(true);
+      console.log("Cloned Row:", clonedRow);
+      // Append the cloned row to the table body
+      laborTableBody.appendChild(clonedRow);
+      console.log("Row appended to table body");
+    }
+  }
+</script>
+<!-- END Copy labor Row based on model value-->

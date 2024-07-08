@@ -1,0 +1,219 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="loading" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=0"
+    />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="author" content="PIXINVENT" />
+    <title>Laurel - AG & Water</title>
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="https://pixinvent.com/apex-angular-4-bootstrap-admin-template/app-assets/img/ico/favicon.ico"
+    />
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="{% static 'app/img/ico/favicon-32.png' %}"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Rubik:300,400,500,700,900%7CMontserrat:300,400,500,600,700,800,900"
+      rel="stylesheet"
+    />
+    <!-- BEGIN VENDOR CSS-->
+    <!-- font icons-->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'app/fonts/feather/style.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'app/fonts/simple-line-icons/style.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'app/fonts/font-awesome/css/font-awesome.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'vendors/css/perfect-scrollbar.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'vendors/css/prism.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'vendors/css/switchery.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'vendors/css/chartist.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'vendors/css/pickadate/pickadate.css' %}"
+    />
+    <!-- END VENDOR CSS-->
+    <!-- BEGIN APEX CSS-->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'app/css/bootstrap.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'app/css/bootstrap-extended.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'app/css/colors.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'app/css/components.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'app/css/themes/layout-dark.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'app/css/plugins/switchery.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'app/css/pages/dashboard2.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'app/vendors/css/dropzone.min.css'"
+    />
+    <!-- END APEX CSS-->
+    <!-- BEGIN Page Level CSS-->
+    <link
+      rel="stylesheet"
+      href="{% static 'app/css/pages/form-wizard.min.css' %}"
+    />
+    <!-- END Page Level CSS-->
+    <!-- BEGIN: Custom CSS-->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'app/assets/css/style.css' %}"
+    />
+    <!-- END: Custom CSS-->
+  </head>
+
+  <body
+    class="vertical-layout vertical-menu 1-column auth-page navbar-sticky blank-page"
+    data-menu="vertical-menu"
+    data-col="1-column"
+  >
+    <div class="wrapper">
+      <div class="main-panel">
+        <div class="main-content">
+          <div class="row match-height" style="height: 100vh">
+            <div class="col" style="background: #ece1c5; padding-top: 5.5rem">
+              <div class="row justify-content-center text-center pb-0 mb-5">
+                <img
+                  class="circle_border"
+                  src="{% static 'app/img/proposal.png' %}"
+                  alt="Proposal Generation"
+                />
+              </div>
+              <div class="row justify-content-center">
+                <div class="text-center">
+                  <h1 class="font-large-2 mt-2">Proposal Generation</h1>
+                  <span class="font-large-1 d-block mb-1"
+                    >Create Detailed Proposal Easily</span
+                  >
+                </div>
+              </div>
+              <div class="row justify-content-center mt-5">
+                <a
+                  href="{% url 'proposal:opportunity_list' %}"
+                  class="choose_proposal_btn"
+                >
+                  <div class="font-large-1 p-2">
+                    <div class="fonticon-wrap mr-4 d-flex mt-0">
+                      <i class="icon-doc"></i>
+                    </div>
+                    Get Started
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="col" style="background: #d5b78d; padding-top: 5.5rem">
+              <div class="row justify-content-center text-center pb-0 mb-5">
+                <img
+                  class="circle_border"
+                  src="{% static 'app/img/calculator.png' %}"
+                  alt="Proposal Generation"
+                />
+              </div>
+              <div class="row justify-content-center">
+                <div class="text-center">
+                  <h1 class="font-large-2 mt-2">Rental Application</h1>
+                  <span class="font-large-1 d-block mb-1"
+                    >Manage Applications</span
+                  >
+                </div>
+              </div>
+              <div class="row justify-content-center mt-5">
+                <a
+                  href="{% url 'proposal:coming_soon' %}"
+                  class="choose_calculator_btn"
+                >
+                  <div class="font-large-1 p-2">
+                    <div class="fonticon-wrap mr-4 d-flex mt-0">
+                      <i class="icon-calculator"></i>
+                    </div>
+                    Get Started
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidenav-overlay"></div>
+    <div class="drag-target"></div>
+
+    <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+    <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+    <script src="{% static 'vendors/js/chartist.min.js' %}"></script>
+    <script src="{% static 'vendors/js/apexcharts.min.js' %}"></script>
+    <script src="{% static 'app/js/core/app-menu.min.js' %}"></script>
+    <script src="{% static 'app/js/core/app.min.js' %}"></script>
+    <script src="{% static 'app/js/notification-sidebar.min.js' %}"></script>
+    <script src="{% static 'app/js/customizer.min.js' %}"></script>
+    <script src="{% static 'app/js/scroll-top.min.js' %}"></script>
+    <script src="{% static 'app/js/dashboard2.min.js' %}"></script>
+    <script src="{% static 'app//assets/js/scripts.js' %}"></script>
+  </body>
+</html>

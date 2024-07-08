@@ -1,0 +1,200 @@
+{% extends "base.html" %} {% load static %} {% block page_content %}
+<div class="row">
+  <div class="col-12">
+    <div class="content-header">Update Profile</div>
+  </div>
+</div>
+<!-- Wizard Starts -->
+<section id="icon-tabs">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-content">
+          <div class="card-body">
+            <form>
+              <div class="form-row">
+                <div class="col-md-6 col-12">
+                  <div class="form-group mb-2">
+                    <label for="basic-form-1">First Name</label>
+                    <input
+                      type="text"
+                      id="basic-form-1"
+                      class="form-control"
+                      name="fname"
+                      value="{{ user.first_name }}"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group mb-2">
+                    <label for="basic-form-2">Last Name</label>
+                    <input
+                      type="text"
+                      id="basic-form-2"
+                      class="form-control"
+                      name="lname"
+                      value="{{ user.last_name }}"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="col-md-6 col-12">
+                  <div class="form-group mb-2">
+                    <label for="basic-form-3">E-mail</label>
+                    <input
+                      type="text"
+                      id="basic-form-3"
+                      class="form-control"
+                      name="email"
+                      value="{{ user.get_username }}"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group mb-2">
+                    <label for="basic-form-4">Contact Number</label>
+                    <input
+                      type="phone"
+                      id="basic-form-4"
+                      class="form-control"
+                      name="phone"
+                      value="+18 245453210"
+                    />
+                  </div>
+                </div>
+              </div>
+              {% comment %}
+              <div class="form-row">
+                <div class="col-md-6 col-12">
+                  <div class="form-group mb-2">
+                    <label for="basic-form-6">Stages Assigned</label>
+                    <div class="row">
+                      <div class="col">
+                        <div class="form-group">
+                          <select class="form-control" disabled>
+                            <option value="James Peter" selected>
+                              Pre-Data Acquisition
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="form-group">
+                          <select class="select2 form-control" multiple>
+                            <option value="James Peter" selected>
+                              James Peter
+                            </option>
+                            <option value="Emily Johnson">Emily Johnson</option>
+                            <option value="Michael Brown">Michael Brown</option>
+                            <option value="Nathan Anderson">
+                              Nathan Anderson
+                            </option>
+                            <option value="Sarah Smith">Sarah Smith</option>
+                            <option value="John Williams">John Williams</option>
+                            <option value="Amy Davis">Amy Davis</option>
+                            <option value="David Miller">David Miller</option>
+                            <option value="Emma Wilson">Emma Wilson</option>
+                            <option value="Olivia Jones">Olivia Jones</option>
+                            <option value="William Taylor">
+                              William Taylor
+                            </option>
+                            <option value="Isabella Brown">
+                              Isabella Brown
+                            </option>
+                            <option value="Sophia Garcia">Sophia Garcia</option>
+                            <option value="Liam Martinez">Liam Martinez</option>
+                            <option value="Chloe Rodriguez">
+                              Chloe Rodriguez
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col">
+                        <div class="form-group">
+                          <select class="form-control" disabled>
+                            <option value="James Peter" selected>Design</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="form-group">
+                          <select class="select2 form-control" multiple>
+                            <option value="James Peter" selected>
+                              James Peter
+                            </option>
+                            <option value="Emily Johnson">Emily Johnson</option>
+                            <option value="Michael Brown">Michael Brown</option>
+                            <option value="Nathan Anderson">
+                              Nathan Anderson
+                            </option>
+                            <option value="Sarah Smith">Sarah Smith</option>
+                            <option value="John Williams">John Williams</option>
+                            <option value="Amy Davis">Amy Davis</option>
+                            <option value="David Miller">David Miller</option>
+                            <option value="Emma Wilson">Emma Wilson</option>
+                            <option value="Olivia Jones">Olivia Jones</option>
+                            <option value="William Taylor">
+                              William Taylor
+                            </option>
+                            <option value="Isabella Brown">
+                              Isabella Brown
+                            </option>
+                            <option value="Sophia Garcia">Sophia Garcia</option>
+                            <option value="Liam Martinez">Liam Martinez</option>
+                            <option value="Chloe Rodriguez">
+                              Chloe Rodriguez
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endcomment %}
+              <button
+                type="button"
+                class="btn btn-primary mr-2"
+                onclick="saveData()"
+              >
+                <i class="ft-check-square mr-1"></i>Save
+              </button>
+              <button type="button" class="btn btn-secondary">
+                <i class="ft-x mr-1"></i>Cancel
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // function to display success alert and redirect to dashboard
+      function saveData() {
+        // trigger an alert indicating that data has been saved successfully
+        alert("Profile data updated successfully.");
+
+        // redirect to the dashboard after the user clicks OK
+        window.location.href = "/choose_screens";
+      }
+    </script>
+
+    <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+    <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+    <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+    <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+
+    <script src="{% static 'vendors/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'app/js/select2.min.js' %}"></script>
+
+    <!-- BEGIN PAGE LEVEL JS-->
+    <!-- <script src="{% static 'app/js/data-tables/dt-data-sources.min.js' %}"></script> -->
+    <!-- END PAGE LEVEL JS-->
+
+    <script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
+    {% endblock page_content%}
+  </div>
+</section>

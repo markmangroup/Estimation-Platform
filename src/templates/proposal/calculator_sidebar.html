@@ -1,0 +1,120 @@
+{% load static %}
+<div
+  class="app-sidebar menu-fixed"
+  data-background-color="white"
+  data-image="../app-assets/img/sidebar-bg/01.jpg"
+  data-scroll-to-active="true"
+>
+  <!-- main menu header-->
+  <!-- Sidebar Header starts-->
+  <div class="sidebar-header">
+    <div class="logo clearfix">
+      <a class="logo-text mx-0">
+        <div class="logo-img">
+          <img
+            style="height: 45px"
+            src="{% static 'app/img/logos/logo.png' %}"
+            alt="Laurel - AG & Water"
+          />
+        </div>
+        <span class="text">Laurel</span>
+      </a>
+      <a
+        class="nav-toggle d-none d-lg-none d-xl-block font-large-1 text-secondary pl-5"
+        id="sidebarToggle"
+        href="javascript:;"
+      >
+        <i
+          class="toggle-icon ft-arrow-right-circle bg-white rounded-circle"
+          data-toggle="expanded"
+        ></i>
+      </a>
+      <a
+        class="nav-close d-block d-lg-block d-xl-none"
+        id="sidebarClose"
+        href="javascript:;"
+      >
+        <i class="ft-x"></i>
+      </a>
+    </div>
+  </div>
+  <!-- Sidebar Header Ends-->
+  <!-- / main menu header-->
+  <!-- main menu content-->
+  <div class="sidebar-content main-menu-content">
+    <div class="nav-container">
+      <ul
+        class="navigation navigation-main"
+        id="main-menu-navigation"
+        data-menu="menu-navigation"
+      >
+        <li
+          class="nav-item {% if 'motor_fla_calculator' in request.path %}active{% endif %}"
+        >
+          <a href="{% url 'proposal:motor_fla_calculator' %}"
+            ><i class="ft-bar-chart-2"></i
+            ><span class="menu-title" data-i18n="Dashboard"
+              >Motor FLA Calculator</span
+            ></a
+          >
+        </li>
+        <li
+          class="nav-item {% if 'pump_flo_calculator' in request.path %}active{% endif %}"
+        >
+          <a href="{% url 'proposal:pump_flo_calculator' %}"
+            ><i class="ft-box"></i
+            ><span class="menu-title" data-i18n="Dashboard"
+              >Pump FLO Calculator</span
+            ></a
+          >
+        </li>
+        <li
+          class="nav-item {% if 'netafim_calculator' in request.path %}active{% endif %}"
+        >
+          <a href="{% url 'proposal:netafim_calculator' %}"
+            ><i class="ft-compass"></i
+            ><span class="menu-title" data-i18n="Dashboard"
+              >Netafim Calculator</span
+            ></a
+          >
+        </li>
+        <li
+          class="nav-item {% if 'overlap_pro_calculator' in request.path %}active{% endif %}"
+        >
+          <a href="{% url 'proposal:overlap_pro_calculator' %}"
+            ><i class="ft-layout"></i
+            ><span class="menu-title" data-i18n="Dashboard"
+              >Overlap Pro Calculator</span
+            ></a
+          >
+        </li>
+        <li
+          class="nav-item {% if 'southwire_calculator' in request.path %}active{% endif %}"
+        >
+          <a href="{% url 'proposal:southwire_calculator' %}"
+            ><i class="ft-loader"></i
+            ><span class="menu-title" data-i18n="Dashboard"
+              >Southwire Calculator</span
+            ></a
+          >
+        </li>
+        <li
+          class="nav-item {% if 'paigewire_calculator' in request.path %}active{% endif %}"
+        >
+          <a href="{% url 'proposal:paigewire_calculator' %}"
+            ><i class="ft-sunrise"></i
+            ><span class="menu-title" data-i18n="Dashboard"
+              >Paigewire Calculator</span
+            ></a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- main menu content-->
+  <div class="sidebar-background"></div>
+  <!-- main menu footer-->
+  <!-- include includes/menu-footer-->
+  <!-- main menu footer-->
+  <!-- / main menu-->
+</div>

@@ -1,0 +1,129 @@
+{% load static %}
+
+<div
+  class="app-sidebar menu-fixed"
+  data-background-color="white"
+  data-image="../app-assets/img/sidebar-bg/01.jpg"
+  data-scroll-to-active="true"
+>
+  <!-- main menu header-->
+  <!-- Sidebar Header starts-->
+  <div class="sidebar-header">
+    <div class="logo clearfix">
+      <a class="logo-text mx-0">
+        <div class="logo-img">
+          <img
+            style="height: 45px"
+            src="{% static 'app/img/logos/logo.png' %}"
+            alt="Laurel - AG & Water"
+          />
+        </div>
+        <span class="text">Laurel</span>
+      </a>
+      <a
+        class="nav-toggle d-none d-lg-none d-xl-block font-large-1 text-secondary pl-5"
+        id="sidebarToggle"
+        href="javascript:;"
+      >
+        <i
+          class="toggle-icon ft-arrow-right-circle bg-white rounded-circle"
+          data-toggle="expanded"
+        ></i>
+      </a>
+      <a
+        class="nav-close d-block d-lg-block d-xl-none"
+        id="sidebarClose"
+        href="javascript:;"
+      >
+        <i class="ft-x"></i>
+      </a>
+    </div>
+  </div>
+  <!-- Sidebar Header Ends-->
+  <!-- / main menu header-->
+  <!-- main menu content-->
+  <div class="sidebar-content main-menu-content">
+    <div class="nav-container">
+      <ul
+        class="navigation navigation-main"
+        id="main-menu-navigation"
+        data-menu="menu-navigation"
+      >
+        <li
+          class="nav-item {% if 'dashboard' in request.path %}active{% endif %}"
+        >
+          <a href="{% url 'proposal:dashboard' %}"
+            ><i class="ft-home"></i
+            ><span class="menu-title" data-i18n="Dashboard">Dashboard</span></a
+          >
+        </li>
+        <li
+          class="nav-item {% if 'warehouse_list' in request.path %}active{% endif %}"
+        >
+          <a href="{% url 'proposal:warehouse_list' %}"
+            ><i class="ft-archive"></i
+            ><span class="menu-title" data-i18n="Dashboard">Warehouse</span></a
+          >
+        </li>
+        <li
+          class="nav-item {% if 'customer' in request.path %}active{% endif %}"
+        >
+          <a href="{% url 'proposal:customer_list' %}"
+            ><i class="ft-users"></i
+            ><span class="menu-title" data-i18n="Dashboard">Customers</span></a
+          >
+        </li>
+        <li
+          class="nav-item {% if 'warehouse_products' in request.path %}active{% endif %}"
+        >
+          <a href="{% url 'proposal:warehouse_products' %}"
+            ><i class="ft-list"></i
+            ><span class="menu-title" data-i18n="Dashboard">Products</span></a
+          >
+        </li>
+        <li
+          class="nav-item {% if 'user_list' in request.path %}active{% endif %}"
+        >
+          <a href="{% url 'proposal:user_list' %}"
+            ><i class="ft-user"></i
+            ><span class="menu-title" data-i18n="Dashboard">Users</span></a
+          >
+        </li>
+        <li
+          class="nav-item {% if 'recurring_order' in request.path %}active{% endif %}"
+        >
+          <a href="{% url 'proposal:recurring_order' %}"
+            ><i class="ft-rotate-cw"></i
+            ><span class="menu-title" data-i18n="Dashboard"
+              >Recurring Orders</span
+            ></a
+          >
+        </li>
+        <li
+          class="nav-item {% if 'order_list' in request.path %}active{% endif %}"
+        >
+          <a href="{% url 'proposal:order_list' %}"
+            ><i class="ft-shopping-bag"></i
+            ><span class="menu-title" data-i18n="Dashboard">Orders</span></a
+          >
+        </li>
+        <li
+          class="nav-item {% if 'express_delivery' in request.path %}active{% endif %}"
+        >
+          <a href="{% url 'proposal:express_delivery' %}"
+            ><i class="ft-truck"></i
+            ><span class="menu-title" data-i18n="Dashboard"
+              >Express Delivery</span
+            ></a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- main menu content-->
+  <div class="sidebar-background"></div>
+  <!-- main menu footer-->
+  <!-- include includes/menu-footer-->
+  <!-- main menu footer-->
+  <!-- / main menu-->
+</div>

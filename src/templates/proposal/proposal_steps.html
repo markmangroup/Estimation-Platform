@@ -1,0 +1,128 @@
+<div class="card-content">
+  <div class="card-body">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a
+          class="nav-link active"
+          id="base-tab11"
+          data-toggle="tab"
+          aria-controls="tab1"
+          href="#tab-proposal-creation"
+          aria-expanded="true"
+        >
+          Proposal Creation</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          id="base-tab12"
+          data-toggle="tab"
+          aria-controls="tab2"
+          href="#tab-proposal-preview"
+          aria-expanded="false"
+        >
+          Proposal Preview
+        </a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div
+        role="tabpanel"
+        class="tab-pane active"
+        id="tab-proposal-creation"
+        aria-expanded="true"
+        aria-labelledby="base-tab11"
+      >
+        <fieldset>
+
+          {% comment %} <ul class="col-md-2 nav nav-tabs nav-justified m-auto">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                data-toggle="dropdown"
+                href="#"
+                role="button"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                Select Proposal Type
+              </a>
+              <div class="dropdown-menu">
+                <a
+                  class="dropdown-item"
+                  id="dropdown11-tab"
+                  href="#dropdown11"
+                  data-toggle="tab"
+                  aria-controls="dropdown11"
+                  aria-expanded="true"
+                  >Group by Task</a
+                >
+                <a
+                  class="dropdown-item"
+                  id="dropdown12-tab"
+                  href="#dropdown12"
+                  data-toggle="tab"
+                  aria-controls="dropdown12"
+                  aria-expanded="true"
+                  >Group by Category</a
+                >
+                <a
+                  class="dropdown-item"
+                  id="dropdown13-tab"
+                  href="#dropdown13"
+                  data-toggle="tab"
+                  aria-controls="dropdown13"
+                  aria-expanded="true"
+                  >Products</a
+                >
+              </div>
+            </li>
+          </ul> {% endcomment %}
+
+          <fieldset>{% include './based_on_task.html' %}</fieldset>
+
+          <div class="tab-content">
+            <div
+              class="tab-pane"
+              id="dropdown11"
+              role="tabpanel"
+              aria-labelledby="dropdown11-tab"
+              aria-expanded="false"
+            >
+              <fieldset>{% include './based_on_task.html' %}</fieldset>
+            </div>
+            <div
+              class="tab-pane"
+              id="dropdown12"
+              role="tabpanel"
+              aria-labelledby="dropdown12-tab"
+              aria-expanded="false"
+            >
+              <fieldset>{% include './based_on_category.html' %}</fieldset>
+            </div>
+            <div
+              class="tab-pane"
+              id="dropdown13"
+              role="tabpanel"
+              aria-labelledby="dropdown13-tab"
+              aria-expanded="false"
+            >
+              <fieldset>{% include './based_on_products.html' %}</fieldset>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      <div
+        class="tab-pane"
+        id="tab-proposal-preview"
+        aria-labelledby="base-tab12"
+      >
+        <fieldset>{% include "./proposal.html" %}</fieldset>
+      </div>
+    </div>
+    {% include "./file_upload.html" %}
+    {% include './assign_to.html' %}
+    {% include './comment_table.html' %}
+  </div>
+</div>
