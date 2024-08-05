@@ -49,46 +49,138 @@
         id="main-menu-navigation"
         data-menu="menu-navigation"
       >
-        <li
+
+        <!-- Dashboard Start -->
+        {% comment %} <li
           class="nav-item {% if 'dashboard' in request.path %}active{% endif %}"
         >
           <a href="{% url 'proposal:dashboard' %}"
             ><i class="ft-home"></i
             ><span class="menu-title" data-i18n="Dashboard">Dashboard</span></a
           >
+        </li> {% endcomment %}
+        <!-- Dashboard End -->
+        
+        <!-- Home Start -->
+        <li class="nav-item {% if 'home' in request.path %}active{% endif %}">
+          <a href="{% url 'proposal:map_view' %}">
+            <i class="ft-home"></i><span class="menu-title" data-i18n="Home">Home</span></a>
         </li>
-        <li
+        <!-- Home End -->
+        
+        <!-- Master Data Start -->
+        <li class="has-sub nav-item"><a href="javascript:;"><i class="ft-database"></i><span class="menu-title" data-i18n="MasterData">Master Data</span></a>
+          <ul class="menu-content">
+            <li class="{% if 'warehouse_products' in request.path %}active{% endif %}"><a href="{% url 'proposal:warehouse_products' %}"><i class="ft-list"></i><span class="menu-item">Products</span></a>
+            </li>
+            <li class="{% if 'warehouse_list' in request.path %}active{% endif %}"><a href="{% url 'proposal:warehouse_list' %}"><i class="ft-archive"></i><span class="menu-item">Warehouse</span></a>
+            </li>
+            <li class="{% if 'customer' in request.path %}active{% endif %}"><a href="{% url 'proposal:customer_list' %}"><i class="ft-users"></i><span class="menu-item">Customers</span></a>
+            </li>
+          </ul>
+        </li>
+        <!-- Master Data End -->
+
+        <!-- Warehouse Start -->
+        {% comment %} <li
           class="nav-item {% if 'warehouse_list' in request.path %}active{% endif %}"
         >
           <a href="{% url 'proposal:warehouse_list' %}"
             ><i class="ft-archive"></i
             ><span class="menu-title" data-i18n="Dashboard">Warehouse</span></a
           >
-        </li>
-        <li
+        </li> {% endcomment %}
+        <!-- Warehouse End -->
+        
+        <!-- Customer List Start -->
+        {% comment %} <li
           class="nav-item {% if 'customer' in request.path %}active{% endif %}"
         >
           <a href="{% url 'proposal:customer_list' %}"
             ><i class="ft-users"></i
             ><span class="menu-title" data-i18n="Dashboard">Customers</span></a
           >
-        </li>
-        <li
+        </li> {% endcomment %}
+        <!-- Customer List End -->
+        
+        <!-- Warehouse list Start-->
+        {% comment %} <li
           class="nav-item {% if 'warehouse_products' in request.path %}active{% endif %}"
         >
           <a href="{% url 'proposal:warehouse_products' %}"
             ><i class="ft-list"></i
             ><span class="menu-title" data-i18n="Dashboard">Products</span></a
           >
+        </li> {% endcomment %}
+        <!-- Warehouse list End -->
+        
+        <!-- Rent Process Start -->
+        <li
+          class="nav-item {% if 'order_list' in request.path %}active{% endif %}"
+        >
+          <a href="{% url 'proposal:order_list' %}"
+            ><i class="ft-shopping-bag"></i
+            ><span class="menu-title" >Rent Process</span></a
+          >
         </li>
+        <!-- Rent Process End -->
+        
+        <!-- Stock Adjustment Start -->
+        <li
+          class="nav-item {% if 'stock_adjustment' in request.path %}active{% endif %}"
+        >
+          <a href="{% url 'proposal:stock_adjustment' %}"
+            ><i class="ft-sliders"></i
+            ><span class="menu-title" data-i18n="Dashboard"
+              >Stock Adjustment</span
+            ></a
+          >
+        </li>
+        <!-- Stock Adjustment End -->
+        
+        <!-- Reports Start -->
+        <!--  <li class="nav-item {% if 'reports' in request.path %}active{% endif %}">
+          <a href="{% url 'proposal:reports' %}"><i class="ft-file-text"></i><span class="menu-title" data-i18n="Dashboard">Reports</span>
+          </a>
+        </li> -->        
+        <!-- Reports End -->
+        
+        <!-- Reports Start -->
+        <li class="has-sub nav-item"><a href="javascript:;"><i class="ft-file-text"></i><span class="menu-title" data-i18n="Reports">Reports</span></a>
+          <ul class="menu-content">
+            <!-- <li class="{% if 'reports' in request.path %}active{% endif %}"><a href="{% url 'proposal:reports' %}"><span class="menu-item">All</span></a>
+            </li> -->
+            <li class="{% if 'revenue_report' in request.path %}active{% endif %}"><a href="{% url 'proposal:revenue_report' %}"><span class="menu-item">Revenue Report</span></a>
+            </li>
+            <li class="{% if 'stock_report' in request.path %}active{% endif %}"><a href="{% url 'proposal:stock_report' %}"><span class="menu-item">Stock Report</span></a>
+            </li>
+            <li class="{% if 'stock_movement_report' in request.path %}active{% endif %}"><a href="{% url 'proposal:stock_movement_report' %}"><span class="menu-item">Stock Movement Report</span></a>
+            </li>
+            <li class="{% if 'in_transit_report' in request.path %}active{% endif %}"><a href="{% url 'proposal:in_transit_report' %}"><span class="menu-item">In Transit</span></a>
+            </li>
+            <li class="{% if 'planned_removal_report' in request.path %}active{% endif %}"><a href="{% url 'proposal:planned_removal_report' %}"><span class="menu-item">Planned Removal</span></a>
+            </li>
+            <li class="{% if 'planned_deliveries_report' in request.path %}active{% endif %}"><a href="{% url 'proposal:planned_deliveries_report' %}"><span class="menu-item">Planned Deliveries</span></a>
+            </li>
+            <li class="{% if 'usages_of_equipment_report' in request.path %}active{% endif %}"><a href="{% url 'proposal:usages_of_equipment_report' %}"><span class="menu-item">Usages Of Equipment</span></a>
+            </li>
+          </ul>
+        </li>
+        <!-- Reports End -->
+        
+        <!-- User start -->
         <li
           class="nav-item {% if 'user_list' in request.path %}active{% endif %}"
         >
           <a href="{% url 'proposal:user_list' %}"
             ><i class="ft-user"></i
-            ><span class="menu-title" data-i18n="Dashboard">Users</span></a
+            ><span class="menu-title" data-i18n="Dashboard">Authorizations</span></a
           >
         </li>
+        <!-- User End -->
+        
+        <!-- Recurring order start -->
+        {% comment %}
         <li
           class="nav-item {% if 'recurring_order' in request.path %}active{% endif %}"
         >
@@ -99,14 +191,22 @@
             ></a
           >
         </li>
+        {% endcomment %}
+        <!-- Recurring order End -->
+        
+        <!-- Workflow Start -->
         <li
-          class="nav-item {% if 'order_list' in request.path %}active{% endif %}"
+          class="nav-item {% if 'workflow' in request.path %}active{% endif %}"
         >
-          <a href="{% url 'proposal:order_list' %}"
-            ><i class="ft-shopping-bag"></i
-            ><span class="menu-title" data-i18n="Dashboard">Orders</span></a
+          <a href="{% url 'proposal:workflow' %}"
+            ><i class="ft-wind"></i
+            ><span class="menu-title" data-i18n="Dashboard">Workflow</span></a
           >
         </li>
+        <!-- Workflow Start -->
+        
+        <!-- Express Deliver Start -->
+        {% comment %}
         <li
           class="nav-item {% if 'express_delivery' in request.path %}active{% endif %}"
         >
@@ -117,6 +217,15 @@
             ></a
           >
         </li>
+        {% endcomment %}
+        <!-- Express Deliver End -->
+        
+        <!-- Email inbox Start -->
+        <li class="nav-item {% if 'inbox' in request.path %}active{% endif %}">
+          <a href="{% url 'proposal:inbox' %}"><i class="ft-mail"></i><span class="menu-title" data-i18n="Inbox">Inbox</span></a>
+        </li>
+        <!-- Email inbox End -->
+        
       </ul>
     </div>
   </div>

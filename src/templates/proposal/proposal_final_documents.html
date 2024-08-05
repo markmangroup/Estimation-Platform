@@ -9,7 +9,7 @@
           <tr>
             <th>Material Description</th>
             <th>Cost</th>
-            <th>Quoted Price</th>
+            <th>Vendor Quoted Cost</th>
             <th>Vendor Name</th>
           </tr>
         </thead>
@@ -171,7 +171,7 @@
           <tr>
             <th>Item Code</th>
             <th>Standard Cost</th>
-            <th>Quoted Cost</th>
+            <th>Vendor Quoted Cost</th>
             <th>Vendor Name</th
           </tr>
         </thead>
@@ -261,7 +261,8 @@
       </button>
     </div>
   </div>
-
+</div>
+{% block script %}
   <!-- Download CSV File -->
   {% comment %} <script>
     function DownloadProductsInCSV(id, fileName) {
@@ -412,4 +413,4 @@
       document.body.innerHTML = originalDocument;
     }
   </script>
-</div>
+{% endblock script %}

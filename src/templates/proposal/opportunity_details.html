@@ -1,5 +1,6 @@
-{% extends "base.html" %} {% load static %} {% block page_content %}
+{% load static %} 
 
+{% block page_content %}
 <!-- Opportunity Details Starts -->
 <section id="icon-tabs">
   <div class="card">
@@ -57,8 +58,6 @@
   <fieldset>{% include 'app/proposal_list.html' %}</fieldset>
   <!-- Proposal List End -->
 
-  <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
-  <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
   <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
   <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
 

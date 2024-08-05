@@ -1,0 +1,357 @@
+{% load static %}
+
+<style>
+  .warning-message {
+    color: darkorange !important;
+    display: none; /* Hide by default */
+    margin-top: 10px;
+  }
+</style>
+<div class="row">
+  <div class="col-12">
+    <div class="content-header">Workflow</div>
+  </div>
+</div>
+
+<!-- Wizard Starts -->
+<section id="multiple-select2">
+  <div class="row">
+    <div class="col-xl-12 col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Shipping Order</h4>
+        </div>
+        <div class="card-body">
+          <div class="card-content">
+            <div class="row">
+              <div class="col-6">
+                <div class="table-responsive">
+                  <table class="table table-striped table-bordered">
+                    <tbody>
+                      
+                      <!-- Create Order -->
+                      <tr>
+                        <th scope="row">Create Order</th>
+                        <td>
+                          <select class="select2 form-control" multiple>
+                            <option value="James Peter" selected>James Peter</option>
+                            <option value="Emily Johnson">Emily Johnson</option>
+                            <option value="Michael Brown" selected>Michael Brown</option>
+                            <option value="Nathan Anderson">
+                              Nathan Anderson
+                            </option>
+                            <option value="Sarah Smith">Sarah Smith</option>
+                            <option value="John Williams">John Williams</option>
+                            <option value="Amy Davis">Amy Davis</option>
+                            <option value="David Miller">David Miller</option>
+                            <option value="Emma Wilson">Emma Wilson</option>
+                            <option value="Olivia Jones">Olivia Jones</option>
+                            <option value="William Taylor">
+                              William Taylor
+                            </option>
+                            <option value="Isabella Brown">
+                              Isabella Brown
+                            </option>
+                            <option value="Sophia Garcia">Sophia Garcia</option>
+                            <option value="Liam Martinez">Liam Martinez</option>
+                            <option value="Chloe Rodriguez">
+                              Chloe Rodriguez
+                            </option>
+                          </select>
+                        </td>
+                      </tr>
+
+                      <!-- Create Delivery -->
+                      <tr>
+                        <th scope="row">Create Delivery</th>
+                        <td>
+                          <select id="createOrder" class="select-input select2-list form-control" multiple>
+                            <option value="James Peter" selected>James Peter</option>
+                            <option value="Emily Johnson">Emily Johnson</option>
+                            <option value="Michael Brown">Michael Brown</option>
+                            <option value="Nathan Anderson">
+                              Nathan Anderson
+                            </option>
+                            <option value="Sarah Smith">Sarah Smith</option>
+                            <option value="John Williams" selected>John Williams</option>
+                            <option value="Amy Davis">Amy Davis</option>
+                            <option value="David Miller">David Miller</option>
+                            <option value="Emma Wilson">Emma Wilson</option>
+                            <option value="Olivia Jones">Olivia Jones</option>
+                            <option value="William Taylor">
+                              William Taylor
+                            </option>
+                            <option value="Isabella Brown">
+                              Isabella Brown
+                            </option>
+                            <option value="Sophia Garcia">Sophia Garcia</option>
+                            <option value="Liam Martinez">Liam Martinez</option>
+                            <option value="Chloe Rodriguez" selected>
+                              Chloe Rodriguez
+                            </option>
+                          </select>
+                          <span id="warningMessage" class="warning-message"><i class="ft-alert-triangle"></i> This persons dose not have access, <a> <br> <small style="color: cadetblue;">Give Access?</small> <i class="ft-check success"></i></a> <a><i class="ft-x danger"></i></a></span>
+                        </td>
+                        
+                      </tr>
+
+                      <!-- Pick Up -->
+                      <tr>
+                        <th scope="row">Pickup ticket</th>
+                        <td>
+                          <select class="select2 form-control" multiple>
+                            <option value="James Peter" selected>James Peter</option>
+                            <option value="Emily Johnson">Emily Johnson</option>
+                            <option value="Michael Brown" selected>Michael Brown</option>
+                            <option value="Nathan Anderson">
+                              Nathan Anderson
+                            </option>
+                            <option value="Sarah Smith">Sarah Smith</option>
+                            <option value="John Williams">John Williams</option>
+                            <option value="Amy Davis">Amy Davis</option>
+                            <option value="David Miller">David Miller</option>
+                            <option value="Emma Wilson">Emma Wilson</option>
+                            <option value="Olivia Jones">Olivia Jones</option>
+                            <option value="William Taylor">
+                              William Taylor
+                            </option>
+                            <option value="Isabella Brown">
+                              Isabella Brown
+                            </option>
+                            <option value="Sophia Garcia">Sophia Garcia</option>
+                            <option value="Liam Martinez">Liam Martinez</option>
+                            <option value="Chloe Rodriguez">
+                              Chloe Rodriguez
+                            </option>
+                          </select>
+                        </td>
+                      </tr>
+                      
+                      <!-- Check Out -->
+                      <tr>
+                        <th scope="row">Check out</th>
+                        <td>
+                          <select class="select2 form-control" multiple>
+                            <option value="James Peter" selected>James Peter</option>
+                            <option value="Emily Johnson">Emily Johnson</option>
+                            <option value="Michael Brown">Michael Brown</option>
+                            <option value="Nathan Anderson">
+                              Nathan Anderson
+                            </option>
+                            <option value="Sarah Smith">Sarah Smith</option>
+                            <option value="John Williams">John Williams</option>
+                            <option value="Amy Davis">Amy Davis</option>
+                            <option value="David Miller">David Miller</option>
+                            <option value="Emma Wilson">Emma Wilson</option>
+                            <option value="Olivia Jones">Olivia Jones</option>
+                            <option value="William Taylor">
+                              William Taylor
+                            </option>
+                            <option value="Isabella Brown">
+                              Isabella Brown
+                            </option>
+                            <option value="Sophia Garcia">Sophia Garcia</option>
+                            <option value="Liam Martinez">Liam Martinez</option>
+                            <option value="Chloe Rodriguez">
+                              Chloe Rodriguez
+                            </option>
+                          </select>
+                        </td>
+                      </tr>
+                      
+                      <!-- Delivery -->
+                      <tr>
+                        <th scope="row">Deliveries</th>
+                        <td>
+                          <select class="select2 form-control" multiple>
+                            <option value="James Peter">James Peter</option>
+                            <option value="Emily Johnson">Emily Johnson</option>
+                            <option value="Michael Brown" selected>Michael Brown</option>
+                            <option value="Nathan Anderson">
+                              Nathan Anderson
+                            </option>
+                            <option value="Sarah Smith">Sarah Smith</option>
+                            <option value="John Williams">John Williams</option>
+                            <option value="Amy Davis">Amy Davis</option>
+                            <option value="David Miller">David Miller</option>
+                            <option value="Emma Wilson">Emma Wilson</option>
+                            <option value="Olivia Jones">Olivia Jones</option>
+                            <option value="William Taylor">
+                              William Taylor
+                            </option>
+                            <option value="Isabella Brown">
+                              Isabella Brown
+                            </option>
+                            <option value="Sophia Garcia">Sophia Garcia</option>
+                            <option value="Liam Martinez">Liam Martinez</option>
+                            <option value="Chloe Rodriguez">
+                              Chloe Rodriguez
+                            </option>
+                          </select>
+                        </td>
+                      </tr>
+                      
+                      <!-- Create Return Order -->
+                      <tr>
+                        <th scope="row">Create Return Order</th>
+                        <td>
+                          <select class="select2 form-control" multiple>
+                            <option value="James Peter">James Peter</option>
+                            <option value="Emily Johnson">Emily Johnson</option>
+                            <option value="Michael Brown">Michael Brown</option>
+                            <option value="Nathan Anderson">
+                              Nathan Anderson
+                            </option>
+                            <option value="Sarah Smith">Sarah Smith</option>
+                            <option value="John Williams" selected>John Williams</option>
+                            <option value="Amy Davis">Amy Davis</option>
+                            <option value="David Miller" selected>David Miller</option>
+                            <option value="Emma Wilson">Emma Wilson</option>
+                            <option value="Olivia Jones">Olivia Jones</option>
+                            <option value="William Taylor">
+                              William Taylor
+                            </option>
+                            <option value="Isabella Brown">
+                              Isabella Brown
+                            </option>
+                            <option value="Sophia Garcia">Sophia Garcia</option>
+                            <option value="Liam Martinez">Liam Martinez</option>
+                            <option value="Chloe Rodriguez">
+                              Chloe Rodriguez
+                            </option>
+                          </select>
+                        </td>
+                      </tr>
+
+                      <!-- Return Pick Up -->
+                      <tr>
+                        <th scope="row">Return Pickup Ticket</th>
+                        <td>
+                          <select class="select2 form-control" multiple>
+                            <option value="James Peter">James Peter</option>
+                            <option value="Emily Johnson">Emily Johnson</option>
+                            <option value="Michael Brown">Michael Brown</option>
+                            <option value="Nathan Anderson" selected>
+                              Nathan Anderson
+                            </option>
+                            <option value="Sarah Smith">Sarah Smith</option>
+                            <option value="John Williams">John Williams</option>
+                            <option value="Amy Davis">Amy Davis</option>
+                            <option value="David Miller">David Miller</option>
+                            <option value="Emma Wilson" selected>Emma Wilson</option>
+                            <option value="Olivia Jones">Olivia Jones</option>
+                            <option value="William Taylor">
+                              William Taylor
+                            </option>
+                            <option value="Isabella Brown">
+                              Isabella Brown
+                            </option>
+                            <option value="Sophia Garcia">Sophia Garcia</option>
+                            <option value="Liam Martinez">Liam Martinez</option>
+                            <option value="Chloe Rodriguez">
+                              Chloe Rodriguez
+                            </option>
+                          </select>
+                        </td>
+                      </tr>
+
+                      <!-- Check In -->
+                      <tr>
+                        <th scope="row">Check In</th>
+                        <td>
+                          <select class="select2 form-control" multiple>
+                            <option value="James Peter">James Peter</option>
+                            <option value="Emily Johnson">Emily Johnson</option>
+                            <option value="Michael Brown">Michael Brown</option>
+                            <option value="Nathan Anderson" selected>
+                              Nathan Anderson
+                            </option>
+                            <option value="Sarah Smith">Sarah Smith</option>
+                            <option value="John Williams" selected>John Williams</option>
+                            <option value="Amy Davis">Amy Davis</option>
+                            <option value="David Miller">David Miller</option>
+                            <option value="Emma Wilson">Emma Wilson</option>
+                            <option value="Olivia Jones">Olivia Jones</option>
+                            <option value="William Taylor">
+                              William Taylor
+                            </option>
+                            <option value="Isabella Brown">
+                              Isabella Brown
+                            </option>
+                            <option value="Sophia Garcia">Sophia Garcia</option>
+                            <option value="Liam Martinez">Liam Martinez</option>
+                            <option value="Chloe Rodriguez">
+                              Chloe Rodriguez
+                            </option>
+                          </select>
+                        </td>
+                      </tr>
+
+                      <!-- Inspection -->
+                      <tr>
+                        <th scope="row">Inspection</th>
+                        <td>
+                          <select class="select2 form-control" multiple>
+                            <option value="James Peter">James Peter</option>
+                            <option value="Emily Johnson" selected>Emily Johnson</option>
+                            <option value="Michael Brown">Michael Brown</option>
+                            <option value="Nathan Anderson">
+                              Nathan Anderson
+                            </option>
+                            <option value="Sarah Smith">Sarah Smith</option>
+                            <option value="John Williams">John Williams</option>
+                            <option value="Amy Davis">Amy Davis</option>
+                            <option value="David Miller">David Miller</option>
+                            <option value="Emma Wilson">Emma Wilson</option>
+                            <option value="Olivia Jones">Olivia Jones</option>
+                            <option value="William Taylor">
+                              William Taylor
+                            </option>
+                            <option value="Isabella Brown" selected>
+                              Isabella Brown
+                            </option>
+                            <option value="Sophia Garcia">Sophia Garcia</option>
+                            <option value="Liam Martinez">Liam Martinez</option>
+                            <option value="Chloe Rodriguez">
+                              Chloe Rodriguez
+                            </option>
+                          </select>
+                        </td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="{% static 'app/js/jquery.min.js' %}"></script>
+<script src="{% static 'vendors/js/select2.full.min.js' %}"></script>
+<script src="{% static 'app/js/select2.min.js' %}"></script>
+
+<script>
+  function showWarningMessage(value) {
+    const warningMessage = document.getElementById('warningMessage');
+    warningMessage.style.display = value;
+  }
+
+  $(".select2-list").select2({
+    width: "100%",
+    multiple: true,
+  }).on("change", function(event){
+    var value = $(this).val();
+    
+    if(value.length == 0){
+      showWarningMessage('none');
+    }
+    else {
+      showWarningMessage('block');
+    }
+  });
+</script>

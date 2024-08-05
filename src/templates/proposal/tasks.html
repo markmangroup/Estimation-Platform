@@ -1,15 +1,15 @@
-{% load static %}
+{% load static %} 
+<style>
+  .select2-container--default .select2-selection--single {
+      height: 38px;
+  }
+</style>
 <div class="form-group">
   <div class="text-right my-2">
-    <a
-    href="#"
-    role="menuitem"
-    class="btn bg-light-primary"
-    >
+    <a href="#" role="menuitem" class="btn bg-light-primary">
     <em class="ft-plus font-medium-5"></em> Add Task
     </a>
   </div>
-                
 <div class="">
   <table
     class="table table-striped table-bordered"
@@ -34,12 +34,13 @@
       <!--Main Row 1 -->
       <tr>
         <td >
-          <input
-            type="text"
-            class="form-control"
-            id=""
-            value="DR-001"
-          />
+          <select class="select2 form-control">
+            <option selected disabled>Select Task Code</option>
+            <option value="AU-000">AU-000</option>
+            <option value="AU-000 : AU-001">AU-000 : AU-001</option>
+            <option value="AU-001 : AU-002">AU-001 : AU-002</option>
+            <option value="AU-002 : AU-003">AU-002 : AU-003</option>
+          </select>
         </td>
         <td>
           <input
@@ -52,40 +53,7 @@
         <td >
           $0.00
         </td>
-        {% comment %} <td >
-          <input
-            type="text"
-            class="form-control"
-            id=""
-            value="Yes"
-          />
-        </td>
         <td >
-          <input
-            type="text"
-            class="form-control"
-            id=""
-            value="$0.00"
-          />
-        </td>
-        <td >
-          <input
-            type="text"
-            class="form-control"
-            id=""
-            value="$0.00"
-          />
-        </td>
-        <td >
-          <input
-            type="text"
-            class="form-control"
-            id=""
-            value="$0.00"
-          />
-        </td> {% endcomment %}
-        <td >
-
           0.00
         </td>
         <td >
@@ -102,15 +70,13 @@
         </td>
 
         <td>
-          <a href="#">
+          <a data-toggle="collapse" href="#collapse11" aria-expanded="true" aria-controls="collapse11" class="card-title">
             <em class="ft-chevron-down font-medium-5"></em>
           </a>
-          
-          
         </td>
         
       </tr>
-      <tr>
+      <tr id="collapse11" role="tabpanel" aria-labelledby="headingCollapse11" class="collapse">
         <td>
         </td>
 
@@ -120,13 +86,12 @@
               data-toggle="modal" data-target="#addProduct">
                 <em class="ft-plus font-medium-5"></em> Add Product
             </button>
-
-            <button type="button" class="btn bg-light-primary" data-backdrop="false"  
-              data-toggle="modal" data-target="#show">
-                Assign Product
-            </button>
+            
+            <!-- Assign Product Modal -->
+              {% include "proposal/drag_and_select.html" %}
+            <!-- Assign Product Modal -->
           </div>
-          <div class="table-responsive" style="width: 66vw;">
+          <div class="table-responsive">
             <table
             id="tableBody"
               class="table table-striped table-bordered"
@@ -134,7 +99,7 @@
               <thead>
                 <tr class="text-center">
                   <th colspan="1"></th>
-                  <th colspan="6" class="align-top">Project Product Information</th>
+                  <th colspan="7" class="align-top">Project Product Information</th>
                   <th colspan="1" class="align-top">Cost</th>
                   <th colspan="2" class="align-top">Sell</th>
                   <th colspan="2" class="align-top">Gross Profit</th>
@@ -147,7 +112,8 @@
                   <th class="text-nowrap">Item Code</th>
                   <th >Description</th>
                   <th>Standard Cost</th>
-                  <th>Quoted cost</th>
+                  <th>Vendor Quoted cost</th>
+                  <th>Vendor</th>
                   <th>Comment</th>
 
                   <th>Total</th>
@@ -287,7 +253,7 @@
 
                       </select>
                     </td>
-
+                    <td><input  type="text" class="form-control" placeholder="Enter comment"></td>
                     <td>54.124</td>
 
                     <td><input
@@ -426,8 +392,7 @@
 
                       </select>
                     </td>
-
-                    
+                    <td><input  type="text" class="form-control" placeholder="Enter comment"></td>
                     <td>12.750</td>
 
                     <td><input
@@ -443,19 +408,31 @@
                     <td><button class="btn btn-danger"><em class="fa fa-trash" /></button></td>
                   </tr>
 
-                  <tr id="newProduct">
+                  <tr id="newProduct" class="new_prod">
                     <td>
                     </td>
 
                     <td class="text-nowrap">
                       <input type="text" class="form-control" placeholder="Enter Quantity">
                     </td>
-                    <td class="text-nowrap"><input type="text" class="form-control" placeholder="Enter Item Code"></td>
+                    <td class="text-nowrap">
+                      <select id="" class="mySelect2 select2 js-example-programmatic form-control">
+                        <option value="2800-118501">2800-118501</option>
+                        <option value="2800-118534">2800-118534</option>
+                        <option value="2802-118501">2802-118501</option>
+                        <option value="2803-118501">2803-118501</option>
+                        <option value="2804-118501">2804-118501</option>
+                        <option value="2800-118523">2800-118523</option>
+                      </select>
+                    </td>
                     <td>
-                      <input type="text" class="form-control" placeholder="Enter Description">
+                      <select  class=" mySelect3 select2 js-example-programmatic form-control">
+                        <option value='Ball Valve Riser 3/4" FHTxMHT'>Ball Valve Riser 3/4" FHTxMHT</option>
+                        <option value="FIGURE 8 062">FIGURE 8 062</option>
+                      </select>
                     </td>
                     <td id="standardCost13" class="text-nowrap">
-                      <input type="text" class="form-control" placeholder="Enter Standard Cost">
+                      <input type="text" class="form-control" value="54.124" placeholder="Enter Standard Cost">
                     </td>
                     <td class="text-nowrap">
                       <input type="text" class="form-control" placeholder="Enter Quoted Cost">
@@ -566,25 +543,28 @@
 
                       </select>
                     </td>
-
+                    <td><input  type="text" class="form-control" placeholder="Enter comment"></td>
                     <td>
-                      <input type="text" class="form-control" placeholder="Enter Total">
+                      <input type="text" class="form-control" value="54.124" placeholder="Enter Total">
                     </td>
 
                     <td>                      
-                      <input type="text" class="form-control" placeholder="Enter Sell">
+                      <input type="text" class="form-control" value="64.124" placeholder="Enter Sell">
                     </td>
                     <td>
-                      <input type="text" class="form-control" placeholder="Enter Total">  
+                      <input type="text" class="form-control" value="13.83" placeholder="Enter Total">  
                     </td>
 
                     <td>
-                      <input type="text" class="form-control" placeholder="Enter Gross %">  
+                      <input type="text" class="form-control" value="20" placeholder="Enter Gross %">  
                     </td>
                     <td>
-                      <input type="text" class="form-control" placeholder="Enter Gross %">  
+                      <input type="text" class="form-control" value="20" placeholder="Enter Gross %">  
                     </td>
-                    <td><button class="btn btn-danger"><em class="fa fa-trash" /></button></td>
+                    <td class="d-flex">
+                      <button class="btn btn-danger mr-2"><i class="fa fa-trash"></i></button>
+                      <button type="button" class="btn btn-primary" onclick="copyTableRow()"><i class="fa fa-plus"></i></button>
+                    </td>
                   </tr>
 
               </tbody>
@@ -597,13 +577,20 @@
 
       <!--Main Row 2 -->
       <tr>
-        <td >
-          <input
+        <td>
+          {% comment %} <input
             type="text"
             class="form-control"
             id=""
-            value="DR-002"
-          />
+            value="DR-001"
+          /> {% endcomment %}
+          <select class="select2 form-control">
+            <option selected disabled>Select Task Code</option>
+            <option value="AU-000">AU-000</option>
+            <option value="AU-000 : AU-001">AU-000 : AU-001</option>
+            <option value="AU-001 : AU-002">AU-001 : AU-002</option>
+            <option value="AU-002 : AU-003">AU-002 : AU-003</option>
+          </select>
         </td>
         <td>
           <input
@@ -665,16 +652,15 @@
           
         </td>
 
-        <td>
-          <a href="#">
-            <em class="ft-chevron-down font-medium-5"></em>
-          </a>
-          
-          
-        </td>
+        
+          <td>
+            <a data-toggle="collapse" href="#collapse12" aria-expanded="true" aria-controls="collapse12" class="card-title">
+              <em class="ft-chevron-down font-medium-5"></em>
+            </a>
+          </td>
         
       </tr>
-      <tr>
+      <tr id="collapse12" role="tabpanel" aria-labelledby="headingCollapse12" class="collapse">
         <td>
         </td>
 
@@ -685,19 +671,16 @@
                 <em class="ft-plus font-medium-5"></em> Add Product
             </button>
 
-            <button type="button" class="btn bg-light-primary" data-backdrop="false"  
-              data-toggle="modal" data-target="#show">
-              Assign Product
-            </button>
+            {% comment %} {% include "proposal/drag_and_select.html" %} {% endcomment %}
           </div>
-          <div class="table-responsive" style="width: 66vw;">
+          <div class="table-responsive">
             <table
               class="table table-striped table-bordered"
               >
               <thead>
                 <tr class="text-center">
                   <th colspan="1"></th>
-                  <th colspan="6" class="align-top">Project Product Information</th>
+                  <th colspan="7" class="align-top">Project Product Information</th>
                   <th colspan="1" class="align-top">Cost</th>
                   <th colspan="2" class="align-top">Sell</th>
                   <th colspan="2" class="align-top">Gross Profit</th>
@@ -710,7 +693,8 @@
                   <th class="text-nowrap">Item Code</th>
                   <th >Description</th>
                   <th>Standard Cost</th>
-                  <th>Quoted cost</th>
+                  <th>Vendor Quoted cost</th>
+                  <th>Vendor</th>
                   <th>Comment</th>
 
                   <th>Total</th>
@@ -850,7 +834,7 @@
 
                       </select>
                     </td>
-
+                    <td><input  type="text" class="form-control" placeholder="Enter comment"></td>
                     <td>22.80</td>
 
                     <td><input
@@ -989,7 +973,7 @@
 
                       </select>
                     </td>
-
+                    <td><input  type="text" class="form-control" placeholder="Enter comment"></td>
                     <td>10.50</td>
 
                     <td><input
@@ -1005,19 +989,31 @@
                     <td><button class="btn btn-danger"><em class="fa fa-trash" /></button></td>
                   </tr>
 
-                  <tr id="newProduct">
+                  <tr id="newProduct" class="new_prod">
                     <td>
                     </td>
 
                     <td class="text-nowrap">
                       <input type="text" class="form-control" placeholder="Enter Quantity">
                     </td>
-                    <td class="text-nowrap"><input type="text" class="form-control" placeholder="Enter Item Code"></td>
+                    <td class="text-nowrap">
+                      <select  class="mySelect2 select2 js-example-programmatic form-control">
+                        <option value="2800-118501">2800-118501</option>
+                        <option value="2800-118534">2800-118534</option>
+                        <option value="2802-118501">2802-118501</option>
+                        <option value="2803-118501">2803-118501</option>
+                        <option value="2804-118501">2804-118501</option>
+                        <option value="2800-118523">2800-118523</option>
+                      </select>
+                    </td>
                     <td>
-                      <input type="text" class="form-control" placeholder="Enter Description">
+                      <select  class="mySelect3 select2 js-example-programmatic form-control">
+                        <option value='Ball Valve Riser 3/4" FHTxMHT'>Ball Valve Riser 3/4" FHTxMHT</option>
+                        <option value="FIGURE 8 062">FIGURE 8 062</option>
+                      </select>
                     </td>
                     <td id="standardCost13" class="text-nowrap">
-                      <input type="text" class="form-control" placeholder="Enter Standard Cost">
+                      <input type="text" class="form-control" value="54.124" placeholder="Enter Standard Cost">
                     </td>
                     <td class="text-nowrap">
                       <input type="text" class="form-control" placeholder="Enter Quoted Cost">
@@ -1128,27 +1124,29 @@
 
                       </select>
                     </td>
-
+                    <td><input  type="text" class="form-control" placeholder="Enter comment"></td>
                     <td>
-                      <input type="text" class="form-control" placeholder="Enter Total">
+                      <input type="text" class="form-control" value="54.124" placeholder="Enter Total">
                     </td>
 
                     <td>                      
-                      <input type="text" class="form-control" placeholder="Enter Sell">
+                      <input type="text" class="form-control" value="64.124" placeholder="Enter Sell">
                     </td>
                     <td>
-                      <input type="text" class="form-control" placeholder="Enter Total">  
+                      <input type="text" class="form-control" value="13.83" placeholder="Enter Total">  
                     </td>
 
                     <td>
-                      <input type="text" class="form-control" placeholder="Enter Gross %">  
+                      <input type="text" class="form-control" value="20" placeholder="Enter Gross %">  
                     </td>
                     <td>
-                      <input type="text" class="form-control" placeholder="Enter Gross %">  
+                      <input type="text" class="form-control" value="20" placeholder="Enter Gross %">  
                     </td>
-                    <td><button class="btn btn-danger"><em class="fa fa-trash" /></button></td>
+                    <td class="d-flex">
+                      <button class="btn btn-danger mr-2"><i class="fa fa-trash"></i></button>
+                      <button type="button" class="btn btn-primary" onclick="copyTableRow()"><i class="fa fa-plus"></i></button>
+                    </td>
                   </tr>
-
 
               </tbody>
             
@@ -1160,13 +1158,20 @@
 
       <!--Main Row 3 -->
       <tr>
-        <td >
-          <input
+        <td>
+          {% comment %} <input
             type="text"
             class="form-control"
             id=""
-            value="DR-003"
-          />
+            value="DR-001"
+          /> {% endcomment %}
+          <select class="select2 form-control">
+            <option selected disabled>Select Task Code</option>
+            <option value="AU-000">AU-000</option>
+            <option value="AU-000 : AU-001">AU-000 : AU-001</option>
+            <option value="AU-001 : AU-002">AU-001 : AU-002</option>
+            <option value="AU-002 : AU-003">AU-002 : AU-003</option>
+          </select>
         </td>
         <td>
           <input
@@ -1229,15 +1234,13 @@
         </td>
 
         <td>
-          <a href="#">
+          <a data-toggle="collapse" href="#collapse13" aria-expanded="true" aria-controls="collapse13" class="card-title">
             <em class="ft-chevron-down font-medium-5"></em>
           </a>
-          
-          
         </td>
         
       </tr>
-      <tr>
+      <tr id="collapse13" role="tabpanel" aria-labelledby="headingCollapse13" class="collapse">
         <td>
         </td>
 
@@ -1248,19 +1251,16 @@
                 <em class="ft-plus font-medium-5"></em> Add Product
             </button>
 
-            <button type="button" class="btn bg-light-primary" data-backdrop="false"  
-              data-toggle="modal" data-target="#show">
-              Assign Product
-            </button>
+            {% comment %} {% include "proposal/drag_and_select.html" %} {% endcomment %}
           </div>
-          <div class="table-responsive" style="width: 66vw;">
+          <div class="table-responsive">
             <table
               class="table table-striped table-bordered"
               >
               <thead>
                 <tr class="text-center">
                   <th colspan="1"></th>
-                  <th colspan="6" class="align-top">Project Product Information</th>
+                  <th colspan="7" class="align-top">Project Product Information</th>
                   <th colspan="1" class="align-top">Cost</th>
                   <th colspan="2" class="align-top">Sell</th>
                   <th colspan="2" class="align-top">Gross Profit</th>
@@ -1273,7 +1273,8 @@
                   <th class="text-nowrap">Item Code</th>
                   <th >Description</th>
                   <th>Standard Cost</th>
-                  <th>Quoted cost</th>
+                  <th>Vendor Quoted cost</th>
+                  <th>Vendor</th>
                   <th>Comment</th>
 
                   <th>Total</th>
@@ -1413,7 +1414,7 @@
 
                       </select>
                     </td>
-
+                    <td><input  type="text" class="form-control" placeholder="Enter comment"></td>
                     <td>11.85</td>
                     
                     <td><input
@@ -1553,7 +1554,7 @@
 
                       </select>
                     </td>
-
+                    <td><input  type="text" class="form-control" placeholder="Enter comment"></td>
                     <td>12.75</td>
 
                     <td><input
@@ -1569,20 +1570,31 @@
                     <td><button class="btn btn-danger"><em class="fa fa-trash" /></button></td>
                   </tr>
 
-
-                  <tr id="newProduct">
+                  <tr id="newProduct" class="new_prod">
                     <td>
                     </td>
 
                     <td class="text-nowrap">
                       <input type="text" class="form-control" placeholder="Enter Quantity">
                     </td>
-                    <td class="text-nowrap"><input type="text" class="form-control" placeholder="Enter Item Code"></td>
+                    <td class="text-nowrap">
+                      <select  class="mySelect2 select2 js-example-programmatic form-control">
+                        <option value="2800-118501">2800-118501</option>
+                        <option value="2800-118534">2800-118534</option>
+                        <option value="2802-118501">2802-118501</option>
+                        <option value="2803-118501">2803-118501</option>
+                        <option value="2804-118501">2804-118501</option>
+                        <option value="2800-118523">2800-118523</option>
+                      </select>
+                    </td>
                     <td>
-                      <input type="text" class="form-control" placeholder="Enter Description">
+                      <select class="mySelect3 select2 js-example-programmatic form-control">
+                        <option value='Ball Valve Riser 3/4" FHTxMHT'>Ball Valve Riser 3/4" FHTxMHT</option>
+                        <option value="FIGURE 8 062">FIGURE 8 062</option>
+                      </select>
                     </td>
                     <td id="standardCost13" class="text-nowrap">
-                      <input type="text" class="form-control" placeholder="Enter Standard Cost">
+                      <input type="text" class="form-control" value="54.124" placeholder="Enter Standard Cost">
                     </td>
                     <td class="text-nowrap">
                       <input type="text" class="form-control" placeholder="Enter Quoted Cost">
@@ -1693,25 +1705,28 @@
 
                       </select>
                     </td>
-
+                    <td><input  type="text" class="form-control" placeholder="Enter comment"></td>
                     <td>
-                      <input type="text" class="form-control" placeholder="Enter Total">
+                      <input type="text" class="form-control" value="54.124" placeholder="Enter Total">
                     </td>
 
                     <td>                      
-                      <input type="text" class="form-control" placeholder="Enter Sell">
+                      <input type="text" class="form-control" value="64.124" placeholder="Enter Sell">
                     </td>
                     <td>
-                      <input type="text" class="form-control" placeholder="Enter Total">  
+                      <input type="text" class="form-control" value="13.83" placeholder="Enter Total">  
                     </td>
 
                     <td>
-                      <input type="text" class="form-control" placeholder="Enter Gross %">  
+                      <input type="text" class="form-control" value="20" placeholder="Enter Gross %">  
                     </td>
                     <td>
-                      <input type="text" class="form-control" placeholder="Enter Gross %">  
+                      <input type="text" class="form-control" value="20" placeholder="Enter Gross %">  
                     </td>
-                    <td><button class="btn btn-danger"><em class="fa fa-trash" /></button></td>
+                    <td class="d-flex">
+                      <button class="btn btn-danger mr-2"><i class="fa fa-trash"></i></button>
+                      <button type="button" class="btn btn-primary" onclick="copyTableRow()"><i class="fa fa-plus"></i></button>
+                    </td>
                   </tr>
 
               </tbody>
@@ -1722,7 +1737,7 @@
         </td>
       </tr>
 
-    <!--Total -->
+      <!--Total -->
       <tr>
         <th></th>
         <th>Total</th>
@@ -1734,9 +1749,283 @@
         <th></th>
       </tr>
 
+      <!-- Labor start -->
+      <tr>
+        <td >
+          {% comment %} <input
+            type="text"
+            class="form-control"
+            id=""
+            value="DR-003"
+          /> {% endcomment %}
+          <select class="select2 form-control">
+            <option selected disabled>Select Task Code</option>
+            <option value="LA-000">LA-000</option>
+            <option value="LA-000 : LA-001">LA-000 : LA-001</option>
+            <option value="LA-001 : LA-002">LA-001 : LA-002</option>
+            <option value="LA-002 : LA-003">LA-002 : LA-003</option>
+          </select>
+        </td>
+        <td>
+          <input
+            type="text"
+            class="form-control"
+            id=""
+            value="Underground"
+          />
+        </td>
+        <td >
+          $0.00
+        </td>
+        {% comment %} <td >
+          <input
+            type="text"
+            class="form-control"
+            id=""
+            value="Yes"
+          />
+        </td>
+        <td >
+          <input
+            type="text"
+            class="form-control"
+            id=""
+            value="$0.00"
+          />
+        </td>
+        <td >
+          <input
+            type="text"
+            class="form-control"
+            id=""
+            value="$0.00"
+          />
+        </td>
+        <td >
+          <input
+            type="text"
+            class="form-control"
+            id=""
+            value="$0.00"
+          />
+        </td> {% endcomment %}
+        <td >
+
+          0.00
+        </td>
+        <td >
+
+          0
+        </td>
+        <td >
+
+        EA
+        </td>
+        <td >
+          $0.00
+          
+        </td>
+
+        <td>
+          <a data-toggle="collapse" href="#collapse14" aria-expanded="true" aria-controls="collapse13" class="card-title">
+            <em class="ft-chevron-down font-medium-5"></em>
+          </a>
+        </td>
+        
+      </tr>
+      <tr id="collapse14" role="tabpanel" aria-labelledby="headingCollapse14" class="collapse">
+        <td>
+        </td>
+
+        <td colspan="100">
+          <div class="text-right my-2">
+            <button  type="button" class="btn bg-light-primary" data-backdrop="false"  
+              data-toggle="modal" data-target="#addProduct">
+                <em class="ft-plus font-medium-5"></em> Add labor
+            </button>
+
+            {% comment %} {% include "proposal/drag_and_select.html" %} {% endcomment %}
+          </div>
+          <div class="table-responsive">
+            <table
+              class="table table-striped table-bordered"
+              >
+              <thead>
+                <tr class="text-center">
+                  <th colspan="1"></th>
+                  <th colspan="6" class="align-top">Project Labor Information</th>
+                  <th colspan="1" class="align-top">Cost</th>
+                  <th colspan="2" class="align-top">Sell</th>
+                  <th colspan="2" class="align-top">Gross Profit</th>
+                  <th colspan="2" class="align-top"></th>
+                </tr>
+                <tr>
+                  <th>Sr No</th>
+
+                  <th class="text-nowrap">Labor task</th>
+                  <th >Description</th>
+                  <th class="text-nowrap">Quantity</th>
+                  <th>Local Cost</th>
+                  <th>Out Of Town cost</th>
+                  <th>Comment</th>
+
+                  <th>Total</th>
+
+                  <th>Sell</th>
+                  <th>Total</th>
+
+                  <th>$</th>
+                  <th>%</th>
+
+                  
+                  <td></td>
+
+                </tr>
+              </thead>
+
+              <tbody>
+                  <tr>
+                    <td>1</td>
+
+                    <td class="text-nowrap">Air Vent Assembly</td>
+                    <td >Per Vent</td>
+                    <td class="text-nowrap">
+                      <input
+                              type="text"
+                              class="form-control"
+                              id=""
+                              value="75"
+                            />
+                    </td>
+                    <td class="text-nowrap">35.00 </td>
+                    <td class="text-nowrap">35.00 </td>
+                    <td><input  type="text" class="form-control" placeholder="Enter comment"></td>
+                    <td>5.00</td>
+                    <td>11.85</td>
+                    
+                    <td><input
+                      type="text"
+                      class="form-control"
+                      id=""
+                      value="0.9"
+                    /></td>
+                    <td>64.124</td>
+
+                    <td>13.83</td>
+
+                    <td><button class="btn btn-danger"><em class="fa fa-trash" /></button></td>
+                  </tr>
+
+                  <tr>
+                    <td>2</td>
+
+                    <td class="text-nowrap">Air Vent Installation	</td>
+                    <td>Per Vent</td>
+                    <td class="text-nowrap">
+                      <input
+                              type="text"
+                              class="form-control"
+                              id=""
+                              value="75"
+                            />
+                    </td>
+                    <td class="text-nowrap">35.00 </td>
+                    <td class="text-nowrap">35.00 </td>
+                    <td><input  type="text" class="form-control" placeholder="Enter comment"></td>
+                    <td>5.00</td>
+                    <td>11.85</td>
+                    
+                    <td><input
+                      type="text"
+                      class="form-control"
+                      id=""
+                      value="0.9"
+                    /></td>
+                    <td>64.124</td>
+
+                    <td>13.83</td>
+                    
+
+                    <td><button class="btn btn-danger"><em class="fa fa-trash" /></button></td>
+                  </tr>
+
+                  
+                  <tr id="newProduct" class="new_prod">
+                    <td>
+                    </td>
+
+                    <td>
+                      <select class="mySelect2 select2 form-control">
+                        <option value="Select labor task" disabled>Select labor task</option>
+                        <option value="Air Vent Assembly">Air Vent Assembly</option>
+                        <option value="Air Vent Installation">Air Vent Installation</option>
+                        <option value="Automation: Backflush, Clock, Injector">Automation: Backflush, Clock, Injector</option>
+                      </select>
+                    </td>
+                    <td class="text-nowrap">
+                      <select class="mySelect3 select2 form-control">
+                        <option selected disabled>Select description Name</option>
+                        <option value="Per Vent">Per Vent</option>
+                        <option value="Minimum">Minimum</option>
+                        <option value="Per Sprinkler body">Per Sprinkler body</option>
+                      </select>
+                    </td>
+                    <td>
+                      <input type="text" class="form-control" placeholder="Enter Description">
+                    </td>
+                    <td id="standardCost13" class="text-nowrap">
+                      <input type="text" class="form-control" value="35.00" placeholder="Enter Standard Cost">
+                    </td>
+                    <td class="text-nowrap">
+                      <input type="text" class="form-control" value="35.00" placeholder="Enter Quoted Cost">
+                    </td>
+                    <td>
+                      <input type="text" class="form-control"placeholder="Enter comment">
+                    </td>
+                    <td><input  type="text" class="form-control" value="5.00" placeholder="Enter comment"></td>
+                    <td>
+                      <input type="text" class="form-control" value="11.85" placeholder="Enter Total">
+                    </td>
+
+                    <td>                      
+                      <input type="text" class="form-control" value="0.9" placeholder="Enter Sell">
+                    </td>
+                    <td>
+                      <input type="text" class="form-control" value="64.124" placeholder="Enter Total">  
+                    </td>
+
+                    <td>
+                      <input type="text" class="form-control" value="13.83" placeholder="Enter Gross %">  
+                    </td>
+                    
+                    <td class="d-flex">
+                      <button class="btn btn-danger mr-2"><i class="fa fa-trash"></i></button>
+                      <button type="button" class="btn btn-primary" onclick="copyTableRow()"><i class="fa fa-plus"></i></button>
+                    </td>
+                  </tr>
+
+              </tbody>
+            
+            </table>
+          </div>
+          
+        </td>
+      </tr>
+      <!-- Labor End -->
+      <!--Labor Total -->
+      <tr>
+        <th></th>
+        <th>Total</th>
+        <th>$15,550.00</th>
+        <th></th>
+        <th>90</th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+      <!--Labor Total -->
     </tbody>
   </table>
-
 </div>
 
 </div>
@@ -1801,302 +2090,242 @@
 </div>
 </div>
 
-<!-- Assign Product Modal -->
-<div class="modal fade text-left" id="show" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" aria-hidden="true">
-<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h4 class="modal-title" id="myModalLabel5">Assign Products</h4>
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div class="table-responsive">
-        <table
-          class="table table-striped table-bordered"
-          >
-          <thead>
-            <tr>
-              <th>
-                <input class="custom-control custom-checkbox checkbox checkbox-primary"  type="checkbox" >
-              </th>
-              <th style="max-width:100px">Combined Quantities</th>
-              <th >Description</th>
-              <th style="max-width:150px">Item Number</th>
-              {% comment %} <th style="max-width:150px">Category</th> {% endcomment %}
-            </tr>
-          </thead>
-          <tbody>
+{% block script %}
+  <!-- BEGIN Copy Product Row based on model value-->
+  <script>
+    function copyTableRow() {
+      console.log("Copying table rows...");
 
-            <tr>
-              <td>
-                <input class="custom-control custom-checkbox checkbox checkbox-primary"  type="checkbox">
-              </td>
-              <td>2</td>
-              <td>VENT-1"CAV X 2"COUP</td>
-              <td>ASSM-0625</td>
-              {% comment %} <td>ASSEMBLY</td> {% endcomment %}
-              {% comment %} <td style="max-width:100px">
-                <input
-                  type="text"
-                  class="form-control"
-                  id=""
-                  value="0"
-                />
-              </td> {% endcomment %}
-            </tr>
-
-            <tr>
-              <td>
-                <input class="custom-control custom-checkbox checkbox checkbox-primary"  type="checkbox" checked>
-              </td>
-              <td>75</td>
-              <td>Ball Valve Riser 3/4" FHTxMHT</td>
-              <td>2800-117500</td>
-              {% comment %} <td>FHO915</td> {% endcomment %}
-            </tr>
-            <tr>
-              <td>
-                <input class="custom-control custom-checkbox checkbox checkbox-primary"  type="checkbox" >
-              </td>
-              <td>2</td>
-              <td>Cement - Dauber for Pint Can (HOSE FITTINGS)</td>
-              <td>4200-015000</td>
-              {% comment %} <td>FHO</td> {% endcomment %}
-            </tr>
-            <tr>
-              <td>
-                <input class="custom-control custom-checkbox checkbox checkbox-primary"  type="checkbox" >
-              </td>
-              <td>2</td>
-              <td>CEMENT - RED HOT CLEAR, PINT (HOSE FITTINGS)</td>
-              <td>4200-005000</td>
-              {% comment %} <td>FHO</td> {% endcomment %}
-              
-            </tr>
-            <tr>
-              <td>
-                <input class="custom-control custom-checkbox checkbox checkbox-primary"  type="checkbox" checked>
-              </td>
-              <td>150</td>
-              <td>FIGURE 8 062</td>
-              <td>2800-118500</td>
-              {% comment %} <td>FHO920</td> {% endcomment %}
-              
-            </tr>
-            <tr>
-              <td>
-                <input class="custom-control custom-checkbox checkbox checkbox-primary"  type="checkbox" >
-              </td>
-              <td>75</td>
-              <td>MALE HOSE ADAP X 1/2"S(3/4"SP)</td>
-              <td>2800-114000</td>
-              {% comment %} <td>FHO905</td> {% endcomment %}
-            
-            </tr>
-            <tr>
-              <td>
-                <input class="custom-control custom-checkbox checkbox checkbox-primary"  type="checkbox" >
-              </td>
-              <td>25</td>
-              <td>PERMA-LOC COUPLING 062</td>
-              <td>2800-001000</td>
-              {% comment %} <td>FHO005</td> {% endcomment %}
-              
-            </tr>
-            <tr>
-              <td>
-                <input class="custom-control custom-checkbox checkbox checkbox-primary"  type="checkbox" >
-              </td>
-              <td>75</td>
-              <td>PERMA-LOC X SWIVEL-W TEE 062</td>
-              <td>2800-006000</td>
-              {% comment %} <td>FHO010</td> {% endcomment %}
-              
-            </tr>
-            <tr>
-              <td>
-                <input class="custom-control custom-checkbox checkbox checkbox-primary"  type="checkbox" >
-              </td>
-              <td>24000</td>
-              <td>UNIRAM .62/45 E.5336 COIL</td>
-              <td>4400-458500</td>
-              {% comment %} <td>HOS050</td> {% endcomment %}
-              
-            </tr>
-            <tr>
-              <td>
-                <input class="custom-control custom-checkbox checkbox checkbox-primary"  type="checkbox" >
-              </td>
-              <td>25</td>
-              <td>COUPLER BLACK 1/2"</td>
-              <td>2800-116500</td>
-              {% comment %} <td>FHO910</td> {% endcomment %}
-            
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn bg-light-secondary" data-dismiss="modal">Close</button>
-      <button type="button" class="btn btn-primary">Save</button>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- BEGIN Copy Product Row based on model value-->
-<script>
-  function copyTableRow() {
-    console.log("Copying table rows...");
-
-    // Get the value entered in the totalRows input field
-    var totalRows = document.getElementById("totalRows").value;
-    console.log("Total Rows:", totalRows);
-    
-    // Get the table body where the new rows will be appended
-    var tableBody = document.getElementById("tableBody");
-    console.log("Table Body:", tableBody);
-    
-    // Get the table row to be copied
-    var rowToCopy = document.getElementById("newProduct");
-    console.log("Row to Copy:", rowToCopy);
-    
-    // Loop through the number of rows to be copied
-    for (var i = 0; i < totalRows; i++) {
-      console.log("Copying row", i + 1);
-      // Clone the row
-      var clonedRow = rowToCopy.cloneNode(true);
-      console.log("Cloned Row:", clonedRow);
-      // Append the cloned row to the table body
-      tableBody.appendChild(clonedRow);
-      console.log("Row appended to table body");
+      // Get the value entered in the totalRows input field
+      var totalRows = parseInt(document.getElementById("totalRows").value, 10);
+      console.log("Total Rows:", totalRows);
+  
+      // Handle case where totalRows is NaN or less than 1
+      if (isNaN(totalRows) || totalRows < 1) {
+          totalRows = 1;
+      }
+  
+      // Get the table body where the new rows will be appended
+      var tableBody = document.getElementById("tableBody");
+      console.log("Table Body:", tableBody);
+  
+      // Get the table row to be copied
+      var rowToCopy = document.getElementById("newProduct");
+      console.log("Row to Copy:", rowToCopy);
+  
+      if (!rowToCopy) {
+          console.error("Row with ID 'newProduct' not found.");
+          return;
+      }
+  
+      // Loop through the number of rows to be copied
+      for (var i = 0; i < totalRows; i++) {
+          console.log("Copying row", i + 1);
+  
+          // Clone the row
+          var clonedRow = rowToCopy.cloneNode(true);
+          console.log("Cloned Row:", clonedRow);
+  
+          // Remove the id attribute from the cloned row to avoid duplicates
+          clonedRow.removeAttribute('id');
+  
+          // Optionally reset input values to default or empty
+          var inputs = clonedRow.querySelectorAll('input');
+          inputs.forEach(function(input) {
+              input.value = '';
+          });
+          
+          // Append the cloned row to the table body
+          tableBody.appendChild(clonedRow);
+          console.log("Row appended to table body");
+      }
     }
-  }
-</script>
-<!-- END Copy Product Row based on model value-->
+  </script>
+  <!-- END Copy Product Row based on model value-->
 
 
-
-<!-- BEGIN compare standardCost with productCost-->
-<script>
-  function checkCostEquality11() {
-      var standardCost = parseFloat(document.getElementById("standardCost11").textContent.trim());
-      var productCost = parseFloat(document.getElementById("productCost11").value.trim());
-      var productCostInput = document.getElementById("productCost11");
-  
-      if (standardCost !== productCost) {
-          productCostInput.classList.add("border-danger", "border-2","text-danger");
-      } else {
-          productCostInput.classList.remove("border-danger", "border-2","text-danger");
-      }
-  }
-  
-  // Trigger the comparison once after the page has loaded
-  document.addEventListener("DOMContentLoaded", function() {
-      checkCostEquality11();
-  });
-
-  function checkCostEquality12() {
-      var standardCost = parseFloat(document.getElementById("standardCost12").textContent.trim());
-      var productCost = parseFloat(document.getElementById("productCost12").value.trim());
-      var productCostInput = document.getElementById("productCost12");
-  
-      if (standardCost !== productCost) {
-          productCostInput.classList.add("border-danger", "border-2","text-danger");
-      } else {
-          productCostInput.classList.remove("border-danger", "border-2","text-danger");
-      }
-  }
-  
-  // Trigger the comparison once after the page has loaded
-  document.addEventListener("DOMContentLoaded", function() {
-      checkCostEquality12();
-  });
-</script>
-
-<!-- Main Row 2 -->
-<script>
-  function checkCostEquality21() {
-      var standardCost = parseFloat(document.getElementById("standardCost21").textContent.trim());
-      var productCost = parseFloat(document.getElementById("productCost21").value.trim());
-      var productCostInput = document.getElementById("productCost21");
-  
-      if (standardCost !== productCost) {
-          productCostInput.classList.add("border-danger", "border-2","text-danger");
-      } else {
-          productCostInput.classList.remove("border-danger", "border-2","text-danger");
-      }
-  }
-  
-  // Trigger the comparison once after the page has loaded
-  document.addEventListener("DOMContentLoaded", function() {
-      checkCostEquality21();
-  });
-
-  function checkCostEquality22() {
-      var standardCost = parseFloat(document.getElementById("standardCost22").textContent.trim());
-      var productCost = parseFloat(document.getElementById("productCost22").value.trim());
-      var productCostInput = document.getElementById("productCost22");
-  
-      if (standardCost !== productCost) {
-          productCostInput.classList.add("border-danger", "border-2","text-danger");
-      } else {
-          productCostInput.classList.remove("border-danger", "border-2","text-danger");
-      }
-  }
-  
-  // Trigger the comparison once after the page has loaded
-  document.addEventListener("DOMContentLoaded", function() {
-      checkCostEquality22();
-  });
-</script>
-
-<!-- Main Row 3 -->
-<script>
-  function checkCostEquality31() {
-      var standardCost = parseFloat(document.getElementById("standardCost31").textContent.trim());
-      var productCost = parseFloat(document.getElementById("productCost31").value.trim());
-      var productCostInput = document.getElementById("productCost31");
-  
-      if (standardCost !== productCost) {
-        productCostInput.classList.add("border-danger", "border-2","text-danger");
-    } else {
-        productCostInput.classList.remove("border-danger", "border-2","text-danger");
+  <!-- BEGIN compare standardCost with productCost-->
+  <script>
+    function checkCostEquality11() {
+        var standardCost = parseFloat(document.getElementById("standardCost11").textContent.trim());
+        var productCost = parseFloat(document.getElementById("productCost11").value.trim());
+        var productCostInput = document.getElementById("productCost11");
+    
+        if (standardCost !== productCost) {
+            productCostInput.classList.add("border-danger", "border-2","text-danger");
+        } else {
+            productCostInput.classList.remove("border-danger", "border-2","text-danger");
+        }
     }
-  }
-  
-  // Trigger the comparison once after the page has loaded
-  document.addEventListener("DOMContentLoaded", function() {
-      checkCostEquality31();
-  });
+    
+    // Trigger the comparison once after the page has loaded
+    document.addEventListener("DOMContentLoaded", function() {
+        checkCostEquality11();
+    });
 
-  function checkCostEquality32() {
-      var standardCost = parseFloat(document.getElementById("standardCost32").textContent.trim());
-      var productCost = parseFloat(document.getElementById("productCost32").value.trim());
-      var productCostInput = document.getElementById("productCost32");
-  
-      if (standardCost !== productCost) {
+    function checkCostEquality12() {
+        var standardCost = parseFloat(document.getElementById("standardCost12").textContent.trim());
+        var productCost = parseFloat(document.getElementById("productCost12").value.trim());
+        var productCostInput = document.getElementById("productCost12");
+    
+        if (standardCost !== productCost) {
+            productCostInput.classList.add("border-danger", "border-2","text-danger");
+        } else {
+            productCostInput.classList.remove("border-danger", "border-2","text-danger");
+        }
+    }
+    
+    // Trigger the comparison once after the page has loaded
+    document.addEventListener("DOMContentLoaded", function() {
+        checkCostEquality12();
+    });
+  </script>
+
+  <!-- Main Row 2 -->
+  <script>
+    function checkCostEquality21() {
+        var standardCost = parseFloat(document.getElementById("standardCost21").textContent.trim());
+        var productCost = parseFloat(document.getElementById("productCost21").value.trim());
+        var productCostInput = document.getElementById("productCost21");
+    
+        if (standardCost !== productCost) {
+            productCostInput.classList.add("border-danger", "border-2","text-danger");
+        } else {
+            productCostInput.classList.remove("border-danger", "border-2","text-danger");
+        }
+    }
+    
+    // Trigger the comparison once after the page has loaded
+    document.addEventListener("DOMContentLoaded", function() {
+        checkCostEquality21();
+    });
+
+    function checkCostEquality22() {
+        var standardCost = parseFloat(document.getElementById("standardCost22").textContent.trim());
+        var productCost = parseFloat(document.getElementById("productCost22").value.trim());
+        var productCostInput = document.getElementById("productCost22");
+    
+        if (standardCost !== productCost) {
+            productCostInput.classList.add("border-danger", "border-2","text-danger");
+        } else {
+            productCostInput.classList.remove("border-danger", "border-2","text-danger");
+        }
+    }
+    
+    // Trigger the comparison once after the page has loaded
+    document.addEventListener("DOMContentLoaded", function() {
+        checkCostEquality22();
+    });
+  </script>
+
+  <!-- Main Row 3 -->
+  <script>
+    function checkCostEquality31() {
+        var standardCost = parseFloat(document.getElementById("standardCost31").textContent.trim());
+        var productCost = parseFloat(document.getElementById("productCost31").value.trim());
+        var productCostInput = document.getElementById("productCost31");
+    
+        if (standardCost !== productCost) {
           productCostInput.classList.add("border-danger", "border-2","text-danger");
       } else {
           productCostInput.classList.remove("border-danger", "border-2","text-danger");
       }
-  }
-  
-  // Trigger the comparison once after the page has loaded
-  document.addEventListener("DOMContentLoaded", function() {
-      checkCostEquality32();
-  });
+    }
+    
+    // Trigger the comparison once after the page has loaded
+    document.addEventListener("DOMContentLoaded", function() {
+        checkCostEquality31();
+    });
+
+    function checkCostEquality32() {
+        var standardCost = parseFloat(document.getElementById("standardCost32").textContent.trim());
+        var productCost = parseFloat(document.getElementById("productCost32").value.trim());
+        var productCostInput = document.getElementById("productCost32");
+    
+        if (standardCost !== productCost) {
+            productCostInput.classList.add("border-danger", "border-2","text-danger");
+        } else {
+            productCostInput.classList.remove("border-danger", "border-2","text-danger");
+        }
+    }
+    
+    // Trigger the comparison once after the page has loaded
+    document.addEventListener("DOMContentLoaded", function() {
+        checkCostEquality32();
+    });
+  </script>
+
+<script>
+    $(document).ready(function() {
+
+        const data = [
+            { id: '2800-118501', text: '2800-118501' },
+            { id: '2800-118534', text: '2800-118534' },
+            { id: '2803-118501', text: '2803-118501' }
+        ];
+
+        $('.mySelect2').select2({
+            tags: true, // Enable tagging
+            data: data,
+            placeholder: 'Select tasks',
+            allowClear: true
+        });
+
+        $('.mySelect2').on('select2:select', function(e) {
+          const selectedData = e.params.data;
+
+          // Check if the selected value is in the predefined data
+          const isCustom = !data.some(item => item.id === selectedData.id);
+
+          if (isCustom) {
+              // Add new custom option if it does not exist
+              const newOption = new Option(selectedData.id, selectedData.id, true, true);
+              $('.mySelect2').append(newOption).trigger('change');
+
+              // Clear other fields
+              $('.new_prod input[type="text"]').val('');
+              $('.mySelect3').val(null).trigger('change');
+          } else {
+              // Optionally handle cases where the value is in predefined data
+              console.log('Selected predefined value:', selectedData.id);
+          }
+        });
+    });
+
+    $(document).ready(function() {
+
+      const data = [
+        { id: 'Ball Valve Riser 3/4" FHTxMHT', text: 'Ball Valve Riser 3/4" FHTxMHT' },
+        { id: 'FIGURE 8 062', text: 'FIGURE 8 062' },
+      ];
+
+      $('.mySelect3').select2({
+          tags: true, // Enable tagging
+          data: data,
+          placeholder: 'Select tasks',
+          allowClear: true
+      });
+
+      $('.mySelect3').on('select2:select', function(e) {
+        const selectedData = e.params.data;
+
+        // Check if the selected value is in the predefined data
+        const isCustom = !data.some(item => item.id === selectedData.id);
+
+        if (isCustom) {
+            // Add new custom option if it does not exist
+            const newOption = new Option(selectedData.id, selectedData.id, true, true);
+            $('.mySelect3').append(newOption).trigger('change');
+
+            // Clear other fields
+            $('.new_prod input[type="text"]').val('');
+            $('.mySelect2').val(null).trigger('change');
+        } else {
+            // Optionally handle cases where the value is in predefined data
+            console.log('Selected predefined value:', selectedData.id);
+        }
+      });
+    });
+
 </script>
-
-<!-- END compare standardCost with productCost-->
-
-<!-- BEGIN PAGE VENDOR JS-->
-<script src="{% static 'vendors/js/select2.full.min.js' %}"></script>
-<!-- END PAGE VENDOR JS-->
-
-<!-- BEGIN PAGE LEVEL JS-->
-<script src="{% static 'app/js/select2.min.js' %}"></script>
-<!-- END PAGE LEVEL JS-->
+{% endblock script %}

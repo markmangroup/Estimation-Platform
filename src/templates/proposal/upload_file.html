@@ -23,9 +23,7 @@
 </div>
 
 
-
-
-
+{% block script %}
 <script>
   // define Dropzone options for dpzSingleFile
   Dropzone.options.dpzSingleFile = {
@@ -45,3 +43,4 @@
     maxFiles: 1,
   });
 </script>
+{% endblock script %}

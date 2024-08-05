@@ -1,3 +1,5 @@
+{% load static %}
+
 <div class="card-header">
   <div class="float-right">
     <div
@@ -26,57 +28,239 @@
           </div>
           <form action="#">
             <div class="modal-body">
-              <div class="row">
-                <div class="col">
-                  <label>Customer: </label>
-                  <div class="form-group">
-                    <input
-                      type="text"
-                      placeholder="Customer"
-                      class="form-control"
-                    />
-                  </div>
+              <div class="col-12">
+                <label>Customer </label>
+                <div class="form-group">
+                  <select class="select2 form-control">
+                    <option selected disabled value="Select Customer">
+                      Select Customer
+                    </option>
+                    <option value="Flint General Enginieering">
+                      Flint General Enginieering
+                    </option>
+                    <option value="California Compaction">
+                      California Compaction
+                    </option>
+                    <option value="Rd 17  LLC">Rd 17 LLC</option>
+                    <option value="Cal Farm Fresh Produce LLC">
+                      Cal Farm Fresh Produce LLC
+                    </option>
+                    <option value="Tej Oliver's Ranch">
+                      Tej Oliver's Ranch
+                    </option>
+                    <option value="Kevin Giannelli">Kevin Giannelli</option>
+                    <option value="Bagdasarian Farms, LLC">
+                      Bagdasarian Farms, LLC
+                    </option>
+                    <option value="Lehn Family farms">Lehn Family farms</option>
+                    <option value="Fowler Packing">Fowler Packing</option>
+                    <option value="Leatherby Developement LLC">
+                      Leatherby Developement LLC
+                    </option>
+                    <option value="Justin Keeling">Justin Keeling</option>
+                    <option value="Reshad Sulymankhel">
+                      Reshad Sulymankhel
+                    </option>
+                    <option value="Barrios Farming">Barrios Farming</option>
+                    <option value="CapEx Engineering">CapEx Engineering</option>
+                    <option value="Wackman Ranch">Wackman Ranch</option>
+                    <option value="Paramdeep Chohan">Paramdeep Chohan</option>
+                    <option value="Paramdeep Chohan">Paramdeep Chohan</option>
+                    <option value="Overland Stockyard">
+                      Overland Stockyard
+                    </option>
+                    <option value="ROBINSON CALF RANCH">
+                      ROBINSON CALF RANCH
+                    </option>
+                    <option value="Bickford Ranch">Bickford Ranch</option>
+                    <option value="Prime Cleaners LLC">
+                      Prime Cleaners LLC
+                    </option>
+                    <option value="B&G Foods">B&G Foods</option>
+                    <option value="Maruti Ranch Inc.">Maruti Ranch Inc.</option>
+                    <option value="Wallace Brothers">Wallace Brothers</option>
+                    <option value="Hillside Farms">Hillside Farms</option>
+                    <option value="Alvarado Farming Services LLC">
+                      Alvarado Farming Services LLC
+                    </option>
+                    <option value="Sunridge Nurseries, Inc.">
+                      Sunridge Nurseries, Inc.
+                    </option>
+                    <option value="Yahav Agritech Consulting, LLC">
+                      Yahav Agritech Consulting, LLC
+                    </option>
+                    <option value="Hertz Farm Management">
+                      Hertz Farm Management
+                    </option>
+                    <option value="TDH Land & Cattle, LLC">
+                      TDH Land & Cattle, LLC
+                    </option>
+                    <option value="Silveira Farms">Silveira Farms</option>
+                    <option value="Robert Knorr">Robert Knorr</option>
+                    <option value="Martha Waterman">Martha Waterman</option>
+                    <option value="Horizon Farms LLC">Horizon Farms LLC</option>
+                    <option value="Grant Crum">Grant Crum</option>
+                    <option value="AC Foods">AC Foods</option>
+                    <option value="J&J Farms">J&J Farms</option>
+                    <option value="Peterson Farming Inc">
+                      Peterson Farming Inc
+                    </option>
+                    <option value="P&J Estes, Inc.">P&J Estes, Inc.</option>
+                    <option value="Roberto Ayala">Roberto Ayala</option>
+                    <option value="CTL Forest Management">
+                      CTL Forest Management
+                    </option>
+                    <option value="Delta View Farms">Delta View Farms</option>
+                    <option value="Jay LLC">Jay LLC</option>
+                    <option value="Innovative Produce">
+                      Innovative Produce
+                    </option>
+                    <option value="Nahal Farms LLC.">Nahal Farms LLC.</option>
+                    <option value="The Dutra Group">The Dutra Group</option>
+                    <option value="Pitigliano Farms">Pitigliano Farms</option>
+                    <option value="Rockford Elementary School District">
+                      Rockford Elementary School District
+                    </option>
+                    <option value="Villa Vicencio Vineyard">
+                      Villa Vicencio Vineyard
+                    </option>
+                    <option value="Gilbert Marroquin">Gilbert Marroquin</option>
+                    <option value="Day Break Pecans">Day Break Pecans</option>
+                    <option value="Yuma Union High School District">
+                      Yuma Union High School District
+                    </option>
+                    <option value="Brad Wright">Brad Wright</option>
+                    <option value="Tempe Farming / Todd Thelander">
+                      Tempe Farming / Todd Thelander
+                    </option>
+                    <option value="Lomo Cold Storage">Lomo Cold Storage</option>
+                    <option
+                      value="Lentz Construction General Engineering Contractor Inc"
+                    >
+                      Lentz Construction General Engineering Contractor Inc
+                    </option>
+                    <option value="Border Valley Trading">
+                      Border Valley Trading
+                    </option>
+                    <option value="Barbara Lauchland">Barbara Lauchland</option>
+                    <option value="Zuckerman Heritage, Inc">
+                      Zuckerman Heritage, Inc
+                    </option>
+                    <option value="Colusa Properties Inc.">
+                      Colusa Properties Inc.
+                    </option>
+                    <option value="Susan Upton">Susan Upton</option>
+                    <option value="JOE TEST">JOE TEST</option>
+                    <option value="Jake & Colleen Cecil">
+                      Jake & Colleen Cecil
+                    </option>
+                    <option value="Delta Education Vineyard">
+                      Delta Education Vineyard
+                    </option>
+                    <option value="Vido L. Andreotti Special Needs Trust">
+                      Vido L. Andreotti Special Needs Trust
+                    </option>
+                    <option value="Grobiero Farms">Grobiero Farms</option>
+                    <option value="Rebiero Brothers LLC">
+                      Rebiero Brothers LLC
+                    </option>
+                    <option value="Daou Vineyards">Daou Vineyards</option>
+                    <option value="Bebiero Brothers LLC">
+                      Bebiero Brothers LLC
+                    </option>
+                    <option value="Mark Kampmann">Mark Kampmann</option>
+                    <option value="University of Arizona">
+                      University of Arizona
+                    </option>
+                    <option value="Union Cemetery Association">
+                      Union Cemetery Association
+                    </option>
+                    <option value="Saul Hernandez">Saul Hernandez</option>
+                    <option value="Baja Industrial Welding, Inc.">
+                      Baja Industrial Welding, Inc.
+                    </option>
+                    <option value="Gee Singh">Gee Singh</option>
+                    <option value="Terry Stowells">Terry Stowells</option>
+                    <option value="Sunterra Produce">Sunterra Produce</option>
+                    <option value="Desert Premium Farms">
+                      Desert Premium Farms
+                    </option>
+                    <option value="Green Line Farming">
+                      Green Line Farming
+                    </option>
+                    <option value="Tyson Howze">Tyson Howze</option>
+                    <option value="Sisson Farms">Sisson Farms</option>
+                    <option value="The Burchell Nursery">
+                      The Burchell Nursery
+                    </option>
+                    <option value="Pinheiro and Deniz Partnership">
+                      Pinheiro and Deniz Partnership
+                    </option>
+                    <option value="Matthew Tweed">Matthew Tweed</option>
+                    <option value="ST. John Family Farms LLC">
+                      ST. John Family Farms LLC
+                    </option>
+                    <option value="Rio Bonito Ranch">Rio Bonito Ranch</option>
+                    <option value="Happy Orchards Inc">
+                      Happy Orchards Inc
+                    </option>
+                    <option value="Catherine-Elizabeth, Inc.">
+                      Catherine-Elizabeth, Inc.
+                    </option>
+                    <option value="Magnolia West Farms">
+                      Magnolia West Farms
+                    </option>
+                    <option value="Richard O'Sullivan">
+                      Richard O'Sullivan
+                    </option>
+                    <option value="Coastal Vineyard Services">
+                      Coastal Vineyard Services
+                    </option>
+                    <option value="Venter Family Estate">
+                      Venter Family Estate
+                    </option>
+                    <option value="Waybright Orchards">
+                      Waybright Orchards
+                    </option>
+                    <option value="Colusa Golf & Country Club">
+                      Colusa Golf & Country Club
+                    </option>
+                    <option value="Fantastic Farms, LLC">
+                      Fantastic Farms, LLC
+                    </option>
+                    <option value="FFR Animas, LLC.">FFR Animas, LLC.</option>
+                    <option value="City of Colusa">City of Colusa</option>
+                    <option value="MAS Property Holdings LLC">
+                      MAS Property Holdings LLC
+                    </option>
+                    <option value="Unit B Irrigation & Drainage">
+                      Unit B Irrigation & Drainage
+                    </option>
+                    <option value="Anndria Barcelona">Anndria Barcelona</option>
+                  </select>
                 </div>
               </div>
-              <div class="row">
-                <div class="col">
-                  <label>Delivery Location: </label>
-                  <div class="form-group">
-                    <input
-                      type="text"
-                      placeholder="Delivery Location"
-                      class="form-control"
-                    />
-                  </div>
+
+              <div class="col-12">
+                <label>Location </label>
+                <div class="form-group">
+                  <input
+                    type="text"
+                    placeholder="Location"
+                    class="form-control"
+                  />
                 </div>
               </div>
-              <div class="row">
-                <div class="col">
-                  <label>Order: </label>
-                  <input 
-                  type="text" 
-                  class="form-control"
-                  placeholder="Order ID"
-                  >
-                </div>
-              </div>
-              <div class="row">
-                <div class="col">
-                  <label>Select Product</label>
-                  <fieldset class="form-group">
-                      <select class="form-control" id="countrySelect" multiple>
-                          <option selected="selected">COMPANION FLG GALV 4" FLGXFPT</option>
-                          <option>METAL FITTINGS</option>
-                          <option selected="selected">MISTER BLU NOZZEL W/ CHECK VALVE NETAFIM VIBRONET	</option>
-                          <option>SN BL10.6GPH STK30" LD LRSS	</option>
-                          <option>SN HEAD 7.4GPH LT-GRN W/DFLT	</option>
-                          <option>SN PC HEAD 18.5GPH BLU W/DFLTR	</option>
-                          <option selected="selected">SN PC HEAD LT GRN LR W/DFLTR	</option>
-                          <option>SN PRP SWVL LR ORG NZ W/30" ST	</option>
-                          <option>SUPERNET PC 7.5GPH LR</option>
-                          <option>VIBRONET BLU SPK 10.4GPH CV</option>
-                      </select>
-                  </fieldset>
+
+              <div class="col-12">
+                <label>Products </label>
+                <div class="form-group">
+                  <select class="select2 form-control" multiple>
+                    <option value="River Septic LLC">River Septic LLC"</option>
+                    <option value="B & S Supply Company LLC">
+                      B & S Supply Company LLC"
+                    </option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -87,11 +271,7 @@
                 data-dismiss="modal"
                 value="Close"
               />
-              <input
-                type="submit"
-                class="btn btn-primary"
-                value="Add Order Delivery"
-              />
+              <input type="submit" class="btn btn-primary" value="Add Order" />
             </div>
           </form>
         </div>
@@ -99,3 +279,10 @@
     </div>
   </div>
 </div>
+
+
+<script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+<script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+<script src="{% static 'vendors/js/select2.full.min.js' %}"></script>
+<script src="{% static 'app/js/select2.min.js' %}"></script>
+<script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>

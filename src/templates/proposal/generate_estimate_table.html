@@ -1,1590 +1,1748 @@
 {% load static %}
+<style>
+  .dataTables_filter label input[type="search"] {
+    margin-right: 75px;
+  }
 
-<table class="table table-striped" style="font-size: 14px">
-  <thead>
-    <tr class="sticky-top bg-white" style="z-index: 20">
-      <th colspan="2"></th>
-      <th colspan="6" class="align-top">Labor</th>
-      <th colspan="8" class="align-top">Materials</th>
-      <th colspan="7" class="align-top">Summary Info</th>
-    </tr>
-    <tr class="sticky-top bg-white" style="z-index: 10">
-      <th class="generate_estimate-sticky-task text-nowrap">Task Code</th>
-      <th class="generate_estimate-sticky-description text-nowrap">
-        Bid Item Description
-      </th>
-      <th>Labor Cost</th>
-      <th>Labor GP%</th>
-      <th>Labor Profit%</th>
-      <th>Labor GP $</th>
-      <th>Labor Sell</th>
-      <th>Mat. Cost</th>
-      <th>Mat.GP%</th>
-      <th>Cost Multiplier</th>
-      <th>Mat. GP $</th>
-      <th>Mat. + MU</th>
-      <th>Sales Tax</th>
-      <th>S & H</th>
-      <th>Mat. Sell</th>
-      <th>Mat & Labor Match NetSuite</th>
-      <th>Mat, Tax, Labor</th>
-      <th>Comb GP%</th>
-    </tr>
-  </thead>
-  <tbody class="align-center">
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> DR-000 : DR-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> DR-001 : Mainline Connection </ins>
-        </a>
-      </td>
-      <td>4,350.00</td>
-      <td class="">
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput1"
-          value="25"
-        />
-      </td>
-      <td>33.33</td>
-      <td>1,450.00</td>
-      <td>5,800.00</td>
-      <td>3,640.77</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput2"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>404.53</td>
-      <td>4,045.30</td>
-      <td>91.02</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput3"
-          value="10"
-        />
-      </td>
-      <td>4,136.32</td>
-      <td>9,845.30</td>
-      <td>9,936.32</td>
-      <td>18.84</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> EL-000 : EL-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> EL-001 : Conduit run to new well </ins>
-        </a>
-      </td>
-      <td>1,325.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput4"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>441.67</td>
-      <td>1,766.67</td>
-      <td>2,469.26</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput5"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>274.36</td>
-      <td>2,743.62</td>
-      <td>61.73</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput6"
-          value="10"
-        />
-      </td>
-      <td>2,805.35</td>
-      <td>4,510.29</td>
-      <td>4,572.02</td>
-      <td>15.88</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-000 : FI-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-001 : Filter Station </ins>
-        </a>
-      </td>
-      <td>5,800.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput7"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>1,933.33</td>
-      <td>7,733.33</td>
-      <td>4,309.69</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput8"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>478.85</td>
-      <td>4,788.54</td>
-      <td>107.74</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput9"
-          value="10"
-        />
-      </td>
-      <td>4,896.29</td>
-      <td>12,521.88</td>
-      <td>12,629.62</td>
-      <td>19.26</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-800 : FI-801 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-801 : Filter Station Fab </ins>
-        </a>
-      </td>
-      <td>1,050.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput10"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>350.00</td>
-      <td>1,400.00</td>
-      <td>1,113.84</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput11"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>123.76</td>
-      <td>1,237.60</td>
-      <td>27.85</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput12"
-          value="10"
-        />
-      </td>
-      <td>1,265.45</td>
-      <td>2,637.60</td>
-      <td>2,665.45</td>
-      <td>17.96</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> PU-000 : PU-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> PU-001 : Move pump and lower 20' </ins>
-        </a>
-      </td>
-      <td>4,000.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput13"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>1,333.33</td>
-      <td>5,333.33</td>
-      <td>1,638.39</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput14"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>182.04</td>
-      <td>1,820.43</td>
-      <td>40.96</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput15"
-          value="10"
-        />
-      </td>
-      <td>1,861.39</td>
-      <td>7,153.77</td>
-      <td>7,194.73</td>
-      <td>21.18</td>
-      <td></td>
-    </tr>
+  tr.selected-estimate-row td{
+    background: #d6e1f3;
+  }
+  
+</style>
+<!--
+NOTE : For adding border lines into table add "table-bordered" class into table tag.
+-->
+<div class="table-responsive">
+  <table class="table table-bordered custom-configuration" id="enstimate-table">
+    <thead>
+        <tr style="border: 1px solid red">
+          <th colspan="2"></th>
+          <th colspan="5" class="align-top">Labor</th>
+          <th colspan="6" class="align-top">Materials</th>
+          <th colspan="2" class="align-top">Summary Info</th>
+        </tr>
+        <tr class="bg-white" style="z-index: 10">
+            <th> Task Code </th>
+            <th> Bid Item Description </th>
+            <th>LABOR COST	</th>
+            <th>LABOR GP%	</th>
+            <th>LABOR GP $	</th>
+            <th>LABOR SELL	</th>
+            <th>MAT. COST	</th>
+            <th>MAT.GP%	</th>
+            <th>MAT. GP $	</th>
+            <th>MAT. + MU	</th>
+            <th>SALES TAX	</th>
+            <th>S & H	</th>
+            <th>MAT. SELL	</th>
+            <th>MAT, TAX, LABOR	</th>
+            <th>COMB GP% </th>
+        </tr>
+    </thead>
+    <tbody class="align-center">
+      <tr>
+        <td class="text-nowrap labor">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> DR-000 : DR-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> DR-001 : Mainline Connection </ins>
+          </a>
+        </td>
+        <td>4,350.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput1"
+            value="25"
+          />
+        </td>
+        
+        <td>1,450.00</td>
+        <td>5,800.00</td>
+        <td>3,640.77</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput2"
+            value="10"
+          />
+        </td>
+        
+        <td>404.53</td>
+        <td>4,045.30</td>
+        <td>91.02</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput3"
+            value="10"
+          />
+        </td>
+        <td>4,136.32</td>
+        
+        <td>9,936.32</td>
+        <td>18.84</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> EL-000 : EL-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> EL-001 : Conduit run to new well </ins>
+          </a>
+        </td>
+        <td>1,325.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput4"
+            value="10"
+          />
+        </td>
+        
+        <td>441.67</td>
+        <td>1,766.67</td>
+        <td>2,469.26</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput5"
+            value="10"
+          />
+        </td>
+        
+        <td>274.36</td>
+        <td>2,743.62</td>
+        <td>61.73</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput6"
+            value="10"
+          />
+        </td>
+        <td>2,805.35</td>
+        
+        <td>4,572.02</td>
+        <td>15.88</td>
+        
+      </tr>
+      <!-- Labor -->
+      <tr class="selected-estimate-row">
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> LA-000 : LA-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> EL-001 : Conduit run to new well </ins>
+          </a>
+        </td>
+        <td>1,325.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput4"
+            value="10"
+          />
+        </td>
+        
+        <td>441.67</td>
+        <td>1,766.67</td>
+        <td>2,469.26</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput5"
+            value="10"
+          />
+        </td>
+        
+        <td>274.36</td>
+        <td>2,743.62</td>
+        <td>61.73</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput6"
+            value="10"
+          />
+        </td>
+        <td>2,805.35</td>
+        
+        <td>4,572.02</td>
+        <td>15.88</td>
+        
+      </tr>
+      <tr >
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-000 : FI-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-001 : Filter Station </ins>
+          </a>
+        </td>
+        <td>5,800.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput7"
+            value="10"
+          />
+        </td>
+        
+        <td>1,933.33</td>
+        <td>7,733.33</td>
+        <td>4,309.69</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput8"
+            value="10"
+          />
+        </td>
+        
+        <td>478.85</td>
+        <td>4,788.54</td>
+        <td>107.74</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput9"
+            value="10"
+          />
+        </td>
+        <td>4,896.29</td>
+        
+        <td>12,629.62</td>
+        <td>19.26</td>
+        
+      </tr>
+      <!-- Labor -->
+      <tr class="selected-estimate-row">
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> LA-001 : LA-002 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> EL-001 : Conduit run to new well </ins>
+          </a>
+        </td>
+        <td>1,325.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput4"
+            value="10"
+          />
+        </td>
+        
+        <td>441.67</td>
+        <td>1,766.67</td>
+        <td>2,469.26</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput5"
+            value="10"
+          />
+        </td>
+        
+        <td>274.36</td>
+        <td>2,743.62</td>
+        <td>61.73</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput6"
+            value="10"
+          />
+        </td>
+        <td>2,805.35</td>
+        
+        <td>4,572.02</td>
+        <td>15.88</td>
+        
+      </tr>
+      <!-- Labor -->
+      <tr class="selected-estimate-row">
+        <td>
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> LA-002 : LA-003 </ins>
+          </a>
+        </td>
+        <td>
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> EL-001 : Conduit run to new well </ins>
+          </a>
+        </td>
+        <td>1,325.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput4"
+            value="10"
+          />
+        </td>
+        
+        <td>441.67</td>
+        <td>1,766.67</td>
+        <td>2,469.26</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput5"
+            value="10"
+          />
+        </td>
+        
+        <td>274.36</td>
+        <td>2,743.62</td>
+        <td>61.73</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput6"
+            value="10"
+          />
+        </td>
+        <td>2,805.35</td>
+        
+        <td>4,572.02</td>
+        <td>15.88</td>
+        
+      </tr>
+      <!-- Labor -->
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-800 : FI-801 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-801 : Filter Station Fab </ins>
+          </a>
+        </td>
+        <td>1,050.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput10"
+            value="10"
+          />
+        </td>
+        
+        <td>350.00</td>
+        <td>1,400.00</td>
+        <td>1,113.84</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput11"
+            value="10"
+          />
+        </td>
+        
+        <td>123.76</td>
+        <td>1,237.60</td>
+        <td>27.85</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput12"
+            value="10"
+          />
+        </td>
+        <td>1,265.45</td>
+        
+        <td>2,665.45</td>
+        <td>17.96</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> PU-000 : PU-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> PU-001 : Move pump and lower 20' </ins>
+          </a>
+        </td>
+        <td>4,000.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput13"
+            value="10"
+          />
+        </td>
+        
+        <td>1,333.33</td>
+        <td>5,333.33</td>
+        <td>1,638.39</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput14"
+            value="10"
+          />
+        </td>
+        
+        <td>182.04</td>
+        <td>1,820.43</td>
+        <td>40.96</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput15"
+            value="10"
+          />
+        </td>
+        <td>1,861.39</td>
+        
+        <td>7,194.73</td>
+        <td>21.18</td>
+        
+      </tr>
 
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> DR-000 : DR-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> DR-001 : Mainline Connection </ins>
-        </a>
-      </td>
-      <td>4,350.00</td>
-      <td class="">
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput1"
-          value="25"
-        />
-      </td>
-      <td>33.33</td>
-      <td>1,450.00</td>
-      <td>5,800.00</td>
-      <td>3,640.77</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput2"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>404.53</td>
-      <td>4,045.30</td>
-      <td>91.02</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput3"
-          value="10"
-        />
-      </td>
-      <td>4,136.32</td>
-      <td>9,845.30</td>
-      <td>9,936.32</td>
-      <td>18.84</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> EL-000 : EL-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> EL-001 : Conduit run to new well </ins>
-        </a>
-      </td>
-      <td>1,325.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput4"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>441.67</td>
-      <td>1,766.67</td>
-      <td>2,469.26</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput5"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>274.36</td>
-      <td>2,743.62</td>
-      <td>61.73</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput6"
-          value="10"
-        />
-      </td>
-      <td>2,805.35</td>
-      <td>4,510.29</td>
-      <td>4,572.02</td>
-      <td>15.88</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-000 : FI-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-001 : Filter Station </ins>
-        </a>
-      </td>
-      <td>5,800.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput7"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>1,933.33</td>
-      <td>7,733.33</td>
-      <td>4,309.69</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput8"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>478.85</td>
-      <td>4,788.54</td>
-      <td>107.74</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput9"
-          value="10"
-        />
-      </td>
-      <td>4,896.29</td>
-      <td>12,521.88</td>
-      <td>12,629.62</td>
-      <td>19.26</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-800 : FI-801 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-801 : Filter Station Fab </ins>
-        </a>
-      </td>
-      <td>1,050.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput10"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>350.00</td>
-      <td>1,400.00</td>
-      <td>1,113.84</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput11"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>123.76</td>
-      <td>1,237.60</td>
-      <td>27.85</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput12"
-          value="10"
-        />
-      </td>
-      <td>1,265.45</td>
-      <td>2,637.60</td>
-      <td>2,665.45</td>
-      <td>17.96</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> PU-000 : PU-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> PU-001 : Move pump and lower 20' </ins>
-        </a>
-      </td>
-      <td>4,000.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput13"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>1,333.33</td>
-      <td>5,333.33</td>
-      <td>1,638.39</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput14"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>182.04</td>
-      <td>1,820.43</td>
-      <td>40.96</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput15"
-          value="10"
-        />
-      </td>
-      <td>1,861.39</td>
-      <td>7,153.77</td>
-      <td>7,194.73</td>
-      <td>21.18</td>
-      <td></td>
-    </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> DR-000 : DR-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> DR-001 : Mainline Connection </ins>
+          </a>
+        </td>
+        <td>4,350.00</td>
+        <td class="">
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput1"
+            value="25"
+          />
+        </td>
+        
+        <td>1,450.00</td>
+        <td>5,800.00</td>
+        <td>3,640.77</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput2"
+            value="10"
+          />
+        </td>
+        
+        <td>404.53</td>
+        <td>4,045.30</td>
+        <td>91.02</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput3"
+            value="10"
+          />
+        </td>
+        <td>4,136.32</td>
+        
+        <td>9,936.32</td>
+        <td>18.84</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> EL-000 : EL-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> EL-001 : Conduit run to new well </ins>
+          </a>
+        </td>
+        <td>1,325.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput4"
+            value="10"
+          />
+        </td>
+        
+        <td>441.67</td>
+        <td>1,766.67</td>
+        <td>2,469.26</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput5"
+            value="10"
+          />
+        </td>
+        
+        <td>274.36</td>
+        <td>2,743.62</td>
+        <td>61.73</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput6"
+            value="10"
+          />
+        </td>
+        <td>2,805.35</td>
+        
+        <td>4,572.02</td>
+        <td>15.88</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-000 : FI-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-001 : Filter Station </ins>
+          </a>
+        </td>
+        <td>5,800.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput7"
+            value="10"
+          />
+        </td>
+        
+        <td>1,933.33</td>
+        <td>7,733.33</td>
+        <td>4,309.69</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput8"
+            value="10"
+          />
+        </td>
+        
+        <td>478.85</td>
+        <td>4,788.54</td>
+        <td>107.74</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput9"
+            value="10"
+          />
+        </td>
+        <td>4,896.29</td>
+        
+        <td>12,629.62</td>
+        <td>19.26</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-800 : FI-801 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-801 : Filter Station Fab </ins>
+          </a>
+        </td>
+        <td>1,050.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput10"
+            value="10"
+          />
+        </td>
+        
+        <td>350.00</td>
+        <td>1,400.00</td>
+        <td>1,113.84</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput11"
+            value="10"
+          />
+        </td>
+        
+        <td>123.76</td>
+        <td>1,237.60</td>
+        <td>27.85</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput12"
+            value="10"
+          />
+        </td>
+        <td>1,265.45</td>
+        
+        <td>2,665.45</td>
+        <td>17.96</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> PU-000 : PU-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> PU-001 : Move pump and lower 20' </ins>
+          </a>
+        </td>
+        <td>4,000.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput13"
+            value="10"
+          />
+        </td>
+        
+        <td>1,333.33</td>
+        <td>5,333.33</td>
+        <td>1,638.39</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput14"
+            value="10"
+          />
+        </td>
+        
+        <td>182.04</td>
+        <td>1,820.43</td>
+        <td>40.96</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput15"
+            value="10"
+          />
+        </td>
+        <td>1,861.39</td>
+        
+        <td>7,194.73</td>
+        <td>21.18</td>
+        
+      </tr>
 
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> DR-000 : DR-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> DR-001 : Mainline Connection </ins>
-        </a>
-      </td>
-      <td>4,350.00</td>
-      <td class="">
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput1"
-          value="25"
-        />
-      </td>
-      <td>33.33</td>
-      <td>1,450.00</td>
-      <td>5,800.00</td>
-      <td>3,640.77</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput2"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>404.53</td>
-      <td>4,045.30</td>
-      <td>91.02</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput3"
-          value="10"
-        />
-      </td>
-      <td>4,136.32</td>
-      <td>9,845.30</td>
-      <td>9,936.32</td>
-      <td>18.84</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> EL-000 : EL-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> EL-001 : Conduit run to new well </ins>
-        </a>
-      </td>
-      <td>1,325.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput4"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>441.67</td>
-      <td>1,766.67</td>
-      <td>2,469.26</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput5"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>274.36</td>
-      <td>2,743.62</td>
-      <td>61.73</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput6"
-          value="10"
-        />
-      </td>
-      <td>2,805.35</td>
-      <td>4,510.29</td>
-      <td>4,572.02</td>
-      <td>15.88</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-000 : FI-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-001 : Filter Station </ins>
-        </a>
-      </td>
-      <td>5,800.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput7"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>1,933.33</td>
-      <td>7,733.33</td>
-      <td>4,309.69</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput8"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>478.85</td>
-      <td>4,788.54</td>
-      <td>107.74</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput9"
-          value="10"
-        />
-      </td>
-      <td>4,896.29</td>
-      <td>12,521.88</td>
-      <td>12,629.62</td>
-      <td>19.26</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-800 : FI-801 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-801 : Filter Station Fab </ins>
-        </a>
-      </td>
-      <td>1,050.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput10"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>350.00</td>
-      <td>1,400.00</td>
-      <td>1,113.84</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput11"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>123.76</td>
-      <td>1,237.60</td>
-      <td>27.85</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput12"
-          value="10"
-        />
-      </td>
-      <td>1,265.45</td>
-      <td>2,637.60</td>
-      <td>2,665.45</td>
-      <td>17.96</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> PU-000 : PU-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> PU-001 : Move pump and lower 20' </ins>
-        </a>
-      </td>
-      <td>4,000.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput13"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>1,333.33</td>
-      <td>5,333.33</td>
-      <td>1,638.39</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput14"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>182.04</td>
-      <td>1,820.43</td>
-      <td>40.96</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput15"
-          value="10"
-        />
-      </td>
-      <td>1,861.39</td>
-      <td>7,153.77</td>
-      <td>7,194.73</td>
-      <td>21.18</td>
-      <td></td>
-    </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> DR-000 : DR-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> DR-001 : Mainline Connection </ins>
+          </a>
+        </td>
+        <td>4,350.00</td>
+        <td class="">
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput1"
+            value="25"
+          />
+        </td>
+        
+        <td>1,450.00</td>
+        <td>5,800.00</td>
+        <td>3,640.77</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput2"
+            value="10"
+          />
+        </td>
+        
+        <td>404.53</td>
+        <td>4,045.30</td>
+        <td>91.02</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput3"
+            value="10"
+          />
+        </td>
+        <td>4,136.32</td>
+        
+        <td>9,936.32</td>
+        <td>18.84</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> EL-000 : EL-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> EL-001 : Conduit run to new well </ins>
+          </a>
+        </td>
+        <td>1,325.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput4"
+            value="10"
+          />
+        </td>
+        
+        <td>441.67</td>
+        <td>1,766.67</td>
+        <td>2,469.26</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput5"
+            value="10"
+          />
+        </td>
+        
+        <td>274.36</td>
+        <td>2,743.62</td>
+        <td>61.73</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput6"
+            value="10"
+          />
+        </td>
+        <td>2,805.35</td>
+        
+        <td>4,572.02</td>
+        <td>15.88</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-000 : FI-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-001 : Filter Station </ins>
+          </a>
+        </td>
+        <td>5,800.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput7"
+            value="10"
+          />
+        </td>
+        
+        <td>1,933.33</td>
+        <td>7,733.33</td>
+        <td>4,309.69</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput8"
+            value="10"
+          />
+        </td>
+        
+        <td>478.85</td>
+        <td>4,788.54</td>
+        <td>107.74</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput9"
+            value="10"
+          />
+        </td>
+        <td>4,896.29</td>
+        
+        <td>12,629.62</td>
+        <td>19.26</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-800 : FI-801 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-801 : Filter Station Fab </ins>
+          </a>
+        </td>
+        <td>1,050.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput10"
+            value="10"
+          />
+        </td>
+        
+        <td>350.00</td>
+        <td>1,400.00</td>
+        <td>1,113.84</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput11"
+            value="10"
+          />
+        </td>
+        
+        <td>123.76</td>
+        <td>1,237.60</td>
+        <td>27.85</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput12"
+            value="10"
+          />
+        </td>
+        <td>1,265.45</td>
+        
+        <td>2,665.45</td>
+        <td>17.96</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> PU-000 : PU-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> PU-001 : Move pump and lower 20' </ins>
+          </a>
+        </td>
+        <td>4,000.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput13"
+            value="10"
+          />
+        </td>
+        
+        <td>1,333.33</td>
+        <td>5,333.33</td>
+        <td>1,638.39</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput14"
+            value="10"
+          />
+        </td>
+        
+        <td>182.04</td>
+        <td>1,820.43</td>
+        <td>40.96</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput15"
+            value="10"
+          />
+        </td>
+        <td>1,861.39</td>
+        
+        <td>7,194.73</td>
+        <td>21.18</td>
+        
+      </tr>
 
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> DR-000 : DR-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> DR-001 : Mainline Connection </ins>
-        </a>
-      </td>
-      <td>4,350.00</td>
-      <td class="">
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput1"
-          value="25"
-        />
-      </td>
-      <td>33.33</td>
-      <td>1,450.00</td>
-      <td>5,800.00</td>
-      <td>3,640.77</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput2"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>404.53</td>
-      <td>4,045.30</td>
-      <td>91.02</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput3"
-          value="10"
-        />
-      </td>
-      <td>4,136.32</td>
-      <td>9,845.30</td>
-      <td>9,936.32</td>
-      <td>18.84</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> EL-000 : EL-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> EL-001 : Conduit run to new well </ins>
-        </a>
-      </td>
-      <td>1,325.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput4"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>441.67</td>
-      <td>1,766.67</td>
-      <td>2,469.26</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput5"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>274.36</td>
-      <td>2,743.62</td>
-      <td>61.73</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput6"
-          value="10"
-        />
-      </td>
-      <td>2,805.35</td>
-      <td>4,510.29</td>
-      <td>4,572.02</td>
-      <td>15.88</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-000 : FI-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-001 : Filter Station </ins>
-        </a>
-      </td>
-      <td>5,800.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput7"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>1,933.33</td>
-      <td>7,733.33</td>
-      <td>4,309.69</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput8"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>478.85</td>
-      <td>4,788.54</td>
-      <td>107.74</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput9"
-          value="10"
-        />
-      </td>
-      <td>4,896.29</td>
-      <td>12,521.88</td>
-      <td>12,629.62</td>
-      <td>19.26</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-800 : FI-801 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-801 : Filter Station Fab </ins>
-        </a>
-      </td>
-      <td>1,050.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput10"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>350.00</td>
-      <td>1,400.00</td>
-      <td>1,113.84</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput11"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>123.76</td>
-      <td>1,237.60</td>
-      <td>27.85</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput12"
-          value="10"
-        />
-      </td>
-      <td>1,265.45</td>
-      <td>2,637.60</td>
-      <td>2,665.45</td>
-      <td>17.96</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> PU-000 : PU-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> PU-001 : Move pump and lower 20' </ins>
-        </a>
-      </td>
-      <td>4,000.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput13"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>1,333.33</td>
-      <td>5,333.33</td>
-      <td>1,638.39</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput14"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>182.04</td>
-      <td>1,820.43</td>
-      <td>40.96</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput15"
-          value="10"
-        />
-      </td>
-      <td>1,861.39</td>
-      <td>7,153.77</td>
-      <td>7,194.73</td>
-      <td>21.18</td>
-      <td></td>
-    </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> DR-000 : DR-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> DR-001 : Mainline Connection </ins>
+          </a>
+        </td>
+        <td>4,350.00</td>
+        <td class="">
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput1"
+            value="25"
+          />
+        </td>
+        
+        <td>1,450.00</td>
+        <td>5,800.00</td>
+        <td>3,640.77</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput2"
+            value="10"
+          />
+        </td>
+        
+        <td>404.53</td>
+        <td>4,045.30</td>
+        <td>91.02</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput3"
+            value="10"
+          />
+        </td>
+        <td>4,136.32</td>
+        
+        <td>9,936.32</td>
+        <td>18.84</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> EL-000 : EL-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> EL-001 : Conduit run to new well </ins>
+          </a>
+        </td>
+        <td>1,325.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput4"
+            value="10"
+          />
+        </td>
+        
+        <td>441.67</td>
+        <td>1,766.67</td>
+        <td>2,469.26</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput5"
+            value="10"
+          />
+        </td>
+        
+        <td>274.36</td>
+        <td>2,743.62</td>
+        <td>61.73</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput6"
+            value="10"
+          />
+        </td>
+        <td>2,805.35</td>
+        
+        <td>4,572.02</td>
+        <td>15.88</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-000 : FI-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-001 : Filter Station </ins>
+          </a>
+        </td>
+        <td>5,800.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput7"
+            value="10"
+          />
+        </td>
+        
+        <td>1,933.33</td>
+        <td>7,733.33</td>
+        <td>4,309.69</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput8"
+            value="10"
+          />
+        </td>
+        
+        <td>478.85</td>
+        <td>4,788.54</td>
+        <td>107.74</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput9"
+            value="10"
+          />
+        </td>
+        <td>4,896.29</td>
+        
+        <td>12,629.62</td>
+        <td>19.26</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-800 : FI-801 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-801 : Filter Station Fab </ins>
+          </a>
+        </td>
+        <td>1,050.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput10"
+            value="10"
+          />
+        </td>
+        
+        <td>350.00</td>
+        <td>1,400.00</td>
+        <td>1,113.84</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput11"
+            value="10"
+          />
+        </td>
+        
+        <td>123.76</td>
+        <td>1,237.60</td>
+        <td>27.85</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput12"
+            value="10"
+          />
+        </td>
+        <td>1,265.45</td>
+        
+        <td>2,665.45</td>
+        <td>17.96</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> PU-000 : PU-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> PU-001 : Move pump and lower 20' </ins>
+          </a>
+        </td>
+        <td>4,000.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput13"
+            value="10"
+          />
+        </td>
+        
+        <td>1,333.33</td>
+        <td>5,333.33</td>
+        <td>1,638.39</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput14"
+            value="10"
+          />
+        </td>
+        
+        <td>182.04</td>
+        <td>1,820.43</td>
+        <td>40.96</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput15"
+            value="10"
+          />
+        </td>
+        <td>1,861.39</td>
+        
+        <td>7,194.73</td>
+        <td>21.18</td>
+        
+      </tr>
 
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> DR-000 : DR-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> DR-001 : Mainline Connection </ins>
-        </a>
-      </td>
-      <td>4,350.00</td>
-      <td class="">
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput1"
-          value="25"
-        />
-      </td>
-      <td>33.33</td>
-      <td>1,450.00</td>
-      <td>5,800.00</td>
-      <td>3,640.77</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput2"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>404.53</td>
-      <td>4,045.30</td>
-      <td>91.02</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput3"
-          value="10"
-        />
-      </td>
-      <td>4,136.32</td>
-      <td>9,845.30</td>
-      <td>9,936.32</td>
-      <td>18.84</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> EL-000 : EL-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> EL-001 : Conduit run to new well </ins>
-        </a>
-      </td>
-      <td>1,325.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput4"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>441.67</td>
-      <td>1,766.67</td>
-      <td>2,469.26</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput5"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>274.36</td>
-      <td>2,743.62</td>
-      <td>61.73</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput6"
-          value="10"
-        />
-      </td>
-      <td>2,805.35</td>
-      <td>4,510.29</td>
-      <td>4,572.02</td>
-      <td>15.88</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-000 : FI-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-001 : Filter Station </ins>
-        </a>
-      </td>
-      <td>5,800.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput7"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>1,933.33</td>
-      <td>7,733.33</td>
-      <td>4,309.69</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput8"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>478.85</td>
-      <td>4,788.54</td>
-      <td>107.74</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput9"
-          value="10"
-        />
-      </td>
-      <td>4,896.29</td>
-      <td>12,521.88</td>
-      <td>12,629.62</td>
-      <td>19.26</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-800 : FI-801 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-801 : Filter Station Fab </ins>
-        </a>
-      </td>
-      <td>1,050.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput10"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>350.00</td>
-      <td>1,400.00</td>
-      <td>1,113.84</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput11"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>123.76</td>
-      <td>1,237.60</td>
-      <td>27.85</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput12"
-          value="10"
-        />
-      </td>
-      <td>1,265.45</td>
-      <td>2,637.60</td>
-      <td>2,665.45</td>
-      <td>17.96</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> PU-000 : PU-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> PU-001 : Move pump and lower 20' </ins>
-        </a>
-      </td>
-      <td>4,000.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput13"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>1,333.33</td>
-      <td>5,333.33</td>
-      <td>1,638.39</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput14"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>182.04</td>
-      <td>1,820.43</td>
-      <td>40.96</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput15"
-          value="10"
-        />
-      </td>
-      <td>1,861.39</td>
-      <td>7,153.77</td>
-      <td>7,194.73</td>
-      <td>21.18</td>
-      <td></td>
-    </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> DR-000 : DR-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> DR-001 : Mainline Connection </ins>
+          </a>
+        </td>
+        <td>4,350.00</td>
+        <td class="">
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput1"
+            value="25"
+          />
+        </td>
+        
+        <td>1,450.00</td>
+        <td>5,800.00</td>
+        <td>3,640.77</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput2"
+            value="10"
+          />
+        </td>
+        
+        <td>404.53</td>
+        <td>4,045.30</td>
+        <td>91.02</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput3"
+            value="10"
+          />
+        </td>
+        <td>4,136.32</td>
+        
+        <td>9,936.32</td>
+        <td>18.84</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> EL-000 : EL-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> EL-001 : Conduit run to new well </ins>
+          </a>
+        </td>
+        <td>1,325.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput4"
+            value="10"
+          />
+        </td>
+        
+        <td>441.67</td>
+        <td>1,766.67</td>
+        <td>2,469.26</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput5"
+            value="10"
+          />
+        </td>
+        
+        <td>274.36</td>
+        <td>2,743.62</td>
+        <td>61.73</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput6"
+            value="10"
+          />
+        </td>
+        <td>2,805.35</td>
+        
+        <td>4,572.02</td>
+        <td>15.88</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-000 : FI-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-001 : Filter Station </ins>
+          </a>
+        </td>
+        <td>5,800.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput7"
+            value="10"
+          />
+        </td>
+        
+        <td>1,933.33</td>
+        <td>7,733.33</td>
+        <td>4,309.69</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput8"
+            value="10"
+          />
+        </td>
+        
+        <td>478.85</td>
+        <td>4,788.54</td>
+        <td>107.74</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput9"
+            value="10"
+          />
+        </td>
+        <td>4,896.29</td>
+        
+        <td>12,629.62</td>
+        <td>19.26</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-800 : FI-801 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-801 : Filter Station Fab </ins>
+          </a>
+        </td>
+        <td>1,050.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput10"
+            value="10"
+          />
+        </td>
+        
+        <td>350.00</td>
+        <td>1,400.00</td>
+        <td>1,113.84</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput11"
+            value="10"
+          />
+        </td>
+        
+        <td>123.76</td>
+        <td>1,237.60</td>
+        <td>27.85</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput12"
+            value="10"
+          />
+        </td>
+        <td>1,265.45</td>
+        
+        <td>2,665.45</td>
+        <td>17.96</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> PU-000 : PU-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> PU-001 : Move pump and lower 20' </ins>
+          </a>
+        </td>
+        <td>4,000.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput13"
+            value="10"
+          />
+        </td>
+        
+        <td>1,333.33</td>
+        <td>5,333.33</td>
+        <td>1,638.39</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput14"
+            value="10"
+          />
+        </td>
+        
+        <td>182.04</td>
+        <td>1,820.43</td>
+        <td>40.96</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput15"
+            value="10"
+          />
+        </td>
+        <td>1,861.39</td>
+        
+        <td>7,194.73</td>
+        <td>21.18</td>
+        
+      </tr>
 
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> DR-000 : DR-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> DR-001 : Mainline Connection </ins>
-        </a>
-      </td>
-      <td>4,350.00</td>
-      <td class="">
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput1"
-          value="25"
-        />
-      </td>
-      <td>33.33</td>
-      <td>1,450.00</td>
-      <td>5,800.00</td>
-      <td>3,640.77</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput2"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>404.53</td>
-      <td>4,045.30</td>
-      <td>91.02</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput3"
-          value="10"
-        />
-      </td>
-      <td>4,136.32</td>
-      <td>9,845.30</td>
-      <td>9,936.32</td>
-      <td>18.84</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> EL-000 : EL-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> EL-001 : Conduit run to new well </ins>
-        </a>
-      </td>
-      <td>1,325.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput4"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>441.67</td>
-      <td>1,766.67</td>
-      <td>2,469.26</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput5"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>274.36</td>
-      <td>2,743.62</td>
-      <td>61.73</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput6"
-          value="10"
-        />
-      </td>
-      <td>2,805.35</td>
-      <td>4,510.29</td>
-      <td>4,572.02</td>
-      <td>15.88</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-000 : FI-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-001 : Filter Station </ins>
-        </a>
-      </td>
-      <td>5,800.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput7"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>1,933.33</td>
-      <td>7,733.33</td>
-      <td>4,309.69</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput8"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>478.85</td>
-      <td>4,788.54</td>
-      <td>107.74</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput9"
-          value="10"
-        />
-      </td>
-      <td>4,896.29</td>
-      <td>12,521.88</td>
-      <td>12,629.62</td>
-      <td>19.26</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-800 : FI-801 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> FI-801 : Filter Station Fab </ins>
-        </a>
-      </td>
-      <td>1,050.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput10"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>350.00</td>
-      <td>1,400.00</td>
-      <td>1,113.84</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput11"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>123.76</td>
-      <td>1,237.60</td>
-      <td>27.85</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput12"
-          value="10"
-        />
-      </td>
-      <td>1,265.45</td>
-      <td>2,637.60</td>
-      <td>2,665.45</td>
-      <td>17.96</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td class="generate_estimate-sticky-task text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> PU-000 : PU-001 </ins>
-        </a>
-      </td>
-      <td class="generate_estimate-sticky-description text-nowrap">
-        <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
-          <ins> PU-001 : Move pump and lower 20' </ins>
-        </a>
-      </td>
-      <td>4,000.00</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput13"
-          value="10"
-        />
-      </td>
-      <td>33.33</td>
-      <td>1,333.33</td>
-      <td>5,333.33</td>
-      <td>1,638.39</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput14"
-          value="10"
-        />
-      </td>
-      <td>1.1111</td>
-      <td>182.04</td>
-      <td>1,820.43</td>
-      <td>40.96</td>
-      <td>
-        <input
-          type="text"
-          class="form-control btn-outline-warning"
-          id="basicInput15"
-          value="10"
-        />
-      </td>
-      <td>1,861.39</td>
-      <td>7,153.77</td>
-      <td>7,194.73</td>
-      <td>21.18</td>
-      <td></td>
-    </tr>
-
-    <tr>
-      <td class="text-nowrap">FRT</td>
-      <td class="text-nowrap">FRT: Freight</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td>500.00</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr></tr>
-  </tbody>
-  <tfoot>
-    <tr>
-      <th></th>
-      <th></th>
-      <th>$16,525.00</th>
-      <th>25%</th>
-      <th>33.33%</th>
-      <th>$5,508.33</th>
-      <th>$22,033.33</th>
-      <th>$13,171.95</th>
-      <th>10%</th>
-      <th></th>
-      <th>$1,463.55</th>
-      <th>$14,635.50</th>
-      <th>$329.30</th>
-      <th>$500.00</th>
-      <th>$14,964.80</th>
-      <th>$36,668.83</th>
-      <th>$37,498.13</th>
-      <th></th>
-      <th></th>
-    </tr>
-  </tfoot>
-</table>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> DR-000 : DR-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> DR-001 : Mainline Connection </ins>
+          </a>
+        </td>
+        <td>4,350.00</td>
+        <td class="">
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput1"
+            value="25"
+          />
+        </td>
+        
+        <td>1,450.00</td>
+        <td>5,800.00</td>
+        <td>3,640.77</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput2"
+            value="10"
+          />
+        </td>
+        
+        <td>404.53</td>
+        <td>4,045.30</td>
+        <td>91.02</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput3"
+            value="10"
+          />
+        </td>
+        <td>4,136.32</td>
+        
+        <td>9,936.32</td>
+        <td>18.84</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> EL-000 : EL-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> EL-001 : Conduit run to new well </ins>
+          </a>
+        </td>
+        <td>1,325.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput4"
+            value="10"
+          />
+        </td>
+        
+        <td>441.67</td>
+        <td>1,766.67</td>
+        <td>2,469.26</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput5"
+            value="10"
+          />
+        </td>
+        
+        <td>274.36</td>
+        <td>2,743.62</td>
+        <td>61.73</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput6"
+            value="10"
+          />
+        </td>
+        <td>2,805.35</td>
+        
+        <td>4,572.02</td>
+        <td>15.88</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-000 : FI-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-001 : Filter Station </ins>
+          </a>
+        </td>
+        <td>5,800.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput7"
+            value="10"
+          />
+        </td>
+        
+        <td>1,933.33</td>
+        <td>7,733.33</td>
+        <td>4,309.69</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput8"
+            value="10"
+          />
+        </td>
+        
+        <td>478.85</td>
+        <td>4,788.54</td>
+        <td>107.74</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput9"
+            value="10"
+          />
+        </td>
+        <td>4,896.29</td>
+        
+        <td>12,629.62</td>
+        <td>19.26</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-800 : FI-801 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> FI-801 : Filter Station Fab </ins>
+          </a>
+        </td>
+        <td>1,050.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput10"
+            value="10"
+          />
+        </td>
+        
+        <td>350.00</td>
+        <td>1,400.00</td>
+        <td>1,113.84</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput11"
+            value="10"
+          />
+        </td>
+        
+        <td>123.76</td>
+        <td>1,237.60</td>
+        <td>27.85</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput12"
+            value="10"
+          />
+        </td>
+        <td>1,265.45</td>
+        
+        <td>2,665.45</td>
+        <td>17.96</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> PU-000 : PU-001 </ins>
+          </a>
+        </td>
+        <td class="text-nowrap">
+          <a data-backdrop="false" data-toggle="modal" data-target="#showProduct">
+            <ins> PU-001 : Move pump and lower 20' </ins>
+          </a>
+        </td>
+        <td>4,000.00</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput13"
+            value="10"
+          />
+        </td>
+        
+        <td>1,333.33</td>
+        <td>5,333.33</td>
+        <td>1,638.39</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput14"
+            value="10"
+          />
+        </td>
+        
+        <td>182.04</td>
+        <td>1,820.43</td>
+        <td>40.96</td>
+        <td>
+          <input
+            type="text"
+            class="form-control btn-outline-warning"
+            id="basicInput15"
+            value="10"
+          />
+        </td>
+        <td>1,861.39</td>
+        
+        <td>7,194.73</td>
+        <td>21.18</td>
+        
+      </tr>
+      <tr>
+        <td class="text-nowrap">FRT</td>
+        <td class="text-nowrap">FRT: Freight</td>
+        <td></td>
+        <td></td>
+        
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>500.00</td>
+        <td></td>
+        
+        <td></td>
+        <td></td>
+        
+      </tr>
+      
+    </tbody>
+    <tfoot>
+      <tr>
+        <th></th>
+        <th></th>
+        <th>$16,525.00</th>
+        <th>25%</th>
+        <th>$5,508.33</th>
+        <th>$22,033.33</th>
+        <th>$13,171.95</th>
+        <th>10%</th>
+        <th>$1,463.55</th>
+        <th>$14,635.50</th>
+        <th>$329.30</th>
+        <th>$500.00</th>
+        <th>$14,964.80</th>
+        <th>$37,498.13</th>
+        <th></th>
+      </tr>
+    </tfoot>
+  </table>
+</div>
 
 <!-- Associated Products Modal -->
 <div
@@ -1689,7 +1847,7 @@
                 <td>20</td>
                 <td>
                   <button class="btn btn-danger">
-                    <em class="fa fa-trash" />
+                    <i class="fa fa-trash"></i>
                   </button>
                 </td>
               </tr>
@@ -1725,7 +1883,7 @@
                 <td>20</td>
                 <td>
                   <button class="btn btn-danger">
-                    <em class="fa fa-trash" />
+                    <i class="fa fa-trash" ></i>
                   </button>
                 </td>
               </tr>

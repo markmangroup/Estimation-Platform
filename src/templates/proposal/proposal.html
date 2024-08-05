@@ -27,34 +27,40 @@
         </div>
         <div class="col-md-6 col-12 text-right">
           <h2 class="primary text-uppercase">Exhibit A - Project Detail</h2>
-          <p class="pb-3"># INV-001001</p>
+          <p class="pb-3">
+            <label class="font-weight-bold form-label" style="">Invoice:</label>
+            <input type="text" value="INV-001001" class="form-control" style="width: 200px; float: right;">
+          </p>
         </div>
       </div>
       <!-- Invoice Company Details ends -->
       <!-- Invoice Customer Details starts -->
       <div id="invoice-customer-details" class="row">
         <div class="col-12 text-left">
-          <p class="mb-1 font-weight-bold">To</p>
+          <p class="mb-1 font-weight-bold">Select Customer</p>
         </div>
-        <div class="col-md-6 col-12">
-          <ul class="m-0 list-unstyled">
-            <li class="text-bold-800">Marth Waterman</li>
-            <li>2241 Old Airline Highway</li>
-            <li>Paicines Ca 95043</li>
-          </ul>
+        <div class="col-md-2 col-2">
+          <select name="" id="" class="select2">
+            <option selected disabled>Select Customer</option>
+            <option value="">Emly Paris</option>
+            <option value="">John Deo</option>
+            <option value="">John Deo</option>
+          </select>
+        </div>
+        <div class="col-md-4 col-4">
         </div>
         <div class="col-md-6 col-12 text-right">
           <p>
-            <span class="font-weight-bold">Date:</span>
-            May 13, 2024
+            <label class="font-weight-bold form-label">Date:</label>
+            <input type="date" name="" id="" class="form-control" style="width: 200px; float: right;">
           </p>
           <p>
-            <span class="font-weight-bold">Job:</span>
-            Existing
+            <label class="font-weight-bold form-label">Job:</label>
+            <input type="text" value="Existing" class="form-control" style="width: 200px; float: right;">
           </p>
           <p>
-            <span class="font-weight-bold">Job Name:</span> Existing Pump
-            Relocation And New 10" Discharge
+            <label class="font-weight-bold form-label">Job Name:</label> 
+            <input type="text" value='Existing Pump Relocation And New 10" Discharge' class="form-control" style="width: 400px; float: right;">
           </p>
         </div>
       </div>
@@ -63,253 +69,315 @@
       <div id="invoice-items-details">
         <div class="row">
           <div class="table-responsive col-12">
-            <table class="table mt-3">
+            <table class="table table-bordered mt-3">
               <thead>
-                <tr>
-                  <th>Task Code</th>
-                  <th>Task Description</th>
-                  <th class="text-right">Total</th>
-                </tr>
+                <th>Group Name</th>
+                <th class="text-center">Task Summary</th>
               </thead>
               <tbody>
+                <!-- Row 1 -->
                 <tr>
                   <th scope="row">
-                    <input type="text" class="form-control" value="DR-001" />
+                    <input type="text" class="form-control" value="Rental New">
                   </th>
                   <td>
-                    <p>
-                      <input
-                        type="text"
-                        class="form-control"
-                        value="Design, Material and Installation of Connection to Mainline"
-                      />
-                    </p>
-                    <div class="table-responsive">
-                      <table class="table table-striped table-bordered">
-                        <thead>
-                          <tr class="text-center">
-                            <th>Item Code</th>
-                            <th>Item Description</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
-                            <th>Total</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Task Code</th>
+                          <th>Task Description</th>
+                          <th class="text-right">Total</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th scope="row">
+                            <input type="text" class="form-control" value="DR-001" />
+                          </th>
+                          <td>
+                            <p>
                               <input
                                 type="text"
                                 class="form-control"
-                                value="2800-117465"
+                                value="Design, Material and Installation of Connection to Mainline"
                               />
-                            </td>
-                            <td>
+                            </p>
+                            <div class="table-responsive">
+                              <table class="table table-striped table-bordered">
+                                <thead>
+                                  <tr class="text-center">
+                                    <th>Item Code</th>
+                                    <th>Item Description</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td>
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        value="2800-117465"
+                                      />
+                                    </td>
+                                    <td>
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        value="Ball Repalcement"
+                                      />
+                                    </td>
+                                    <td>
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        value="95"
+                                      />
+                                    </td>
+                                    <td>
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        value="$0.8125"
+                                      />
+                                    </td>
+                                    <td>
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        value="$59.124"
+                                      />
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                            <p class="text-muted">
                               <input
                                 type="text"
                                 class="form-control"
-                                value="Ball Repalcement"
+                                value='- Connection From 10" Discharge to Existing 15" Mainline'
                               />
-                            </td>
-                            <td>
+                            </p>
+                            <p class="text-muted">
                               <input
                                 type="text"
                                 class="form-control"
-                                value="95"
+                                value='- Excavation and Connection with 10" PVC From New Discharge to 15" Mainline With Repair Coupler and Tee'
                               />
-                            </td>
-                            <td>
-                              <input
-                                type="text"
-                                class="form-control"
-                                value="$0.8125"
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="text"
-                                class="form-control"
-                                value="$59.124"
-                              />
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <p class="text-muted">
-                      <input
-                        type="text"
-                        class="form-control"
-                        value='- Connection From 10" Discharge to Existing 15" Mainline'
-                      />
-                    </p>
-                    <p class="text-muted">
-                      <input
-                        type="text"
-                        class="form-control"
-                        value='- Excavation and Connection with 10" PVC From New Discharge to 15" Mainline With Repair Coupler and Tee'
-                      />
-                    </p>
-                  </td>
-                  <td class="text-right">
-                    <input type="text" class="form-control" value="$9,936.32" />
+                            </p>
+                          </td>
+                          <td class="text-right">
+                            <input type="text" class="form-control" value="$9,936.32" />
+                          </td>
+                          <td><button class="btn btn-danger"><em class="fa fa-trash" /></button></td>
+                        </tr>
+                        <tr>
+                          <th scope="row">
+                            <input type="text" class="form-control" value="EL-000" />
+                          </th>
+                          <td>
+                            <input
+                              type="text"
+                              class="form-control"
+                              value="Design, Material and Installation of Electrical Extension"
+                            />
+                            <input
+                              type="text"
+                              class="form-control"
+                              value="- Extension of Electrical from Existing Cabinet to New Well Location"
+                            />
+                            <input
+                              type="text"
+                              class="form-control"
+                              value="- Trench Conduit and Wire Approx 100'"
+                            />
+                            <input
+                              type="text"
+                              class="form-control"
+                              value="- Retain Existing Backboard, Cabinet, and On/Off Switch"
+                            />
+                            <input
+                              type="text"
+                              class="form-control"
+                              value="- See VFD Option Below - Includes New Backboard and Wire Extension"
+                            />
+                          </td>
+                          <td class="text-right">
+                            <input type="text" class="form-control" value="$4,572.02" />
+                          </td>
+                          <td><button class="btn btn-danger"><em class="fa fa-trash" /></button></td>
+                        </tr>
+                        <tr>
+                          <th scope="row">
+                            <input type="text" class="form-control" value="FI-000" />
+                          </th>
+                          <td>
+                            <input
+                              type="text"
+                              class="form-control"
+                              value="Design, Material and Installation of Filter Station and Well Discharge"
+                            />
+                            <input
+                              type="text"
+                              class="form-control"
+                              value="- Followed Example Photo for Discharge"
+                            />
+                            <input
+                              type="text"
+                              class="form-control"
+                              value='- Use Existing 10" Netafim Filter and 10" Water Meter'
+                            />
+                            <input
+                              type="text"
+                              class="form-control"
+                              value='- 10" New Black Steel Discharge with Double Chem Check Valve'
+                            />
+                            <input
+                              type="text"
+                              class="form-control"
+                              value="- Injection Ports Supplied Before and After Filter"
+                            />
+                            <input
+                              type="text"
+                              class="form-control"
+                              value="- Butterfly Valves at Input, Output and In the Center For Flushing"
+                            />
+                            <input
+                              type="text"
+                              class="form-control"
+                              value="- Pipe Supports to be Set In Concrete"
+                            />
+                          </td>
+                          <td class="text-right">
+                            <input
+                              type="text"
+                              class="form-control"
+                              value="$15,295.07"
+                            />
+                          </td>
+                          <td><button class="btn btn-danger"><em class="fa fa-trash" /></button></td>
+                        </tr>
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td>
+                            <input type="text" class="form-control" value="$ 14,5068.0" />
+                          </td>
+                        </tr>
+                      </tbody>
+                      
+                    </table>
                   </td>
                 </tr>
+
+                <!-- Row 2 -->
                 <tr>
                   <th scope="row">
-                    <input type="text" class="form-control" value="EL-000" />
+                    <input type="text" class="form-control" value="London Rental">
                   </th>
                   <td>
-                    <input
-                      type="text"
-                      class="form-control"
-                      value="Design, Material and Installation of Electrical Extension"
-                    />
-                    <input
-                      type="text"
-                      class="form-control"
-                      value="- Extension of Electrical from Existing Cabinet to New Well Location"
-                    />
-                    <input
-                      type="text"
-                      class="form-control"
-                      value="- Trench Conduit and Wire Approx 100'"
-                    />
-                    <input
-                      type="text"
-                      class="form-control"
-                      value="- Retain Existing Backboard, Cabinet, and On/Off Switch"
-                    />
-                    <input
-                      type="text"
-                      class="form-control"
-                      value="- See VFD Option Below - Includes New Backboard and Wire Extension"
-                    />
-                  </td>
-                  <td class="text-right">
-                    <input type="text" class="form-control" value="$4,572.02" />
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">
-                    <input type="text" class="form-control" value="FI-000" />
-                  </th>
-                  <td>
-                    <input
-                      type="text"
-                      class="form-control"
-                      value="Design, Material and Installation of Filter Station and Well Discharge"
-                    />
-                    <input
-                      type="text"
-                      class="form-control"
-                      value="- Followed Example Photo for Discharge"
-                    />
-                    <input
-                      type="text"
-                      class="form-control"
-                      value='- Use Existing 10" Netafim Filter and 10" Water Meter'
-                    />
-                    <input
-                      type="text"
-                      class="form-control"
-                      value='- 10" New Black Steel Discharge with Double Chem Check Valve'
-                    />
-                    <input
-                      type="text"
-                      class="form-control"
-                      value="- Injection Ports Supplied Before and After Filter"
-                    />
-                    <input
-                      type="text"
-                      class="form-control"
-                      value="- Butterfly Valves at Input, Output and In the Center For Flushing"
-                    />
-                    <input
-                      type="text"
-                      class="form-control"
-                      value="- Pipe Supports to be Set In Concrete"
-                    />
-                  </td>
-                  <td class="text-right">
-                    <input
-                      type="text"
-                      class="form-control"
-                      value="$15,295.07"
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">
-                    <input type="text" class="form-control" value="PU-000" />
-                  </th>
-                  <td>
-                    <input
-                      type="text"
-                      class="form-control"
-                      value="Design, Material and Installation of Moving Existing Pump to New Well Location"
-                    />
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Task Code</th>
+                          <th>Task Description</th>
+                          <th class="text-right">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        
+                        <tr>
+                          <th scope="row">
+                            <input type="text" class="form-control" value="PU-000" />
+                          </th>
+                          <td>
+                            <input
+                              type="text"
+                              class="form-control"
+                              value="Design, Material and Installation of Moving Existing Pump to New Well Location"
+                            />
+        
+                            <input
+                              type="text"
+                              class="form-control"
+                              value="- 20' Extension to Sit at 140' Depth"
+                            />
+        
+                            <input
+                              type="text"
+                              class="form-control"
+                              value="- Remove Existing Pump and Re-Install In New Well"
+                            />
+        
+                            <input
+                              type="text"
+                              class="form-control"
+                              value="- Connect Pump to New Discharge"
+                            />
+                          </td>
+                          <td class="text-right">
+                            <input type="text" class="form-control" value="$7,194.73" />
+                          </td>
+                          <td><button class="btn btn-danger"><em class="fa fa-trash" /></button></td>
+                        </tr>
+        
+                        <tr>
+                          <td scope="row">
+                            <input type="text" class="form-control" value="FRT" />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              class="form-control"
+                              value="FRT : Frieght"
+                            />
+                          </td>
+                          <td class="text-right">
+                            <input type="text" class="form-control" value="$500.00" />
+                          </td>
+                          <td><button class="btn btn-danger"><em class="fa fa-trash" /></button></td>
+                        </tr>
+        
+                        <tr>
+                          <th scope="row"></th>
+                          <th class="text-right">
+                            <p>
+                              <input
+                                type="text"
+                                class="form-control"
+                                value="TOTAL ESTIMATE - ITEMS LISTED :"
+                              />
+                            </p>
+                          </th>
+                          <th class="text-right">
+                            <input
+                              type="text"
+                              class="form-control"
+                              value="$37,498.13"
+                            />
+                          </th>
+                        </tr>
+                        
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td>
+                            <input type="text" class="form-control" value="$ 14,5068.0" />
+                          </td>
+                        </tr>
 
-                    <input
-                      type="text"
-                      class="form-control"
-                      value="- 20' Extension to Sit at 140' Depth"
-                    />
-
-                    <input
-                      type="text"
-                      class="form-control"
-                      value="- Remove Existing Pump and Re-Install In New Well"
-                    />
-
-                    <input
-                      type="text"
-                      class="form-control"
-                      value="- Connect Pump to New Discharge"
-                    />
-                  </td>
-                  <td class="text-right">
-                    <input type="text" class="form-control" value="$7,194.73" />
+                      </tbody>
+                    </table>
                   </td>
                 </tr>
 
-                <tr>
-                  <td scope="row">
-                    <input type="text" class="form-control" value="FRT" />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      class="form-control"
-                      value="FRT : Frieght"
-                    />
-                  </td>
-                  <td class="text-right">
-                    <input type="text" class="form-control" value="$500.00" />
-                  </td>
-                </tr>
-
-                <tr>
-                  <th scope="row"></th>
-                  <th class="text-right">
-                    <p>
-                      <input
-                        type="text"
-                        class="form-control"
-                        value="TOTAL ESTIMATE - ITEMS LISTED :"
-                      />
-                    </p>
-                  </th>
-                  <th class="text-right">
-                    <input
-                      type="text"
-                      class="form-control"
-                      value="$37,498.13"
-                    />
-                  </th>
-                </tr>
               </tbody>
             </table>
+            
 
             <table class="table mt-2">
               <p class="font-weight-bold">Options</p>
@@ -377,7 +445,7 @@
                 </tr>
 
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -388,7 +456,7 @@
                 </tr>
 
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -399,7 +467,7 @@
                 </tr>
 
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -410,7 +478,7 @@
                 </tr>
 
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -421,7 +489,7 @@
                 </tr>
 
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -432,7 +500,7 @@
                 </tr>
 
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -442,7 +510,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -453,7 +521,7 @@
                 </tr>
 
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -464,7 +532,7 @@
                 </tr>
 
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -475,7 +543,7 @@
                 </tr>
 
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -486,7 +554,7 @@
                 </tr>
 
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -497,7 +565,7 @@
                 </tr>
 
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -508,7 +576,7 @@
                 </tr>
 
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -519,7 +587,7 @@
                 </tr>
 
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -528,9 +596,8 @@
                     />
                   </td>
                 </tr>
-
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -541,12 +608,23 @@
                 </tr>
 
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
                       class="form-control"
                       value="Preliminary Notice to be furnished to Landowner, Contractor, and Lender (if applicable)."
+                    />
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><i class="fa fa-trash danger"></i></td>
+                  <td>
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Write Here"
                     />
                   </td>
                 </tr>
@@ -559,7 +637,7 @@
                 </tr>
 
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -569,7 +647,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -579,7 +657,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -589,7 +667,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -599,7 +677,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -609,7 +687,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -619,7 +697,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -629,7 +707,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -639,7 +717,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -649,7 +727,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -659,7 +737,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -669,7 +747,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -679,7 +757,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -689,7 +767,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -699,7 +777,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -709,7 +787,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -719,7 +797,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -729,7 +807,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -739,7 +817,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
@@ -749,12 +827,22 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>*</td>
+                  <td><i class="fa fa-trash danger"></i></td>
                   <td>
                     <input
                       type="text"
                       class="form-control"
                       value="Customer Responsible for Determination of Flood Plain Requirements at Construction Site."
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td><i class="fa fa-trash danger"></i></td>
+                  <td>
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="write here"
                     />
                   </td>
                 </tr>
@@ -1160,6 +1248,7 @@
     <div></div>
   </div>
 
+{% block script %}
   <!-- Download CSV File -->
   <script>
     function DownloadProductsInCSV(id, fileName) {
@@ -1269,3 +1358,4 @@
     }
   </script>
 </div>
+{% endblock script %}

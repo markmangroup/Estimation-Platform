@@ -28,3 +28,12 @@ $(document).ready(function () {
   });
 
 });
+
+$(document).ready(function () {
+  // custom configuration
+  $('.custom-configuration').DataTable({
+    "lengthChange": false,
+    "paging": false,
+    "info": false,
+  });
+});

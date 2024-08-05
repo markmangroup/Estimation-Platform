@@ -1,0 +1,311 @@
+{% load static %}
+<button type="button" class="btn bg-light-primary" data-backdrop="false"  
+data-toggle="modal" data-target="#show">
+<i class="ft-plus font-medium-5"></i> Create Delivery
+</button>
+<div
+  class="modal fade text-left"
+  id="show"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel5"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel5">Create Delivery</h4>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true"
+            ><i class="ft-x font-medium-2 text-bold-700"></i
+          ></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row mb-3">
+          <div class="col-6 mb-3">
+            <label for="" class="form-label">Pick Up Date</label>
+            <input type="date" class="form-control">
+          </div>
+          <div class="col-6 mb-3">
+            <label for="" class="form-label">Delivery Date</label>
+            <input type="date" class="form-control">
+          </div>
+          <div class="col-6 mb-3">
+            <label for="" class="form-label">Shipping Carrier</label>
+            <select name="" class="select2 form-control shipping">
+              <option disabled selected>Select Shipping Carrier</option>
+              <option value="Internal">Internal</option>
+              <option value="Hired">Hired</option>
+            </select>
+          </div>
+          <div class="col-6 mb-3" id="poField" style="display: none;">
+            <label for="poNumber" class="form-label">Enter PO</label>
+            <input type="text" id="poNumber" class="form-control">
+          </div>
+          <div class="col-6 mb-3">
+            <label for="" class="form-label">Pick Up Site</label>
+            <select name="" class="select2 form-control pickupSite" id="">
+              <option disabled selected>Select Option</option>
+              <option value="Internal">Internal</option>
+              <option value="Customer">Customer</option>
+            </select>
+          </div>
+          <div class="col-6 mb-3">
+            <label for="" class="form-label">Delivery Site</label>
+            <input type="text" value="US Irrigation - Old RIver Road - Old" class="form-control">
+          </div>
+          <div class="col-6 mb-3" id="internalFields" style="display: none;">
+            <label for="warehouseLocation" class="form-label">Warehouse Location</label>
+            <select id="" class="select2 form-control warehouseLocation">
+              <option disabled selected>Select Location</option>
+              <option value="Bakersfield">Bakersfield</option>
+              <option value="Brawley">Brawley</option>
+              <option value="Colusa">Colusa</option>
+              <option value="Corning">Corning</option>
+            </select>
+          </div>
+          
+          <div class="col-6" id="customerFields" style="display: none;">
+            <label for="selectName" class="form-label">Customer Location</label>
+            <select class="select2 form-control customerLocation" id="selectName">
+                <option disabled selected>Select Location</option>
+                <option value="ORD-1" data-description="John Dio">ORD-1</option>
+                <option value="ORD-2" data-description="John Weak">ORD-2</option>
+                <option value="ORD-3" data-description="Bruce Wayne">ORD-3</option>
+                <option value="ORD-4" data-description="Tony Stark">ORD-4</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="table-responsive">
+          <table id="sample" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th><input name="checkbox" type="checkbox" class="row-checkbox" /></th>
+                    <th>Metrial name</th>
+                    <th>Requested Qty</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                    <td>VENT-1"CAV X 2"COUP</td>
+                    <td>2</td>
+                    <td><input type="text" class="form-control" placeholder="Enter Qty"></td>
+                </tr>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>Ball Valve Riser 3/4" FHTxMHT</td>
+                <td>75</td>
+                <td><input type="text" class="form-control" placeholder="Enter Qty"></td>
+              </tr>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>Cement - Dauber for Pint Can (HOSE FITTINGS)</td>
+                <td>2</td>
+                <td><input type="text" class="form-control" placeholder="Enter Qty"></td>
+              </tr>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>CEMENT - RED HOT CLEAR, PINT (HOSE FITTINGS)</td>
+                <td>2</td>
+                <td><input type="text" class="form-control" placeholder="Enter Qty"></td>
+              </tr>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>FIGURE 8 062</td>
+                <td>150</td>
+                <td><input type="text" class="form-control" placeholder="Enter Qty"></td>
+              </tr>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>MALE HOSE ADAP X 1/2"S(3/4"SP)</td>
+                <td>75</td>
+                <td><input type="text" class="form-control" placeholder="Enter Qty"></td>
+              </tr>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>PERMA-LOC COUPLING 062</td>
+                <td>25</td>
+                <td><input type="text" class="form-control" placeholder="Enter Qty"></td>
+              </tr>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>PERMA-LOC X SWIVEL-W TEE 062</td>
+                <td>75</td>
+                <td><input type="text" class="form-control" placeholder="Enter Qty"></td>
+              </tr>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>UNIRAM .62/45 E.5336 COIL</td>
+                <td>24000</td>
+                <td><input type="text" class="form-control" placeholder="Enter Qty"></td>
+              </tr>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>COUPLER BLACK 1/2"</td>
+                <td>25</td>
+                <td><input type="text" class="form-control" placeholder="Enter Qty"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn bg-light-secondary"
+          data-dismiss="modal"
+        >
+          Close
+        </button>
+        <button type="button" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function() {
+    var isMouseDown = false,
+      isHighlighted;
+
+    $("#sample input:checkbox").mousedown(function(e) {
+      e.preventDefault(); // Prevent checkbox click
+    });
+
+    $("#sample tr")
+      .mousedown(function(e) {
+        // Ignore mouse events on input fields
+        if ($(e.target).is('input')) {
+          return;
+        }
+
+        isMouseDown = true;
+        $(this).toggleClass("highlighted");
+        isHighlighted = $(this).hasClass("highlighted");
+        $(this).find("input:checkbox").prop("checked", isHighlighted);
+        return false; // prevent text selection
+      })
+      .mouseover(function() {
+        if (isMouseDown) {
+          $(this).toggleClass("highlighted", isHighlighted);
+          $(this).find("input:checkbox").prop("checked", isHighlighted);
+        }
+      })
+      .bind("selectstart", function() {
+        return false;
+      });
+
+    $(document)
+      .mouseup(function() {
+        isMouseDown = false;
+      });
+  });
+</script>
+<!-- Test js for drag and select -->
+
+<!-- Js for dropdown of create delivery -->
+<script>
+  $(document).ready(function() {
+    $('.pickupSite').on('change', function() {
+      var selectedValue = $(this).val();
+      
+      if (selectedValue === 'Internal') {
+        $('#internalFields').show();
+        $('#customerFields').hide();
+      } else if (selectedValue === 'Customer') {
+        $('#internalFields').hide();
+        $('#customerFields').show();
+      } else {
+        $('#internalFields').hide();
+        $('#customerFields').hide();
+      }
+    });
+  });
+</script>
+<script>
+  $(document).ready(function() {
+    $('.shipping').change(function() {
+      if ($(this).val() === 'Hired') {
+        $('#poField').show();
+      } else {
+        $('#poField').hide();
+      }
+    });
+  });
+</script>
+<script>
+  $(document).ready(function() {
+    const po_field = $('#poNumber');
+    function checkField() {
+      if (po_field.val() === "") {
+        po_field.css('border', '1px solid red');
+      } else {
+        po_field.css('border', '1px solid #75787d');
+      }
+    }
+    checkField();
+    po_field.on('input', checkField);
+  });
+</script> 
+<script>
+  $(document).ready(function() {
+    $('.Returnshipping').change(function() {
+      if ($(this).val() === 'Hired') {
+        $('#ReturnpoField').show();
+      } else {
+        $('#ReturnpoField').hide();
+      }
+    });
+  });
+</script>
+<script>
+  $(document).ready(function() {
+    const po_field = $('#ReturnpoNumber');
+    function checkField() {
+      if (po_field.val() === "") {
+        po_field.css('border', '1px solid red');
+      } else {
+        po_field.css('border', '1px solid #75787d');
+      }
+    }
+    checkField();
+    po_field.on('input', checkField);
+  });
+</script> 
+<!-- Js for dropdown of create delivery -->
+
+<!-- Search with description -->
+<script>
+  $(document).ready(function() {
+      // Initialize Select2 on the select element
+      $('#selectName').select2({
+          width: '100%',
+          matcher: function(params, data) {
+              // If there are no search terms, return all options
+              if ($.trim(params.term) === '') {
+                  return data;
+              }
+              
+              // Check if the option text or description contains the search term
+              var text = data.text ? data.text.toUpperCase() : '';
+              var description = $(data.element).data('description') ? $(data.element).data('description').toUpperCase() : '';
+              var searchTerm = params.term.toUpperCase();
+              
+              if (text.indexOf(searchTerm) > -1 || description.indexOf(searchTerm) > -1) {
+                  return data;
+              }
+              return null;
+          }
+      });
+  });
+</script>
+<!-- Search with description -->

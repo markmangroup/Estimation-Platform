@@ -1,0 +1,377 @@
+{% load static %}
+<style>
+    .empty-quantity {
+        border: 1px solid red;
+        width: 100px;
+    }
+    .mismatch-quantity {
+        border: 1px solid orange;
+        width: 100px;
+    }
+    .match-quantity {
+        border: 1px solid green;
+        width: 100px;
+    }
+    .focused-quantity {
+        border-color: blue !important;
+    }
+    
+    /* Alert message style */
+    .alert {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #f44336;
+        color: white;
+        padding: 15px;
+        border-radius: 5px;
+        display: none;
+        z-index: 1000; /* Ensure it's on top of other elements */
+    }
+</style>
+
+<!-- Print Button Start -->
+<div class="float-left my-2 mt-3">
+  <button type="button" class="btn btn-primary print-button" data-table-id="table7">Print</button>
+</div>
+<!-- Print Button End -->
+
+<!-- New Table View Start-->
+<div class="mt-5">
+    <table id="table7" class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th style="max-width:100px">Delivery ID</th>
+          <th style="max-width:100px">Total Quantity</th>
+          <th style="max-width:100px">CheckOut Date</th> 
+          <th style="max-width:100px">Delivery Date</th> 
+        </tr>
+      </thead>
+      <tbody>
+
+        <!--Main Row 1 -->
+        <tr>
+          <td> RDIL-1 </td>
+          <td> 28 </td>
+          <td>2 Apr, 2024</td>
+          <td>3 Apr, 2024</td>
+        </tr>
+
+        <tr>
+          
+          <td>
+          </td>
+  
+          <!-- Inner table Start -->
+          <td colspan="100">
+            </div>
+            <div class="table-responsive">
+              <table
+              id="tableBody"
+                class="table table-striped table-bordered"
+                  >
+                <thead>
+                  <tr class="text-center">
+                    <th colspan="5" class="align-top">Items Information</th>
+                  </tr>
+                  <tr>
+                    <th>Sr No</th>
+                    <th>Internal Id</th>
+                    <th class="text-nowrap">Items</th>
+                    <th >Quantity</th>
+                  </tr>
+                </thead>
+  
+                <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td> 20315 </td>
+                      <td class="text-nowrap">Rental: 10" Plain Coupler</td>
+                      <td class="text-nowrap">
+                        <input type="text" class="form-control qty wizard-required">
+                        <small id="quantityMessage" style="color: darkslategray;"></small>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td> 20314 </td>
+                      <td class="text-nowrap">Rental: 10" Tapped Coupler</td>
+                      <td class="text-nowrap">
+                        <input type="text" class="form-control qty wizard-required"  style="width: 100px;"> 
+                        <small id="quantityMessage" style="color: darkslategray;"></small>
+                      </td>
+                    </tr>
+                </tbody>
+                
+              </table>
+            </div>
+            
+          </td>
+        </tr> 
+  
+        <!--Main Row 2 -->
+        <tr>
+          <td> RDIL-2 </td>
+          <td> 28 </td>
+          <td>2 Apr, 2024</td>
+          <td>3 Apr, 2024</td>
+        </tr>
+
+        <tr>
+          
+          <td>
+          </td>
+  
+          <!-- Inner table Start -->
+          <td colspan="100">
+            </div>
+            <div class="table-responsive">
+              <table
+              id="tableBody"
+                class="table table-striped table-bordered"
+                  >
+                <thead>
+                  <tr class="text-center">
+                    <th colspan="5" class="align-top">Items Information</th>
+                  </tr>
+                  <tr>
+                    <th>Sr No</th>
+                    <th>Internal Id</th>
+                    <th class="text-nowrap">Items</th>
+                    <th >Quantity</th>
+                  </tr>
+                </thead>
+  
+                <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td> 20313 </td>
+                      <td class="text-nowrap">Rental: 10" X 40' Yelomine Mainline</td>
+                      <td class="text-nowrap"> 
+                        <input type="text" class="form-control qty wizard-required" style="width: 100px;"> 
+                    </td>
+                    </tr>
+                </tbody>
+                
+              </table>
+            </div>
+            
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+</div>
+<!-- New Table View End-->
+
+<!-- Olad Table View Start-->
+<!-- <div class="table-responsive mt-4">
+    <table class="table table-stripted file-export">
+        <thead>
+            <tr>
+                <th>Delivery ID</th>
+                <th>Quantity</th>
+                <th>CheckIn Date</th>
+                <th>Return Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><a href="#" data-toggle="modal" data-target="#check_in">RDLI-1</a></td>
+                <td>
+                    <input type="text" class="form-control qty empty-quantity">
+                    <small id="quantityMessage" style="color: darkslategray;"></small>
+                </td>
+                <td>1 Oct, 2024</td>
+                <td>2 Oct, 2024</td>
+                
+            </tr>
+
+            <tr>
+                <td><a href="#" data-toggle="modal" data-target="#check_in">RDLI-2</a></td>
+                <td>
+                    <input type="text" class="form-control qty mismatch-quantity">
+                </td>
+                <td>1 Oct, 2024</td>
+                <td>2 Oct, 2024</td>
+            </tr>
+
+        </tbody>
+    </table>
+</div> -->
+<!-- Olad Table View End-->
+
+<!-- Stock Adjustment Modal Start-->
+<div class="modal fade text-left" id="stock_adjustment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true" data-backdrop="false">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel5">RDIL-1 1/2 : Stock Adjustment</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+      
+                <div class="col-6">
+                  <label>Item Number</label>
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Item Number"
+                      value="20315"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <label>Location</label>
+                  <div class="form-group">
+                    <input type="text"class="form-control"placeholder="Location"value="Colusa"/>
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <label>Date</label>
+                  <div class="form-group">
+                    <input type="date" class="form-control">
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <label>Current Quantity</label>
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Quantity"
+                      value="1593"
+                      disabled
+                    />
+                  </div>
+                </div>
+                
+                <div class="col-6 hide">
+                  <label>Revised Quantity</label>
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      class="form-control revisedQuantity"
+                      placeholder="Revised Quantity "
+                      value=""
+                    />
+                  </div>
+                </div>
+
+                <div class="col-6 hide">
+                  <label>Plus Quantity</label>
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      class="form-control PluseQuantity"
+                      placeholder="Plus Quantity"
+                      value=""
+                    />
+                  </div>
+                </div>
+                
+                <div class="col-6 hide">
+                  <label>Minus Quantity</label>
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      class="form-control minusQuantity"
+                      placeholder="Quantity "
+                      value=""
+                    />
+                  </div>
+                </div>
+                
+                <div class="col-6">
+                  <label>Reason</label>
+                    <div class="form-group">
+                      <select class="select2 form-control">
+                          <option value="Other">Other</option>
+                          <option value="Inspection">Inspection</option>
+                          <option value="Purchase">Purchase</option>
+                          <option value="WH diffrences">WH diffrences</option>
+                          <option value="Not return from customer">Not return from customer</option>
+                      </select>
+                    </div>
+                </div>
+                <div class="col-6">
+                  <label>Comment</label>
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Comment"
+                    />
+                  </div>
+                </div>
+  
+              </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Cancel</button>
+            <button type="button" class="btn btn-success">Save</button>
+        </div>
+        </div>
+    </div>
+</div>
+<!-- Stock Adjustment Modal End-->
+
+<!-- Calculation of stock adjustment -->
+<script>
+    $(document).ready(function() {
+        const currentQuantity = 1593;
+        const $plusInput = $('.PluseQuantity');
+        const $minusInput = $('.minusQuantity');
+        const $revisedInput = $('.revisedQuantity');
+    
+        function updatePlusQuantity() {
+            const enteredRevisedQuantity = parseFloat($revisedInput.val()) || 0;
+            const newPlusQuantity = Math.max(0, enteredRevisedQuantity - currentQuantity);
+            $plusInput.val(newPlusQuantity);
+        }
+    
+        
+        function updateMinusQuantity() {
+            const enteredRevisedQuantity = parseFloat($revisedInput.val()) || 0;
+            const newMinusQuantity = Math.max(0, currentQuantity - enteredRevisedQuantity);
+            $minusInput.val(newMinusQuantity);
+        }
+    
+        
+        function updateRevisedQuantity() {
+            const plusQuantity = parseFloat($plusInput.val()) || 0;
+            const minusQuantity = parseFloat($minusInput.val()) || 0;
+            const newRevisedQuantity = currentQuantity + plusQuantity - minusQuantity;
+            $revisedInput.val(newRevisedQuantity);
+        }
+    
+        
+        $plusInput.on('input', function() {
+            updateRevisedQuantity(); 
+            updateMinusQuantity();   
+        });
+    
+        $minusInput.on('input', function() {
+            updateRevisedQuantity(); 
+            updatePlusQuantity();    
+        });
+    
+        $revisedInput.on('input', function() {
+            updatePlusQuantity();    
+            updateMinusQuantity();   
+        });
+    
+
+        updateRevisedQuantity();
+        updatePlusQuantity();
+        updateMinusQuantity();
+    });
+</script>
+<!-- Calculation of stock adjustment -->

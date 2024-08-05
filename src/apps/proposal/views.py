@@ -43,12 +43,12 @@ class WarehouseViewMixin(LoginBaseMixin, TemplateView):
 ################################################
 
 
-class Home(LoginBaseMixin, TemplateView):
-    template_name = "proposal/index.html"
+# class Home(LoginBaseMixin, TemplateView):
+#     template_name = "proposal/index.html"
 
 
-class InboxList(LoginBaseMixin, TemplateView):
-    template_name = "proposal/inbox_list.html"
+class InboxList(WarehouseViewMixin):
+    render_template_name = "proposal/inbox_list.html"
 
 
 class UpdateProfile(LoginBaseMixin, TemplateView):
@@ -224,6 +224,17 @@ class VendorList(ProposalViewMixin):
 class Dashboard(WarehouseViewMixin):
     render_template_name = "warehouse/dashboard.html"
 
+class CustomerDetail(WarehouseViewMixin):
+    """
+    View class for rendering customer details.
+    """
+    render_template_name = "warehouse/map_customer_details.html"
+
+class MapView(WarehouseViewMixin):
+    """
+    View class for rendering Map views with customer and warehouse locations.
+    """
+    render_template_name = "warehouse/map.html"
 
 class WarehouseProducts(WarehouseViewMixin):
     """
@@ -238,6 +249,11 @@ class WarehouseList(WarehouseViewMixin):
     """
     render_template_name = "warehouse/warehouse_list.html"
 
+class WarehouseDetailView(WarehouseViewMixin):
+    """
+    View class for rendering the detail of warehouse.
+    """
+    render_template_name = "warehouse/map_warehouse_detail.html"
 
 class UserList(WarehouseViewMixin):
     """
@@ -252,6 +268,11 @@ class OrderList(WarehouseViewMixin):
     """
     render_template_name = "warehouse/order_list.html"
 
+class OrderDetail(WarehouseViewMixin):
+    """
+    View class for rendering the list of orders.
+    """
+    render_template_name = "warehouse/orders/rental_order.html"
 
 class RecurringOrder(WarehouseViewMixin):
     """
@@ -286,3 +307,85 @@ class Delivery(WarehouseViewMixin):
     View class for rendering list of delivery details.
     """
     render_template_name = "warehouse/delivery_list.html"
+
+
+class Reports(WarehouseViewMixin):
+    """
+
+    View class for rendering report with details.
+    """
+    render_template_name = "warehouse/reports.html"
+
+
+class Workflow(WarehouseViewMixin):
+    """
+    View class for rendering workflow details.
+    """
+    render_template_name = "warehouse/workflow.html"
+
+
+class StockAdjustment(WarehouseViewMixin):
+    """
+    View class for rendering adjustment of stocks.
+    """
+    render_template_name = "warehouse/stock_adjustment.html"
+
+
+class ReturnDelivery(WarehouseViewMixin):
+    """
+    View class for rendering list of delivery details.
+    """
+    render_template_name = "warehouse/return_delivery_list.html"
+
+
+##############################################
+############ Warehouse Reports START ############
+##############################################
+
+class RevenueReport(WarehouseViewMixin):
+    """
+    View class for revenue report.
+    """
+    render_template_name = "warehouse/reports/revenue_report.html"
+
+class StockReport(WarehouseViewMixin):
+    """
+    View class for stock report.
+    """
+    render_template_name = "warehouse/reports/stock_report.html"
+
+class StockMovementReport(WarehouseViewMixin):
+    """
+    View class for stock report.
+    """
+    render_template_name = "warehouse/reports/stock_movement_report.html"
+
+class InTransitReport(WarehouseViewMixin):
+    """
+    View class for stock report.
+    """
+    render_template_name = "warehouse/reports/in_transit_report.html"
+
+class PlannedRemovalReport(WarehouseViewMixin):
+    """
+    View class for stock report.
+    """
+    render_template_name = "warehouse/reports/planned_removal_report.html"
+
+class PlannedDeliveriesReport(WarehouseViewMixin):
+    """
+    View class for stock report.
+    """
+    render_template_name = "warehouse/reports/planned_deliveries_report.html"
+
+class UsageOfEquipmentReport(WarehouseViewMixin):
+    """
+    View class for stock report.
+    """
+    render_template_name = "warehouse/reports/usages_of_equipment.html"
+
+class InboxView(WarehouseViewMixin):
+    """
+    View class for inbox.
+    """
+    render_template_name = "warehouse/inbox.html"

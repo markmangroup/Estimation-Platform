@@ -86,316 +86,31 @@
                 >
                   <thead>
                     <tr>
-                      <th>Internal ID</th>
-                      <th>Customer</th>
-                      <th>Opportunity Status</th>
-                      <th>Created Date</th>
+                      <th>Document Number</th>
+                      <th>Designer</th>
+                      <th>Estimator</th>
+                      <th>Pump & Electrical desiner</th>
+                      <th>Design/ Esimation Notes</th>
+                      <th>Estimation Stage</th>
                       <th>Last Updated Date</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
-                  {% comment %}
-                  <tbody>
-                    <tr>
-                      <td>000001</td>
-                      <td>Lazare Hyde</td>
-                      <td>
-                        <span class="badge bg-light-success">
-                          Proposal Preview
-                        </span>
-                      </td>
-                      <td>02/01/2024</td>
-                      <td>10/01/2024</td>
-                      <td class="text-truncate">
-                        <a
-                          href="{% url 'proposal:opportunity_details' %}"
-                          class="primary p-0"
-                        >
-                          <i class="ft-eye font-medium-3 mr-2"></i>
-                        </a>
-                        <a href="javascript:;" class="success p-0">
-                          <i class="ft-edit font-medium-3 mr-2"></i>
-                        </a>
-                        <a href="javascript:;" class="danger p-0">
-                          <i class="ft-trash-2 font-medium-3"></i>
-                        </a>
-                        <button
-                          type="button"
-                          class="info p-0o"
-                          data-toggle="modal"
-                          data-target="#reassign_opportunity"
-                          data-backdrop="false"
-                          style="all: unset"
-                        >
-                          <i class="ft-refresh-ccw font-medium-3 ml-1"></i>
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>000002</td>
-                      <td>Corney Gadie</td>
-                      <td>
-                        <span class="badge bg-light-primary">
-                          Proposal Final Documents
-                        </span>
-                      </td>
-                      <td>05/01/2024</td>
-                      <td>11/01/2024</td>
-                      <td class="text-truncate">
-                        <a
-                          href="{% url 'proposal:opportunity_details' %}"
-                          class="primary p-0"
-                        >
-                          <i class="ft-eye font-medium-3 mr-2"></i>
-                        </a>
-                        <a href="javascript:;" class="success p-0">
-                          <i class="ft-edit font-medium-3 mr-2"></i>
-                        </a>
-                        <a href="javascript:;" class="danger p-0">
-                          <i class="ft-trash-2 font-medium-3"></i>
-                        </a>
-                        <button
-                          type="button"
-                          class="info p-0o"
-                          data-toggle="modal"
-                          data-target="#reassign_opportunity"
-                          data-backdrop="false"
-                          style="all: unset"
-                        >
-                          <i class="ft-refresh-ccw font-medium-3 ml-1"></i>
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>000003</td>
-                      <td>Andry</td>
-                      <td>
-                        <span class="badge bg-light-warning">
-                          Proposal Creation
-                        </span>
-                      </td>
-                      <td>12/01/2024</td>
-                      <td>18/01/2024</td>
-                      <td class="text-truncate">
-                        <a
-                          href="{% url 'proposal:opportunity_details' %}"
-                          class="primary p-0"
-                        >
-                          <i class="ft-eye font-medium-3 mr-2"></i>
-                        </a>
-                        <a href="javascript:;" class="success p-0">
-                          <i class="ft-edit font-medium-3 mr-2"></i>
-                        </a>
-                        <a href="javascript:;" class="danger p-0">
-                          <i class="ft-trash-2 font-medium-3"></i>
-                        </a>
-                        <button
-                          type="button"
-                          class="info p-0o"
-                          data-toggle="modal"
-                          data-target="#reassign_opportunity"
-                          data-backdrop="false"
-                          style="all: unset"
-                        >
-                          <i class="ft-refresh-ccw font-medium-3 ml-1"></i>
-                        </button>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>000004</td>
-                      <td>Marina Smith</td>
-                      <td>
-                        <span class="badge bg-light-danger">Material List</span>
-                      </td>
-                      <td>20/01/2024</td>
-                      <td>25/01/2024</td>
-                      <td class="text-truncate">
-                        <a
-                          href="{% url 'proposal:opportunity_details' %}"
-                          class="primary p-0"
-                        >
-                          <i class="ft-eye font-medium-3 mr-2"></i>
-                        </a>
-                        <a href="javascript:;" class="success p-0">
-                          <i class="ft-edit font-medium-3 mr-2"></i>
-                        </a>
-                        <a href="javascript:;" class="danger p-0">
-                          <i class="ft-trash-2 font-medium-3"></i>
-                        </a>
-                        <button
-                          type="button"
-                          class="info p-0o"
-                          data-toggle="modal"
-                          data-target="#reassign_opportunity"
-                          data-backdrop="false"
-                          style="all: unset"
-                        >
-                          <i class="ft-refresh-ccw font-medium-3 ml-1"></i>
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>000005</td>
-                      <td>John Doe</td>
-                      <td>
-                        <span class="badge bg-grey">Labor List</span>
-                      </td>
-                      <td>28/01/2024</td>
-                      <td>02/02/2024</td>
-                      <td class="text-truncate">
-                        <a
-                          href="{% url 'proposal:opportunity_details' %}"
-                          class="primary p-0"
-                        >
-                          <i class="ft-eye font-medium-3 mr-2"></i>
-                        </a>
-                        <a href="javascript:;" class="success p-0">
-                          <i class="ft-edit font-medium-3 mr-2"></i>
-                        </a>
-                        <a href="javascript:;" class="danger p-0">
-                          <i class="ft-trash-2 font-medium-3"></i>
-                        </a>
-                        <button
-                          type="button"
-                          class="info p-0o"
-                          data-toggle="modal"
-                          data-target="#reassign_opportunity"
-                          data-backdrop="false"
-                          style="all: unset"
-                        >
-                          <i class="ft-refresh-ccw font-medium-3 ml-1"></i>
-                        </button>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>000006</td>
-                      <td>Alice Johnson</td>
-                      <td>
-                        <span class="badge bg-light-secondary"
-                          >Generate Estimate</span
-                        >
-                      </td>
-                      <td>15/01/2024</td>
-                      <td>20/01/2024</td>
-                      <td class="text-truncate">
-                        <a
-                          href="{% url 'proposal:opportunity_details' %}"
-                          class="primary p-0"
-                        >
-                          <i class="ft-eye font-medium-3 mr-2"></i>
-                        </a>
-                        <a href="javascript:;" class="success p-0">
-                          <i class="ft-edit font-medium-3 mr-2"></i>
-                        </a>
-                        <a href="javascript:;" class="danger p-0">
-                          <i class="ft-trash-2 font-medium-3"></i>
-                        </a>
-                        <button
-                          type="button"
-                          class="info p-0o"
-                          data-toggle="modal"
-                          data-target="#reassign_opportunity"
-                          data-backdrop="false"
-                          style="all: unset"
-                        >
-                          <i class="ft-refresh-ccw font-medium-3 ml-1"></i>
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>000007</td>
-                      <td>Michael Brown</td>
-                      <td>
-                        <span class="badge bg-light-info">Upload CAD File</span>
-                      </td>
-                      <td>22/01/2024</td>
-                      <td>28/01/2024</td>
-                      <td class="text-truncate">
-                        <a
-                          href="{% url 'proposal:opportunity_details' %}"
-                          class="primary p-0"
-                        >
-                          <i class="ft-eye font-medium-3 mr-2"></i>
-                        </a>
-                        <a href="javascript:;" class="success p-0">
-                          <i class="ft-edit font-medium-3 mr-2"></i>
-                        </a>
-                        <a href="javascript:;" class="danger p-0">
-                          <i class="ft-trash-2 font-medium-3"></i>
-                        </a>
-                        <button
-                          type="button"
-                          class="info p-0o"
-                          data-toggle="modal"
-                          data-target="#reassign_opportunity"
-                          data-backdrop="false"
-                          style="all: unset"
-                        >
-                          <i class="ft-refresh-ccw font-medium-3 ml-1"></i>
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>000008</td>
-                      <td>Sarah Clark</td>
-                      <td>
-                        <span class="badge bg-light-dark">Task Mapping</span>
-                      </td>
-                      <td>30/01/2024</td>
-                      <td>05/02/2024</td>
-                      <td class="text-truncate">
-                        <a
-                          href="{% url 'proposal:opportunity_details' %}"
-                          class="primary p-0"
-                        >
-                          <i class="ft-eye font-medium-3 mr-2"></i>
-                        </a>
-                        <a href="javascript:;" class="success p-0">
-                          <i class="ft-edit font-medium-3 mr-2"></i>
-                        </a>
-                        <a href="javascript:;" class="danger p-0">
-                          <i class="ft-trash-2 font-medium-3"></i>
-                        </a>
-                        <button
-                          type="button"
-                          class="info p-0o"
-                          data-toggle="modal"
-                          data-target="#reassign_opportunity"
-                          data-backdrop="false"
-                          style="all: unset"
-                        >
-                          <i class="ft-refresh-ccw font-medium-3 ml-1"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                  {% endcomment %}
                   <tbody>
                     <!-- Row 1 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1333171
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Zachary Scott</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-danger">
                           Material List
                         </span>
                       </td>
-                      <td class="text-nowrap">05/07/2024</td>
                       <td class="text-nowrap">05/07/2024</td>
                       <td class="text-truncate">
                         <a
@@ -419,27 +134,18 @@
 
                     <!-- Row 2 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1101294
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Paul Leimgruber</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-success">
                           Upload CAD File
                         </span>
                       </td>
-                      <td class="text-nowrap">24/05/2024</td>
                       <td class="text-nowrap">24/05/2024</td>
                       <td class="text-truncate">
                         <a
@@ -463,25 +169,16 @@
 
                     <!-- Row 3 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1367225
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Brandon J Kehoe</a
-                        >
-                      </td>
+                     
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-warning"> Labor List </span>
                       </td>
-                      <td class="text-nowrap">30/06/2024</td>
                       <td class="text-nowrap">30/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -505,25 +202,16 @@
 
                     <!-- Row 4 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          956114
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Joseph Turner</a
-                        >
-                      </td>
+                     
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-info"> Task Mapping </span>
                       </td>
-                      <td class="text-nowrap">11/06/2024</td>
                       <td class="text-nowrap">11/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -547,27 +235,18 @@
 
                     <!-- Row 5 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1348366
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Joseph Turner</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-secondary">
                           Generate Estimate
                         </span>
                       </td>
-                      <td class="text-nowrap">10/06/2024</td>
                       <td class="text-nowrap">10/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -591,25 +270,16 @@
 
                     <!-- Row 6 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1362269
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Steven Roland</a
-                        >
-                      </td>
+                     
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-warning"> Labor List </span>
                       </td>
-                      <td class="text-nowrap">31/05/2024</td>
                       <td class="text-nowrap">31/05/2024</td>
                       <td class="text-truncate">
                         <a
@@ -633,27 +303,18 @@
 
                     <!-- Row 7 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1301926
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Brooke Marchy</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-secondary">
                           Generate Estimate
                         </span>
                       </td>
-                      <td class="text-nowrap">07/10/2024</td>
                       <td class="text-nowrap">07/10/2024</td>
                       <td class="text-truncate">
                         <a
@@ -677,27 +338,18 @@
 
                     <!-- Row 8 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1301933
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Brooke Marchy</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-secondary">
                           Generate Estimate
                         </span>
                       </td>
-                      <td class="text-nowrap">07/10/2024</td>
                       <td class="text-nowrap">07/10/2024</td>
                       <td class="text-truncate">
                         <a
@@ -721,25 +373,16 @@
 
                     <!-- Row 9 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1384885
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Brooke Marchy</a
-                        >
-                      </td>
+                     
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-info"> Task Mapping </span>
                       </td>
-                      <td class="text-nowrap">24/06/2024</td>
                       <td class="text-nowrap">24/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -763,27 +406,18 @@
 
                     <!-- Row 10 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1384890
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Brooke Marchy</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-danger">
                           Material List
                         </span>
                       </td>
-                      <td class="text-nowrap">24/06/2024</td>
                       <td class="text-nowrap">24/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -807,27 +441,18 @@
 
                     <!-- Row 11 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1379189
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Lochlan Buckingham</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-danger">
                           Material List
                         </span>
                       </td>
-                      <td class="text-nowrap">30/06/2024</td>
                       <td class="text-nowrap">30/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -851,27 +476,18 @@
 
                     <!-- Row 12 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1382445
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Patrick Stern</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-success">
                           Upload CAD File
                         </span>
                       </td>
-                      <td class="text-nowrap">14/06/2024</td>
                       <td class="text-nowrap">14/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -895,27 +511,18 @@
 
                     <!-- Row 13 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1194272
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Brooke Marchy</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-dark">
                           Proposal Final Documents
                         </span>
                       </td>
-                      <td class="text-nowrap">10/06/2024</td>
                       <td class="text-nowrap">10/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -939,25 +546,16 @@
 
                     <!-- Row 14 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1376963
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Brooke Marchy</a
-                        >
-                      </td>
+                     
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-grey"> Proposal Creation </span>
                       </td>
-                      <td class="text-nowrap">24/06/2024</td>
                       <td class="text-nowrap">24/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -981,27 +579,18 @@
 
                     <!-- Row 15 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1384027
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Brooke Marchy</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-success">
                           Upload CAD File
                         </span>
                       </td>
-                      <td class="text-nowrap">19/08/2024</td>
                       <td class="text-nowrap">19/08/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1025,27 +614,18 @@
 
                     <!-- Row 16 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1211476
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Brooke Marchy</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-primary">
                           Proposal Preview
                         </span>
                       </td>
-                      <td class="text-nowrap">28/06/2024</td>
                       <td class="text-nowrap">28/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1069,27 +649,18 @@
 
                     <!-- Row 17 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1361958
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Brooke Marchy</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-danger">
                           Material List
                         </span>
                       </td>
-                      <td class="text-nowrap">28/06/2024</td>
                       <td class="text-nowrap">28/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1113,27 +684,18 @@
 
                     <!-- Row 18 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1376803
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Patrick Stern</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-secondary">
                           Generate Estimate
                         </span>
                       </td>
-                      <td class="text-nowrap">28/06/2024</td>
                       <td class="text-nowrap">28/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1157,27 +719,18 @@
 
                     <!-- Row 19 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1333386
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Zachary Scott</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-secondary">
                           Generate Estimate
                         </span>
                       </td>
-                      <td class="text-nowrap">21/06/2024</td>
                       <td class="text-nowrap">21/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1201,27 +754,18 @@
 
                     <!-- Row 20 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1333176
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Zachary Scott</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-dark">
                           Proposal Final Documents
                         </span>
                       </td>
-                      <td class="text-nowrap">28/06/2024</td>
                       <td class="text-nowrap">28/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1245,27 +789,18 @@
 
                     <!-- Row 21 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1320797
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Brooke Marchy</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-primary">
                           Proposal Preview
                         </span>
                       </td>
-                      <td class="text-nowrap">24/06/2024</td>
                       <td class="text-nowrap">24/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1289,27 +824,18 @@
 
                     <!-- Row 22 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1258901
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Brooke Marchy</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-danger">
                           Material List
                         </span>
                       </td>
-                      <td class="text-nowrap">28/06/2024</td>
                       <td class="text-nowrap">28/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1333,27 +859,18 @@
 
                     <!-- Row 23 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1237947
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >William Martin</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-success">
                           Upload CAD File
                         </span>
                       </td>
-                      <td class="text-nowrap">17/01/2024</td>
                       <td class="text-nowrap">17/01/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1377,27 +894,18 @@
 
                     <!-- Row 24 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1327842
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Zachary Scott</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-primary">
                           Proposal Preview
                         </span>
                       </td>
-                      <td class="text-nowrap">30/08/2024</td>
                       <td class="text-nowrap">30/08/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1421,25 +929,16 @@
 
                     <!-- Row 25 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1378553
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Steven Roland</a
-                        >
-                      </td>
+                     
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-warning"> Labor List </span>
                       </td>
-                      <td class="text-nowrap">12/06/2024</td>
                       <td class="text-nowrap">12/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1463,27 +962,18 @@
 
                     <!-- Row 26 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1361655
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Steven Roland</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-danger">
                           Material List
                         </span>
                       </td>
-                      <td class="text-nowrap">12/06/2024</td>
                       <td class="text-nowrap">12/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1507,25 +997,16 @@
 
                     <!-- Row 27 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1361674
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Steven Roland</a
-                        >
-                      </td>
+                     
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-info"> Task Mapping </span>
                       </td>
-                      <td class="text-nowrap">31/05/2024</td>
                       <td class="text-nowrap">31/05/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1549,25 +1030,16 @@
 
                     <!-- Row 28 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1361679
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Steven Roland</a
-                        >
-                      </td>
+                     
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-info"> Task Mapping </span>
                       </td>
-                      <td class="text-nowrap">31/05/2024</td>
                       <td class="text-nowrap">31/05/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1591,27 +1063,18 @@
 
                     <!-- Row 29 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1361668
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Steven Roland</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-danger">
                           Material List
                         </span>
                       </td>
-                      <td class="text-nowrap">31/05/2024</td>
                       <td class="text-nowrap">31/05/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1635,25 +1098,16 @@
 
                     <!-- Row 30 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1393107
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Steven Roland</a
-                        >
-                      </td>
+                     
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-grey"> Proposal Creation </span>
                       </td>
-                      <td class="text-nowrap">06/06/2024</td>
                       <td class="text-nowrap">06/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1677,27 +1131,18 @@
 
                     <!-- Row 31 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1384966
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Steven Roland</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-danger">
                           Material List
                         </span>
                       </td>
-                      <td class="text-nowrap">21/06/2024</td>
                       <td class="text-nowrap">21/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1721,27 +1166,18 @@
 
                     <!-- Row 32 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1331864
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Zachary Scott</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-primary">
                           Proposal Preview
                         </span>
                       </td>
-                      <td class="text-nowrap">28/06/2024</td>
                       <td class="text-nowrap">28/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1765,27 +1201,18 @@
 
                     <!-- Row 33 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1376316
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >-</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-primary">
                           Proposal Preview
                         </span>
                       </td>
-                      <td class="text-nowrap">31/05/2024</td>
                       <td class="text-nowrap">31/05/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1809,25 +1236,16 @@
 
                     <!-- Row 34 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          950676
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Steven Roland-Old</a
-                        >
-                      </td>
+                     
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-warning"> Labor List </span>
                       </td>
-                      <td class="text-nowrap">02/06/2023</td>
                       <td class="text-nowrap">02/06/2023</td>
                       <td class="text-truncate">
                         <a
@@ -1851,27 +1269,18 @@
 
                     <!-- Row 35 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1348554
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Brandon J Kehoe</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-secondary">
                           Generate Estimate
                         </span>
                       </td>
-                      <td class="text-nowrap">31/05/2024</td>
                       <td class="text-nowrap">31/05/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1895,27 +1304,18 @@
 
                     <!-- Row 36 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1393134
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Steven Roland</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-secondary">
                           Generate Estimate
                         </span>
                       </td>
-                      <td class="text-nowrap">01/08/2024</td>
                       <td class="text-nowrap">01/08/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1939,27 +1339,18 @@
 
                     <!-- Row 37 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1321352
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Steven Roland</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-secondary">
                           Generate Estimate
                         </span>
                       </td>
-                      <td class="text-nowrap">19/06/2024</td>
                       <td class="text-nowrap">19/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -1983,27 +1374,18 @@
 
                     <!-- Row 38 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1321363
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Steven Roland</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-dark">
                           Proposal Final Documents
                         </span>
                       </td>
-                      <td class="text-nowrap">19/06/2024</td>
                       <td class="text-nowrap">19/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -2027,25 +1409,16 @@
 
                     <!-- Row 39 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1393115
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Steven Roland</a
-                        >
-                      </td>
+                     
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-grey"> Proposal Creation </span>
                       </td>
-                      <td class="text-nowrap">06/06/2024</td>
                       <td class="text-nowrap">06/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -2069,27 +1442,18 @@
 
                     <!-- Row 40 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1377965
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Steven Roland</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-danger">
                           Material List
                         </span>
                       </td>
-                      <td class="text-nowrap">30/05/2024</td>
                       <td class="text-nowrap">30/05/2024</td>
                       <td class="text-truncate">
                         <a
@@ -2113,27 +1477,18 @@
 
                     <!-- Row 41 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1307849
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Steven Roland</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-primary">
                           Proposal Preview
                         </span>
                       </td>
-                      <td class="text-nowrap">31/05/2024</td>
                       <td class="text-nowrap">31/05/2024</td>
                       <td class="text-truncate">
                         <a
@@ -2157,25 +1512,16 @@
 
                     <!-- Row 42 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1271526
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Joseph Turner</a
-                        >
-                      </td>
+                     
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-grey"> Proposal Creation </span>
                       </td>
-                      <td class="text-nowrap">01/07/2024</td>
                       <td class="text-nowrap">01/07/2024</td>
                       <td class="text-truncate">
                         <a
@@ -2199,25 +1545,16 @@
 
                     <!-- Row 43 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1357349
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Armando Navarro</a
-                        >
-                      </td>
+                     
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-info"> Task Mapping </span>
                       </td>
-                      <td class="text-nowrap">05/06/2024</td>
                       <td class="text-nowrap">05/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -2241,27 +1578,18 @@
 
                     <!-- Row 44 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1373391
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Patrick Stern</a
-                        >
-                      </td>
+                      
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-light-primary">
                           Proposal Preview
                         </span>
                       </td>
-                      <td class="text-nowrap">14/06/2024</td>
                       <td class="text-nowrap">14/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -2285,25 +1613,16 @@
 
                     <!-- Row 45 -->
                     <tr>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                        >
-                          1393874
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="{% url 'proposal:opportunity' %}"
-                          class="primary p-0"
-                          >Patrick Stern</a
-                        >
-                      </td>
+                     
+                      
+                      <td><a href="{% url 'proposal:opportunity' %}">OPPLAW-002114</a></td>
+                      <td>Josh Hansen</td>
+                      <td>Samuel Etchison</td>
+                      <td> - </td>
+                      <td>7/10 Waiting on Netafim Quote</td>
                       <td>
                         <span class="badge bg-grey"> Proposal Creation </span>
                       </td>
-                      <td class="text-nowrap">11/06/2024</td>
                       <td class="text-nowrap">11/06/2024</td>
                       <td class="text-truncate">
                         <a
@@ -2536,11 +1855,11 @@
       </div>
     </div>
 
-    <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
-    <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
+    {% comment %} <script src="{% static 'vendors/js/vendors.min.js' %}"></script> {% endcomment %}
+    {% comment %} <script src="{% static 'vendors/js/switchery.min.js' %}"></script> {% endcomment %}
 
-    <script src="{% static 'vendors/js/select2.full.min.js' %}"></script>
-    <script src="{% static 'app/js/select2.min.js' %}"></script>
+    {% comment %} <script src="{% static 'vendors/js/select2.full.min.js' %}"></script> {% endcomment %}
+    {% comment %} <script src="{% static 'app/js/select2.min.js' %}"></script> {% endcomment %}
 
     <script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
 

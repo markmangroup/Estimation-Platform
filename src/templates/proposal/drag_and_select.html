@@ -1,0 +1,219 @@
+{% load static %}
+<button type="button" class="btn bg-light-primary" data-backdrop="false"  
+data-toggle="modal" data-target="#show">
+  Assign Product
+</button>
+<div
+  class="modal fade text-left"
+  id="show"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel5"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel5">Assign Products</h4>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true"
+            ><i class="ft-x font-medium-2 text-bold-700"></i
+          ></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table id="sample" class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th><input name="checkbox" type="checkbox" class="row-checkbox" /></th>
+                <th>Combined Quantities</th>
+                <th>Description</th>
+                <th>Item Number</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>2</td>
+                <td>VENT-1"CAV X 2"COUP</td>
+                <td>ASSM-0625</td>
+              </tr>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>75</td>
+                <td>Ball Valve Riser 3/4" FHTxMHT</td>
+                <td>2800-117500</td>
+              </tr>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>2</td>
+                <td>Cement - Dauber for Pint Can (HOSE FITTINGS)</td>
+                <td>4200-015000</td>
+              </tr>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>2</td>
+                <td>CEMENT - RED HOT CLEAR, PINT (HOSE FITTINGS)</td>
+                <td>4200-005000</td>
+              </tr>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>150</td>
+                <td>FIGURE 8 062</td>
+                <td>2800-118500</td>
+              </tr>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>75</td>
+                <td>MALE HOSE ADAP X 1/2"S(3/4"SP)</td>
+                <td>2800-114000</td>
+              </tr>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>25</td>
+                <td>PERMA-LOC COUPLING 062</td>
+                <td>2800-001000</td>
+              </tr>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>75</td>
+                <td>PERMA-LOC X SWIVEL-W TEE 062</td>
+                <td>2800-006000</td>
+              </tr>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>24000</td>
+                <td>UNIRAM .62/45 E.5336 COIL</td>
+                <td>4400-458500</td>
+              </tr>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>25</td>
+                <td>COUPLER BLACK 1/2"</td>
+                <td>2800-116500</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn bg-light-secondary"
+          data-dismiss="modal"
+        >
+          Close
+        </button>
+        <button type="button" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const table = document.getElementById("myTable");
+    console.log(table);
+    let isDragging = false;
+    let startRow = null;
+    let endRow = null;
+
+    table.addEventListener("mousedown", (event) => {
+      console.log("mousedown")
+      const row = event.target.closest("tr");
+      if (row && row.parentNode.tagName === "TBODY") {
+        isDragging = true;
+        startRow = row;
+        endRow = row;
+        toggleCheckbox(row, true);
+      }
+    });
+
+    table.addEventListener("mousemove", (event) => {
+      console.log("mousemove")
+      if (isDragging) {
+        const row = event.target.closest("tr");
+        if (row && row.parentNode.tagName === "TBODY") {
+          endRow = row;
+          selectRows(startRow, endRow);
+        }
+      }
+    });
+
+    table.addEventListener("mouseup", () => {
+      console.log("mouseup")
+      isDragging = false;
+    });
+
+    document.addEventListener("mouseup", () => {
+      isDragging = false;
+    });
+
+    function toggleCheckbox(row, isChecked) {
+      const checkbox = row.querySelector(".row-checkbox");
+      if (checkbox) {
+        checkbox.checked =
+          isChecked !== undefined ? isChecked : !checkbox.checked;
+      }
+    }
+
+    function selectRows(start, end) {
+      const rows = Array.from(table.querySelectorAll("tbody tr"));
+      const startIndex = rows.indexOf(start);
+      const endIndex = rows.indexOf(end);
+
+      rows.forEach((row, index) => {
+        const checkbox = row.querySelector(".row-checkbox");
+        if (
+          index >= Math.min(startIndex, endIndex) &&
+          index <= Math.max(startIndex, endIndex)
+        ) {
+          toggleCheckbox(row, true); // Select rows within the start and end indices
+        } else {
+          toggleCheckbox(row, false); // Deselect rows outside the start and end indices
+        }
+      });
+    }
+  });
+</script> -->
+
+<!-- Test js for drag and select -->
+<script>
+  $(document).ready(function() {
+    var isMouseDown = false,
+      isHighlighted;
+  
+    $("#sample input:checkbox").click(function() {
+      return false;
+    })
+    $("#sample tr")
+      .mousedown(function() {
+        isMouseDown = true;
+        $(this).toggleClass("highlighted");
+        isHighlighted = $(this).hasClass("highlighted");
+        $(this).find("input:checkbox").prop("checked", isHighlighted);
+        return false; // prevent text selection
+      })
+      .mouseover(function() {
+        if (isMouseDown) {
+          $(this).toggleClass("highlighted", isHighlighted);
+          $(this).find("input:checkbox").prop("checked", isHighlighted);
+        }
+      })
+      .bind("selectstart", function() {
+        return false;
+      })
+  
+    $(document)
+      .mouseup(function() {
+        isMouseDown = false;
+      });
+  });
+</script>  
+<!-- Test js for drag and select -->

@@ -3,16 +3,10 @@
 <div class="ml-3">
   <div class="row">
     <h5>
-      Customer
+      Document Number :
     </h5>
-    <span class="ml-1 border-right pr-2">
-      John Parker
-    </span>
-    <h5 class="border-left pl-2">
-      Internal ID
-    </h5>
-    <span class="ml-1">
-      950676
+    <span class="ml-1 mb-2">
+      OPPLAW-002114
     </span>
   </div>
 </div>
@@ -55,7 +49,17 @@
                 {% include './assign_to.html' %}
                 {% include './comment_table.html' %}
               </fieldset> {% endcomment %}
-
+              
+              <h6>Select Task Code</h6>
+              <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                <div class="accordion" id="accordionExample1">
+                {% include "./select_task_code.html" %}
+                </div>
+                {% include "./file_upload.html" %}
+                {% comment %} {% include './assign_to.html' %} {% endcomment %}
+                {% include './comment_table.html' %}
+              </fieldset>
+              
               <h6>Upload CAD File</h6>
               <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
                   {% include "./upload_file.html" %}
@@ -201,7 +205,7 @@
                           aria-expanded="false"
                           aria-controls="accordion4"
                           class="card-title collapsed"
-                          >Final Material List</a
+                          >Preliminary material list</a
                         >
                       </div>
                       <div
@@ -221,14 +225,16 @@
                   {% include './comment_table.html' %}
               </fieldset>
 
-              <h6>Labor List</h6>
+              <!-- 
+                NOTE: Labour list merge with Task Mapping 
+              -->
+              <!-- <h6>Labor List</h6>
               <fieldset class="mt-1" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
-                {% include "./labor_list.html" %}
-                {% include "./file_upload.html" %}
+                {% comment %} {% include "./labor_list.html" %} {% endcomment %}
+                {% comment %} {% include "./file_upload.html" %} {% endcomment %}
                 {% comment %} {% include './assign_to.html' %} {% endcomment %}
-                {% include './comment_table.html' %}
-              </fieldset>
-
+                {% comment %} {% include './comment_table.html' %} {% endcomment %}
+              </fieldset> -->
 
               <h6>Task Mapping</h6>
               <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">

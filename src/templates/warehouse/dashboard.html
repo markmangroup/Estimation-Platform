@@ -101,7 +101,7 @@
 <!--Statistics cards Ends-->
 
 <!--Line with Area Chart 1 Starts-->
-<div class="row">
+{% comment %} <div class="row">
   <div class="col-12">
     <div class="card">
       <div class="card-header">
@@ -126,8 +126,505 @@
       </div>
     </div>
   </div>
-</div>
+</div> {% endcomment %}
 <!--Line with Area Chart 1 Ends-->
+
+<!-- Renteal order report -->
+<div class="card">
+  <div class="card-content">
+    <div class="card-header">
+      <div class="float-left ml-2">
+        <data class="row">
+          <h4>Rental Order Report</h4>
+        </data>
+      </div>
+      <!-- Temporary hide download button -->
+      {% comment %} <div class="float-right mb-3">
+        <div class="col-12 my-1">
+          <button
+            class="btn bg-light-info"
+            onclick="DownloadProductsInCSV('RentalOrder')"
+          >
+            <em class="ft-download"></em> Rental Order CSV
+          </button>
+        </div>
+      </div> {% endcomment %}
+      <!-- Temporary hide download button -->
+    </div>
+    <div class="card-body">
+      <div id="RentalOrder" class="table-responsive">
+        <table
+          class="table table-striped table-bordered zero-configuration"
+        >
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Date</th>
+              <th>Document Number</th>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Project Manager</th>
+              <th>Location</th>
+              <th>Quantity</th>
+              <th>Item</th>
+              <th>Sum of Item Rate</th>
+              <th>Sum of Amount</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Rental Recurrence</th>
+              <th>Billing Schedule</th>
+              <th>Rental Type</th>
+              <th>Region</th>
+            </tr>
+          </thead>
+          <tbody>
+
+              <!-- Row 1 -->
+              <tr>
+                  <td class="text-nowrap">C005588 Rocha Junior Berry Farms LLC</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">CMLAWS-002706</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ012681 </a></td>
+                  <td class="text-nowrap">Rocha Junior Berry Farms LLC : Rental: 3" Aluminum Laterals</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">-1.0</td>
+                  <td class="text-nowrap">Rental: 3" X 30' Aluminum Lateral</td>
+                  <td class="text-nowrap">9</td>
+                  <td class="text-nowrap">-9.00</td>
+                  <td class="text-nowrap">-</td>
+                  <td class="text-nowrap">-</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 2 -->
+              <tr>
+                  <td class="text-nowrap">C005441 Gill Ranch</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045233</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018077 </a></td>
+                  <td class="text-nowrap">Gill Ranch : Rental: 3" & 6" pipe rent 2024</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">33.0</td>
+                  <td class="text-nowrap">Rental: 6" X 40' Aluminum Mainline</td>
+                  <td class="text-nowrap">40</td>
+                  <td class="text-nowrap">1,320.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 3 -->
+              <tr>
+                  <td class="text-nowrap">C005441 Gill Ranch</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045233</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018077 </a></td>
+                  <td class="text-nowrap">Gill Ranch : Rental: 3" & 6" pipe rent 2024</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">50.0</td>
+                  <td class="text-nowrap">Rental: 6" X 30' Aluminum Mainline</td>
+                  <td class="text-nowrap">30</td>
+                  <td class="text-nowrap">1,500.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 4 -->
+              <tr>
+                  <td class="text-nowrap">C005441 Gill Ranch</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045233</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018077 </a></td>
+                  <td class="text-nowrap">Gill Ranch : Rental: 3" & 6" pipe rent 2024</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">4300.0</td>
+                  <td class="text-nowrap">Rental: 3" X 30' Aluminum Lateral</td>
+                  <td class="text-nowrap">5.5</td>
+                  <td class="text-nowrap">23,650.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 5 -->
+              <tr>
+                  <td class="text-nowrap">C005597 Rio Farms</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045231</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018075 </a></td>
+                  <td class="text-nowrap">Rio Farms : Rental: 3rd Street</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">200.0</td>
+                  <td class="text-nowrap">Rental: 6" X 40' Aluminum Mainline</td>
+                  <td class="text-nowrap">40</td>
+                  <td class="text-nowrap">8,000.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 6 -->
+              <tr>
+                  <td class="text-nowrap">C005597 Rio Farms</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045231</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018075 </a></td>
+                  <td class="text-nowrap">Rio Farms : Rental: 3rd Street</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">1660.0</td>
+                  <td class="text-nowrap">Rental: 6" X 33' Aluminum Mainline</td>
+                  <td class="text-nowrap">33</td>
+                  <td class="text-nowrap">54,780.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 7 -->
+              <tr>
+                  <td class="text-nowrap">C005597 Rio Farms</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045231</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018075 </a></td>
+                  <td class="text-nowrap">Rio Farms : Rental: 3rd Street</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">7250.0</td>
+                  <td class="text-nowrap">Rental: 3" X 30' Aluminum Lateral</td>
+                  <td class="text-nowrap">5.5</td>
+                  <td class="text-nowrap">39,875.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 8 -->
+              <tr>
+                  <td class="text-nowrap">C005597 Rio Farms</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045232</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018076 </a></td>
+                  <td class="text-nowrap">Rio Farms : Rental: Jolon Ranch 2024</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">12.0</td>
+                  <td class="text-nowrap">Rental: 6" X 6" X 6" VOT</td>
+                  <td class="text-nowrap">35</td>
+                  <td class="text-nowrap">420.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 9 -->
+              <tr>
+                  <td class="text-nowrap">C005597 Rio Farms</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045232</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018076 </a></td>
+                  <td class="text-nowrap">Rio Farms : Rental: Jolon Ranch 2024</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">24.0</td>
+                  <td class="text-nowrap">Rental: 6" End Plug</td>
+                  <td class="text-nowrap">15</td>
+                  <td class="text-nowrap">360.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 10 -->
+              <tr>
+                  <td class="text-nowrap">C005597 Rio Farms</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045232</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018076 </a></td>
+                  <td class="text-nowrap">Rio Farms : Rental: Jolon Ranch 2024</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">80.0</td>
+                  <td class="text-nowrap">Rental: 4" x 3" x 3" Valve Opener Tee</td>
+                  <td class="text-nowrap">14</td>
+                  <td class="text-nowrap">1,120.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 11 -->
+              <tr>
+                  <td class="text-nowrap">C005597 Rio Farms</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045232</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018076 </a></td>
+                  <td class="text-nowrap">Rio Farms : Rental: Jolon Ranch 2024</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">95.0</td>
+                  <td class="text-nowrap">Rental: 6" X 40' Aluminum Mainline</td>
+                  <td class="text-nowrap">40</td>
+                  <td class="text-nowrap">3,800.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 12 -->
+              <tr>
+                  <td class="text-nowrap">C005597 Rio Farms</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045232</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018076 </a></td>
+                  <td class="text-nowrap">Rio Farms : Rental: Jolon Ranch 2024</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">160.0</td>
+                  <td class="text-nowrap">Rental: 3" End Plug</td>
+                  <td class="text-nowrap">3</td>
+                  <td class="text-nowrap">480.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 13 -->
+              <tr>
+                  <td class="text-nowrap">C005597 Rio Farms</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045232</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018076 </a></td>
+                  <td class="text-nowrap">Rio Farms : Rental: Jolon Ranch 2024</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">4000.0</td>
+                  <td class="text-nowrap">Rental: 3" X 30' Aluminum Lateral</td>
+                  <td class="text-nowrap">5.5</td>
+                  <td class="text-nowrap">22,000.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 14 -->
+              <tr>
+                  <td class="text-nowrap">C005941 Top Flavor Farms San Juan</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045234</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018078 </a></td>
+                  <td class="text-nowrap">Top Flavor Farms San Juan : Rental: 2024 3" Lats & 6" Mainline</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">2.0</td>
+                  <td class="text-nowrap">Rental: 6" X 20' Mainline</td>
+                  <td class="text-nowrap">20</td>
+                  <td class="text-nowrap">40.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 15 -->
+              <tr>
+                  <td class="text-nowrap">C005941 Top Flavor Farms San Juan</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045234</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018078 </a></td>
+                  <td class="text-nowrap">Top Flavor Farms San Juan : Rental: 2024 3" Lats & 6" Mainline</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">12.0</td>
+                  <td class="text-nowrap">Rental: 4" x 3" x 3" Valve Opener Tee</td>
+                  <td class="text-nowrap">10</td>
+                  <td class="text-nowrap">120.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 16 -->
+              <tr>
+                  <td class="text-nowrap">C005941 Top Flavor Farms San Juan</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045234</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018078 </a></td>
+                  <td class="text-nowrap">Top Flavor Farms San Juan : Rental: 2024 3" Lats & 6" Mainline</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">40.0</td>
+                  <td class="text-nowrap">Rental: 3" Droplock End Plug</td>
+                  <td class="text-nowrap">1.5</td>
+                  <td class="text-nowrap">60.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 17 -->
+              <tr>
+                  <td class="text-nowrap">C005941 Top Flavor Farms San Juan</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045234</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018078 </a></td>
+                  <td class="text-nowrap">Top Flavor Farms San Juan : Rental: 2024 3" Lats & 6" Mainline</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">50.0</td>
+                  <td class="text-nowrap">Rental: 3" No Latch Adapter</td>
+                  <td class="text-nowrap">1.5</td>
+                  <td class="text-nowrap">75.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 18 -->
+              <tr>
+                  <td class="text-nowrap">C005941 Top Flavor Farms San Juan</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045234</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018078 </a></td>
+                  <td class="text-nowrap">Top Flavor Farms San Juan : Rental: 2024 3" Lats & 6" Mainline</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">60.0</td>
+                  <td class="text-nowrap">Rental: 6" x 43' Aluminum Mainline</td>
+                  <td class="text-nowrap">43</td>
+                  <td class="text-nowrap">2,580.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 19 -->
+              <tr>
+                  <td class="text-nowrap">C005941 Top Flavor Farms San Juan</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045234</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018078 </a></td>
+                  <td class="text-nowrap">Top Flavor Farms San Juan : Rental: 2024 3" Lats & 6" Mainline</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">405.0</td>
+                  <td class="text-nowrap">Rental: 6" X 33' Aluminum Mainline</td>
+                  <td class="text-nowrap">33</td>
+                  <td class="text-nowrap">13,365.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 20 -->
+              <tr>
+                  <td class="text-nowrap">C005941 Top Flavor Farms San Juan</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045234</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018078 </a></td>
+                  <td class="text-nowrap">Top Flavor Farms San Juan : Rental: 2024 3" Lats & 6" Mainline</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">4200.0</td>
+                  <td class="text-nowrap">Rental: 3" X 30' Aluminum Lateral</td>
+                  <td class="text-nowrap">5.25</td>
+                  <td class="text-nowrap">22,050.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Renteal order report -->
 
 <!--Warehouse Count, Total Products & Damaged Products KPIs-->
 <div class="row match-height align-items-center justify-content-center">
@@ -559,7 +1056,7 @@
 </div>
 
 <!--Orders & Recurring Orders-->
-<div class="row match-height">
+{% comment %} <div class="row match-height">
   <div class="col-xl-12 col-lg-12 col-12">
     <div class="card">
       <div class="card-header">
@@ -582,7 +1079,984 @@
       </div>
     </div>
   </div>
+</div> {% endcomment %}
+<!--Orders & Recurring Orders-->
+
+<!-- Return Order Report -->
+<div class="card">
+  <div class="card-content">
+    <div class="card-header">
+      
+      <div class="float-left ml-2">
+        <data class="row">
+          <h4>Return Order Report</h4>
+        </data>
+      </div>
+      <!-- Temporary hide download button -->
+      {% comment %} <div class="float-right mb-3">
+        <div class="col-12 my-1">
+          <button
+            class="btn bg-light-info"
+            onclick="DownloadProductsInCSV('ReturnOrder')"
+          >
+            <em class="ft-download"></em> Return Order CSV
+          </button>
+        </div>
+      </div> {% endcomment %}
+      <!-- Temporary hide download button -->
+      
+    </div>
+    <div class="card-body">
+      <div id="ReturnOrder" class="table-responsive">
+        <table
+          class="table table-striped table-bordered zero-configuration"
+        >
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Date</th>
+              <th>Document Number</th>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Project Manager</th>
+              <th>Location</th>
+              <th>Quantity</th>
+              <th>Item</th>
+              <th>Sum of Item Rate</th>
+              <th>Sum of Amount</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Rental Recurrence</th>
+              <th>Billing Schedule</th>
+              <th>Rental Type</th>
+              <th>Region</th>
+            </tr>
+          </thead>
+          <tbody>
+
+              <!-- Row 1 -->
+              <tr>
+                  <td class="text-nowrap">C005588 Rocha Junior Berry Farms LLC</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">CMLAWS-002706</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ012681 </a></td>
+                  <td class="text-nowrap">Rocha Junior Berry Farms LLC : Rental: 3" Aluminum Laterals</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">-1.0</td>
+                  <td class="text-nowrap">Rental: 3" X 30' Aluminum Lateral</td>
+                  <td class="text-nowrap">9</td>
+                  <td class="text-nowrap">-9.00</td>
+                  <td class="text-nowrap">-</td>
+                  <td class="text-nowrap">-</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 2 -->
+              <tr>
+                  <td class="text-nowrap">C005441 Gill Ranch</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045233</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018077 </a></td>
+                  <td class="text-nowrap">Gill Ranch : Rental: 3" & 6" pipe rent 2024</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">33.0</td>
+                  <td class="text-nowrap">Rental: 6" X 40' Aluminum Mainline</td>
+                  <td class="text-nowrap">40</td>
+                  <td class="text-nowrap">1,320.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 3 -->
+              <tr>
+                  <td class="text-nowrap">C005441 Gill Ranch</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045233</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018077 </a></td>
+                  <td class="text-nowrap">Gill Ranch : Rental: 3" & 6" pipe rent 2024</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">50.0</td>
+                  <td class="text-nowrap">Rental: 6" X 30' Aluminum Mainline</td>
+                  <td class="text-nowrap">30</td>
+                  <td class="text-nowrap">1,500.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 4 -->
+              <tr>
+                  <td class="text-nowrap">C005441 Gill Ranch</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045233</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018077 </a></td>
+                  <td class="text-nowrap">Gill Ranch : Rental: 3" & 6" pipe rent 2024</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">4300.0</td>
+                  <td class="text-nowrap">Rental: 3" X 30' Aluminum Lateral</td>
+                  <td class="text-nowrap">5.5</td>
+                  <td class="text-nowrap">23,650.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 5 -->
+              <tr>
+                  <td class="text-nowrap">C005597 Rio Farms</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045231</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018075 </a></td>
+                  <td class="text-nowrap">Rio Farms : Rental: 3rd Street</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">200.0</td>
+                  <td class="text-nowrap">Rental: 6" X 40' Aluminum Mainline</td>
+                  <td class="text-nowrap">40</td>
+                  <td class="text-nowrap">8,000.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 6 -->
+              <tr>
+                  <td class="text-nowrap">C005597 Rio Farms</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045231</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018075 </a></td>
+                  <td class="text-nowrap">Rio Farms : Rental: 3rd Street</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">1660.0</td>
+                  <td class="text-nowrap">Rental: 6" X 33' Aluminum Mainline</td>
+                  <td class="text-nowrap">33</td>
+                  <td class="text-nowrap">54,780.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 7 -->
+              <tr>
+                  <td class="text-nowrap">C005597 Rio Farms</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045231</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018075 </a></td>
+                  <td class="text-nowrap">Rio Farms : Rental: 3rd Street</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">7250.0</td>
+                  <td class="text-nowrap">Rental: 3" X 30' Aluminum Lateral</td>
+                  <td class="text-nowrap">5.5</td>
+                  <td class="text-nowrap">39,875.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 8 -->
+              <tr>
+                  <td class="text-nowrap">C005597 Rio Farms</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045232</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018076 </a></td>
+                  <td class="text-nowrap">Rio Farms : Rental: Jolon Ranch 2024</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">12.0</td>
+                  <td class="text-nowrap">Rental: 6" X 6" X 6" VOT</td>
+                  <td class="text-nowrap">35</td>
+                  <td class="text-nowrap">420.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 9 -->
+              <tr>
+                  <td class="text-nowrap">C005597 Rio Farms</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045232</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018076 </a></td>
+                  <td class="text-nowrap">Rio Farms : Rental: Jolon Ranch 2024</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">24.0</td>
+                  <td class="text-nowrap">Rental: 6" End Plug</td>
+                  <td class="text-nowrap">15</td>
+                  <td class="text-nowrap">360.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 10 -->
+              <tr>
+                  <td class="text-nowrap">C005597 Rio Farms</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045232</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018076 </a></td>
+                  <td class="text-nowrap">Rio Farms : Rental: Jolon Ranch 2024</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">80.0</td>
+                  <td class="text-nowrap">Rental: 4" x 3" x 3" Valve Opener Tee</td>
+                  <td class="text-nowrap">14</td>
+                  <td class="text-nowrap">1,120.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 11 -->
+              <tr>
+                  <td class="text-nowrap">C005597 Rio Farms</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045232</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018076 </a></td>
+                  <td class="text-nowrap">Rio Farms : Rental: Jolon Ranch 2024</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">95.0</td>
+                  <td class="text-nowrap">Rental: 6" X 40' Aluminum Mainline</td>
+                  <td class="text-nowrap">40</td>
+                  <td class="text-nowrap">3,800.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 12 -->
+              <tr>
+                  <td class="text-nowrap">C005597 Rio Farms</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045232</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018076 </a></td>
+                  <td class="text-nowrap">Rio Farms : Rental: Jolon Ranch 2024</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">160.0</td>
+                  <td class="text-nowrap">Rental: 3" End Plug</td>
+                  <td class="text-nowrap">3</td>
+                  <td class="text-nowrap">480.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 13 -->
+              <tr>
+                  <td class="text-nowrap">C005597 Rio Farms</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045232</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018076 </a></td>
+                  <td class="text-nowrap">Rio Farms : Rental: Jolon Ranch 2024</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">4000.0</td>
+                  <td class="text-nowrap">Rental: 3" X 30' Aluminum Lateral</td>
+                  <td class="text-nowrap">5.5</td>
+                  <td class="text-nowrap">22,000.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 14 -->
+              <tr>
+                  <td class="text-nowrap">C005941 Top Flavor Farms San Juan</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045234</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018078 </a></td>
+                  <td class="text-nowrap">Top Flavor Farms San Juan : Rental: 2024 3" Lats & 6" Mainline</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">2.0</td>
+                  <td class="text-nowrap">Rental: 6" X 20' Mainline</td>
+                  <td class="text-nowrap">20</td>
+                  <td class="text-nowrap">40.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 15 -->
+              <tr>
+                  <td class="text-nowrap">C005941 Top Flavor Farms San Juan</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045234</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018078 </a></td>
+                  <td class="text-nowrap">Top Flavor Farms San Juan : Rental: 2024 3" Lats & 6" Mainline</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">12.0</td>
+                  <td class="text-nowrap">Rental: 4" x 3" x 3" Valve Opener Tee</td>
+                  <td class="text-nowrap">10</td>
+                  <td class="text-nowrap">120.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 16 -->
+              <tr>
+                  <td class="text-nowrap">C005941 Top Flavor Farms San Juan</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045234</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018078 </a></td>
+                  <td class="text-nowrap">Top Flavor Farms San Juan : Rental: 2024 3" Lats & 6" Mainline</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">40.0</td>
+                  <td class="text-nowrap">Rental: 3" Droplock End Plug</td>
+                  <td class="text-nowrap">1.5</td>
+                  <td class="text-nowrap">60.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 17 -->
+              <tr>
+                  <td class="text-nowrap">C005941 Top Flavor Farms San Juan</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045234</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018078 </a></td>
+                  <td class="text-nowrap">Top Flavor Farms San Juan : Rental: 2024 3" Lats & 6" Mainline</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">50.0</td>
+                  <td class="text-nowrap">Rental: 3" No Latch Adapter</td>
+                  <td class="text-nowrap">1.5</td>
+                  <td class="text-nowrap">75.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 18 -->
+              <tr>
+                  <td class="text-nowrap">C005941 Top Flavor Farms San Juan</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045234</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018078 </a></td>
+                  <td class="text-nowrap">Top Flavor Farms San Juan : Rental: 2024 3" Lats & 6" Mainline</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">60.0</td>
+                  <td class="text-nowrap">Rental: 6" x 43' Aluminum Mainline</td>
+                  <td class="text-nowrap">43</td>
+                  <td class="text-nowrap">2,580.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 19 -->
+              <tr>
+                  <td class="text-nowrap">C005941 Top Flavor Farms San Juan</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045234</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018078 </a></td>
+                  <td class="text-nowrap">Top Flavor Farms San Juan : Rental: 2024 3" Lats & 6" Mainline</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">405.0</td>
+                  <td class="text-nowrap">Rental: 6" X 33' Aluminum Mainline</td>
+                  <td class="text-nowrap">33</td>
+                  <td class="text-nowrap">13,365.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+              
+              <!-- Row 20 -->
+              <tr>
+                  <td class="text-nowrap">C005941 Top Flavor Farms San Juan</td>
+                  <td class="text-nowrap">05/04/2024</td>
+                  <td class="text-nowrap">INVLAWS-045234</td>
+                  <td class="text-nowrap"><a href="{% url 'proposal:return_order' %}"> PROJ018078 </a></td>
+                  <td class="text-nowrap">Top Flavor Farms San Juan : Rental: 2024 3" Lats & 6" Mainline</td>
+                  <td class="text-nowrap">Matthew Waterman</td>
+                  <td class="text-nowrap">US Irrigation - Hollister - Old</td>
+                  <td class="text-nowrap">4200.0</td>
+                  <td class="text-nowrap">Rental: 3" X 30' Aluminum Lateral</td>
+                  <td class="text-nowrap">5.25</td>
+                  <td class="text-nowrap">22,050.00</td>
+                  <td class="text-nowrap">01/04/2024</td>
+                  <td class="text-nowrap">30/09/2024</td>
+                  <td class="text-nowrap">Recurring</td>
+                  <td class="text-nowrap">Semi-Annual</td>
+                  <td class="text-nowrap">Materials Only</td>
+                  <td class="text-nowrap">Central Coast</td>
+                  
+              </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
+<!-- Return Order Report -->
+
+<!-- Recurring Orders Report -->
+<div class="card">
+  <div class="card-content">
+    <div class="card-header">
+      <div class="float-left ml-2">
+        <data class="row">
+          <h4>Recurring Orders Report</h4>
+        </data>
+      </div>
+      <!-- Temporary hide download button -->
+      {% comment %} <div class="float-right mb-3">
+        <div class="col-12 my-1">
+          <button
+            class="btn bg-light-info"
+            onclick="DownloadProductsInCSV('RecurringOrder')"
+          >
+            <em class="ft-download"></em> Recurring Orders CSV
+          </button>
+        </div>
+      </div> {% endcomment %}
+      <!-- Temporary hide download button -->
+    </div>
+  <div class="card-body">
+    <div id="RecurringOrder" class="table-responsive">
+      <table
+        class="table table-striped table-bordered zero-configuration"
+      >
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Order Date</th>
+            <th>Location</th>
+            <th>No of Products</th>
+            <th>Amount</th>
+            <th>Type</th>
+            <th>Recurrence Start</th>
+            <th>Recurrence End</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Row 1 -->
+          <tr>
+            <td class="text-nowrap">Saint-Gobain</td>
+            <td class="text-nowrap">01/04/2024</td>
+            <td class="text-nowrap">Paris</td>
+            <td class="text-nowrap">10</td>
+            <td class="text-nowrap">$1500.00</td>
+            <td class="text-nowrap">Yearly</td>
+            <td class="text-nowrap">01/05</td>
+            <td class="text-nowrap">31/12</td>
+          </tr>
+
+          <!-- Row 2 -->
+          <tr>
+            <td class="text-nowrap">Wavin</td>
+            <td class="text-nowrap">02/07/2024</td>
+            <td class="text-nowrap">Amsterdam</td>
+            <td class="text-nowrap">8</td>
+            <td class="text-nowrap">$1200.00</td>
+            <td class="text-nowrap">Yearly</td>
+            <td class="text-nowrap">01/05</td>
+            <td class="text-nowrap">30/09</td>
+          </tr>
+
+          <!-- Row 3 -->
+          <tr>
+            <td class="text-nowrap">Uponor</td>
+            <td class="text-nowrap">03/01/2024</td>
+            <td class="text-nowrap">Helsinki</td>
+            <td class="text-nowrap">6</td>
+            <td class="text-nowrap">$900.00</td>
+            <td class="text-nowrap">Yearly</td>
+            <td class="text-nowrap">15/05</td>
+            <td class="text-nowrap">31/10</td>
+          </tr>
+
+          <!-- Row 4 -->
+          <tr>
+            <td class="text-nowrap">Georg Fischer</td>
+            <td class="text-nowrap">04/10/2024</td>
+            <td class="text-nowrap">Zurich</td>
+            <td class="text-nowrap">12</td>
+            <td class="text-nowrap">$1800.00</td>
+            <td class="text-nowrap">Yearly</td>
+            <td class="text-nowrap">01/05</td>
+            <td class="text-nowrap">30/11</td>
+          </tr>
+
+          <!-- Row 5 -->
+          <tr>
+            <td class="text-nowrap">Mueller Water Products</td>
+            <td class="text-nowrap">05/05/2024</td>
+            <td class="text-nowrap">Atlanta</td>
+            <td class="text-nowrap">15</td>
+            <td class="text-nowrap">$2250.00</td>
+            <td class="text-nowrap">Yearly</td>
+            <td class="text-nowrap">01/05</td>
+            <td class="text-nowrap">31/12</td>
+          </tr>
+
+          <!-- Row 6 -->
+          <tr>
+            <td class="text-nowrap">JM Eagle</td>
+            <td class="text-nowrap">06/01/2024</td>
+            <td class="text-nowrap">Los Angeles</td>
+            <td class="text-nowrap">20</td>
+            <td class="text-nowrap">$3000.00</td>
+            <td class="text-nowrap">Yearly</td>
+            <td class="text-nowrap">15/05</td>
+            <td class="text-nowrap">30/09</td>
+          </tr>
+
+          <!-- Row 7 -->
+          <tr>
+            <td class="text-nowrap">Aalberts</td>
+            <td class="text-nowrap">07/09/2024</td>
+            <td class="text-nowrap">Utrecht</td>
+            <td class="text-nowrap">5</td>
+            <td class="text-nowrap">$7550.00</td>
+            <td class="text-nowrap">Yearly</td>
+            <td class="text-nowrap">01/05</td>
+            <td class="text-nowrap">31/10</td>
+          </tr>
+
+          <!-- Row 8 -->
+          <tr>
+            <td class="text-nowrap">Tenaris</td>
+            <td class="text-nowrap">08/11/2024</td>
+            <td class="text-nowrap">Luxembourg</td>
+            <td class="text-nowrap">18</td>
+            <td class="text-nowrap">$2700.00</td>
+            <td class="text-nowrap">Yearly</td>
+            <td class="text-nowrap">01/05</td>
+            <td class="text-nowrap">30/11</td>
+          </tr>
+
+          <!-- Row 9 -->
+          <tr>
+            <td class="text-nowrap">Valmont Industries</td>
+            <td class="text-nowrap">09/02/2024</td>
+            <td class="text-nowrap">Omaha</td>
+            <td class="text-nowrap">22</td>
+            <td class="text-nowrap">$3300.00</td>
+            <td class="text-nowrap">Yearly</td>
+            <td class="text-nowrap">01/05</td>
+            <td class="text-nowrap">31/12</td>
+          </tr>
+
+          <!-- Row 10 -->
+          <tr>
+            <td class="text-nowrap">China Lesso Group</td>
+            <td class="text-nowrap">10/08/2024</td>
+            <td class="text-nowrap">Guangzhou</td>
+            <td class="text-nowrap">25</td>
+            <td class="text-nowrap">$3750.00</td>
+            <td class="text-nowrap">Yearly</td>
+            <td class="text-nowrap">15/05</td>
+            <td class="text-nowrap">30/09</td>
+          </tr>
+
+          <!-- Row 11 -->
+          <tr>
+            <td class="text-nowrap">McWane</td>
+            <td class="text-nowrap">11/04/2024</td>
+            <td class="text-nowrap">Birmingham</td>
+            <td class="text-nowrap">30</td>
+            <td class="text-nowrap">$4500.00</td>
+            <td class="text-nowrap">Yearly</td>
+            <td class="text-nowrap">01/05</td>
+            <td class="text-nowrap">31/12</td>
+          </tr>
+
+          <!-- Row 12 -->
+          <tr>
+            <td class="text-nowrap">Mueller Industries</td>
+            <td class="text-nowrap">12/12/2024</td>
+            <td class="text-nowrap">Memphis</td>
+            <td class="text-nowrap">18</td>
+            <td class="text-nowrap">$2700.00</td>
+            <td class="text-nowrap">Yearly</td>
+            <td class="text-nowrap">15/05</td>
+            <td class="text-nowrap">30/11</td>
+          </tr>
+
+          <!-- Row 13 -->
+          <tr>
+            <td class="text-nowrap">Nord Stream AG</td>
+            <td class="text-nowrap">13/10/2024</td>
+            <td class="text-nowrap">Zug</td>
+            <td class="text-nowrap">12</td>
+            <td class="text-nowrap">$1800.00</td>
+            <td class="text-nowrap">Yearly</td>
+            <td class="text-nowrap">15/05</td>
+            <td class="text-nowrap">30/11</td>
+          </tr>
+
+          <!-- Row 14 -->
+          <tr>
+            <td class="text-nowrap">Shanghai Baosteel Group</td>
+            <td class="text-nowrap">14/03/2024</td>
+            <td class="text-nowrap">Shanghai</td>
+            <td class="text-nowrap">28</td>
+            <td class="text-nowrap">$4200.00</td>
+            <td class="text-nowrap">Yearly</td>
+            <td class="text-nowrap">01/05</td>
+            <td class="text-nowrap">31/12</td>
+          </tr>
+
+          <!-- Row 15 -->
+          <tr>
+            <td class="text-nowrap">Nord Stream AG</td>
+            <td class="text-nowrap">15/04/2024</td>
+            <td class="text-nowrap">Berlin</td>
+            <td class="text-nowrap">21</td>
+            <td class="text-nowrap">$3150.00</td>
+            <td class="text-nowrap">Yearly</td>
+            <td class="text-nowrap">15/05</td>
+            <td class="text-nowrap">31/10</td>
+          </tr>
+
+          <!-- Row 16 -->
+          <tr>
+            <td class="text-nowrap">Wavin</td>
+            <td class="text-nowrap">16/12/2024</td>
+            <td class="text-nowrap">London</td>
+            <td class="text-nowrap">16</td>
+            <td class="text-nowrap">$2400.00</td>
+            <td class="text-nowrap">Yearly</td>
+            <td class="text-nowrap">01/05</td>
+            <td class="text-nowrap">31/12</td>
+          </tr>
+
+          <!-- Row 17 -->
+          <tr>
+            <td class="text-nowrap">Uponor</td>
+            <td class="text-nowrap">17/05/2024</td>
+            <td class="text-nowrap">Helsinki</td>
+            <td class="text-nowrap">13</td>
+            <td class="text-nowrap">$1950.00</td>
+            <td class="text-nowrap">Yearly</td>
+            <td class="text-nowrap">01/05</td>
+            <td class="text-nowrap">30/11</td>
+          </tr>
+
+          <!-- Row 18 -->
+          <tr>
+            <td class="text-nowrap">McWane</td>
+            <td class="text-nowrap">18/06/2024</td>
+            <td class="text-nowrap">Dallas</td>
+            <td class="text-nowrap">24</td>
+            <td class="text-nowrap">$3600.00</td>
+            <td class="text-nowrap">Yearly</td>
+            <td class="text-nowrap">15/05</td>
+            <td class="text-nowrap">30/11</td>
+          </tr>
+
+          <!-- Row 19 -->
+          <tr>
+            <td class="text-nowrap">Tenaris</td>
+            <td class="text-nowrap">19/04/2024</td>
+            <td class="text-nowrap">Milan</td>
+            <td class="text-nowrap">9</td>
+            <td class="text-nowrap">$1350.00</td>
+            <td class="text-nowrap">Yearly</td>
+            <td class="text-nowrap">01/05</td>
+            <td class="text-nowrap">30/09</td>
+          </tr>
+
+          <!-- Row 20 -->
+          <tr>
+            <td class="text-nowrap">Shanghai Baosteel Group</td>
+            <td class="text-nowrap">20/01/2024</td>
+            <td class="text-nowrap">Beijing</td>
+            <td class="text-nowrap">26</td>
+            <td class="text-nowrap">$3900.00</td>
+            <td class="text-nowrap">Yearly</td>
+            <td class="text-nowrap">01/05</td>
+            <td class="text-nowrap">31/12</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>
+</div>
+<!-- Recurring Orders Report -->
+
+<!-- Damage Product Report -->
+<div class="card">
+  <div class="card-content">
+    <div class="card-header">
+      <div class="float-left ml-2">
+        <data class="row">
+          <h4>Damage Product Report</h4>
+        </data>
+      </div>
+      <!-- Temporary hide download button -->
+      {% comment %} <div class="float-right mb-3">
+        <div class="col-12 my-1">
+          <button
+            class="btn bg-light-info"
+            onclick="DownloadProductsInCSV('DamageProduct')"
+          >
+            <em class="ft-download"></em> Damage Product CSV
+          </button>
+        </div>
+      </div> {% endcomment %}
+      <!-- Temporary hide download button -->
+    </div>
+  <div class="card-body">
+      <div id="DamageProduct" class="table-responsive">
+      <table
+          class="table table-striped table-bordered zero-configuration"
+      >
+          <thead>
+          <tr>
+            <th>Product</th>
+            <th>Date</th>
+            <th>Product ID</th>
+            <th>Quntity</th>
+            <th>Reported By</th>
+          </tr>
+          </thead>
+
+          <!-- Report 1 -->
+          <tbody>
+          <!-- Row 1 -->
+          <tr>
+              <td class="text-nowrap">Grimmway Farms : Rental: 3" Yelomine 2023	</td>
+              <td class="text-nowrap">01/04/2024</td>
+              <td class="text-nowrap">PROJ016968</td>
+              <td class="text-nowrap">10</td>
+              <td class="text-nowrap">John Deo</td>
+            
+          </tr>
+
+          <!-- Row 2 -->
+          <tr>
+            <td class="text-nowrap">Grimmway Farms : Rental: 3" Yelomine 2023	</td>
+            <td class="text-nowrap">01/04/2024</td>
+            <td class="text-nowrap">PROJ016968</td>
+            <td class="text-nowrap">10</td>
+            <td class="text-nowrap">John Deo</td>
+          </tr>
+          <!-- Row 3 -->
+          <tr>
+            <td class="text-nowrap">Grimmway Farms : Rental: 3" Yelomine 2023	</td>
+            <td class="text-nowrap">01/04/2024</td>
+            <td class="text-nowrap">PROJ016968</td>
+            <td class="text-nowrap">10</td>
+            <td class="text-nowrap">John Deo</td>
+          </tr>
+
+          <!-- Row 4 -->
+          <tr>
+            <td class="text-nowrap">Grimmway Farms : Rental: 3" Yelomine 2023	</td>
+            <td class="text-nowrap">01/04/2024</td>
+            <td class="text-nowrap">PROJ016968</td>
+            <td class="text-nowrap">10</td>
+            <td class="text-nowrap">John Deo</td>
+          </tr>
+
+          <!-- Row 5 -->
+          <tr>
+            <td class="text-nowrap">Grimmway Farms : Rental: 3" Yelomine 2023	</td>
+            <td class="text-nowrap">01/04/2024</td>
+            <td class="text-nowrap">PROJ016968</td>
+            <td class="text-nowrap">10</td>
+            <td class="text-nowrap">John Deo</td>
+          </tr>
+          
+          </tbody>
+      </table>
+      </div>
+  </div>
+  </div>
+</div>
+<!-- Damage Product Report -->
+
+<!-- In Transit Report -->
+<div class="card">
+  <div class="card-content">
+    <div class="card-header">
+      <div class="float-left ml-2">
+        <data class="row">
+          <h4>In Transit Report</h4>
+        </data>
+      </div>
+      <!-- Temporary hide download button -->
+      {% comment %} <div class="float-right mb-3">
+        <div class="col-12 my-1">
+          <button
+            class="btn bg-light-info"
+            onclick="DownloadProductsInCSV('InTransit')"
+          >
+            <em class="ft-download"></em> In Transit CSV
+          </button>
+        </div>
+      </div> {% endcomment %}
+      <!-- Temporary hide download button -->
+    </div>
+  <div class="card-body">
+      <div id="InTransit" class="table-responsive">
+      <table
+          class="table table-striped table-bordered zero-configuration"
+      >
+          <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Order ID</th>
+            <th>Quantity</th>
+            <th>Date</th>
+            <th>Expexted delivery date</th>
+            <th>Location</th>
+          </tr>
+          </thead>
+
+          <!-- Report 1 -->
+          <tbody>
+          <!-- Row 1 -->
+          <tr>
+              <td class="text-nowrap">John Deo</td>
+              <td class="text-nowrap">ORD-0000759</td>
+              <td class="text-nowrap">10</td>
+              <td class="text-nowrap">01/04/2024</td>
+              <td class="text-nowrap">02/04/2024</td>
+              <td class="text-nowrap">New York</td>
+          </tr>
+
+          <!-- Row 2 -->
+          <tr>
+            <td class="text-nowrap">John Deo</td>
+            <td class="text-nowrap">ORD-0000759</td>
+            <td class="text-nowrap">10</td>
+            <td class="text-nowrap">01/04/2024</td>
+            <td class="text-nowrap">02/04/2024</td>
+            <td class="text-nowrap">New York</td>
+          </tr>
+
+          <!-- Row 3 -->
+          <tr>
+            <td class="text-nowrap">John Deo</td>
+            <td class="text-nowrap">ORD-0000759</td>
+            <td class="text-nowrap">10</td>
+            <td class="text-nowrap">01/04/2024</td>
+            <td class="text-nowrap">02/04/2024</td>
+            <td class="text-nowrap">New York</td>
+          </tr>
+
+          <!-- Row 4 -->
+          <tr>
+            <td class="text-nowrap">John Deo</td>
+            <td class="text-nowrap">ORD-0000759</td>
+            <td class="text-nowrap">10</td>
+            <td class="text-nowrap">01/04/2024</td>
+            <td class="text-nowrap">02/04/2024</td>
+            <td class="text-nowrap">New York</td>
+          </tr>
+
+          <!-- Row 5 -->
+          <tr>
+            <td class="text-nowrap">John Deo</td>
+            <td class="text-nowrap">ORD-0000759</td>
+            <td class="text-nowrap">10</td>
+            <td class="text-nowrap">01/04/2024</td>
+            <td class="text-nowrap">02/04/2024</td>
+            <td class="text-nowrap">New York</td>
+          </tr>
+          <!-- Report 1 -->
+
+      </table>
+      </div>
+  </div>
+  </div>
+</div>
+<!-- In Transit Report -->
 
 <!--Stock Movement Report Model Start-->
 <div class="card-header">

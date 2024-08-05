@@ -23,8 +23,100 @@
               >
                 <i class="fa ft-plus-circle mr-1"></i>Create Delivery
               </button>
-              <!-- Create delivery End-->
-              {% include "warehouse/create_delivery.html" %}
+
+              <div class="card-header">
+                <div class="float-right">
+                  <div
+                    class="modal fade text-left"
+                    id="create_delivery"
+                    tabindex="-1"
+                    role="dialog"
+                    aria-labelledby="myModalLabel33"
+                    aria-hidden="true"
+                    data-backdrop="false"
+                  >
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h4 class="modal-title">Create Order Delivery</h4>
+                          <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                          >
+                            <span aria-hidden="true"
+                              ><i class="ft-x font-medium-2 text-bold-700"></i
+                            ></span>
+                          </button>
+                        </div>
+                        <form action="#">
+                          <div class="modal-body">
+                            <div class="col-12">
+                              <label>Customer </label>
+                              <div class="form-group">
+                              {% include "warehouse/customer_form_group.html" %}
+                              </div>
+                            </div>
+
+                            <div class="col-12">
+                              <label>Location </label>
+                              <div class="form-group">
+                                <input
+                                  type="text"
+                                  placeholder="Location"
+                                  class="form-control"
+                                />
+                              </div>
+                            </div>
+
+                            <div class="col-12">
+                              <label>Products </label>
+                              <div class="form-group">
+                                {% include "warehouse/product_from_group.html" %}
+                              </div>
+                            </div>
+
+
+                            <div class="col-12">
+                              <label>Total Quantity </label>
+                              <div class="form-group">
+                                <input
+                                  type="text"
+                                  placeholder="Total Quantity"
+                                  class="form-control"
+                                />
+                              </div>
+                            </div>
+
+                            <div class="col-12">
+                              <label>Delivery Date </label>
+                              <div class="form-group">
+                                <input
+                                  type="date"
+                                  class="form-control"
+                                />
+                              </div>
+                            </div>
+
+                          </div>
+                          <div class="modal-footer">
+                            <input
+                              type="reset"
+                              class="btn bg-light-secondary"
+                              data-dismiss="modal"
+                              value="Close"
+                            />
+                            <input type="submit" class="btn btn-primary" value="Add Order" />
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+
             </div>
           </div>
         </div>
@@ -41,25 +133,28 @@
                     <th>Delivery Location</th>
                     <th>Status</th>
                     <th>Order Date</th>
-                    <th>Expected Delivery Date</th>
                     <th>Delivery Date</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  
                   <tr>
+                    <td>ORD56821</td>
                     <td>James Peter</td>
-                    <td>jamespeter@laurel.com</td>
-                    <td>East village</td>
+                    <td>Los Angeles</td>
 
                     <td>
-                      <span class="badge bg-light-warning">On Packing</span>
+                      <span class="badge bg-light-warning">Pre-Processing</span>
                     </td>
                     <td>Jul 8, 2024</td>
                     <td>-</td>
-                    <td>-</td>
                     <td>
+                                                  <a
+                              href="{% url 'proposal:order' %}"
+                              class="primary p-0"
+                            >
+                              <i class="ft-eye font-medium-3 mr-2"></i>
+                            </a>
                       <a
                         data-toggle="modal"
                         data-target="#update_delivery"
@@ -72,21 +167,25 @@
                         <i class="ft-trash-2 font-medium-3"></i>
                       </a>
                     </td>
-                    
                   </tr>
 
                   <tr>
+                    <td>ORD56822</td>
                     <td>James Peter</td>
-                    <td>jamespeter@laurel.com</td>
-                    <td>East village</td>
+                    <td>Los Angeles</td>
 
                     <td>
-                      <span class="badge bg-light-primary">In Transit</span>
+                      <span class="badge bg-light-primary">In Transit-Outbound</span>
                     </td>
                     <td>Jul 4, 2024</td>
-                    <td>Jul 6, 2024</td>
                     <td>-</td>
                     <td>
+                                                  <a
+                              href="{% url 'proposal:order' %}"
+                              class="primary p-0"
+                            >
+                              <i class="ft-eye font-medium-3 mr-2"></i>
+                            </a>
                       <a
                         data-toggle="modal"
                         data-target="#update_delivery"
@@ -102,17 +201,22 @@
                   </tr>
 
                   <tr>
+                    <td>ORD56823</td>
                     <td>James Peter</td>
-                    <td>jamespeter@laurel.com</td>
-                    <td>East village</td>
+                    <td>Los Angeles</td>
 
                     <td>
-                      <span class="badge bg-light-success">Delivered</span>
+                      <span class="badge bg-light-success">Customer Delivery</span>
                     </td>
                     <td>Jul 2, 2024</td>
                     <td>Jul 4, 2024</td>
-                    <td>Jul 4, 2024</td>
                     <td>
+                                                  <a
+                              href="{% url 'proposal:order' %}"
+                              class="primary p-0"
+                            >
+                              <i class="ft-eye font-medium-3 mr-2"></i>
+                            </a>
                       <a
                         data-toggle="modal"
                         data-target="#update_delivery"
@@ -128,17 +232,22 @@
                   </tr>
 
                   <tr>
+                    <td>ORD56824</td>
                     <td>James Peter</td>
-                    <td>jamespeter@laurel.com</td>
-                    <td>East village</td>
+                    <td>Los Angeles</td>
 
                     <td>
-                      <span class="badge bg-light-success">Delivered</span>
+                      <span class="badge bg-light-success">Customer Delivery</span>
                     </td>
                     <td>Jun 24, 2024</td>
                     <td>Jun 26, 2024</td>
-                    <td>Jun 26, 2024</td>
                     <td>
+                                                  <a
+                              href="{% url 'proposal:order' %}"
+                              class="primary p-0"
+                            >
+                              <i class="ft-eye font-medium-3 mr-2"></i>
+                            </a>
                       <a
                         data-toggle="modal"
                         data-target="#update_delivery"
@@ -154,17 +263,22 @@
                   </tr>
 
                   <tr>
+                    <td>ORD56825</td>
                     <td>James Peter</td>
-                    <td>jamespeter@laurel.com</td>
-                    <td>East village</td>
+                    <td>Los Angeles</td>
 
                     <td>
-                      <span class="badge bg-light-success">Delivered</span>
+                      <span class="badge bg-light-success">Customer Delivery</span>
                     </td>
                     <td>Jun 12, 2024</td>
-                    <td>Jun 14, 2024</td>
                     <td>Jun 13, 2024</td>
                     <td>
+                                                  <a
+                              href="{% url 'proposal:order' %}"
+                              class="primary p-0"
+                            >
+                              <i class="ft-eye font-medium-3 mr-2"></i>
+                            </a>
                       <a
                         data-toggle="modal"
                         data-target="#update_delivery"
@@ -176,11 +290,107 @@
                       <a href="javascript:;" class="danger p-0">
                         <i class="ft-trash-2 font-medium-3"></i>
                       </a>
-
                     </td>
                   </tr>
 
-                  {% include "warehouse/update_delivery.html" %}
+                  {% comment %} {% include "warehouse/update_delivery.html" %} {% endcomment %}
+
+                  <div class="card-header">
+                    <div class="float-right">
+                      <div
+                        class="modal fade text-left"
+                        id="update_delivery"
+                        tabindex="-1"
+                        role="dialog"
+                        aria-labelledby="myModalLabel33"
+                        aria-hidden="true"
+                        data-backdrop="false"
+                      >
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h4 class="modal-title">Update Order Delivery</h4>
+                              <button
+                                type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close"
+                              >
+                                <span aria-hidden="true"
+                                  ><i class="ft-x font-medium-2 text-bold-700"></i
+                                ></span>
+                              </button>
+                            </div>
+                            <form action="#">
+                              <div class="modal-body">
+                                <div class="row">
+                                  <div class="col-12">
+                                    <label>Customer Name </label>
+                                    <div class="form-group">
+                                      {% include "warehouse/customer_form_group.html" %}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-12">
+                                      <label>Status </label>
+                                      <div class="form-group">
+                                        <select class="select2 form-control">
+                                          <option selected disabled value="Select Status">Select Status</option>
+                                          <option value="Pre-Processing">Pre-Processing</option>
+                                          <option value="In Transit-Outbound">In Transit-Outbound</option>
+                                          <option value="Customer Delivery">Customer Delivery</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-12">
+                                    <label>Location </label>
+                                    <div class="form-group">
+                                      <input
+                                        type="text"
+                                        placeholder="Location"
+                                        class="form-control"
+                                      />
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-12">
+                                      <label>Select Product</label>
+                                      <div class="form-group">
+                                        {% include "warehouse/product_from_group.html" %}
+                                      </div>
+                                      </div>
+                                  </div>
+
+                                <div class="row">
+                                  <div class="col-12">
+                                    <label>Delivery Date </label>
+                                    <input type="date" class="form-control">
+                                  </div>
+                              </div>
+                              <div class="modal-footer">
+                                <input
+                                  type="reset"
+                                  class="btn bg-light-secondary"
+                                  data-dismiss="modal"
+                                  value="Close"
+                                />
+                                <input
+                                  type="submit"
+                                  class="btn btn-primary"
+                                  value="Add Order Delivery"
+                                />
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                 </tbody>
               </table>
             </div>
@@ -202,3 +412,4 @@
     <script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
   </div>
 </section>
+
