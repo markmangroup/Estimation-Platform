@@ -1,12 +1,16 @@
 from .base import *
 import os
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 
-dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-load_dotenv(dotenv_path)
+#dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+#load_dotenv(dotenv_path)
 
 # Override settings for development
 DEBUG = False
+
+ALLOWED_HOSTS = ['test-dev-eastus-webapp.azurewebsites.net']
+
+CSRF_TRUSTED_ORIGINS = ['https://test-dev-eastus-webapp.azurewebsites.net']
 
 DATABASES = {
     'default': {
