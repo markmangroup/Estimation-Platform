@@ -26,28 +26,32 @@
 
         <!-- Customer -->
         <div class="col">
-            <label for="" class="form-label font-weight-bold"
+          <label for="" class="form-label font-weight-bold"
               >Customer</label
-            >
-            <select class="select2 form-control" multiple>
+          >
+          <select class="select2 form-control" multiple>
               <option value="All">All</option>
               <option value="James Peter">Emily Pair</option>
-              <option value="Emily Johnson">John Deo</option>
-              <option value="Michael Brown">John Weak</option>
-            </select>
-            
+              <option value="Emily Johnson">Brooke Marchy</option>
+              <option value="Michael Brown">Paul Leimgruber</option>
+          </select>
         </div>
 
         <!-- Warehouse -->
         <div class="col">
-          <label for="" class="form-label font-weight-bold"
-            >Warehouse</label
-          >
+          <label for="" class="form-label font-weight-bold">Warehouse</label>
           <select class="select2 form-control" multiple>
-            <option value="All">All</option>
-            <option value="James Peter">DB-1</option>
-            <option value="Emily Johnson">W-3</option>
-            <option value="Michael Brown">UN-4</option>
+          <option value="All">All</option>
+          <option value="Bakersfield">Bakersfield</option>
+          <option value="Brawley">Brawley</option>
+          <option value="Colusa">Colusa</option>
+          <option value="Corning">Corning</option>
+          <option value="Delano">Delano</option>
+          <option value="Hanford">Hanford</option>
+          <option value="Hollister">Hollister</option>
+          <option value="Lodi">Lodi</option>
+          <option value="Old River">Old River</option>
+          <option value="Yuma">Yuma</option>
           </select>
           
         </div>
@@ -57,9 +61,9 @@
           <label for="" class="form-label font-weight-bold"
             >Date</label
           >
-          <div class="reportrange form-control">
-            <i class="fa fa-calendar"></i>&nbsp;
-            <span></span> <i class="fa fa-caret-down"></i>
+          <div class="">
+            {% comment %} <i class="fa fa-calendar"></i>&nbsp; {% endcomment %}
+            <input type="" class="form-control today-date"><span></span>
           </div>
         </div>
 
@@ -94,7 +98,7 @@
                     <th>Item Number</th>
                     <th>Items</th>
                     <th>Quantity</th>
-                    <th>Date</th>
+                    <th>In Transit Date</th>
                     <th>Expexted delivery date</th>
                     <th>Warehouse</th>
                     <th>Customer</th>
@@ -108,8 +112,8 @@
                         <td class="text-nowrap">10</td>
                         <td class="text-nowrap">01/04/2024</td>
                         <td class="text-nowrap">02/04/2024</td>
-                        <td class="text-nowrap">DB-1</td>
-                        <td class="text-nowrap">John Deo</td>
+                        <td class="text-nowrap">Bakersfield</td>
+                        <td class="text-nowrap">Brooke Marchy	</td>
                     </tr>
 
                     <!-- Row 2 -->
@@ -119,8 +123,8 @@
                       <td class="text-nowrap">10</td>
                       <td class="text-nowrap">01/04/2024</td>
                       <td class="text-nowrap">02/04/2024</td>
-                      <td class="text-nowrap">MS-4</td>
-                      <td class="text-nowrap">John Deo</td>
+                      <td class="text-nowrap">Brawley</td>
+                      <td class="text-nowrap">Brooke Marchy	</td>
                     </tr>
 
                     <!-- Row 3 -->
@@ -130,8 +134,8 @@
                       <td class="text-nowrap">10</td>
                       <td class="text-nowrap">01/04/2024</td>
                       <td class="text-nowrap">02/04/2024</td>
-                      <td class="text-nowrap">DB-1</td>
-                      <td class="text-nowrap">John Deo</td>
+                      <td class="text-nowrap">Colusa</td>
+                      <td class="text-nowrap">Paul Leimgruber</td>
                     </tr>
 
                     <!-- Row 4 -->
@@ -141,8 +145,8 @@
                       <td class="text-nowrap">10</td>
                       <td class="text-nowrap">01/04/2024</td>
                       <td class="text-nowrap">02/04/2024</td>
-                      <td class="text-nowrap">MD-4</td>
-                      <td class="text-nowrap">John Deo</td>
+                      <td class="text-nowrap">Corning</td>
+                      <td class="text-nowrap">Paul Leimgruber</td>
                     </tr>
               </table>
               </div>
@@ -266,3 +270,9 @@
   });
 </script>
 <!-- Select2 Script End -->
+<script>
+  $(document).ready(function() {
+      var today = new Date().toISOString().split('T')[0];
+      $('.today-date').val(today);
+  });
+</script>

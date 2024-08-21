@@ -20,9 +20,9 @@
       <tbody>
         <!--Main Row 1 -->
         <tr>
-          <td> DIL-1 </td>
+          <td> PROJ016968	1/2 </td>
           <td> 28 </td>
-          <td>2 Apr, 2024</td>
+          <td> <input type="date" class="form-control today-date wizard-required"> </td>
           <td>3 Apr, 2024</td>
         </tr>
 
@@ -87,9 +87,9 @@
   
         <!--Main Row 2 -->
         <tr>
-          <td> DIL-2 </td>
+          <td> PROJ016968	2/2 </td>
           <td> 28 </td>
-          <td>2 Apr, 2024</td>
+          <td><input type="date" class="form-control today-date"></td>
           <td>3 Apr, 2024</td>
       
           
@@ -128,7 +128,7 @@
                       <td class="text-nowrap">Rental: 10" X 40' Yelomine Mainline</td>
                       <td class="text-nowrap"> 28 </td>
                       <td>
-                        <select name="status" class="select2 form-control wizard-required">
+                        <select name="status" class="select2 form-control">
                           <option value="" disabled selected>None</option>
                           <option value="Loaded">Loaded</option>
                         </select>
@@ -223,3 +223,10 @@
     </div>
 </div>
 <!-- PickUp Ticket Detail -->
+
+<script>
+  $(document).ready(function() {
+      var today = new Date().toISOString().split('T')[0];
+      $('.today-date').val(today);
+  });
+</script>

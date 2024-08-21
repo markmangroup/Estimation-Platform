@@ -255,6 +255,13 @@ class WarehouseDetailView(WarehouseViewMixin):
     """
     render_template_name = "warehouse/map_warehouse_detail.html"
 
+
+class CustomerListView(WarehouseViewMixin):
+    """
+    View class for rendering the list of warehouses.
+    """
+    render_template_name = "warehouse/customer_list.html"
+
 class UserList(WarehouseViewMixin):
     """
     View class for rendering the list of users.
@@ -273,6 +280,14 @@ class OrderDetail(WarehouseViewMixin):
     View class for rendering the list of orders.
     """
     render_template_name = "warehouse/orders/rental_order.html"
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     # Get the tab parameter from the request
+    #     tab = self.request.GET.get('tab', '1')  # Default to '1' if no parameter is provided
+    #     print(tab, "ehhehhehehheheheh")
+    #     context['default_tab'] = tab
+    #     return context
 
 class RecurringOrder(WarehouseViewMixin):
     """
@@ -341,6 +356,12 @@ class ReturnDelivery(WarehouseViewMixin):
 ##############################################
 ############ Warehouse Reports START ############
 ##############################################
+
+class ReportsView(WarehouseViewMixin):
+    """
+    View class for reports.
+    """
+    render_template_name = "warehouse/reports/reports.html"
 
 class RevenueReport(WarehouseViewMixin):
     """

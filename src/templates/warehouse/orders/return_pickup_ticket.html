@@ -14,16 +14,17 @@
           <th style="max-width:100px">Delivery ID</th>
           <th style="max-width:100px">Total Quantity</th>
           <th style="max-width:100px">PickUp Date</th> 
-          <th style="max-width:100px">Delivery Date</th> 
+          <th style="max-width:100px">Removal Date</th>
+          {% comment %} <th style="max-width:100px">Contract End Date</th> {% endcomment %}
         </tr>
       </thead>
       <tbody>
         <!--Main Row 1 -->
         <tr>
-          <td> RDIL-1 </td>
+          <td> PROJ016968	R1/2 </td>
           <td> 28 </td>
+          <td><input type="date" class="form-control today-date wizard-required"></td>
           <td>2 Apr, 2024</td>
-          <td>3 Apr, 2024</td>
         </tr>
 
         <tr>
@@ -87,9 +88,9 @@
   
         <!--Main Row 2 -->
         <tr>
-          <td> RDIL-2 </td>
+          <td> PROJ016968	R2/2 </td>
           <td> 28 </td>
-          <td>2 Apr, 2024</td>
+          <td><input type="date" class="form-control today-date"></td>
           <td>3 Apr, 2024</td>
         </tr>
 
@@ -126,7 +127,7 @@
                       <td class="text-nowrap">Rental: 10" X 40' Yelomine Mainline</td>
                       <td class="text-nowrap"> 28 </td>
                       <td>
-                        <select name="status" class="select2 form-control wizard-required">
+                        <select name="status" class="select2 form-control">
                           <option value="" disabled selected>None</option>
                           <option value="Loaded">Loaded</option>
                         </select>

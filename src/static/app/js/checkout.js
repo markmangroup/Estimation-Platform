@@ -36,12 +36,15 @@ $(document).ready(function() {
         var numberValue = parseInt(inputValue);
         var outputText = $(this).siblings('small');
 
-        if (numberValue > qtyValue) {
-            $(this).val('14');
-        }
         missing_qty = qtyValue - numberValue
+        const current = 1593;
+        const minus = $(".minusQuantity");
+        const revised = $(".revisedQuantity");
+        minus.val(missing_qty);
+        revised.val(current - missing_qty);
+
         if (parseInt(inputValue) < qtyValue) {
-            outputText.html(`<span class="warning"><i class="ft-alert-triangle"></i> Quantity dose not match, ${missing_qty} qty is missing!! </span> <br> <span style="color:darkslateblue;">Do stock adjustment?</span> <a data-toggle="modal" data-target="#stock_adjustment"><i class="ft-check success"></i></a>  <a><i class="ft-x danger"></i></a>`);
+            outputText.html(`<span class="warning"><i class="ft-alert-triangle"></i> Quantity does not match, ${missing_qty} qty is missing!! </span> <br> <span style="color:darkslateblue;">Do stock adjustment?</span> <a data-toggle="modal" data-target="#stock_adjustment"><i class="ft-check success"></i></a>  <a><i class="ft-x danger"></i></a>`);
         } else {
             outputText.text('');
         }
@@ -65,8 +68,8 @@ $(document).ready(function() {
         if (filteredValue === "") {
             $("#quantityMessage").html('');
         } else if (numberValue !== qty) {
-            $("#quantityMessage").html(`<span class="warning"><i class="ft-alert-triangle"></i> Quantity dose not match, Please Resolve!! </span>`);
-            console.log('Quantity does not match, please resolve!!');
+            $("#quantityMessage").html(`<span class="warning"><i class="ft-alert-triangle"></i> Quantity does not match, Please Resolve!! </span>`);
+            console.log("Quantity doesn't  match, please resolve!!");
         } else if (numberValue === qty) {
             $("#quantityMessage").html('');
             console.log('Quantity matched!!');
@@ -124,16 +127,34 @@ $(document).ready(function() {
         var inputValue = $(this).val();
         var numberValue = parseInt(inputValue);
         var outputText = $(this).siblings('small');
+        var markComplete = $(this).siblings('span.mark-completed');
 
-        if (numberValue > qtyValue) {
-            $(this).val('14');
-        }
         missing_qty = qtyValue - numberValue
-        if (parseInt(inputValue) < qtyValue) {
-            outputText.html(`<span class="warning"><i class="ft-alert-triangle"></i> Quantity dose not match, ${missing_qty} qty is missing!! </span> <br> <span style="color:darkslateblue;">Do stock adjustment?</span> <a data-toggle="modal" data-target="#inspection_stock_adjustment"><i class="ft-check success"></i></a>  <a><i class="ft-x danger"></i></a>`);
-        } else {
+        const current = 1593;
+        const minus = $("#minusQuantity");
+        const revised = $("#revisedQuantity");
+        minus.val(missing_qty);
+        revised.val(current - missing_qty);
+
+        if (isNaN(numberValue) || inputValue.trim() === '' || parseInt(inputValue) < qtyValue) {
+            outputText.html(`<span class="warning"><i class="ft-alert-triangle"></i> Quantity does not match, ${missing_qty} qty is missing!! </span> <br> <span style="color:darkslateblue;">Do stock adjustment?</span> <a data-toggle="modal" data-target="#inspection_stock_adjustment"><i class="ft-check success"></i></a>  <a><i class="ft-x danger"></i></a>`);
+            markComplete.hide();
+        }else {
             outputText.text('');
+            markComplete.show();
         }
+    });
+
+    // Event delegation for mark completion
+    $(document).on('click', 'a.marked', function() {
+        console.log("-=-=-=-=-=-=-=-= Clicked");
+        var $input = $(this).closest('td').find('.inspection-qty');
+        var $markComplete = $(this).closest('td').find('span.mark-completed');
+        
+        $markComplete.hide();
+        console.log("-=-=-=-=-=-=-=-= Hide");
+        $input.prop('disabled', true);
+        console.log("-=-=-=-=-=-=-=-= Disabled");
     });
 
     // Initial validation on page load

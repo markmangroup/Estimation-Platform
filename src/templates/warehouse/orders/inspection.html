@@ -13,18 +13,18 @@
         <tr>
           <th style="max-width:100px">Delivery ID</th>
           <th style="max-width:100px">Total Quantity</th>
-          <th style="max-width:100px">CheckOut Date</th> 
-          <th style="max-width:100px">Delivery Date</th> 
+          <th style="max-width:100px">CheckIn Date</th> 
+          <th style="max-width:100px">Inspection Date</th> 
         </tr>
       </thead>
       <tbody>
 
         <!--Main Row 1 -->
         <tr>
-          <td> RDIL-1 </td>
+          <td> PROJ016968	R1/2 </td>
           <td> 28 </td>
           <td>2 Apr, 2024</td>
-          <td>3 Apr, 2024</td>
+          <td><input type="date" class="form-control wizard-required today-date"></td>
         </tr>
 
         <tr>
@@ -57,7 +57,8 @@
                       <td> 20315 </td>
                       <td class="text-nowrap">Rental: 10" Plain Coupler</td>
                       <td class="text-nowrap">
-                        <input type="text" class="form-control inspection-qty wizard-required" style="width: 100px;">
+                        <input type="text" class="form-control inspection-qty wizard-required" id="field-disabled" data-value="14" value="14" style="width: 100px;">
+                        <span class="info mark-completed"><i class="ft-info"></i> Mark inspection as completed!! <a class="marked"><i class="ft-check success"></i></a>  <a><i class="ft-x danger"></i></a></span>
                         <small style="color: darkslategray;"></small>
                       </td>
                     </tr>
@@ -66,7 +67,8 @@
                       <td> 20314 </td>
                       <td class="text-nowrap">Rental: 10" Tapped Coupler</td>
                       <td class="text-nowrap">
-                        <input type="text" class="form-control inspection-qty wizard-required" style="width: 100px;"> 
+                        <input type="text" class="form-control inspection-qty wizard-required" data-value="14" value="14" style="width: 100px;">
+                        <span class="info mark-completed"><i class="ft-info"></i> Mark inspection as completed!! <a class="marked"><i class="ft-check success"></i></a>  <a><i class="ft-x danger"></i></a></span>
                         <small style="color: darkslategray;"></small>
                       </td>
                     </tr>
@@ -79,11 +81,11 @@
         </tr> 
   
         <!--Main Row 2 -->
-        <tr>
-          <td> RDIL-2 </td>
+        {% comment %} <tr>
+          <td> PROJ016968	R2/2 </td>
           <td> 28 </td>
           <td>2 Apr, 2024</td>
-          <td>3 Apr, 2024</td>
+          <td><input type="date" class="form-control wizard-required"></td>
         </tr>
 
         <tr>
@@ -117,7 +119,9 @@
                       <td> 20313 </td>
                       <td class="text-nowrap">Rental: 10" X 40' Yelomine Mainline</td>
                       <td class="text-nowrap"> 
-                        <input type="text" class="form-control qty wizard-required" style="width: 100px;"> 
+                        <input type="text" class="form-control inspection-qty wizard-required" value="28" style="width: 100px;">
+                        <span class="info mark-completed"><i class="ft-info"></i> Mark inspection as completed!! <a class="marked"><i class="ft-check success"></i></a>  <a><i class="ft-x danger"></i></a></span>
+                        <small style="color: darkslategray;"></small>
                     </td>
                     </tr>
                 </tbody>
@@ -126,7 +130,8 @@
             </div>
             
           </td>
-        </tr>
+        </tr> {% endcomment %}
+
       </tbody>
     </table>
 </div>
@@ -172,7 +177,7 @@
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-            <h4 class="modal-title" id="myModalLabel5">RDIL-1 1/2 : Stock Adjustment</h4>
+            <h4 class="modal-title" id="myModalLabel5">PROJ016968 R1/2 : Stock Adjustment</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
             </button>
@@ -202,7 +207,7 @@
                 <div class="col-6">
                   <label>Date</label>
                   <div class="form-group">
-                    <input type="date" class="form-control">
+                    <input type="date" class="form-control today-date">
                   </div>
                 </div>
 
@@ -262,8 +267,8 @@
                   <label>Reason</label>
                     <div class="form-group">
                       <select class="select2 form-control">
+                        <option value="Inspection">Inspection</option>
                           <option value="Other">Other</option>
-                          <option value="Inspection">Inspection</option>
                           <option value="Purchase">Purchase</option>
                           <option value="WH diffrences">WH diffrences</option>
                           <option value="Not return from customer">Not return from customer</option>
@@ -277,6 +282,7 @@
                       type="text"
                       class="form-control"
                       placeholder="Comment"
+                      value="PROJ016968 R1/2"
                     />
                   </div>
                 </div>

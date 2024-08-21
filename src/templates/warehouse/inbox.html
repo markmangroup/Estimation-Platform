@@ -1,19 +1,35 @@
 {% load static %}
+<style>
+  .hidden {
+  display: none;
+}
+</style>
 <!-- Main Start -->
 <div class="email-application overflow-hidden">
   <div class="row">
     <div class="email-search-box w-100 p-2">
       <div class="row ml-2">
         <div class="email-app-menu">
-          <div class="list-group list-group-messages">
-            <a
-              href="javascript:;"
-              class="list-group-item list-group-item-action active border-0"
-            >
+          <div class="list-group list-group-messages" style="margin-right: 10px;">
+            <a href="javascript:;" class="list-group-item list-group-item-action active border-0" data-target="all-emails">
               <i class="ft-inbox mr-2"></i><span>Inbox</span>
-              <span class="badge bg-light-secondary badge-pill float-right mx-1"
-                >8</span
-              >
+              <span class="badge bg-light-secondary badge-pill float-right mx-1">8</span>
+            </a>
+          </div>
+        </div>
+        <div class="email-app-menu">
+          <div class="list-group list-group-messages" style="margin-right: 10px;">
+            <a href="javascript:;" class="list-group-item list-group-item-action border-0" data-target="read-emails">
+              <i class="ft-inbox mr-2"></i><span>Read</span>
+              <span class="badge bg-light-secondary badge-pill float-right mx-1">6</span>
+            </a>
+          </div>
+        </div>
+        <div class="email-app-menu">
+          <div class="list-group list-group-messages">
+            <a href="javascript:;" class="list-group-item list-group-item-action border-0" data-target="unread-emails">
+              <i class="ft-inbox mr-2"></i><span>Unread</span>
+              <span class="badge bg-light-secondary badge-pill float-right mx-1">2</span>
             </a>
           </div>
         </div>
@@ -47,7 +63,7 @@
                   <div class="list-group list">
                     <div class="users-list-padding">
                       <!-- 1 -->
-                      <a class="list-group-item list-group-item-action border-0" data-target="email-content-1">
+                      <a class="list-group-item list-group-item-action border-0 email-unread" data-target="email-content-1">
                         <div class="media email-list-text p-0">
                           <span class="avatar bg-info mr-2">
                             <span class="avatar-content">W</span>
@@ -72,7 +88,7 @@
                       </a>
 
                       <!-- 2 -->
-                      <a class="list-group-item list-group-item-action border-0" data-target="email-content-2">
+                      <a class="list-group-item list-group-item-action border-0 email-read" data-target="email-content-2">
                         <div class="media email-list-text p-0">
                           <span class="avatar bg-danger mr-2">
                             <span class="avatar-content">W</span>
@@ -97,7 +113,7 @@
                       </a>
                       
                       <!-- 3 -->
-                      <a class="list-group-item list-group-item-action border-0" data-target="email-content-3">
+                      <a class="list-group-item list-group-item-action border-0 email-unread" data-target="email-content-3">
                         <div class="media email-list-text p-0">
                           <span class="avatar bg-warning mr-2">
                             <span class="avatar-content">W</span>
@@ -122,7 +138,7 @@
                       </a>
                       
                       <!-- 4 -->
-                      <a class="list-group-item list-group-item-action border-0" data-target="email-content-4">
+                      <a class="list-group-item list-group-item-action border-0 email-read" data-target="email-content-4">
                         <div class="media email-list-text p-0">
                           <span class="avatar bg-success mr-2">
                             <span class="avatar-content">W</span>
@@ -147,7 +163,7 @@
                       </a>
 
                       <!-- 5 -->
-                      <a class="list-group-item list-group-item-action border-0" data-target="email-content-5">
+                      <a class="list-group-item list-group-item-action border-0 email-read" data-target="email-content-5">
                         <div class="media email-list-text p-0">
                           <span class="avatar bg-warning mr-2">
                             <span class="avatar-content">W</span>
@@ -172,7 +188,7 @@
                       </a>
 
                       <!-- 6 -->
-                      <a class="list-group-item list-group-item-action border-0" data-target="email-content-6">
+                      <a class="list-group-item list-group-item-action border-0 email-read" data-target="email-content-6">
                         <div class="media email-list-text p-0">
                           <span class="avatar bg-info mr-2">
                             <span class="avatar-content">W</span>
@@ -195,7 +211,7 @@
                       </a>
 
                       <!-- 7 -->
-                      <a class="list-group-item list-group-item-action border-0" data-target="email-content-7">
+                      <a class="list-group-item list-group-item-action border-0 email-read" data-target="email-content-7">
                         <div class="media email-list-text p-0">
                           <span class="avatar bg-success mr-2">
                             <span class="avatar-content">W</span>
@@ -210,15 +226,15 @@
                               </span>
                             </h6>
                             <p class="list-group-item-text text-truncate">
-                              Trends Reshaping...
+                              Check In
                             </p>
-                            <p class="list-group-item-text">What emerging tre...</p>
+                            <p class="list-group-item-text">We are pleased to inform..</p>
                           </div>
                         </div>
                       </a>
 
                       <!-- 8 -->
-                      <a class="list-group-item list-group-item-action border-0" data-target="email-content-8">
+                      <a class="list-group-item list-group-item-action border-0 email-read" data-target="email-content-8">
                         <div class="media email-list-text p-0">
                           <span class="avatar bg-warning mr-2">
                             <span class="avatar-content">W</span>
@@ -265,15 +281,15 @@
                         <div class="card-content">
                           <div class="card-body">
                             <p>
-                              We are pleased to inform you that you have been assigned a new Pick Up task for order: "ORD-123".
-                              You have been entrusted with the responsibility of managing the Pick Up task for the order with ID "ORD-123".
+                              We are pleased to inform you that you have been assigned a new Pick Up task for order: "PROJ016968".
+                              You have been entrusted with the responsibility of managing the Pick Up task for the order with ID "PROJ016968".
                             </p>
                             <div class="media">
                               
                               <div class="media-body">
-                                <p class="m-0 mb-2"> Pick Up request for Order ID : <a href="">ORD-023</a></p>
+                                <p class="m-0 mb-2"> Pick Up request for Order ID : <a href="{% url 'proposal:order_detail' %}">PROJ016968</a></p>
                                 <span>
-                                  <button type="button" class="btn btn-outline-info mr-2 mb-1"><i class="ft-check mr-1"></i>Accept</button>
+                                  <a href="{% url 'proposal:order_detail' %}" class="btn btn-outline-info mr-2 mb-1"><i class="ft-check mr-1"></i>Accept</a>
                                   <button type="button" class="btn btn-outline-danger mr-2 mb-1"><i class="ft-x mr-1"></i>Decline</button>
                                 </span>
                               </div>
@@ -294,8 +310,8 @@
                     Create Delivery
                   </h3>
                   <p class="list-group-item-text">
-                    We are pleased to inform you that you have been assigned a new create delivery task for order: "ORD-123".
-                    You have been entrusted with the responsibility of managing the create delivery task for the order with ID "ORD-123"
+                    We are pleased to inform you that you have been assigned a new create delivery task for order: "PROJ016968".
+                    You have been entrusted with the responsibility of managing the create delivery task for the order with ID "PROJ016968"
                   </p>
                 </div>
                 <div class="email-app-text-action card-content"></div>
@@ -308,8 +324,8 @@
                     Check Out
                   </h3>
                   <p class="list-group-item-text">
-                    We are pleased to inform you that you have been assigned a new check out task for order: "ORD-123".
-                    You have been entrusted with the responsibility of managing the check out task for the order with ID "ORD-123"
+                    We are pleased to inform you that you have been assigned a new check out task for order: "PROJ016968".
+                    You have been entrusted with the responsibility of managing the check out task for the order with ID "PROJ016968"
                   </p>
                 </div>
                 <div class="email-app-text-action card-content"></div>
@@ -322,8 +338,8 @@
                     Check In
                   </h3>
                   <p class="list-group-item-text">
-                    We are pleased to inform you that you have been assigned a new check In task for order: "ORD-123".
-                    You have been entrusted with the responsibility of managing the check In task for the order with ID "ORD-123"
+                    We are pleased to inform you that you have been assigned a new check In task for order: "PROJ016968".
+                    You have been entrusted with the responsibility of managing the check In task for the order with ID "PROJ016968"
                   </p>
                 </div>
                 <div class="email-app-text-action card-content"></div>
@@ -347,13 +363,13 @@
                         <div class="card-content">
                           <div class="card-body">
                             <p>
-                              We are pleased to inform you that you have been assigned a new Return Pick Up task for order: "ORD-123".
-                              You have been entrusted with the responsibility of managing the Return Pick Up task for the order with ID "ORD-123"
+                              We are pleased to inform you that you have been assigned a new Return Pick Up task for order: "PROJ016968".
+                              You have been entrusted with the responsibility of managing the Return Pick Up task for the order with ID "PROJ016968"
                             </p>
                             <div class="media">
                               
                               <div class="media-body">
-                                <p class="m-0 mb-2"> Pick Up request for Order ID : <a href="">ORD-023</a></p>
+                                <p class="m-0 mb-2"> Pick Up request for Order ID : <a href="{% url 'proposal:order_detail' %}">PROJ016968</a></p>
                                 <span>
                                   <button type="button" class="btn btn-outline-info mr-2 mb-1"><i class="ft-check mr-1"></i>Accepted</button>
                                   
@@ -387,13 +403,13 @@
                         <div class="card-content">
                           <div class="card-body">
                             <p>
-                              We are pleased to inform you that you have been assigned a new Return Pick Up task for order: "ORD-123".
-                              You have been entrusted with the responsibility of managing the Return Pick Up task for the order with ID "ORD-123"
+                              We are pleased to inform you that you have been assigned a new Return Pick Up task for order: "PROJ016968".
+                              You have been entrusted with the responsibility of managing the Return Pick Up task for the order with ID "PROJ016968"
                             </p>
                             <div class="media">
                               
                               <div class="media-body">
-                                <p class="m-0 mb-2"> Pick Up request for Order ID : <a href="">ORD-023</a></p>
+                                <p class="m-0 mb-2"> Pick Up request for Order ID : <a href="{% url 'proposal:order_detail' %}">PROJ016968</a></p>
                                 <span>
                                   <button type="button" class="btn btn-outline-info mr-2 mb-1"><i class="ft-check mr-1"></i>Accepted</button>
                                   
@@ -416,8 +432,8 @@
                     Check In
                   </h3>
                   <p class="list-group-item-text">
-                    We are pleased to inform you that you have been assigned a new check In task for order: "ORD-123".
-                    You have been entrusted with the responsibility of managing the check In task for the order with ID "ORD-123"
+                    We are pleased to inform you that you have been assigned a new check In task for order: "PROJ016968".
+                    You have been entrusted with the responsibility of managing the check In task for the order with ID "PROJ016968"
                   </p>
                 </div>
                 <div class="email-app-text-action card-content"></div>
@@ -430,8 +446,8 @@
                     Create Return Delivery
                   </h3>
                   <p class="list-group-item-text">
-                    We are pleased to inform you that you have been assigned a new Create Return Delivery task for order: "ORD-123".
-                    You have been entrusted with the responsibility of managing the Create Return Delivery task for the order with ID "ORD-123"
+                    We are pleased to inform you that you have been assigned a new Create Return Delivery task for order: "PROJ016968".
+                    You have been entrusted with the responsibility of managing the Create Return Delivery task for the order with ID "PROJ016968"
                   </p>
                 </div>
                 <div class="email-app-text-action card-content"></div>
@@ -504,3 +520,37 @@
   });
 </script>
 <!-- Search Jqery End -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('.email-app-menu .list-group-item');
+    const emailItems = document.querySelectorAll('.email-app-list .list-group-item');
+
+    function showEmails(target) {
+      console.log("INNNNNNNNNNNNNNNN")
+      emailItems.forEach(item => {
+        if (target === 'all-emails') {
+          console.log("-=-=-===- All Mails");
+          item.classList.remove('hidden');
+        } else if (target === 'read-emails') {
+          console.log("-=-=-===- Reads Emails");
+          item.classList.toggle('hidden', !item.classList.contains('email-read'));
+        } else if (target === 'unread-emails') {
+          console.log("-=-=-===- Unread Emails");
+          item.classList.toggle('hidden', !item.classList.contains('email-unread'));
+        }
+      });
+    }
+
+    buttons.forEach(button => {
+      button.addEventListener('click', function() {
+        buttons.forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+        const target = this.getAttribute('data-target');
+        showEmails(target);
+      });
+    });
+
+    showEmails('all-emails');
+  });
+
+</script>

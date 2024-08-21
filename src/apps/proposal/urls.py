@@ -6,6 +6,7 @@ app_name = "proposal"
 
 warehouse_urls = [
     path("home", views.MapView.as_view(), name="map_view"),
+    path("customer_list", views.CustomerListView.as_view(), name="customers"),
     path("customer_detail", views.CustomerDetail.as_view(), name="customer_detail"),
     path("warehouse_list", views.WarehouseList.as_view(), name="warehouse_list"),
     path("warehouse_detail", views.WarehouseDetailView.as_view(), name="warehouse_detail"),
@@ -18,7 +19,7 @@ warehouse_urls = [
     path("return_order", views.ReturnOrder.as_view(), name="return_order"),
     path("express_delivery", views.ExpressDelivery.as_view(), name="express_delivery"),
     path("delivery_list", views.Delivery.as_view(), name="delivery_list"),
-    path("reports", views.Reports.as_view(), name="reports"),
+#     path("reports", views.Reports.as_view(), name="reports"),
     path("workflow", views.Workflow.as_view(), name="workflow"),
     path("stock_adjustment", views.StockAdjustment.as_view(), name="stock_adjustment"),
     path("return_delivery_list", views.ReturnDelivery.as_view(), name="return_delivery_list"),
@@ -26,6 +27,7 @@ warehouse_urls = [
 ]
 
 reports_urls = [
+     path("reports", views.ReportsView.as_view(), name="reports"),
      path("revenue_report", views.RevenueReport.as_view(), name="revenue_report"),
      path("stock_report", views.StockReport.as_view(), name="stock_report"),
      path("stock_movement_report", views.StockMovementReport.as_view(), name="stock_movement_report"),

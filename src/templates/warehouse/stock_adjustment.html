@@ -154,7 +154,7 @@
                     <th>Description</th>
                     <th>Quantity</th>
                     <th>Location</th>
-                    <th>Std Cost</th>
+                    {% comment %} <th>Std Cost</th> {% endcomment %}
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -167,7 +167,7 @@
                     <td>Rental: 12" X 45' Aluminum Mainline</td>
                     <td>1593</td>
                     <td>Colusa</td>
-                    <td>0.22</td>
+                    {% comment %} <td>0.22</td> {% endcomment %}
                     <td class="text-truncate">
                       <button
                         type="button"
@@ -189,7 +189,7 @@
                     <td>Rental: 12" Clamp</td>
                     <td>1917</td>
                     <td>Old River</td>
-                    <td>609.00</td>
+                    {% comment %} <td>609.00</td> {% endcomment %}
                     <td class="text-truncate">
                       <button
                         type="button"
@@ -211,7 +211,7 @@
                     <td>Rental: 12" x 10" Reducer</td>
                     <td>1915</td>
                     <td>Hanford</td>
-                    <td>6.89</td>
+                    {% comment %} <td>6.89</td> {% endcomment %}
                     <td class="text-truncate">
                       <button
                         type="button"
@@ -233,7 +233,7 @@
                     <td>Rental: 10" x 12" Increaser</td>
                     <td>2379</td>
                     <td>Old River</td>
-                    <td>23.73</td>
+                    {% comment %} <td>23.73</td> {% endcomment %}
                     <td class="text-truncate">
                       <button
                         type="button"
@@ -255,7 +255,7 @@
                     <td>Rental: 10" x 8" Reducer</td>
                     <td>2029</td>
                     <td>Hollister</td>
-                    <td>8.07</td>
+                    {% comment %} <td>8.07</td> {% endcomment %}
                     <td class="text-truncate">
                       <button
                         type="button"
@@ -277,7 +277,7 @@
                     <td>Rental: 10" Inline Tee</td>
                     <td>2485</td>
                     <td>Delano</td>
-                    <td>37.30</td>
+                    {% comment %} <td>37.30</td> {% endcomment %}
                     <td class="text-truncate">
                       <button
                         type="button"
@@ -299,7 +299,7 @@
                     <td>Rental: 10" End Tee</td>
                     <td>1737</td>
                     <td>Yuma</td>
-                    <td>0.17</td>
+                    {% comment %} <td>0.17</td> {% endcomment %}
                     <td class="text-truncate">
                       <button
                         type="button"
@@ -321,7 +321,7 @@
                     <td>Rental: 10" Clamp</td>
                     <td>2434</td>
                     <td>Old River</td>
-                    <td>39.15</td>
+                    {% comment %} <td>39.15</td> {% endcomment %}
                     <td class="text-truncate">
                       <button
                         type="button"
@@ -503,7 +503,7 @@
                 <tr>
                   <td>125</td>
                   <td>Colusa</td>
-                  <td><input type="date" class="form-control"></td>
+                  <td><input type="date" class="form-control today-date wizard-required"></td>
                   <td>100</td>
                   <td>90</td>
                   <td><input type="text" value="" class="form-control" disabled></td>
@@ -521,7 +521,7 @@
                 <tr>
                   <td>145</td>
                   <td>Old River</td>
-                  <td><input type="date" class="form-control"></td>
+                  <td><input type="date" class="form-control today-date wizard-required"></td>
                   <td>80</td>
                   <td>110</td>
                   <td><input type="text" value="30" class="form-control" disabled></td>
@@ -695,3 +695,25 @@
   });
 </script>
 <!-- Calculation of stock adjustment End -->
+<script>
+  $(document).ready(function() {
+    // Get today's date
+    var today = new Date();
+    
+    // Set the input field to today's date
+    var todayStr = today.toISOString().split('T')[0];
+    $('.today-date').val(todayStr);
+
+    // Get the start and end of the current month
+    var startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    var endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+    // Format dates as YYYY-MM-DD
+    var startOfMonthStr = startOfMonth.toISOString().split('T')[0];
+    var endOfMonthStr = endOfMonth.toISOString().split('T')[0];
+
+    // Set min and max attributes of the date inputs
+    $('.today-date').attr('min', startOfMonthStr);
+    $('.today-date').attr('max', endOfMonthStr);
+  });
+</script>

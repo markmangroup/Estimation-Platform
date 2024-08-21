@@ -50,15 +50,17 @@ data-toggle="modal" data-target="#show">
           </div>
           <div class="col-6 mb-3">
             <label for="" class="form-label">Pick Up Site</label>
-            <select name="" class="select2 form-control pickupSite" id="">
+            <input type="text" value="425 Webster Street" class="form-control">
+            {% comment %} <select name="" class="select2 form-control pickupSite" id="">
               <option disabled selected>Select Option</option>
               <option value="Internal">Internal</option>
               <option value="Customer">Customer</option>
-            </select>
+            </select> {% endcomment %}
           </div>
           <div class="col-6 mb-3">
-            <label for="" class="form-label">Delivery Site</label>
-            <input type="text" value="US Irrigation - Old RIver Road - Old" class="form-control">
+            <label for="locationInput" class="form-label">Delivery Site</label>
+            <input type="text" id="locationInput" value="US Irrigation - Old RIver Road - Old" class="form-control">
+            <a id="mapLink" href="#" target="_blank" class="">Show on Map</a>
           </div>
           <div class="col-6 mb-3" id="internalFields" style="display: none;">
             <label for="warehouseLocation" class="form-label">Warehouse Location</label>
@@ -88,7 +90,7 @@ data-toggle="modal" data-target="#show">
             <thead>
                 <tr>
                     <th><input name="checkbox" type="checkbox" class="row-checkbox" /></th>
-                    <th>Metrial name</th>
+                    <th>Material name</th>
                     <th>Requested Qty</th>
                     <th>Quantity</th>
                 </tr>
@@ -172,6 +174,7 @@ data-toggle="modal" data-target="#show">
   </div>
 </div>
 
+<!-- drag and select feature -->
 <script>
   $(document).ready(function() {
     var isMouseDown = false,
@@ -210,7 +213,6 @@ data-toggle="modal" data-target="#show">
       });
   });
 </script>
-<!-- Test js for drag and select -->
 
 <!-- Js for dropdown of create delivery -->
 <script>
@@ -231,6 +233,8 @@ data-toggle="modal" data-target="#show">
     });
   });
 </script>
+
+<!-- Shipping Carrier -->
 <script>
   $(document).ready(function() {
     $('.shipping').change(function() {
@@ -242,6 +246,8 @@ data-toggle="modal" data-target="#show">
     });
   });
 </script>
+
+<!-- PO number validation -->
 <script>
   $(document).ready(function() {
     const po_field = $('#poNumber');
@@ -256,6 +262,8 @@ data-toggle="modal" data-target="#show">
     po_field.on('input', checkField);
   });
 </script> 
+
+<!-- Return Shipping Carrier -->
 <script>
   $(document).ready(function() {
     $('.Returnshipping').change(function() {
@@ -267,6 +275,8 @@ data-toggle="modal" data-target="#show">
     });
   });
 </script>
+
+<!-- Js for dropdown of create delivery -->
 <script>
   $(document).ready(function() {
     const po_field = $('#ReturnpoNumber');
@@ -281,7 +291,6 @@ data-toggle="modal" data-target="#show">
     po_field.on('input', checkField);
   });
 </script> 
-<!-- Js for dropdown of create delivery -->
 
 <!-- Search with description -->
 <script>
@@ -308,4 +317,18 @@ data-toggle="modal" data-target="#show">
       });
   });
 </script>
-<!-- Search with description -->
+<script>
+  function updateMapLink() {
+    var location = document.getElementById('locationInput').value;
+    var encodedLocation = encodeURIComponent(location);
+    var mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`;
+    var mapLink = document.getElementById('mapLink');
+    mapLink.href = mapUrl;
+
+    mapLink.textContent = `Show on Map`;
+  }
+  document.getElementById('locationInput').addEventListener('input', updateMapLink);
+
+  updateMapLink();
+</script>
+

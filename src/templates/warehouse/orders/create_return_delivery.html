@@ -1,5 +1,10 @@
 {% load static %}
-
+<style>
+    .map-link {
+        display: inline-block;
+        margin-top: 10px;
+    }
+</style>
 <!-- Date picker Start -->
 <script type="text/javascript" src="{% static 'datepicker/moment.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'datepicker/daterangepicker.min.js' %}" defer></script>
@@ -24,8 +29,8 @@
       <tr>
         <th style="max-width:100px">Delivery ID</th>
         <th style="max-width:100px">Total Quantity</th>
-        <th style="max-width:100px">PickUp Date</th> 
-        <th style="max-width:100px">Delivery Date</th> 
+        <th style="max-width:100px">Contract End Date</th> 
+        <th style="max-width:100px">Removal Date</th> 
         <th style="max-width:50px"></th>
       </tr>
     </thead>
@@ -33,10 +38,11 @@
 
       <!--Main Row 1 -->
       <tr>
-        <td> RDIL-1 </td>
+        <td> PROJ016968	R1/2 </td>
         <td> 28 </td>
         <td>2 Apr, 2024</td>
-        <td>3 Apr, 2024</td>
+        <td>2 Apr, 2024</td>
+        {% comment %} <td><input type="date" class="form-control today-date  wizard-required"></td> {% endcomment %}
         <td>
           <a href="" data-backdrop="false" data-toggle="modal" data-target="#update_retrun_delivert" title="Edit">
             <i class="ft-edit font-medium-3 mr-2"></i>
@@ -92,10 +98,11 @@
 
       <!--Main Row 2 -->
       <tr>
-        <td> RDIL-2 </td>
+        <td> PROJ016968	R2/2 </td>
         <td> 28 </td>
         <td>2 Apr, 2024</td>
-        <td>3 Apr, 2024</td>
+        <td>2 Apr, 2024</td>
+        {% comment %} <td><input type="date" class="form-control today-date wizard-required"></td> {% endcomment %}
         <td>
           <a href="" data-backdrop="false" data-toggle="modal" data-target="#update_retrun_delivert" title="Edit">
             <i class="ft-edit font-medium-3 mr-2"></i>
@@ -218,16 +225,18 @@
           </div>
           <div class="col-6 mb-3">
             <label for="" class="form-label">Pick Up Site</label>
-            <select name="" class="select2 form-control ReturnpickupSite" id="">
+            <input type="text" value="US Irrigation - Old RIver Road - Old" class="form-control" disabled>
+            {% comment %} <select name="" class="select2 form-control ReturnpickupSite" id="">
               <option disabled selected>Select Option</option>
               <option value="Internal">Internal</option>
               <option value="Customer">Customer</option>
-            </select>
+            </select> {% endcomment %}
           </div>
           <div class="col-6 mb-3">
-            <label for="" class="form-label">Delivery Site</label>
-            <input type="text" value="US Irrigation - Old RIver Road - Old" class="form-control">
-          </div>
+            <label for="locationInput" class="form-label">Delivery Site</label>
+            <input type="text" id="locationInput" value="425 Webster Street" class="form-control">
+            <a id="viewMapLink" href="#" target="_blank" class="map-link">Show on Map</a>
+          </div>            
           <div class="col-6 mb-3" id="ReturninternalFields" style="display: none;">
             <label for="warehouseLocation" class="form-label">Warehouse Location</label>
             <select id="" class="select2 form-control warehouseLocation">
@@ -256,7 +265,7 @@
             <thead>
                 <tr>
                     <th><input name="checkbox" type="checkbox" class="row-checkbox" /></th>
-                    <th>Metrial name</th>
+                    <th>Material name</th>
                     <th>Return Qty</th>
                     <th>Quantity</th>
                 </tr>
@@ -298,7 +307,7 @@
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title" id="myModalLabel5">Update Return Delivery : RDIL-1</h4>
+        <h4 class="modal-title" id="myModalLabel5">Update Return Delivery : PROJ016968 R1/2</h4>
         <button
           type="button"
           class="close"
@@ -313,12 +322,12 @@
       <div class="modal-body">
         <div class="row mb-3">
           <div class="col-6 mb-3">
-            <label for="" class="form-label">Pick Up Date</label>
-            <input type="date" class="form-control">
+            <label for="" class="form-label">Contract End Date</label>
+            <input type="date" class="form-control" value="2024-02-04">
           </div>
           <div class="col-6 mb-3">
-            <label for="" class="form-label">Delivery Date</label>
-            <input type="date" class="form-control">
+            <label for="" class="form-label">Removal Date</label>
+            <input type="date" class="form-control" value="2024-08-07">
           </div>
         </div>
         
@@ -449,3 +458,22 @@
   });
 </script>
 <!-- Date picker End -->
+<!-- for map -->
+<script>
+  function updateMapLink() {
+      // Get the value from the input field
+      var location = document.getElementById('locationInput').value;
+      // Encode the location for the URL
+      var encodedLocation = encodeURIComponent(location);
+      // Create the Google Maps URL
+      var googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`;
+      // Update the href attribute of the anchor tag
+      document.getElementById('viewMapLink').href = googleMapsUrl;
+  }
+
+  // Attach an event listener to the input field to update the link on input changes
+  document.getElementById('locationInput').addEventListener('input', updateMapLink);
+
+  // Initialize the link when the page loads
+  document.addEventListener('DOMContentLoaded', updateMapLink);
+</script>

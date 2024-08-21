@@ -1,5 +1,4 @@
 {% load static %}
-
 <div class="ml-3">
   <div class="row">
     <h5>
@@ -100,4 +99,28 @@
 
 
 <script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
-
+<!-- <script>
+  document.addEventListener('DOMContentLoaded', function () {
+      // Get the tab parameter from the URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const tab = urlParams.get('tab') || '{{ default_tab }}';  // Use context variable if URL parameter is not present
+  
+      console.log('Tab parameter:', tab);  // Debugging line
+  
+      // Remove the 'active' class from all fieldsets
+      document.querySelectorAll('fieldset').forEach(fieldset => {
+          fieldset.classList.remove('active');
+      });
+  
+      // Add the 'active' class to the desired tab
+      const activeTab = document.getElementById(`tab-${tab}`);
+      console.log('Active tab element:', activeTab);  // Debugging line
+      if (activeTab) {
+          activeTab.classList.add('active');
+      } else {
+          // Default to showing the first tab if no parameter is provided
+          document.getElementById('tab-1').classList.add('active');
+      }
+  });
+  </script> -->
+  

@@ -337,6 +337,7 @@
                 <div class="col">
                   <table id="tableBody" class="table">
                     <thead>
+                      <th>Items No.</th>
                       <th>Items</th>
                       <th>Quantity</th>
                       <th>Per Unit Price</th>
@@ -346,24 +347,32 @@
                       <tr id="newProduct">
                         <td>
                           <select class="select2 form-control">
-                            <option selected disabled>Select Metrial Name</option>
+                            <option selected disabled>Select Items No.</option>
+                            <option value="Air Vent Assembly">112</option>
+                            <option value="Air Vent Installation">113</option>
+                            <option value="Automation: Backflush, Clock, Injector">114</option>
+                          </select>
+                        </td>
+                        <td>
+                          <select class="select2 form-control">
+                            <option selected disabled>Select Material Name</option>
                             <option value="Air Vent Assembly">Air Vent Assembly</option>
                             <option value="Air Vent Installation">Air Vent Installation</option>
                             <option value="Automation: Backflush, Clock, Injector">Automation: Backflush, Clock, Injector</option>
                           </select>
                         </td>
                         <td class="text-nowrap">
-                          <input type="text" class="form-control">
+                          <input type="text" class="form-control quantity" oninput="updateRentAmount()" />
                         </td>
                         <td class="text-nowrap">
-                          <input type="text" class="form-control">
+                          <input type="text" class="form-control price" oninput="updateRentAmount()" />
                         </td>
                         <td class="d-flex">
-                          <button class="btn btn-danger mr-2"><i class="fa fa-trash"></i></button>
-                          <button type="button" class="btn btn-primary" onclick="CopyTableRow()"><i class="fa fa-plus"></i></button>
+                          <button class="btn btn-danger mr-2" onclick="removeRow(this)"><i class="fa fa-trash"></i></button>
+                          <button type="button" class="btn btn-primary" onclick="copyTableRow()"><i class="fa fa-plus"></i></button>
                         </td>
                       </tr>
-                    </tbody>
+                    </tbody>                    
                     
                   </table>
                 </div>
@@ -373,11 +382,14 @@
                   <div class="form-group">
                     <input
                       type="number"
+                      id="rentAmount"
                       placeholder="Rent Amount"
                       class="form-control"
+                      readonly
                     />
                   </div>
                 </div>
+                
 
                 <div class="col">
                   <label for="" class="form-label font-weight-bold">Rental Period </label>
@@ -388,6 +400,13 @@
                 </div>
 
                 <div class="col-6">
+                  <label>Rent Per Month </label>
+                  <div class="form-group">
+                      <textarea id="rentPerMonth" placeholder="Rent Per Month" class="form-control" readonly rows="4"></textarea>
+                  </div>
+                </div>
+
+                <div class="col-12">
                   <div class="form-group">
                     <div class="row mb-2 pl-2">
                       <label for="recurring-checkbox" class="mr-2">Recurring Order</label>
@@ -396,30 +415,46 @@
                   </div>
                 </div>
 
-                <div class="col-6 rental-type">
-                  <label>Type</label>
-                  <div class="form-group">
-                    <select class="select form-control select-type">
-                      <option selected disabled >Select Rental Type</option>
-                      <option value="Monthly">Monthly</option>
-                      <option value="Yearly">Yearly</option>
-                      <option value="Quarterly">Quarterly</option>
-                    </select>
+                <div class="card recurring" style="border: 1px solid darkgray; padding: 0px 0px 0px 20px;">
+                  <div class="card-header">
+                    <h6 class="mt-2"><i class="ft-check-circle mr-2"></i>Recurring</h6>
+                  </div>
+                  <div class="card-content">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-4">
+                          <div class="d-flex mb-2" style="gap: 10px;">
+                            <label class="form-label">Repeats:</label>
+                            <select id="repeatType" class="form-control" style="width: 150px;">
+                              <option selected disabled> Select Type</option>
+                              <option value="Week">Week</option>
+                              <option value="Month">Month</option>
+                              <option value="Year">Year</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="d-flex mb-2" style="gap: 10px;">
+                            <label class="form-label">For :</label>
+                            <input type="number" id="repeatValue" class="form-control" style="width: 100px;">
+                            <span id="timeUnit"></span>
+                          </div>
+                        </div>
+                        <div class="col-12 mb-2">
+                          <div class="d-flex" style="gap: 10px;">
+                            <label for="" class="form-label">From :</label>
+                            <input type="date" id="startDate" class="form-control" style="width: 150px;">
+                            <label for="" class="form-label">To :</label>
+                            <input type="date" id="endDate" class="form-control" style="width: 150px;">
+                          </div>
+                        </div>
+                        <div class="col-12">
+                          <small id="message"></small>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-
-                <div class="col-6 recurring-period">
-                  <label for="" class="form-label font-weight-bold">Recurring Period</label>
-                  <div class="reportrange form-control">
-                    <i class="fa fa-calendar"></i>&nbsp;
-                    <span></span> <i class="fa fa-caret-down"></i>
-                  </div>
-                </div>
-
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#recurringEventModal">
-                  Add Recurring Event
-                </button>
-
               </div>
             </div>
             <div class="modal-footer">
@@ -439,6 +474,46 @@
   </div>
 </div>
 
+<!-- Recurring Modal Start -->
+{% comment %} <div class="modal fade text-left" id="recurring_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true" data-backdrop="false">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel5">Recurring</h4>
+        <button type="button" class="close recurring-close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-2" style="gap: 10px;">
+          <label class="form-label">Repeats</label>
+          <select id="repeatType" class="form-control" style="width: 150px;">
+            <option selected disabled> Select Type</option>
+            <option value="Week">Week</option>
+            <option value="Month">Month</option>
+            <option value="Year">Year</option>
+          </select>
+        </div>
+        <div class="d-flex mb-2" style="gap: 10px;">
+          <span>For: </span>
+          <input type="number" id="repeatValue" class="form-control" style="width: 100px;">
+          <span id="timeUnit"></span>
+        </div>
+        <div class="d-flex" style="gap: 10px;">
+          <label for="" class="form-label">From :</label>
+          <input type="date" class="form-control" style="width: 150px;">
+          <label for="" class="form-label">To :</label>
+          <input type="date" class="form-control" style="width: 150px;">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger recurring-close" id="" data-dismiss="modal" aria-label="Close">Cancel</button>
+        <button type="button" class="btn btn-success" data-dismiss="modal" aria-label="Close">Complete</button>
+      </div>
+    </div>
+  </div>
+</div> {% endcomment %}
+<!-- Recurring Modal End -->
 
 <!-- Js Start -->
 <script src="{% static 'app/js/jquery.min.js' %}"></script>
@@ -472,6 +547,53 @@
   
   });
 </script> -->
+
+{% comment %} this will Calculate Rant amount {% endcomment %}
+
+<!-- Rant amount calculate -->
+<script>
+  function updateRentAmount() {
+    let totalAmount = 0;
+    // Get all rows in the table body
+    const rows = document.querySelectorAll('#tableBody tbody tr');
+
+    rows.forEach(row => {
+      // Get quantity and price input values
+      const quantityInput = row.querySelector('.quantity');
+      const priceInput = row.querySelector('.price');
+
+      const quantity = parseFloat(quantityInput.value) || 0;
+      const price = parseFloat(priceInput.value) || 0;
+
+      // Calculate total amount for the current row
+      totalAmount += quantity * price;
+    });
+
+    // Update the rent amount input field
+    document.getElementById('rentAmount').value = totalAmount.toFixed(2);
+  }
+
+  function removeRow(button) {
+    const row = button.closest('tr');
+    row.remove();
+    updateRentAmount();
+  }
+
+  function copyTableRow() {
+    const tableBody = document.querySelector('#tableBody tbody');
+    const newRow = tableBody.querySelector('tr').cloneNode(true);
+    
+    // Clear input values in the new row
+    newRow.querySelectorAll('input').forEach(input => input.value = '');
+    
+    tableBody.appendChild(newRow);
+    
+    // Add event listeners for new row inputs
+    newRow.querySelectorAll('input').forEach(input => input.addEventListener('input', updateRentAmount));
+    
+    updateRentAmount();
+  }
+</script>
 
 <script type="text/javascript">
   $(document).ready(function() {
@@ -569,4 +691,226 @@
 </script>
 <!-- Copy Row JS End -->
 
+<!-- CheckBox Modal -->
+<script>
+  $(document).ready(function() {
+    // Get the modal
+    // var modal = $('#recurring_modal');
+    var fildset = $(".recurring")
+    
+    // Get the checkbox
+    var checkbox = $('#recurring-checkbox');
+    var clsbtn = $('.recurring-close');
+    
+    // Default hidden
+    fildset.hide();
 
+    // When the checkbox is changed
+    checkbox.on('change', function() {
+      if (this.checked) {
+        fildset.show();
+      }else{
+        fildset.hide();
+      }
+    });
+  });
+</script>
+<!-- CheckBox Modal -->
+
+<!-- Script For reccuring types -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const repeatType = document.getElementById('repeatType');
+      const repeatValue = document.getElementById('repeatValue');
+      const timeUnit = document.getElementById('timeUnit');
+      const startDateInput = document.getElementById('startDate');
+      const endDateInput = document.getElementById('endDate');
+      const message = $('#message');
+
+      repeatType.addEventListener('change', updateMessage);
+      repeatValue.addEventListener('input', updateMessage);
+      startDateInput.addEventListener('change', updateMessage);
+      endDateInput.addEventListener('change', updateMessage);
+
+      function updateMessage() {
+          const selectedValue = repeatType.value;
+          const value = repeatValue.value;
+          const startDateValue = startDateInput.value;
+          const endDateValue = endDateInput.value;
+
+          let dateRange = '';
+          if (startDateValue && endDateValue) {
+              dateRange = `from ${startDateValue} to ${endDateValue}`;
+          }
+
+          switch (selectedValue) {
+              case 'Week':
+                  timeUnit.textContent = 'Week(s)';
+                  if (value) {
+                      message.html(`Occurs every week for ${value} week${value > 1 ? 's' : ''}, ${dateRange}`);
+                  } else {
+                      message.html(`Occurs every week, ${dateRange}`);
+                  }
+                  break;
+              case 'Month':
+                  timeUnit.textContent = 'Month(s)';
+                  if (value) {
+                      message.html(`Occurs every month for ${value} month${value > 1 ? 's' : ''}, ${dateRange}`);
+                  } else {
+                      message.html(`Occurs every month, ${dateRange}`);
+                  }
+                  break;
+              case 'Year':
+                  timeUnit.textContent = 'Year(s)';
+                  if (value) {
+                      message.html(`Occurs every year for ${value} year${value > 1 ? 's' : ''}, ${dateRange}`);
+                  } else {
+                      message.html(`Occurs every year, ${dateRange}`);
+                  }
+                  break;
+              default:
+                  timeUnit.textContent = '';
+                  message.html('');
+          }
+      }
+  });
+</script>
+<!-- Script For Rental Period with reccuring -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const recurringCheckbox = document.getElementById('recurring-checkbox');
+    const rentalPeriod = document.querySelector('.reportrange span');
+    const repeatType = document.getElementById('repeatType');
+    const repeatValue = document.getElementById('repeatValue');
+    const startDate = document.getElementById('startDate');
+    const endDate = document.getElementById('endDate');
+  
+    function updateRentalPeriod() {
+      if (recurringCheckbox.checked) {
+        const repeat = repeatType.value;
+        const value = parseInt(repeatValue.value, 10);
+        const start = new Date(startDate.value);
+  
+        if (isNaN(value) || !startDate.value) {
+          rentalPeriod.textContent = 'Please complete all fields.';
+          return;
+        }
+  
+        let periodInMilliseconds;
+        switch (repeat) {
+          case 'Week':
+            periodInMilliseconds = value * 7 * 24 * 60 * 60 * 1000; // Weeks to milliseconds
+            break;
+          case 'Month':
+            periodInMilliseconds = value * 30 * 24 * 60 * 60 * 1000; // Months to milliseconds (approx)
+            break;
+          case 'Year':
+            periodInMilliseconds = value * 365 * 24 * 60 * 60 * 1000; // Years to milliseconds (approx)
+            break;
+          default:
+            periodInMilliseconds = 0;
+        }
+  
+        // Calculate end date
+        const rentalEndDate = new Date(start.getTime() + periodInMilliseconds);
+  
+        rentalPeriod.textContent = `${start.toLocaleDateString()} - ${rentalEndDate.toLocaleDateString()}`;
+      } else {
+        rentalPeriod.textContent = '';
+      }
+    }
+  
+    // Add event listeners
+    recurringCheckbox.addEventListener('change', updateRentalPeriod);
+    repeatType.addEventListener('change', updateRentalPeriod);
+    repeatValue.addEventListener('input', updateRentalPeriod);
+    startDate.addEventListener('change', updateRentalPeriod);
+  });
+  
+</script>
+<!-- Script For reccuring types -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const recurringCheckbox = document.getElementById('recurring-checkbox');
+    const rentalPeriod = document.querySelector('.reportrange span');
+    const repeatType = document.getElementById('repeatType');
+    const repeatValue = document.getElementById('repeatValue');
+    const startDate = document.getElementById('startDate');
+    const endDate = document.getElementById('endDate');
+    const rentAmountInput = document.getElementById('rentAmount');
+    const rentPerMonthTextarea = document.getElementById('rentPerMonth');
+
+    function updateRentalPeriod() {
+      if (recurringCheckbox.checked) {
+        const repeat = repeatType.value;
+        const value = parseInt(repeatValue.value, 10);
+        const start = new Date(startDate.value);
+
+        if (isNaN(value) || !startDate.value) {
+          rentalPeriod.textContent = 'Please complete all fields.';
+          rentPerMonthTextarea.value = '';
+          return;
+        }
+
+        let periodInMilliseconds;
+        switch (repeat) {
+          case 'Week':
+            periodInMilliseconds = value * 7 * 24 * 60 * 60 * 1000; // Weeks to milliseconds
+            break;
+          case 'Month':
+            periodInMilliseconds = value * 30 * 24 * 60 * 60 * 1000; // Months to milliseconds (approx)
+            break;
+          case 'Year':
+            periodInMilliseconds = value * 365 * 24 * 60 * 60 * 1000; // Years to milliseconds (approx)
+            break;
+          default:
+            periodInMilliseconds = 0;
+        }
+
+        // Calculate end date
+        const rentalEndDate = new Date(start.getTime() + periodInMilliseconds);
+        rentalPeriod.textContent = `${start.toLocaleDateString()} - ${rentalEndDate.toLocaleDateString()}`;
+
+        // Calculate rent per month
+        const totalAmount = parseFloat(rentAmountInput.value) || 0;
+        const startMonth = start.getMonth();
+        const endMonth = rentalEndDate.getMonth();
+        const startYear = start.getFullYear();
+        const endYear = rentalEndDate.getFullYear();
+
+        let rentPerMonth = {};
+        
+        for (let year = startYear; year <= endYear; year++) {
+          for (let month = (year === startYear ? startMonth : 0); month <= (year === endYear ? endMonth : 11); month++) {
+            const monthStart = new Date(year, month, 1);
+            const monthEnd = new Date(year, month + 1, 0);
+            
+            // Adjust the end date for the final month
+            const effectiveEndDate = (rentalEndDate < monthEnd) ? rentalEndDate : monthEnd;
+            const daysInMonth = (effectiveEndDate - monthStart) / (1000 * 60 * 60 * 24) + 1;
+            const daysInPeriod = (rentalEndDate - start) / (1000 * 60 * 60 * 24) + 1;
+            const monthRent = (totalAmount * daysInMonth / daysInPeriod).toFixed(2);
+            
+            const monthName = monthStart.toLocaleString('default', { month: 'long' });
+            rentPerMonth[`${monthName} ${year}`] = monthRent;
+          }
+        }
+        
+        rentPerMonthTextarea.value = Object.entries(rentPerMonth)
+          .map(([monthYear, amount]) => `${monthYear}: ${amount}`)
+          .join('\n');
+      } else {
+        rentalPeriod.textContent = '';
+        rentPerMonthTextarea.value = '';
+      }
+    }
+
+    // Add event listeners
+    recurringCheckbox.addEventListener('change', updateRentalPeriod);
+    repeatType.addEventListener('change', updateRentalPeriod);
+    repeatValue.addEventListener('input', updateRentalPeriod);
+    startDate.addEventListener('change', updateRentalPeriod);
+    endDate.addEventListener('change', updateRentalPeriod);
+  });
+</script>
+console.log

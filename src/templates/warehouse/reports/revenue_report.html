@@ -1,5 +1,9 @@
 {% load static %}
-
+<style>
+    #tableContainer {
+    display: none;
+}
+</style>
 <!-- Date picker JS Strat-->
 <script type="text/javascript" src="{% static 'datepicker/jquery.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'datepicker/moment.min.js' %}"></script>
@@ -34,25 +38,30 @@
                 <select class="select2 form-control" multiple>
                     <option value="All">All</option>
                     <option value="James Peter">Emily Pair</option>
-                    <option value="Emily Johnson">John Deo</option>
-                    <option value="Michael Brown">John Weak</option>
+                    <option value="Emily Johnson">Brooke Marchy	</option>
+                    <option value="Michael Brown">Paul Leimgruber</option>
                 </select>
                 
             </div>
 
             <!-- Warehouse -->
-            <div class="col">
-                <label for="" class="form-label font-weight-bold"
-                >Warehouse</label
-                >
+            <!-- <div class="col">
+                <label for="" class="form-label font-weight-bold">Warehouse</label>
                 <select class="select2 form-control" multiple>
                 <option value="All">All</option>
-                <option value="James Peter">DB-1</option>
-                <option value="Emily Johnson">W-3</option>
-                <option value="Michael Brown">UN-4</option>
+                <option value="Bakersfield">Bakersfield</option>
+                <option value="Brawley">Brawley</option>
+                <option value="Colusa">Colusa</option>
+                <option value="Corning">Corning</option>
+                <option value="Delano">Delano</option>
+                <option value="Hanford">Hanford</option>
+                <option value="Hollister">Hollister</option>
+                <option value="Lodi">Lodi</option>
+                <option value="Old River">Old River</option>
+                <option value="Yuma">Yuma</option>
                 </select>
                 
-            </div>
+            </div> -->
             
             <!-- Date range -->
             <div class="col">
@@ -97,7 +106,7 @@
                         <th>Item Number</th>
                         <th>Items</th>
                         <th>Quantity</th>
-                        <th>Date</th>
+                        <!-- <th>Date</th> -->
                         <th>Warehouse</th>
                         <th>Customer</th>
                         <th>Unit Price</th>
@@ -110,11 +119,13 @@
                     <td> 145 </td>
                     <td class="text-nowrap">3" X 30' Yelomine Laterals</td>
                     <td class="text-nowrap">10</td>
-                    <td class="text-nowrap">01/04/2024</td>
-                    <td class="text-nowrap">DB-1</td>
-                    <td class="text-nowrap">John Deo</td>
+                    <!-- <td class="text-nowrap">01/04/2024</td> -->
+                    <td class="text-nowrap">Bakersfield</td>
+                    <td class="text-nowrap">Paul Leimgruber</td>
                     <td class="text-nowrap"> 120 </td>
-                    <td class="text-nowrap"> 1000 </td>
+                    <td>
+                        <a data-toggle="modal">2000</a>
+                    </td>
                     
                 </tr>
 
@@ -123,11 +134,13 @@
                     <td> 146 </td>
                     <td class="text-nowrap">8" VIC Clamps</td>
                     <td class="text-nowrap">10</td>
-                    <td class="text-nowrap">01/04/2024</td>
-                    <td class="text-nowrap">MS-4</td>
-                    <td class="text-nowrap">John Deo</td>
+                    <!-- <td class="text-nowrap">01/04/2024</td> -->
+                    <td class="text-nowrap">Delano</td>
+                    <td class="text-nowrap">Paul Leimgruber</td>
                     <td class="text-nowrap"> 100 </td>
-                    <td class="text-nowrap"> 1000 </td>
+                    <td>
+                        <a data-toggle="modal" >2000</a>
+                    </td>
                     
                 </tr>
 
@@ -136,11 +149,13 @@
                     <td> 140 </td>
                     <td class="text-nowrap">Skid Booster Pump</td>
                     <td class="text-nowrap">10</td>
-                    <td class="text-nowrap">01/05/2024</td>
-                    <td class="text-nowrap">DB-1</td>
-                    <td class="text-nowrap">John Deo</td>
+                    <!-- <td class="text-nowrap">01/05/2024</td> -->
+                    <td class="text-nowrap">Lodi</td>
+                    <td class="text-nowrap">Brooke Marchy</td>
                     <td class="text-nowrap"> 200 </td>
-                    <td class="text-nowrap"> 1000 </td>
+                    <td>
+                        <a data-toggle="modal" >2000</a>
+                    </td>
                     
                 </tr>
 
@@ -149,14 +164,24 @@
                     <td> 122 </td>
                     <td class="text-nowrap">10" Clamp</td>
                     <td class="text-nowrap">10</td>
-                    <td class="text-nowrap">01/04/2024</td>
-                    <td class="text-nowrap">MD-4</td>
-                    <td class="text-nowrap">John Deo</td>
+                    <!-- <td class="text-nowrap">01/04/2024</td> -->
+                    <td class="text-nowrap">Colusa</td>
+                    <td class="text-nowrap">Brooke Marchy</td>
                     <td class="text-nowrap"> 250 </td>
-                    <td class="text-nowrap"> 1000 </td>
+                    <td>
+                        <a data-toggle="modal">2000</a>
+                    </td>
                     
                 </tr>
             </table>
+            <br>
+            <div>
+                <a id="showTableLink" data-toggle="modal" data-target="#showBreakdown" style="color:rgb(146, 100, 255);">Total Revenue : 6000</a> 
+            </div>
+            <br>
+            <div id="tableContainer" style="display: none;">
+                
+            </div>
             </div>
         </div>
         </div>
@@ -164,7 +189,206 @@
 </div>
 <!-- Table End -->
 
+<!-- Modal -->
+<div class="modal fade text-left" id="showBreakdown" tabindex="-1" role="dialog" aria-labelledby="myModalLabel16" aria-hidden="true" data-backdrop="false">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel16">Revenue Breakdown</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
+            </button>
+            </div>
+            <br>
+            <div class="container">
+                <table class="table table-striped table-bordered zero-configuration">
+                <thead>
+                    <tr>
+                        <th>Item Number</th>
+                        <th>Items</th>
+                        <th>Quantity</th>
+                        <!-- <th>Date</th> -->
+                        <!-- <th>Warehouse</th> -->
+                        <!-- <th>Customer</th> -->
+                        <th>Unit Price</th>
+                        <th>Total Revenue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <!-- Row 1 -->
+                <tr>
+                    <td> 145 </td>
+                    <td class="text-nowrap">3" X 30' Yelomine Laterals</td>
+                    <td class="text-nowrap">10</td>
+                    <!-- <td class="text-nowrap">01/04/2024</td> -->
+                    <!-- <td class="text-nowrap">Bakersfield</td> -->
+                    <!-- <td class="text-nowrap">Paul Leimgruber</td> -->
+                    <td class="text-nowrap"> 120 </td>
+                    <td>
+                        <a data-toggle="modal">2000</a>
+                    </td>
+                    
+                </tr>
 
+                <!-- Row 2 -->
+                <tr>
+                    <td> 146 </td>
+                    <td class="text-nowrap">8" VIC Clamps</td>
+                    <td class="text-nowrap">10</td>
+                    <!-- <td class="text-nowrap">01/04/2024</td> -->
+                    <!-- <td class="text-nowrap">Delano</td> -->
+                    <!-- <td class="text-nowrap">Paul Leimgruber</td> -->
+                    <td class="text-nowrap"> 100 </td>
+                    <td>
+                        <a data-toggle="modal" >2000</a>
+                    </td>
+                    
+                </tr>
+
+                <!-- Row 3 -->
+                <tr>
+                    <td> 140 </td>
+                    <td class="text-nowrap">Skid Booster Pump</td>
+                    <td class="text-nowrap">10</td>
+                    <!-- <td class="text-nowrap">01/05/2024</td> -->
+                    <!-- <td class="text-nowrap">Lodi</td> -->
+                    <!-- <td class="text-nowrap">Brooke Marchy</td> -->
+                    <td class="text-nowrap"> 200 </td>
+                    <td>
+                        <a data-toggle="modal" data-target="#showBreakdown" >2000</a>
+                    </td>
+                    
+                </tr>
+
+                <!-- Row 4 -->
+                <tr>
+                    <td> 122 </td>
+                    <td class="text-nowrap">10" Clamp</td>
+                    <td class="text-nowrap">10</td>
+                    <!-- <td class="text-nowrap">01/04/2024</td> -->
+                    <!-- <td class="text-nowrap">Colusa</td> -->
+                    <!-- <td class="text-nowrap">Brooke Marchy</td> -->
+                    <td class="text-nowrap"> 250 </td>
+                    <td>
+                        <a data-toggle="modal" data-target="#showBreakdown">2000</a>
+                    </td>
+                    
+                </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn bg-light-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div class="modal fade text-left" id="" tabindex="-1" role="modal" aria-labelledby="myModalLabel5" aria-hidden="true" data-backdrop="false">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel5">Revenue Breakdown</h4>
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                >
+                    <span aria-hidden="true"
+                    ><i class="ft-x font-medium-2 text-bold-700"></i
+                    ></span>
+                </button>
+            
+            </div>
+            <div>
+                <table class="table table-striped table-bordered zero-configuration">
+                    <thead>
+                        <tr>
+                            <th>Item Number</th>
+                            <th>Items</th>
+                            <th>Quantity</th>
+                            <th>Date</th>
+                            <th>Warehouse</th>
+                            <th>Customer</th>
+                            <th>Unit Price</th>
+                            <th>Total Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Row 1 -->
+                    <tr>
+                        <td> 145 </td>
+                        <td class="text-nowrap">3" X 30' Yelomine Laterals</td>
+                        <td class="text-nowrap">10</td>
+                        <td class="text-nowrap">01/04/2024</td>
+                        <td class="text-nowrap">Bakersfield</td>
+                        <td class="text-nowrap">Paul Leimgruber</td>
+                        <td class="text-nowrap"> 120 </td>
+                        <td>
+                            <a data-toggle="modal">2000</a>
+                        </td>
+                        
+                    </tr>
+    
+                    <!-- Row 2 -->
+                    <tr>
+                        <td> 146 </td>
+                        <td class="text-nowrap">8" VIC Clamps</td>
+                        <td class="text-nowrap">10</td>
+                        <td class="text-nowrap">01/04/2024</td>
+                        <td class="text-nowrap">Delano</td>
+                        <td class="text-nowrap">Paul Leimgruber</td>
+                        <td class="text-nowrap"> 100 </td>
+                        <td>
+                            <a data-toggle="modal" >2000</a>
+                        </td>
+                        
+                    </tr>
+    
+                    <!-- Row 3 -->
+                    <tr>
+                        <td> 140 </td>
+                        <td class="text-nowrap">Skid Booster Pump</td>
+                        <td class="text-nowrap">10</td>
+                        <td class="text-nowrap">01/05/2024</td>
+                        <td class="text-nowrap">Lodi</td>
+                        <td class="text-nowrap">Brooke Marchy</td>
+                        <td class="text-nowrap"> 200 </td>
+                        <td>
+                            <a data-toggle="modal" data-target="#showBreakdown" >2000</a>
+                        </td>
+                        
+                    </tr>
+    
+                    <!-- Row 4 -->
+                    <tr>
+                        <td> 122 </td>
+                        <td class="text-nowrap">10" Clamp</td>
+                        <td class="text-nowrap">10</td>
+                        <td class="text-nowrap">01/04/2024</td>
+                        <td class="text-nowrap">Colusa</td>
+                        <td class="text-nowrap">Brooke Marchy</td>
+                        <td class="text-nowrap"> 250 </td>
+                        <td>
+                            <a data-toggle="modal" data-target="#showBreakdown">2000</a>
+                        </td>
+                        
+                    </tr>
+                </table>
+            </div>
+                Close
+            </button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal">
+                OK
+            </button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="{% static 'datepicker/jquery.min.js' %}"></script>
 <script src="{% static 'vendors/js/select2.full.min.js' %}"></script>
 <script src="{% static 'app/js/select2.min.js' %}"></script>
@@ -302,3 +526,26 @@
     });
 </script>
 <!-- Select2 Script End -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var showTableLink = document.getElementById('showTableLink');
+        var tableContainer = document.getElementById('tableContainer');
+    
+        // Initialize table visibility state
+        var isTableVisible = false;
+    
+        showTableLink.addEventListener('click', function() {
+            if (isTableVisible) {
+                // Hide the table
+                tableContainer.style.display = 'none';
+            } else {
+                // Show the table
+                tableContainer.style.display = 'block';
+            }
+            // Toggle visibility state
+            isTableVisible = !isTableVisible;
+        });
+    });
+    </script>
+    
+    

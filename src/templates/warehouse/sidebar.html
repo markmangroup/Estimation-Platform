@@ -75,7 +75,7 @@
             </li>
             <li class="{% if 'warehouse_list' in request.path %}active{% endif %}"><a href="{% url 'proposal:warehouse_list' %}"><i class="ft-archive"></i><span class="menu-item">Warehouse</span></a>
             </li>
-            <li class="{% if 'customer' in request.path %}active{% endif %}"><a href="{% url 'proposal:customer_list' %}"><i class="ft-users"></i><span class="menu-item">Customers</span></a>
+            <li class="{% if 'customer_list' in request.path %}active{% endif %}"><a href="{% url 'proposal:customers' %}"><i class="ft-users"></i><span class="menu-item">Customers</span></a>
             </li>
           </ul>
         </li>
@@ -139,33 +139,32 @@
         <!-- Stock Adjustment End -->
         
         <!-- Reports Start -->
-        <!--  <li class="nav-item {% if 'reports' in request.path %}active{% endif %}">
-          <a href="{% url 'proposal:reports' %}"><i class="ft-file-text"></i><span class="menu-title" data-i18n="Dashboard">Reports</span>
-          </a>
-        </li> -->        
-        <!-- Reports End -->
-        
-        <!-- Reports Start -->
-        <li class="has-sub nav-item"><a href="javascript:;"><i class="ft-file-text"></i><span class="menu-title" data-i18n="Reports">Reports</span></a>
-          <ul class="menu-content">
-            <!-- <li class="{% if 'reports' in request.path %}active{% endif %}"><a href="{% url 'proposal:reports' %}"><span class="menu-item">All</span></a>
-            </li> -->
-            <li class="{% if 'revenue_report' in request.path %}active{% endif %}"><a href="{% url 'proposal:revenue_report' %}"><span class="menu-item">Revenue Report</span></a>
-            </li>
-            <li class="{% if 'stock_report' in request.path %}active{% endif %}"><a href="{% url 'proposal:stock_report' %}"><span class="menu-item">Stock Report</span></a>
-            </li>
-            <li class="{% if 'stock_movement_report' in request.path %}active{% endif %}"><a href="{% url 'proposal:stock_movement_report' %}"><span class="menu-item">Stock Movement Report</span></a>
-            </li>
-            <li class="{% if 'in_transit_report' in request.path %}active{% endif %}"><a href="{% url 'proposal:in_transit_report' %}"><span class="menu-item">In Transit</span></a>
-            </li>
-            <li class="{% if 'planned_removal_report' in request.path %}active{% endif %}"><a href="{% url 'proposal:planned_removal_report' %}"><span class="menu-item">Planned Removal</span></a>
-            </li>
-            <li class="{% if 'planned_deliveries_report' in request.path %}active{% endif %}"><a href="{% url 'proposal:planned_deliveries_report' %}"><span class="menu-item">Planned Deliveries</span></a>
-            </li>
-            <li class="{% if 'usages_of_equipment_report' in request.path %}active{% endif %}"><a href="{% url 'proposal:usages_of_equipment_report' %}"><span class="menu-item">Usages Of Equipment</span></a>
-            </li>
-          </ul>
-        </li>
+          <li class="nav-item {% if 'reports' in request.path %}active{% endif %}">
+            <a href="{% url 'proposal:reports' %}"><i class="ft-file-text"></i><span class="menu-title" data-i18n="Dashboard">Reports</span>
+            </a>
+          </li>
+          <!-- Not Used -->
+          <!-- <li class="has-sub nav-item"><a href="javascript:;"><i class="ft-file-text"></i><span class="menu-title" data-i18n="Reports">Reports</span></a>
+            <ul class="menu-content">
+              <li class="{% if 'reports' in request.path %}active{% endif %}"><a href="{% url 'proposal:reports' %}"><span class="menu-item">All</span></a>
+              </li>
+              <li class="{% if 'revenue_report' in request.path %}active{% endif %}"><a href="{% url 'proposal:revenue_report' %}"><span class="menu-item">Revenue Report</span></a>
+              </li>
+              <li class="{% if 'stock_report' in request.path %}active{% endif %}"><a href="{% url 'proposal:stock_report' %}"><span class="menu-item">Stock Report</span></a>
+              </li>
+              <li class="{% if 'stock_movement_report' in request.path %}active{% endif %}"><a href="{% url 'proposal:stock_movement_report' %}"><span class="menu-item">Stock Movement Report</span></a>
+              </li>
+              <li class="{% if 'in_transit_report' in request.path %}active{% endif %}"><a href="{% url 'proposal:in_transit_report' %}"><span class="menu-item">In Transit</span></a>
+              </li>
+              <li class="{% if 'planned_removal_report' in request.path %}active{% endif %}"><a href="{% url 'proposal:planned_removal_report' %}"><span class="menu-item">Planned Removal</span></a>
+              </li>
+              <li class="{% if 'planned_deliveries_report' in request.path %}active{% endif %}"><a href="{% url 'proposal:planned_deliveries_report' %}"><span class="menu-item">Planned Deliveries</span></a>
+              </li>
+              <li class="{% if 'usages_of_equipment_report' in request.path %}active{% endif %}"><a href="{% url 'proposal:usages_of_equipment_report' %}"><span class="menu-item">Usages Of Equipment</span></a>
+              </li>
+            </ul>
+          </li> -->
+          <!-- Not Used -->
         <!-- Reports End -->
         
         <!-- User start -->
