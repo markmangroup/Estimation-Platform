@@ -8,6 +8,10 @@ load_dotenv(dotenv_path)
 # Override settings for development
 DEBUG = False
 
+ALLOWED_HOSTS = ['test-dev-eastus-webapp.azurewebsites.net','laurel-ag.biz']
+
+CSRF_TRUSTED_ORIGINS = ['https://test-dev-eastus-webapp.azurewebsites.net','https://laurel-ag.biz']
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
