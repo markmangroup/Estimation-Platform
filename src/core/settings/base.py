@@ -13,6 +13,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+dotenv_path = os.path.join(os.path.dirname(__file__), ".env")
+load_dotenv(dotenv_path)
+
+
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,8 +36,22 @@ DEBUG = True
 
 APPS_DIR = ROOT_DIR
 
+ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000", "https://laurel-hsfd.onrender.com"]
+
 AUTH_USER_MODEL = "user.User"
 # Application definition
+
+# Django all auth
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+
+LOGIN_REDIRECT_URL = "/choose_screens"
+LOGIN_URL = "/login"
+ACCOUNT_LOGOUT_ON_GET = True
+ACCOUNT_LOGOUT_REDIRECT_URL = "/login"
 
 DJANGO_APPS = [
     "django.contrib.admin",
@@ -43,16 +63,28 @@ DJANGO_APPS = [
 ]
 THIRD_PARTY_APPS = [
     "crispy_forms",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.microsoft",
+    "widget_tweaks",
+    "storages",
 ]
 LOCAL_APPS = [
     "apps.user.apps.UserConfig",
-    "apps.proposal.apps.ProposalConfig"
+    "apps.proposal.apps.ProposalConfig",
+    "apps.product.apps.ProductConfig",
+    "apps.vendor.apps.VendorConfig",
+    "apps.task.apps.TaskConfig",
+    "apps.customer.apps.CustomerConfig",
+    "apps.labour_cost.apps.LabourCostConfig",
+    "apps.opportunity.apps.OpportunityConfig",
 ]
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
-LOGIN_URL = '/'
+LOGIN_URL = "/"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -62,7 +94,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -138,7 +171,36 @@ STATIC_ROOT = str(APPS_DIR / "staticfiles")
 STATICFILES_DIRS = [str(APPS_DIR / "static")]
 STATIC_URL = "/static/"
 
+MEDIA_ROOT = str(ROOT_DIR / "media")
+MEDIA_URL = "/media/"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+SOCIALACCOUNT_ADAPTER = "apps.user.adapter.CustomSocialAccountAdapter"
+
+SOCIALACCOUNT_PROVIDERS = {
+    "microsoft": {
+        "APPS": [
+            {
+                "client_id": os.getenv("MICROSOFT_CLIENT_ID"),
+                "secret": os.getenv("MICROSOFT_CLIENT_SECRET"),
+                "settings": {
+                    "tenant": os.getenv("MICROSOFT_TENANT"),
+                    "login_url": "https://login.microsoftonline.com",
+                    "graph_url": "https://graph.microsoft.com",
+                },
+            }
+        ]
+    }
+}
+
+# Storage configuration
+AZURE_ACCOUNT_NAME = os.getenv("AZURE_ACCOUNT_NAME")
+AZURE_ACCOUNT_KEY = os.getenv("AZURE_ACCOUNT_KEY")
+AZURE_CONTAINER = os.getenv("AZURE_CONTAINER")
+AZURE_CUSTOM_DOMAIN = f"{AZURE_ACCOUNT_NAME}.blob.core.windows.net"
+
+DEFAULT_FILE_STORAGE = "storages.backends.azure_storage.AzureStorage"

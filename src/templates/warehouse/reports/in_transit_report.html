@@ -53,25 +53,25 @@
           <option value="Old River">Old River</option>
           <option value="Yuma">Yuma</option>
           </select>
-          
+
         </div>
-        
+
         <!-- Date range -->
         <div class="col">
           <label for="" class="form-label font-weight-bold"
             >Date</label
           >
-          <div class="">
-            {% comment %} <i class="fa fa-calendar"></i>&nbsp; {% endcomment %}
-            <input type="" class="form-control today-date"><span></span>
+          <div class="reportrange form-control">
+            <i class="fa fa-calendar"></i>&nbsp;
+            <span></span> <i class="fa fa-caret-down"></i>
           </div>
         </div>
 
-      <!-- Filters End -->    
+      <!-- Filters End -->
     </div>
     </div>
   </div>
-  
+
   <!-- Table Start -->
   <div class="tab-pane" id="tab3" aria-labelledby="base-tab13">
       <div class="card">
@@ -98,7 +98,7 @@
                     <th>Item Number</th>
                     <th>Items</th>
                     <th>Quantity</th>
-                    <th>In Transit Date</th>
+                    <th>Date</th>
                     <th>Expexted delivery date</th>
                     <th>Warehouse</th>
                     <th>Customer</th>
@@ -205,18 +205,18 @@
   }
 </script>
 <!-- Download CSV formate Script End -->
-  
+
 <!-- Date picker -->
 <script type="text/javascript">
   $(document).ready(function() {
-  
+
       var start = moment().subtract(29, 'days');
       var end = moment();
-  
+
       function cb(start, end) {
           $('.reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
       }
-  
+
       $('.reportrange').daterangepicker({
           startDate: start,
           endDate: end,
@@ -229,15 +229,15 @@
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
           }
       }, cb);
-  
+
       cb(start, end);
-  
+
   });
 </script>
 
 <!-- JavaScript to change dropdown toggle text based on selection -->
 <script>
-  
+
   document.querySelectorAll('.dropdown-item').forEach(item => {
     item.addEventListener('click', function() {
       let reportName = this.textContent.trim();
@@ -255,7 +255,7 @@
 
       const searchTerm = params.term.toLowerCase();
 
-      if (data.text.toLowerCase().includes(searchTerm) || 
+      if (data.text.toLowerCase().includes(searchTerm) ||
           (data.element && $(data.element).data('number') && $(data.element).data('number').toString().includes(searchTerm))) {
           return data;
       }
@@ -270,9 +270,3 @@
   });
 </script>
 <!-- Select2 Script End -->
-<script>
-  $(document).ready(function() {
-      var today = new Date().toISOString().split('T')[0];
-      $('.today-date').val(today);
-  });
-</script>

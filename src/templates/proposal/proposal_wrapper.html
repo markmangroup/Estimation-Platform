@@ -1,6 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
 {% block nav %}
+  <style>
+    .navbar .navbar-nav .nav-search .search-input .search-list.show {
+      display: block;
+      overflow: hidden;
+      width: 98%;
+      margin-left: 20px;
+    }
+  </style>
+
   <nav class="navbar navbar-expand-lg navbar-light header-navbar navbar-fixed">
     <div class="container-fluid navbar-wrapper">
     <div class="navbar-header d-flex">
@@ -14,158 +23,49 @@
                 class="ft-maximize font-medium-3"></i></a>
           </li>
           <li class="nav-item nav-search">
-            <a class="nav-link nav-link-search" href="javascript:"><i class="ft-search font-medium-3"></i></a>
-            <div class="search-input">
+            <a class="nav-link nav-link-search" href="javascript:void(0)"><i class="ft-search font-medium-3"></i></a>
+            <div class="search-input" id="search-input-container">
                 <div class="search-input-icon">
-                  <i class="ft-search font-medium-3"></i>
+                    <i class="ft-search font-medium-3"></i>
                 </div>
-                <input class="input" type="text" placeholder="Explore Laurel..." tabindex="0"
-                  data-search="template-search" />
+                  <input name="q" id="search-input" class="input"  type="text" placeholder="Explore Laurel..." tabindex="0" />
                 <div class="search-input-close">
-                  <i class="ft-x font-medium-3"></i>
+                    <i class="ft-x font-medium-3"></i>
                 </div>
-                <ul class="search-list"></ul>
+                <ul id="search-list" class="search-list"></ul>
+                <div id="autocomplete" class="autocomplete"></div>
             </div>
-          </li>
-      </ul>
+        </li>
+        </ul>
     </div>
     <div class="navbar-container">
       <div class="collapse navbar-collapse d-block" id="navbarSupportedContent">
           <ul class="navbar-nav">
-            {% comment %} 
-            <li class="dropdown nav-item">
-                <a class="nav-link dropdown-toggle dropdown-notification p-0 mt-2"
-                  id="dropdownBasic1" href="javascript:;" data-toggle="dropdown"><i
-                  class="ft-bell font-medium-3"></i><span
-                  class="notification badge badge-pill badge-danger">8</span></a>
-                <ul
-                  class="notification-dropdown dropdown-menu dropdown-menu-media dropdown-menu-right m-0 overflow-hidden">
-                  <li class="dropdown-menu-header">
-                      <div class="dropdown-header d-flex justify-content-between m-0 px-3 py-2 white bg-primary">
-                        <div class="d-flex"><i class="ft-bell font-medium-3 d-flex align-items-center mr-2"></i><span
-                            class="noti-title">4 New Notification</span></div>
-                        <a
-                            href="{% url 'proposal:inbox_list' %}"><span
-                            class="text-bold-400 cursor-pointer" style="color: white !important;">Mark all as read</span></a>
-                      </div>
-                  </li>
-                  <li class="scrollable-container">
-                      <a class="d-flex justify-content-between" href="javascript:void(0)">
-                      <a
-                        href="{% url 'proposal:inbox_list' %}">
-                        <div class="media d-flex align-items-center">
-                            <div class="media-left">
-                              <div class="mr-3"><img class="avatar"
-                                  src="{% static 'app/img/portrait/small/avatar-s-20.png' %}" alt="avatar" height="45"
-                                  width="45"></div>
-                            </div>
-                            <div class="media-body">
-                              <h6 class="m-0"><span>Kate Young</span><small class="grey lighten-1 font-italic float-right">5
-                                  mins ago</small>
-                              </h6>
-                              <h6 class="noti-text font-small-3 m-0">You are assign to this task. Complete it as soon as
-                                  possible
-                              </h6>
-                            </div>
-                        </div>
-                      </a>
-                      </a>
-                      <a class="d-flex justify-content-between" href="javascript:void(0)">
-                  </li>
-                  <li class="scrollable-container"><a class="d-flex justify-content-between" href="javascript:void(0)">
-                  <a
-                      href="{% url 'proposal:inbox_list' %}">
-                  <div class="media d-flex align-items-center">
-                  <div class="media-left">
-                  <div class="mr-3"><img class="avatar"
-                      src="{% static 'app/img/portrait/small/avatar-s-20.png' %}" alt="avatar" height="45"
-                      width="45"></div>
-                  </div>
-                  <div class="media-body">
-                  <h6 class="m-0"><span>Kate Young</span><small class="grey lighten-1 font-italic float-right">5
-                  mins ago</small></h6>
-                  <h6 class="noti-text font-small-3 m-0">You are assign to this task. Complete it as soon as
-                  possible</h6>
-                  </a>
-                  </div>
-                  </div>
-                  </a><a class="d-flex justify-content-between" href="javascript:void(0)">
-                  </li>
-                  <li class="scrollable-container"><a class="d-flex justify-content-between" href="javascript:void(0)">
-                  <a
-                      href="{% url 'proposal:inbox_list' %}">
-                  <div class="media d-flex align-items-center">
-                  <div class="media-left">
-                  <div class="mr-3"><img class="avatar"
-                      src="{% static 'app/img/portrait/small/avatar-s-20.png' %}" alt="avatar" height="45"
-                      width="45"></div>
-                  </div>
-                  <div class="media-body">
-                  <h6 class="m-0"><span>Kate Young</span><small class="grey lighten-1 font-italic float-right">5
-                  mins ago</small></h6>
-                  <h6 class="noti-text font-small-3 m-0">You are assign to this task. Complete it as soon as
-                  possible</h6>
-                  </div>
-                  </div>
-                  </a>
-                  </a><a class="d-flex justify-content-between" href="javascript:void(0)">
-                  </li>
-                  <li class="scrollable-container"><a class="d-flex justify-content-between" href="javascript:void(0)">
-                  <a
-                      href="{% url 'proposal:inbox_list' %}">
-                  <div class="media d-flex align-items-center">
-                  <div class="media-left">
-                  <div class="mr-3"><img class="avatar"
-                      src="{% static 'app/img/portrait/small/avatar-s-20.png' %}" alt="avatar" height="45"
-                      width="45"></div>
-                  </div>
-                  <div class="media-body">
-                  <h6 class="m-0"><span>Kate Young</span><small class="grey lighten-1 font-italic float-right">5
-                  mins ago</small></h6>
-                  <h6 class="noti-text font-small-3 m-0">You are assign to this task. Complete it as soon as
-                  possible</h6>
-                  </div>
-                  </div>
-                  </a>
-                  </a><a class="d-flex justify-content-between" href="javascript:void(0)">
-                  </li>
-                  <li class="dropdown-menu-footer">
-                  <div class="noti-footer text-center cursor-pointer primary border-top text-bold-400 py-1"><a
-                      href="{% url 'proposal:inbox_list' %}">Read All Notifications</a></div>
-                  </li>
-                </ul>
-            </li>
-            {% endcomment %}
-
-            
             <li class="dropdown nav-item mr-1">
-                <a class="nav-link dropdown-toggle user-dropdown d-flex align-items-end"
-                  id="drop-down-1" href="javascript:;" data-toggle="dropdown">
-                  <div class="user d-md-flex d-none mr-2"><span class="text-right">{{ user.get_username }}</span><span
-                      class="text-right text-muted font-small-3">Available</span></div>
-                  <img class="avatar"
-                      src="{% static 'app/img/portrait/small/avatar-s-1.png' %}" alt="avatar" height="35" width="35">
-                </a>
-                <div class="dropdown-menu text-left dropdown-menu-right m-0 pb-0" aria-labelledby="drop-down-1">
+              <a class="nav-link dropdown-toggle user-dropdown d-flex align-items-center"
+                id="drop-down-1" href="javascript:;" data-toggle="dropdown">
+                  <div class="user d-md-flex d-none mr-2">
+                      <span class="text-right">{{user.first_name|title}} {{user.last_name|title}}</span>
+                  </div>
+                  <span class="avatar bg-info mr-2">
+                      <span class="avatar-content">{{user.first_name|upper|slice:":1"}}</span>
+                  </span>
+              </a>
+              <div class="dropdown-menu text-left dropdown-menu-right m-0 pb-0" aria-labelledby="drop-down-1">
                   <a class="dropdown-item" href="{% url 'proposal:map_view' %}">
-                      <div class="d-flex align-items-center"><i class="ft-refresh-ccw mr-2"></i><span>Rental Application</span></div>
+                      <div class="d-flex align-items-center">
+                          <i class="ft-refresh-ccw mr-2"></i>
+                          <span>Rental Application</span>
+                      </div>
                   </a>
                   <a class="dropdown-item" href="{% url 'user:logout' %}">
-                    <div class="d-flex align-items-center"><i class="ft-power mr-2"></i><span>Logout</span></div>
+                      <div class="d-flex align-items-center">
+                          <i class="ft-power mr-2"></i>
+                          <span>Logout</span>
+                      </div>
                   </a>
-                </div>
-            </li>
-            {% comment %} <li class="dropdown nav-item mr-1">
-            <a class="nav-link dropdown-toggle user-dropdown d-flex align-items-end" id="dropdownBasic2"
-                href="javascript:;" data-toggle="dropdown">
-            <div class="user d-md-flex d-none mr-2">
-            <span class="text-right">John Doe</span><span
-                class="text-right text-muted font-small-3">Available</span>
-            </div>
-            <img class="avatar" src="{% static 'app/img/portrait/small/avatar-s-1.png' %}" alt="avatar" height="35"
-                width="35" />
-            </a>
-            </li> {% endcomment %}
+              </div>
+          </li>
           </ul>
           </div>
       </div>
@@ -191,6 +91,7 @@
   </button>
 </div>
 {% endblock page_content%}
+
 
 {% block script %}
 {% endblock script %}

@@ -60,14 +60,14 @@
           >
         </li> {% endcomment %}
         <!-- Dashboard End -->
-        
+
         <!-- Home Start -->
         <li class="nav-item {% if 'home' in request.path %}active{% endif %}">
           <a href="{% url 'proposal:map_view' %}">
             <i class="ft-home"></i><span class="menu-title" data-i18n="Home">Home</span></a>
         </li>
         <!-- Home End -->
-        
+
         <!-- Master Data Start -->
         <li class="has-sub nav-item"><a href="javascript:;"><i class="ft-database"></i><span class="menu-title" data-i18n="MasterData">Master Data</span></a>
           <ul class="menu-content">
@@ -91,7 +91,7 @@
           >
         </li> {% endcomment %}
         <!-- Warehouse End -->
-        
+
         <!-- Customer List Start -->
         {% comment %} <li
           class="nav-item {% if 'customer' in request.path %}active{% endif %}"
@@ -102,7 +102,7 @@
           >
         </li> {% endcomment %}
         <!-- Customer List End -->
-        
+
         <!-- Warehouse list Start-->
         {% comment %} <li
           class="nav-item {% if 'warehouse_products' in request.path %}active{% endif %}"
@@ -113,7 +113,7 @@
           >
         </li> {% endcomment %}
         <!-- Warehouse list End -->
-        
+
         <!-- Rent Process Start -->
         <li
           class="nav-item {% if 'order_list' in request.path %}active{% endif %}"
@@ -124,7 +124,7 @@
           >
         </li>
         <!-- Rent Process End -->
-        
+
         <!-- Stock Adjustment Start -->
         <li
           class="nav-item {% if 'stock_adjustment' in request.path %}active{% endif %}"
@@ -137,7 +137,7 @@
           >
         </li>
         <!-- Stock Adjustment End -->
-        
+
         <!-- Reports Start -->
           <li class="nav-item {% if 'reports' in request.path %}active{% endif %}">
             <a href="{% url 'proposal:reports' %}"><i class="ft-file-text"></i><span class="menu-title" data-i18n="Dashboard">Reports</span>
@@ -166,7 +166,7 @@
           </li> -->
           <!-- Not Used -->
         <!-- Reports End -->
-        
+
         <!-- User start -->
         <li
           class="nav-item {% if 'user_list' in request.path %}active{% endif %}"
@@ -177,7 +177,7 @@
           >
         </li>
         <!-- User End -->
-        
+
         <!-- Recurring order start -->
         {% comment %}
         <li
@@ -192,7 +192,7 @@
         </li>
         {% endcomment %}
         <!-- Recurring order End -->
-        
+
         <!-- Workflow Start -->
         <li
           class="nav-item {% if 'workflow' in request.path %}active{% endif %}"
@@ -203,7 +203,7 @@
           >
         </li>
         <!-- Workflow Start -->
-        
+
         <!-- Express Deliver Start -->
         {% comment %}
         <li
@@ -218,13 +218,13 @@
         </li>
         {% endcomment %}
         <!-- Express Deliver End -->
-        
+
         <!-- Email inbox Start -->
         <li class="nav-item {% if 'inbox' in request.path %}active{% endif %}">
           <a href="{% url 'proposal:inbox' %}"><i class="ft-mail"></i><span class="menu-title" data-i18n="Inbox">Inbox</span></a>
         </li>
         <!-- Email inbox End -->
-        
+
       </ul>
     </div>
   </div>

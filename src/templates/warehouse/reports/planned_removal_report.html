@@ -53,9 +53,9 @@
             <option value="Old River">Old River</option>
             <option value="Yuma">Yuma</option>
             </select>
-            
+
           </div>
-          
+
           <!-- Date Range -->
           <div class="col">
             <label for="" class="form-label font-weight-bold"
@@ -137,7 +137,7 @@
             </tbody>
           </table>
         </div>
-        
+
       </div>
     </div>
   </div>
@@ -191,18 +191,18 @@
   }
 </script>
 <!-- Download CSV formate Script End -->
-  
+
 <!-- Date picker -->
 <script type="text/javascript">
   $(document).ready(function() {
-  
+
       var start = moment().subtract(29, 'days');
       var end = moment();
-  
+
       function cb(start, end) {
           $('.reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
       }
-  
+
       $('.reportrange').daterangepicker({
           startDate: start,
           endDate: end,
@@ -215,9 +215,9 @@
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
           }
       }, cb);
-  
+
       cb(start, end);
-  
+
   });
 </script>
 
@@ -230,7 +230,7 @@
 
       const searchTerm = params.term.toLowerCase();
 
-      if (data.text.toLowerCase().includes(searchTerm) || 
+      if (data.text.toLowerCase().includes(searchTerm) ||
           (data.element && $(data.element).data('number') && $(data.element).data('number').toString().includes(searchTerm))) {
           return data;
       }

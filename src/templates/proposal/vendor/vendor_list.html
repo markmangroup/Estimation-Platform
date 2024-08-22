@@ -1,0 +1,80 @@
+{% load static %}
+
+<div class="row">
+  <div class="col-12">
+    <div class="content-header">Vendor List</div>
+  </div>
+</div>
+
+<!-- Wizard Starts -->
+<section id="icon-tabs">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <h4 class="card-title"></h4>
+          <div class="float-right">
+            <button
+              type="button"
+              class="btn bg-light-secondary"
+              hx-get="{% url 'vendor:import-vendor' %}"
+              hx-target="#modalContent"
+              hx-trigger="click"
+              data-toggle="modal"
+              data-target="#inlineForm"
+            >
+              <i class="fa ft-briefcase mr-1"></i>Import Vendor
+          </button>
+
+            <!-- Modal -->
+          <div
+              class="modal fade text-left"
+              id="inlineForm"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="myModalLabel33"
+              aria-hidden="true"
+              data-backdrop="false"
+            >
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                      <div id="modalContent">
+                          <!-- Form content will be dynamically inserted here by HTMX -->
+                      </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table
+                  class="table table-striped table-bordered" id="vendor-table"
+                >
+                  <thead>
+                    <tr>
+                      <th>Internal ID</th>
+                      <th>Name</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<script>
+  targets = [];
+  table_id = "#vendor-table";
+  url = "{% url 'vendor:vendor-list-ajax' %}";
+  columns = [
+      { data: 'internal_id', name: 'internal_id' },
+      { data: 'name', name: 'name' },
+  ];
+</script>

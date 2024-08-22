@@ -106,11 +106,6 @@
       rel="stylesheet"
       href="{% static 'app/css/pages/dashboard2.min.css' %}"
     />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="{% static 'app/vendors/css/dropzone.min.css'"
-    />
     <!-- END APEX CSS-->
     <!-- BEGIN Page Level CSS-->
     <link
@@ -124,6 +119,7 @@
       type="text/css"
       href="{% static 'app/assets/css/style.css' %}"
     />
+    <link href="{% static 'app/js/toster/toastr.min.css' %}" rel="stylesheet"/>
     <!-- END: Custom CSS-->
   </head>
 
@@ -154,7 +150,7 @@
               </div>
               <div class="row justify-content-center mt-5">
                 <a
-                  href="{% url 'proposal:opportunity_list' %}"
+                  href="{% url 'opportunity:opportunity-list' %}"
                   class="choose_proposal_btn"
                 >
                   <div class="font-large-1 p-2">
@@ -205,14 +201,17 @@
 
     <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
     <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
-    <script src="{% static 'vendors/js/chartist.min.js' %}"></script>
-    <script src="{% static 'vendors/js/apexcharts.min.js' %}"></script>
-    <script src="{% static 'app/js/core/app-menu.min.js' %}"></script>
-    <script src="{% static 'app/js/core/app.min.js' %}"></script>
-    <script src="{% static 'app/js/notification-sidebar.min.js' %}"></script>
-    <script src="{% static 'app/js/customizer.min.js' %}"></script>
     <script src="{% static 'app/js/scroll-top.min.js' %}"></script>
-    <script src="{% static 'app/js/dashboard2.min.js' %}"></script>
-    <script src="{% static 'app//assets/js/scripts.js' %}"></script>
+    <script src="{% static 'vendors/js/toastr.min.js' %}"></script>
+    <script>
+    {% for m in messages %}
+      toastr.{{m.tags}}('{{m}}', '{{m.tags|title}}', {
+        closeButton: true,
+        progressBar: true,
+        positionClass: 'toast-bottom-right',
+        timeOut: 6000
+      });
+    </script>
+    {% endfor %}
   </body>
 </html>

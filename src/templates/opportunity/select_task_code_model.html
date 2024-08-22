@@ -1,0 +1,113 @@
+<form hx-post="{% url 'opportunity:select-task-model' document_number %}" hx-target="#modelSelectTask" hx-swap="innerHTML">
+  <!-- Header -->
+  <div class="modal-header">
+    <h4 class="modal-title" id="myModalLabel5">Add Task</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
+    </button>
+  </div>
+  <!-- Header -->
+
+  <!-- Body -->
+  <div class="modal-body">
+    <section id="multiple-select2">
+      <div class="card">
+        <div class="card-content">
+        <div class="card-body">
+            <div class="form-group">
+            <label>Select tasks</label>
+              {% csrf_token %}
+              <select class="select-list form-control" name="task" id="SelectDescription" multiple>
+                {% for t in select_tasks %}
+                  <option value="{{t.name}}" data-description="{{t.description}}">{{t.name}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <!-- Body -->
+
+  <!-- Footer -->
+  <div class="modal-footer">
+    <button type="button" class="btn bg-light-secondary" data-dismiss="modal">
+      Close
+    </button>
+    <button id="AddTask" type="submit" class="btn bg-light-primary">
+      <em class="ft-plus font-medium-5"></em> Add
+    </button>
+  </div>
+  <!-- Footer -->
+</form>
+
+
+<!-- Search with description start -->
+<script>
+  $(document).ready(function() {
+    $('#SelectDescription').select2({
+        width: '100%',
+        matcher: function(params, data) {
+            // If there are no search terms, return all options
+            if ($.trim(params.term) === '') {
+                return data;
+            }
+
+            if (data.text.toUpperCase().indexOf(params.term.toUpperCase()) > -1 ||
+                $(data.element).data('description').toUpperCase().indexOf(params.term.toUpperCase()) > -1) {
+                return data;
+            }
+            return null;
+        }
+    });
+  });
+</script>
+<!-- Search with description end -->
+
+<script>
+  $(".select-list").select2();
+</script>
+
+<script>
+  $(document).ready(function() {
+    $('#AddTask').on('click', function(event) {
+      event.preventDefault();
+
+      const selectedValues = $('#SelectDescription').val();
+      const documentNumber = "{{ document_number }}";
+      console.log(selectedValues);
+      console.log(documentNumber);
+
+      if (selectedValues.length > 0) {
+          $.ajax({
+              url: '{% url "opportunity:create-task-code" %}',
+              type: 'POST',
+              data: {
+                  task: selectedValues,
+                  document_number: documentNumber,
+                  csrfmiddlewaretoken: '{{ csrf_token }}'
+              },
+              traditional: true,
+              success: function(response) {
+                  console.log('Success:', response);
+                  $("#selected-task-table").DataTable().ajax.reload(null, false);
+                  $("#selectTaskModal").modal('hide');
+                  $("#selectTaskModal .modal-body").html('');
+
+              },
+              error: function(xhr, status, error) {
+                  console.error('Error:', error);
+              }
+          });
+      } else {
+          alert('Please select a task.');
+      }
+    });
+
+    $('#SelectDescription').on('change', function() {
+        const selectedValues = $(this).val();
+        console.log('Selected tasks:', selectedValues);
+    });
+  });
+</script>

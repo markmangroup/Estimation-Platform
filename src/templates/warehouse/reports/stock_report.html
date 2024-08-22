@@ -11,7 +11,7 @@
     <div class="card-body">
       <div class="row">
         <!-- Filters Start -->
-        
+
           <!-- Items -->
           <div class="col">
             <label for="" class="form-label font-weight-bold">Items</label>
@@ -34,7 +34,7 @@
                 <option value="Emily Johnson">Brooke Marchy	</option>
                 <option value="Michael Brown">Paul Leimgruber</option>
             </select>
-            
+
         </div>
 
           <!-- Warehouse -->
@@ -53,7 +53,7 @@
             <option value="Old River">Old River</option>
             <option value="Yuma">Yuma</option>
             </select>
-            
+
           </div>
 
           <!-- Date Range -->
@@ -73,7 +73,7 @@
         <!-- Buttons -->
         <div class="float-left ml-2">
           <data class="row">
-            
+
           </data>
         </div>
         <div class="float-right mb-3">
@@ -139,7 +139,7 @@
             </tbody>
           </table>
         </div>
-        
+
       </div>
     </div>
   </div>
@@ -151,7 +151,7 @@
   <script>
     function DownloadProductsInCSV(id, fileName) {
       var table = document.getElementById(id);
-  
+
       // Extract headers from the table
       var headers = [];
       var headerRow = table.querySelector("tr");
@@ -160,7 +160,7 @@
         headers.push('"' + col.innerText.replace(/"/g, '""') + '"'); // Wrap headers in quotes and escape double quotes
       });
       var csvContent = headers.join(",") + "\n";
-  
+
       // Add data rows to CSV content (start from the second row)
       var rows = table.querySelectorAll("tr");
       for (var i = 1; i < rows.length; i++) { // Start from index 1 to skip the header row
@@ -171,38 +171,38 @@
         });
         csvContent += rowData.join(",") + "\n";
       }
-  
+
       // Create Blob object
       var blob = new Blob([csvContent], { type: "text/csv" });
-  
+
       // Create temporary URL
       var url = window.URL.createObjectURL(blob);
-  
+
       // Create a link element
       var link = document.createElement("a");
       link.setAttribute("href", url);
       link.setAttribute("download", fileName + ".csv");
-  
+
       // Simulate a click on the link
       link.click();
-  
+
       // Remove the temporary URL
       window.URL.revokeObjectURL(url);
     }
   </script>
   <!-- Download CSV formate Script End -->
-  
+
   <!-- Date picker -->
   <script type="text/javascript">
     $(document).ready(function() {
-    
+
         var start = moment().subtract(29, 'days');
         var end = moment();
-    
+
         function cb(start, end) {
             $('.reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
         }
-    
+
         $('.reportrange').daterangepicker({
             startDate: start,
             endDate: end,
@@ -215,9 +215,9 @@
               'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
             }
         }, cb);
-    
+
         cb(start, end);
-    
+
     });
   </script>
   <script>
@@ -239,7 +239,7 @@
 
       const searchTerm = params.term.toLowerCase();
 
-      if (data.text.toLowerCase().includes(searchTerm) || 
+      if (data.text.toLowerCase().includes(searchTerm) ||
           (data.element && $(data.element).data('number') && $(data.element).data('number').toString().includes(searchTerm))) {
           return data;
       }

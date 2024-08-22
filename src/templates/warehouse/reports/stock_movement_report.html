@@ -11,7 +11,7 @@
   <div class="card-body">
     <div class="row">
         <!-- Filters Start -->
-          
+
           <!-- Items -->
           <div class="col">
             <label for="" class="form-label font-weight-bold">Items</label>
@@ -39,7 +39,7 @@
             <option value="Old River">Old River</option>
             <option value="Yuma">Yuma</option>
             </select>
-            
+
           </div>
 
           <!-- Date Range -->
@@ -81,7 +81,6 @@
                 <th>Quantity</th>
                 <th>Movement Done By</th>
                 <th>Warehouse</th>
-                <th>Movement Type</th>
                 <th>Reason</th>
               </tr>
             </thead>
@@ -93,8 +92,7 @@
                 <td>5</td>
                 <td> Emily Pair </td>
                 <td> Bakersfield </td>
-                <td> Inspection </td>
-                <td>PROJ016445 R1/2</td>
+                <td> WH diffrences  </td>
               </tr>
               <tr>
                 <td> 146 </td>
@@ -103,8 +101,7 @@
                 <td>3</td>
                 <td> Emily Pair </td>
                 <td> Brawley </td>
-                <td> Not returned from customer </td>
-                <td> PROJ016922 R1/2 </td>
+                <td> WH diffrences </td>
               </tr>
               <tr>
                 <td> 147 </td>
@@ -113,18 +110,16 @@
                 <td>2</td>
                 <td> Emily Pair </td>
                 <td>Colusa</td>
-                <td>Inspection</td>
-                <td>ROJ0169557 R1/2</td>
+                <td> Other </td>
               </tr>
-              <tr>                
+              <tr>
                 <td> 150 </td>
                 <td>10" Clamp</td>
                 <td><span class="badge bg-light-warning">Decrease</span></td>
                 <td>2</td>
                 <td> Emily Pair </td>
                 <td>Corning</td>
-                <td>Not returned from customer</td>
-                <td>PROJ017045 R1/2</td>
+                <td> Not Returned from customer</td>
               </tr>
             </tbody>
           </table>
@@ -186,14 +181,14 @@
 <!-- Date picker -->
 <script type="text/javascript">
   $(document).ready(function() {
-  
+
       var start = moment().subtract(29, 'days');
       var end = moment();
-  
+
       function cb(start, end) {
           $('.reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
       }
-  
+
       $('.reportrange').daterangepicker({
           startDate: start,
           endDate: end,
@@ -206,9 +201,9 @@
               'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
           }
       }, cb);
-  
+
       cb(start, end);
-  
+
   });
 </script>
 <!-- Date picker -->
@@ -222,7 +217,7 @@
 
       const searchTerm = params.term.toLowerCase();
 
-      if (data.text.toLowerCase().includes(searchTerm) || 
+      if (data.text.toLowerCase().includes(searchTerm) ||
           (data.element && $(data.element).data('number') && $(data.element).data('number').toString().includes(searchTerm))) {
           return data;
       }

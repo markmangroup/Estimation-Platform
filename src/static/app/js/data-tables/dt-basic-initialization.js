@@ -6,7 +6,6 @@
     Author: PIXINVENT
     Author URL: http://www.themeforest.net/user/pixinvent
 ==========================================================================================*/
-
 $(document).ready(function () {
 
   // zero configuration

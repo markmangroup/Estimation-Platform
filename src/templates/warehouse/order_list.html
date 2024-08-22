@@ -118,11 +118,10 @@
                       <thead>
                         <tr>
                           <th>Customer</th>
-                          {% comment %} <th>Date</th> {% endcomment %}
+                          <th>Date</th>
                           <th>Document Number</th>
                           <th>ID</th>
                           <th>Delivery</th>
-                          <th>Status</th>
                           <th>Project Manager</th>
                           <th>Location</th>
                           <th>Start Date</th>
@@ -140,7 +139,7 @@
                           <!-- Row 1 -->
                         <tr>
                             <td class="text-nowrap">C005588 Rocha Junior Berry Farms LLC</td>
-                            {% comment %} <td class="text-nowrap">01/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">01/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> CMLAWS-002706 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ012681 </a></td>
                             <td class="text-nowrap">
@@ -149,29 +148,15 @@
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ012681 1/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-info">Pick Up</span>
-                                  </td> -->
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ012681 2/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
-                                    <span class="badge bg-light-danger">Check out</span>
-                                  </td> -->
-                                </tr>
-                              </table>
-                            </td>
-                            <td>
-                              <table class="table bordered">
-                                <tr>
-                                  <td class="text-left">
-                                    <span class="badge bg-light-info">Pick Up</span>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-danger">Check out</span>
                                   </td>
                                 </tr>
@@ -195,11 +180,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 2 -->
                         <tr>
                             <td class="text-nowrap">C005441 Gill Ranch</td>
-                            {% comment %} <td class="text-nowrap">05/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">05/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045233 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ018077 </a></td>
                             <td class="text-nowrap">
@@ -208,29 +193,15 @@
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ018077 1/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-into">Return Pick Up</span>
-                                  </td> -->
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ018077 2/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
-                                    <span class="badge bg-light-danger">Check out</span>
-                                  </td> -->
-                                </tr>
-                              </table>
-                            </td>
-                            <td>
-                              <table class="table bordered">
-                                <tr>
-                                  <td class="text-left">
-                                    <span class="badge bg-light-into">Return Pick Up</span>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-danger">Check out</span>
                                   </td>
                                 </tr>
@@ -244,7 +215,7 @@
                             <td class="text-nowrap">Semi-Annual</td>
                             <td class="text-nowrap">Materials Only</td>
                             <td class="text-nowrap">Central Coast</td>
-                            
+
                             <td> 25/10/2024 </td>
                             <td class="text-nowrap">
                                 <a class="warning" href="{% url 'proposal:order_detail' %}">
@@ -255,11 +226,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 5 -->
                         <tr>
                             <td class="text-nowrap">C005597 Rio Farms</td>
-                            {% comment %} <td class="text-nowrap">05/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">05/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045231 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ018075 </a></td>
                             <td class="text-nowrap">
@@ -268,36 +239,22 @@
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ018075 1/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-info">Return Pick Up</span>
-                                  </td> -->
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ018075 2/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
-                                    <span class="badge bg-light-primary">Inspection</span>
-                                  </td> -->
-                                </tr>
-                              </table>
-                            </td>
-                            <td>
-                              <table class="table bordered">
-                                <tr>
-                                  <td class="text-left">
-                                    <span class="badge bg-light-info">Return Pick Up</span>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-primary">Inspection</span>
                                   </td>
                                 </tr>
                               </table>
                             </td>
                             <td class="text-nowrap">Matthew Waterman</td>
-                            <td class="text-nowrap" style="font-size: small;">US Irrigation - Hollister - Old</td>
+                            <td class="text-nowrap">US Irrigation - Hollister - Old</td>
                             <td class="text-nowrap">01/04/2024</td>
                             <td class="text-nowrap">30/09/2024</td>
                             <td class="text-nowrap">Recurring</td>
@@ -314,11 +271,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 8 -->
                         <tr>
                             <td class="text-nowrap">C005597 Rio Farms</td>
-                            {% comment %} <td class="text-nowrap">05/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">05/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045232 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ018076 </a></td>
                             <td class="text-nowrap">
@@ -327,36 +284,22 @@
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ018076 1/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-success">Delivered</span>
-                                  </td> -->
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ018076 2/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
-                                    <span class="badge bg-light-danger">Check In</span>
-                                  </td> -->
-                                </tr>
-                              </table>
-                            </td>
-                            <td>
-                              <table class="table bordered">
-                                <tr>
-                                  <td class="text-left">
-                                    <span class="badge bg-light-success">Delivered</span>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-danger">Check In</span>
                                   </td>
                                 </tr>
                               </table>
                             </td>
                             <td class="text-nowrap">Matthew Waterman</td>
-                            <td class="text-nowrap" style="font-size: small;">US Irrigation - Hollister - Old</td>
+                            <td class="text-nowrap">US Irrigation - Hollister - Old</td>
                             <td class="text-nowrap">01/04/2024</td>
                             <td class="text-nowrap">30/09/2024</td>
                             <td class="text-nowrap">Recurring</td>
@@ -376,11 +319,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 14 -->
                         <tr>
                             <td class="text-nowrap">C005941 Top Flavor Farms San Juan</td>
-                            {% comment %} <td class="text-nowrap">05/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">05/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045234 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ018078 </a></td>
                             <td class="text-nowrap">
@@ -389,36 +332,22 @@
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ018078 1/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-info">Return Pick Up</span>
-                                  </td> -->
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ018078 2/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
-                                    <span class="badge bg-light-primary">Inspection</span>
-                                  </td> -->
-                                </tr>
-                              </table>
-                            </td>
-                            <td>
-                              <table class="table bordered">
-                                <tr>
-                                  <td class="text-left">
-                                    <span class="badge bg-light-info">Pick Up</span>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-primary">Inspection</span>
                                   </td>
                                 </tr>
                               </table>
                             </td>
                             <td class="text-nowrap">Matthew Waterman</td>
-                            <td class="text-nowrap" style="font-size: small;">US Irrigation - Hollister - Old</td>
+                            <td class="text-nowrap">US Irrigation - Hollister - Old</td>
                             <td class="text-nowrap">01/04/2024</td>
                             <td class="text-nowrap">30/09/2024</td>
                             <td class="text-nowrap">Recurring</td>
@@ -435,11 +364,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 22 -->
                         <tr>
                             <td class="text-nowrap">C006219 Braga Ranch</td>
-                            {% comment %} <td class="text-nowrap">05/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">05/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045230 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ018074 </a></td>
                             <td class="text-nowrap">
@@ -448,36 +377,22 @@
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ018074 1/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-warning">Create Return Delivery</span>
-                                  </td> -->
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ018074 2/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
-                                    <span class="badge bg-light-warning">Create Return Delivery</span>
-                                  </td> -->
-                                </tr>
-                              </table>
-                            </td>
-                            <td>
-                              <table class="table bordered">
-                                <tr>
-                                  <td class="text-left">
-                                    <span class="badge bg-light-warning">Create Return Delivery</span>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-warning">Create Return Delivery</span>
                                   </td>
                                 </tr>
                               </table>
                             </td>
                             <td class="text-nowrap">Matthew Waterman</td>
-                            <td class="text-nowrap" style="font-size: small;">US Irrigation - Hollister - Old</td>
+                            <td class="text-nowrap">US Irrigation - Hollister - Old</td>
                             <td class="text-nowrap">01/04/2024</td>
                             <td class="text-nowrap">30/09/2024</td>
                             <td class="text-nowrap">Recurring</td>
@@ -494,11 +409,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 45 -->
                         <tr>
                             <td class="text-nowrap">C005414 3-Brand Cattle</td>
-                            {% comment %} <td class="text-nowrap">12/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">12/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045249 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ016964 </a></td>
                             <td class="text-nowrap">
@@ -507,36 +422,22 @@
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ016964 1/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-info">Pick Up</span>
-                                  </td> -->
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ016964 2/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
-                                    <span class="badge bg-light-danger">Check out</span>
-                                  </td> -->
-                                </tr>
-                              </table>
-                            </td>
-                            <td>
-                              <table class="table bordered">
-                                <tr>
-                                  <td class="text-left">
-                                    <span class="badge bg-light-info">Pick Up</span>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-danger">Check out</span>
                                   </td>
                                 </tr>
                               </table>
                             </td>
                             <td class="text-nowrap">Anthony Freitas</td>
-                            <td class="text-nowrap" style="font-size: small;">US Irrigation - Old RIver Road - Old</td>
+                            <td class="text-nowrap">US Irrigation - Old RIver Road - Old</td>
                             <td class="text-nowrap">01/04/2024</td>
                             <td class="text-nowrap">31/05/2024</td>
                             <td class="text-nowrap">Recurring</td>
@@ -553,11 +454,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 57 -->
                         <tr>
                             <td class="text-nowrap">C005477 H & H Farms Inc.</td>
-                            {% comment %} <td class="text-nowrap">12/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">12/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045250 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ006192 </a></td>
                             <td class="text-nowrap">
@@ -566,36 +467,22 @@
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ006192 1/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-info">Pick Up</span>
-                                  </td> -->
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ006192 2/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
-                                    <span class="badge bg-light-info">Pick Up</span>
-                                  </td> -->
-                                </tr>
-                              </table>
-                            </td>
-                            <td>
-                              <table class="table bordered">
-                                <tr>
-                                  <td class="text-left">
-                                    <span class="badge bg-light-info">Pick Up</span>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-info">Pick Up</span>
                                   </td>
                                 </tr>
                               </table>
                             </td>
                             <td class="text-nowrap">Anthony Freitas</td>
-                            <td class="text-nowrap" style="font-size: small;">US Irrigation - Old RIver Road - Old</td>
+                            <td class="text-nowrap">US Irrigation - Old RIver Road - Old</td>
                             <td class="text-nowrap">01/04/2024</td>
                             <td class="text-nowrap">30/09/2024</td>
                             <td class="text-nowrap">Recurring</td>
@@ -612,11 +499,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 61 -->
                         <tr>
                             <td class="text-nowrap">C005477 H & H Farms Inc.</td>
-                            {% comment %} <td class="text-nowrap">12/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">12/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045251 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ006190 </a></td>
                             <td class="text-nowrap">
@@ -625,36 +512,22 @@
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ006190 1/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-warning">Create Delivery</span>
-                                  </td> -->
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ006190 2/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
-                                    <span class="badge bg-light-warning">Create Delivery</span>
-                                  </td> -->
-                                </tr>
-                              </table>
-                            </td>
-                            <td>
-                              <table class="table bordered">
-                                <tr>
-                                  <td class="text-left">
-                                    <span class="badge bg-light-warning">Create Delivery</span>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-warning">Create Delivery</span>
                                   </td>
                                 </tr>
                               </table>
                             </td>
                             <td class="text-nowrap">Anthony Freitas</td>
-                            <td class="text-nowrap" style="font-size: small;">US Irrigation - Old RIver Road - Old</td>
+                            <td class="text-nowrap">US Irrigation - Old RIver Road - Old</td>
                             <td class="text-nowrap">01/04/2024</td>
                             <td class="text-nowrap">30/09/2024</td>
                             <td class="text-nowrap">Recurring</td>
@@ -671,11 +544,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 64 -->
                         <tr>
                             <td class="text-nowrap">C005941 Top Flavor Farms San Juan</td>
-                            {% comment %} <td class="text-nowrap">12/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">12/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045247 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ018157 </a></td>
                             <td class="text-nowrap">
@@ -684,36 +557,22 @@
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ018157 1/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-info">Pick Up</span>
-                                  </td> -->
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ018157 2/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-danger">Check out</span>
-                                  </td> -->
-                                </tr>
-                              </table>
-                            </td>
-                            <td>
-                              <table class="table bordered">
-                                <tr>
-                                  <td class="text-left">
-                                    <span class="badge bg-light-info">Pick Up</span>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td class="text-left">
-                                    <span class="badge bg-light-danger">Check In</span>
                                   </td>
                                 </tr>
                               </table>
                             </td>
                             <td class="text-nowrap">Matthew Waterman</td>
-                            <td class="text-nowrap" style="font-size: small;">US Irrigation - Hollister - Old</td>
+                            <td class="text-nowrap">US Irrigation - Hollister - Old</td>
                             <td class="text-nowrap">01/04/2024</td>
                             <td class="text-nowrap">30/09/2024</td>
                             <td class="text-nowrap">Recurring</td>
@@ -730,11 +589,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 65 -->
                         <tr>
                             <td class="text-nowrap">C005941 Top Flavor Farms San Juan</td>
-                            {% comment %} <td class="text-nowrap">12/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">12/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045248 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ018160 </a></td>
                             <td class="text-nowrap">
@@ -743,36 +602,22 @@
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ018160 1/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-danger">Check out</span>
-                                  </td> -->
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ018160 2/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-danger">Check out</span>
-                                  </td> -->
-                                </tr>
-                              </table>
-                            </td>
-                            <td>
-                              <table class="table bordered">
-                                <tr>
-                                  <td class="text-left">
-                                    <span class="badge bg-light-danger">Check In</span>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td class="text-left">
-                                    <span class="badge bg-light-danger">Check In</span>
                                   </td>
                                 </tr>
                               </table>
                             </td>
                             <td class="text-nowrap">Matthew Waterman</td>
-                            <td class="text-nowrap" style="font-size: small;">US Irrigation - Hollister - Old</td>
+                            <td class="text-nowrap">US Irrigation - Hollister - Old</td>
                             <td class="text-nowrap">01/04/2024</td>
                             <td class="text-nowrap">30/09/2024</td>
                             <td class="text-nowrap">Recurring</td>
@@ -789,11 +634,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 68 -->
                         <tr>
                             <td class="text-nowrap">C003623 Gladstone Land</td>
-                            {% comment %} <td class="text-nowrap">25/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">25/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> CMLAWS-002746 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ015593 </a></td>
                             <td class="text-nowrap">
@@ -802,36 +647,22 @@
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ015593 1/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-danger">Check In</span>
-                                  </td> -->
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ015593 2/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
-                                    <span class="badge bg-light-danger">Check In</span>
-                                  </td> -->
-                                </tr>
-                              </table>
-                            </td>
-                            <td>
-                              <table class="table bordered">
-                                <tr>
-                                  <td class="text-left">
-                                    <span class="badge bg-light-danger">Check In</span>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-danger">Check In</span>
                                   </td>
                                 </tr>
                               </table>
                             </td>
                             <td class="text-nowrap">Anthony Freitas</td>
-                            <td class="text-nowrap" style="font-size: small;">US Irrigation - Old RIver Road - Old</td>
+                            <td class="text-nowrap">US Irrigation - Old RIver Road - Old</td>
                             <td class="text-nowrap">-</td>
                             <td class="text-nowrap">-</td>
                             <td class="text-nowrap">Recurring</td>
@@ -848,11 +679,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 69 -->
                         <tr>
                             <td class="text-nowrap">C001489 David Jacobsen</td>
-                            {% comment %} <td class="text-nowrap">26/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">26/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045265 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ008673 </a></td>
                             <td class="text-nowrap">
@@ -861,36 +692,22 @@
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ008673 1/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-info">Retun Pick Up</span>
-                                  </td> -->
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ008673 2/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
-                                    <span class="badge bg-light-warning">Create Return Delivery</span>
-                                  </td> -->
-                                </tr>
-                              </table>
-                            </td>
-                            <td>
-                              <table class="table bordered">
-                                <tr>
-                                  <td class="text-left">
-                                    <span class="badge bg-light-info">Retun Pick Up</span>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-warning">Create Return Delivery</span>
                                   </td>
                                 </tr>
                               </table>
                             </td>
                             <td class="text-nowrap">Anthony Freitas</td>
-                            <td class="text-nowrap" style="font-size: small;">US Irrigation - Old RIver Road - Old</td>
+                            <td class="text-nowrap">US Irrigation - Old RIver Road - Old</td>
                             <td class="text-nowrap">15/04/2024</td>
                             <td class="text-nowrap">15/10/2024</td>
                             <td class="text-nowrap">Recurring</td>
@@ -907,11 +724,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 77 -->
                         <tr>
                             <td class="text-nowrap">C005803 Woolf Enterprises</td>
-                            {% comment %} <td class="text-nowrap">26/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">26/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045264 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ016969 </a></td>
                             <td class="text-nowrap">
@@ -920,36 +737,22 @@
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ016969 1/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-info">Pick Up</span>
-                                  </td> -->
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ012681 2/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
-                                    <span class="badge bg-light-danger">Check out</span>
-                                  </td> -->
-                                </tr>
-                              </table>
-                            </td>
-                            <td>
-                              <table class="table bordered">
-                                <tr>
-                                  <td class="text-left">
-                                    <span class="badge bg-light-info">Pick Up</span>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-danger">Check out</span>
                                   </td>
                                 </tr>
                               </table>
                             </td>
                             <td class="text-nowrap">Anthony Freitas</td>
-                            <td class="text-nowrap" style="font-size: small;">US Irrigation - Old RIver Road - Old</td>
+                            <td class="text-nowrap">US Irrigation - Old RIver Road - Old</td>
                             <td class="text-nowrap">15/04/2024</td>
                             <td class="text-nowrap">15/10/2024</td>
                             <td class="text-nowrap">Recurring</td>
@@ -966,11 +769,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 86 -->
                         <tr>
                             <td class="text-nowrap">C006246 Belonave Ranch LLC</td>
-                            {% comment %} <td class="text-nowrap">26/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">26/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> CMLAWS-002747 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ017547 </a></td>
                             <td class="text-nowrap">
@@ -979,36 +782,22 @@
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ017547 1/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-info">Pick Up</span>
-                                  </td> -->
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ017547 2/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
-                                    <span class="badge bg-light-danger">Check out</span>
-                                  </td> -->
-                                </tr>
-                              </table>
-                            </td>
-                            <td>
-                              <table class="table bordered">
-                                <tr>
-                                  <td class="text-left">
-                                    <span class="badge bg-light-info">Pick Up</span>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-danger">Check out</span>
                                   </td>
                                 </tr>
                               </table>
                             </td>
                             <td class="text-nowrap">Anthony Freitas</td>
-                            <td class="text-nowrap" style="font-size: small;">US Irrigation - Old RIver Road - Old</td>
+                            <td class="text-nowrap">US Irrigation - Old RIver Road - Old</td>
                             <td class="text-nowrap">-</td>
                             <td class="text-nowrap">-</td>
                             <td class="text-nowrap">Recurring</td>
@@ -1025,11 +814,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 88 -->
                         <tr>
                             <td class="text-nowrap">C006246 Belonave Ranch LLC</td>
-                            {% comment %} <td class="text-nowrap">26/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">26/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045263 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ017547 </a></td>
                             <td class="text-nowrap">
@@ -1038,36 +827,22 @@
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ017547 1/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-info">Retun Pick Up</span>
-                                  </td> -->
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ017547 2/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
-                                    <span class="badge bg-light-danger">Check In</span>
-                                  </td> -->
-                                </tr>
-                              </table>
-                            </td>
-                            <td>
-                              <table class="table bordered">
-                                <tr>
-                                  <td class="text-left">
-                                    <span class="badge bg-light-info">Retun Pick Up</span>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-danger">Check In</span>
                                   </td>
                                 </tr>
                               </table>
                             </td>
                             <td class="text-nowrap">Anthony Freitas</td>
-                            <td class="text-nowrap" style="font-size: small;">US Irrigation - Old RIver Road - Old</td>
+                            <td class="text-nowrap">US Irrigation - Old RIver Road - Old</td>
                             <td class="text-nowrap">-</td>
                             <td class="text-nowrap">-</td>
                             <td class="text-nowrap">- None -</td>
@@ -1084,11 +859,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 90 -->
                         <tr>
                             <td class="text-nowrap">C001478 Grimmway Farms</td>
-                            {% comment %} <td class="text-nowrap">30/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">30/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045268 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ016968 </a></td>
                             <td class="text-nowrap">
@@ -1097,36 +872,22 @@
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ016968 1/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-info">Pick Up</span>
-                                  </td> -->
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ016968 2/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
-                                    <span class="badge bg-light-danger">Check out</span>
-                                  </td> -->
-                                </tr>
-                              </table>
-                            </td>
-                            <td>
-                              <table class="table bordered">
-                                <tr>
-                                  <td class="text-left">
-                                    <span class="badge bg-light-info">Pick Up</span>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-danger">Check out</span>
                                   </td>
                                 </tr>
                               </table>
                             </td>
                             <td class="text-nowrap">Anthony Freitas</td>
-                            <td class="text-nowrap" style="font-size: small;">US Irrigation - Old RIver Road - Old</td>
+                            <td class="text-nowrap">US Irrigation - Old RIver Road - Old</td>
                             <td class="text-nowrap">29/04/2024</td>
                             <td class="text-nowrap">29/10/2024</td>
                             <td class="text-nowrap">Recurring</td>
@@ -1143,11 +904,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 91 -->
                         <tr>
                             <td class="text-nowrap">C001478 Grimmway Farms</td>
-                            {% comment %} <td class="text-nowrap">30/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">30/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045270 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ014927 </a></td>
                             <td class="text-nowrap">
@@ -1156,36 +917,22 @@
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ014927 1/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-success">Delivered</span>
-                                  </td> -->
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ014927 2/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
-                                    <span class="badge bg-light-success">Delivered</span>
-                                  </td> -->
-                                </tr>
-                              </table>
-                            </td>
-                            <td>
-                              <table class="table bordered">
-                                <tr>
-                                  <td class="text-left">
-                                    <span class="badge bg-light-success">Delivered</span>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-success">Delivered</span>
                                   </td>
                                 </tr>
                               </table>
                             </td>
                             <td class="text-nowrap">Anthony Freitas</td>
-                            <td class="text-nowrap" style="font-size: small;">Laurel Ag & Water - Yuma - Old</td>
+                            <td class="text-nowrap">Laurel Ag & Water - Yuma - Old</td>
                             <td class="text-nowrap">22/04/2024</td>
                             <td class="text-nowrap">22/05/2024</td>
                             <td class="text-nowrap">Recurring</td>
@@ -1202,11 +949,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 96 -->
                         <tr>
                             <td class="text-nowrap">C001478 Grimmway Farms</td>
-                            {% comment %} <td class="text-nowrap">30/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">30/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045271 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ014927 </a></td>
                             <td class="text-nowrap">
@@ -1215,36 +962,22 @@
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ014927 1/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-primary">Inspection</span>
-                                  </td> -->
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td>
                                     <a href="{% url 'proposal:order_detail' %}"> PROJ014927 2/2</a>
                                   </td>
-                                  <!-- <td class="text-left">
-                                    <span class="badge bg-light-primary">Inspection</span>
-                                  </td> -->
-                                </tr>
-                              </table>
-                            </td>
-                            <td>
-                              <table class="table bordered">
-                                <tr>
-                                  <td class="text-left">
-                                    <span class="badge bg-light-primary">Inspection</span>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td class="text-left">
+                                  <td>
                                     <span class="badge bg-light-primary">Inspection</span>
                                   </td>
                                 </tr>
                               </table>
                             </td>
                             <td class="text-nowrap">Anthony Freitas</td>
-                            <td class="text-nowrap" style="font-size: small;">Laurel Ag & Water - Yuma - Old</td>
+                            <td class="text-nowrap">Laurel Ag & Water - Yuma - Old</td>
                             <td class="text-nowrap">22/04/2024</td>
                             <td class="text-nowrap">22/05/2024</td>
                             <td class="text-nowrap">Recurring</td>
@@ -1261,7 +994,7 @@
                                 </a>
                             </td>
                         </tr>
-              
+
                       </tbody>
                     </table>
                   </div>
@@ -1288,7 +1021,7 @@
                       <thead>
                         <tr>
                           <th>Customer</th>
-                          {% comment %} <th>Date</th> {% endcomment %}
+                          <th>Date</th>
                           <th>Document Number</th>
                           <th>ID</th>
                           <th>Project Manager</th>
@@ -1307,7 +1040,7 @@
                         <!-- Row 1 -->
                         <tr>
                           <td class="text-nowrap">C005588 Rocha Junior Berry Farms LLC</td>
-                          {% comment %} <td class="text-nowrap">01/04/2024</td> {% endcomment %}
+                          <td class="text-nowrap">01/04/2024</td>
                           <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> CMLAWS-002706 </a></td>
                           <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ012681 </a></td>
                           <td class="text-nowrap">Matthew Waterman</td>
@@ -1331,11 +1064,11 @@
                               </a>
                           </td>
                         </tr>
-                      
+
                         <!-- Row 2 -->
                         <tr>
                             <td class="text-nowrap">C005441 Gill Ranch</td>
-                            {% comment %} <td class="text-nowrap">05/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">05/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045233 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ018077 </a></td>
                             <td class="text-nowrap">Matthew Waterman</td>
@@ -1358,11 +1091,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 5 -->
                         <tr>
                             <td class="text-nowrap">C005597 Rio Farms</td>
-                            {% comment %} <td class="text-nowrap">05/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">05/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045231 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ018075 </a></td>
                             <td class="text-nowrap">Matthew Waterman</td>
@@ -1385,11 +1118,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 8 -->
                         <tr>
                             <td class="text-nowrap">C005597 Rio Farms</td>
-                            {% comment %} <td class="text-nowrap">05/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">05/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045232 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ018076 </a></td>
                             <td class="text-nowrap">Matthew Waterman</td>
@@ -1412,11 +1145,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 14 -->
                         <tr>
                             <td class="text-nowrap">C005941 Top Flavor Farms San Juan</td>
-                            {% comment %} <td class="text-nowrap">05/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">05/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045234 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ018078 </a></td>
                             <td class="text-nowrap">Matthew Waterman</td>
@@ -1439,11 +1172,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 22 -->
                         <tr>
                             <td class="text-nowrap">C006219 Braga Ranch</td>
-                            {% comment %} <td class="text-nowrap">05/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">05/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045230 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ018074 </a></td>
                             <td class="text-nowrap">Matthew Waterman</td>
@@ -1466,11 +1199,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 45 -->
                         <tr>
                             <td class="text-nowrap">C005414 3-Brand Cattle</td>
-                            {% comment %} <td class="text-nowrap">12/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">12/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045249 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ016964 </a></td>
                             <td class="text-nowrap">Anthony Freitas</td>
@@ -1493,11 +1226,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 57 -->
                         <tr>
                             <td class="text-nowrap">C005477 H & H Farms Inc.</td>
-                            {% comment %} <td class="text-nowrap">12/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">12/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045250 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ006192 </a></td>
                             <td class="text-nowrap">Anthony Freitas</td>
@@ -1520,11 +1253,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 61 -->
                         <tr>
                             <td class="text-nowrap">C005477 H & H Farms Inc.</td>
-                            {% comment %} <td class="text-nowrap">12/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">12/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045251 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ006190 </a></td>
                             <td class="text-nowrap">Anthony Freitas</td>
@@ -1547,11 +1280,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 64 -->
                         <tr>
                             <td class="text-nowrap">C005941 Top Flavor Farms San Juan</td>
-                            {% comment %} <td class="text-nowrap">12/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">12/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045247 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ018157 </a></td>
                             <td class="text-nowrap">Matthew Waterman</td>
@@ -1574,11 +1307,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 65 -->
                         <tr>
                             <td class="text-nowrap">C005941 Top Flavor Farms San Juan</td>
-                            {% comment %} <td class="text-nowrap">12/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">12/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045248 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ018160 </a></td>
                             <td class="text-nowrap">Matthew Waterman</td>
@@ -1601,11 +1334,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 68 -->
                         <tr>
                             <td class="text-nowrap">C003623 Gladstone Land</td>
-                            {% comment %} <td class="text-nowrap">25/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">25/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> CMLAWS-002746 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ015593 </a></td>
                             <td class="text-nowrap">Anthony Freitas</td>
@@ -1628,11 +1361,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 69 -->
                         <tr>
                             <td class="text-nowrap">C001489 David Jacobsen</td>
-                            {% comment %} <td class="text-nowrap">26/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">26/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045265 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ008673 </a></td>
                             <td class="text-nowrap">Anthony Freitas</td>
@@ -1655,11 +1388,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 77 -->
                         <tr>
                             <td class="text-nowrap">C005803 Woolf Enterprises</td>
-                            {% comment %} <td class="text-nowrap">26/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">26/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045264 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ016969 </a></td>
                             <td class="text-nowrap">Anthony Freitas</td>
@@ -1682,11 +1415,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 86 -->
                         <tr>
                             <td class="text-nowrap">C006246 Belonave Ranch LLC</td>
-                            {% comment %} <td class="text-nowrap">26/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">26/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> CMLAWS-002747 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ017547 </a></td>
                             <td class="text-nowrap">Anthony Freitas</td>
@@ -1709,11 +1442,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 88 -->
                         <tr>
                             <td class="text-nowrap">C006246 Belonave Ranch LLC</td>
-                            {% comment %} <td class="text-nowrap">26/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">26/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045263 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ017547 </a></td>
                             <td class="text-nowrap">Anthony Freitas</td>
@@ -1736,11 +1469,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 90 -->
                         <tr>
                             <td class="text-nowrap">C001478 Grimmway Farms</td>
-                            {% comment %} <td class="text-nowrap">30/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">30/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045268 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ016968 </a></td>
                             <td class="text-nowrap">Anthony Freitas</td>
@@ -1763,11 +1496,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 91 -->
                         <tr>
                             <td class="text-nowrap">C001478 Grimmway Farms</td>
-                            {% comment %} <td class="text-nowrap">30/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">30/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045270 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ014927 </a></td>
                             <td class="text-nowrap">Anthony Freitas</td>
@@ -1790,11 +1523,11 @@
                                 </a>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 96 -->
                         <tr>
                             <td class="text-nowrap">C001478 Grimmway Farms</td>
-                            {% comment %} <td class="text-nowrap">30/04/2024</td> {% endcomment %}
+                            <td class="text-nowrap">30/04/2024</td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> INVLAWS-045271 </a></td>
                             <td class="text-nowrap"><a href="{% url 'proposal:order_detail' %}"> PROJ014927 </a></td>
                             <td class="text-nowrap">Anthony Freitas</td>
@@ -1817,7 +1550,7 @@
                                 </a>
                             </td>
                         </tr>
-            
+
                     </tbody>
                     </table>
                   </div>
@@ -1841,10 +1574,9 @@
                     >
                       <thead>
                         <tr>
-                          <th>Customer</th>
-                          <th>Orignal ID</th>
                           <th>ID</th>
-                          {% comment %} <th>Order Date</th> {% endcomment %}
+                          <th>Customer</th>
+                          <th>Order Date</th>
                           <th>Location</th>
                           <th>No of Products</th>
                           <th>Amount</th>
@@ -1858,10 +1590,9 @@
                       <tbody>
                         <!-- Row 1 -->
                         <tr>
+                          <td>REC01</td>
                           <td class="text-nowrap">Saint-Gobain</td>
-                          <td>PROJ016968</td>
-                          <td>RPROJ016968-1</td>
-                          {% comment %} <td class="text-nowrap">01/04/2024</td> {% endcomment %}
+                          <td class="text-nowrap">01/04/2024</td>
                           <td class="text-nowrap">Paris</td>
                           <td class="text-nowrap">10</td>
                           <td class="text-nowrap">$1500.00</td>
@@ -1881,10 +1612,9 @@
 
                         <!-- Row 2 -->
                         <tr>
+                          <td>REC02</td>
                           <td class="text-nowrap">Wavin</td>
-                          <td>PROJ016970</td>
-                          <td>RPROJ016970-1</td>
-                          {% comment %} <td class="text-nowrap">02/07/2024</td> {% endcomment %}
+                          <td class="text-nowrap">02/07/2024</td>
                           <td class="text-nowrap">Amsterdam</td>
                           <td class="text-nowrap">8</td>
                           <td class="text-nowrap">$1200.00</td>
@@ -1901,13 +1631,12 @@
                             </a>
                           </td>
                         </tr>
-                        
+
                         <!-- Row 3 -->
                         <tr>
+                          <td>REC03</td>
                           <td class="text-nowrap">Uponor</td>
-                          <td>PROJ016969</td>
-                          <td>RPROJ016969-1</td>
-                          {% comment %} <td class="text-nowrap">03/01/2024</td> {% endcomment %}
+                          <td class="text-nowrap">03/01/2024</td>
                           <td class="text-nowrap">Helsinki</td>
                           <td class="text-nowrap">6</td>
                           <td class="text-nowrap">$900.00</td>
@@ -1924,34 +1653,12 @@
                             </a>
                           </td>
                         </tr>
-                        <tr>
-                          <td class="text-nowrap">Uponor</td>
-                          <td>PROJ016969</td>
-                          <td>RPROJ016969-2</td>
-                          {% comment %} <td class="text-nowrap">03/01/2024</td> {% endcomment %}
-                          <td class="text-nowrap">Helsinki</td>
-                          <td class="text-nowrap">12</td>
-                          <td class="text-nowrap">$1800.00</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">15/05</td>
-                          <td class="text-nowrap">31/10</td>
-                          <td>3</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
 
                         <!-- Row 4 -->
                         <tr>
+                          <td>REC04</td>
                           <td class="text-nowrap">Georg Fischer</td>
-                          <td>PROJ016999</td>
-                          <td>RPROJ016999-1</td>
-                          {% comment %} <td class="text-nowrap">04/10/2024</td> {% endcomment %}
+                          <td class="text-nowrap">04/10/2024</td>
                           <td class="text-nowrap">Zurich</td>
                           <td class="text-nowrap">12</td>
                           <td class="text-nowrap">$1800.00</td>
@@ -1971,10 +1678,9 @@
 
                         <!-- Row 5 -->
                         <tr>
+                          <td>REC05</td>
                           <td class="text-nowrap">Mueller Water Products</td>
-                          <td>PROJ016965</td>
-                          <td>RPROJ016965-1</td>
-                          {% comment %} <td class="text-nowrap">05/05/2024</td> {% endcomment %}
+                          <td class="text-nowrap">05/05/2024</td>
                           <td class="text-nowrap">Atlanta</td>
                           <td class="text-nowrap">15</td>
                           <td class="text-nowrap">$2250.00</td>
@@ -1994,10 +1700,9 @@
 
                         <!-- Row 6 -->
                         <tr>
+                          <td>REC06</td>
                           <td class="text-nowrap">JM Eagle</td>
-                          <td>PROJ016966</td>
-                          <td>RPROJ016966-1</td>
-                          {% comment %} <td class="text-nowrap">06/01/2024</td> {% endcomment %}
+                          <td class="text-nowrap">06/01/2024</td>
                           <td class="text-nowrap">Los Angeles</td>
                           <td class="text-nowrap">20</td>
                           <td class="text-nowrap">$3000.00</td>
@@ -2014,54 +1719,12 @@
                             </a>
                           </td>
                         </tr>
-                        <tr>
-                          <td class="text-nowrap">JM Eagle</td>
-                          <td>PROJ016966</td>
-                          <td>RPROJ016966-2</td>
-                          {% comment %} <td class="text-nowrap">06/01/2024</td> {% endcomment %}
-                          <td class="text-nowrap">Los Angeles</td>
-                          <td class="text-nowrap">10</td>
-                          <td class="text-nowrap">$1500.00</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">15/05</td>
-                          <td class="text-nowrap">30/09</td>
-                          <td>2</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="text-nowrap">JM Eagle</td>
-                          <td>PROJ016966</td>
-                          <td>RPROJ016966-3</td>
-                          {% comment %} <td class="text-nowrap">06/01/2024</td> {% endcomment %}
-                          <td class="text-nowrap">Los Angeles</td>
-                          <td class="text-nowrap">20</td>
-                          <td class="text-nowrap">$3000.00</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">15/05</td>
-                          <td class="text-nowrap">30/09</td>
-                          <td>2</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
+
                         <!-- Row 7 -->
                         <tr>
+                          <td>REC07</td>
                           <td class="text-nowrap">Aalberts</td>
-                          <td>PROJ016568</td>
-                          <td>RPROJ016568-1</td>
-                          {% comment %} <td class="text-nowrap">07/09/2024</td> {% endcomment %}
+                          <td class="text-nowrap">07/09/2024</td>
                           <td class="text-nowrap">Utrecht</td>
                           <td class="text-nowrap">5</td>
                           <td class="text-nowrap">$7550.00</td>
@@ -2078,55 +1741,12 @@
                             </a>
                           </td>
                         </tr>
-                        <!-- Row 7/2 -->
-                        <tr>
-                          <td class="text-nowrap">Aalberts</td>
-                          <td>PROJ016568</td>
-                          <td>RPROJ016568-2</td>
-                          {% comment %} <td class="text-nowrap">07/09/2024</td> {% endcomment %}
-                          <td class="text-nowrap">Utrecht</td>
-                          <td class="text-nowrap">10</td>
-                          <td class="text-nowrap">$15100.00</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">31/10</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
+
                         <!-- Row 8 -->
                         <tr>
+                          <td>REC08</td>
                           <td class="text-nowrap">Tenaris</td>
-                          <td>PROJ016955</td>
-                          <td>RPROJ016955-1</td>
-                          {% comment %} <td class="text-nowrap">08/11/2024</td> {% endcomment %}
-                          <td class="text-nowrap">Luxembourg</td>
-                          <td class="text-nowrap">18</td>
-                          <td class="text-nowrap">$2700.00</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">30/11</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="text-nowrap">Tenaris</td>
-                          <td>PROJ016955</td>
-                          <td>RPROJ016955-2</td>
-                          {% comment %} <td class="text-nowrap">08/11/2024</td> {% endcomment %}
+                          <td class="text-nowrap">08/11/2024</td>
                           <td class="text-nowrap">Luxembourg</td>
                           <td class="text-nowrap">18</td>
                           <td class="text-nowrap">$2700.00</td>
@@ -2146,10 +1766,9 @@
 
                         <!-- Row 9 -->
                         <tr>
+                          <td>REC09</td>
                           <td class="text-nowrap">Valmont Industries</td>
-                          <td>PROJ016975</td>
-                          <td>RPROJ016975-1</td>
-                          {% comment %} <td class="text-nowrap">09/02/2024</td> {% endcomment %}
+                          <td class="text-nowrap">09/02/2024</td>
                           <td class="text-nowrap">Omaha</td>
                           <td class="text-nowrap">22</td>
                           <td class="text-nowrap">$3300.00</td>
@@ -2166,54 +1785,12 @@
                             </a>
                           </td>
                         </tr>
-                        <tr>
-                          <td class="text-nowrap">Valmont Industries</td>
-                          <td>PROJ016975</td>
-                          <td>RPROJ016975-2</td>
-                          {% comment %} <td class="text-nowrap">09/02/2024</td> {% endcomment %}
-                          <td class="text-nowrap">Omaha</td>
-                          <td class="text-nowrap">22</td>
-                          <td class="text-nowrap">$3300.00</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">31/12</td>
-                          <td>3</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="text-nowrap">Valmont Industries</td>
-                          <td>PROJ016975</td>
-                          <td>RPROJ016975-3</td>
-                          {% comment %} <td class="text-nowrap">09/02/2024</td> {% endcomment %}
-                          <td class="text-nowrap">Omaha</td>
-                          <td class="text-nowrap">22</td>
-                          <td class="text-nowrap">$3300.00</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">31/12</td>
-                          <td>3</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
+
                         <!-- Row 10 -->
                         <tr>
+                          <td>REC10</td>
                           <td class="text-nowrap">China Lesso Group</td>
-                          <td>PROJ016901</td>
-                          <td>RPROJ016901-1</td>
-                          {% comment %} <td class="text-nowrap">10/08/2024</td> {% endcomment %}
+                          <td class="text-nowrap">10/08/2024</td>
                           <td class="text-nowrap">Guangzhou</td>
                           <td class="text-nowrap">25</td>
                           <td class="text-nowrap">$3750.00</td>
@@ -2233,10 +1810,9 @@
 
                         <!-- Row 11 -->
                         <tr>
+                          <td>REC11</td>
                           <td class="text-nowrap">McWane</td>
-                          <td>PROJ016902</td>
-                          <td>RPROJ016902-1</td>
-                          {% comment %} <td class="text-nowrap">11/04/2024</td> {% endcomment %}
+                          <td class="text-nowrap">11/04/2024</td>
                           <td class="text-nowrap">Birmingham</td>
                           <td class="text-nowrap">30</td>
                           <td class="text-nowrap">$4500.00</td>
@@ -2256,31 +1832,9 @@
 
                         <!-- Row 12 -->
                         <tr>
+                          <td>REC12</td>
                           <td class="text-nowrap">Mueller Industries</td>
-                          <td>PROJ016903</td>
-                          <td>RPROJ016903-1</td>
-                          {% comment %} <td class="text-nowrap">12/12/2024</td> {% endcomment %}
-                          <td class="text-nowrap">Memphis</td>
-                          <td class="text-nowrap">18</td>
-                          <td class="text-nowrap">$2700.00</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">15/05</td>
-                          <td class="text-nowrap">30/11</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="text-nowrap">Mueller Industries</td>
-                          <td>PROJ016903</td>
-                          <td>RPROJ016903-2</td>
-                          {% comment %} <td class="text-nowrap">12/12/2024</td> {% endcomment %}
+                          <td class="text-nowrap">12/12/2024</td>
                           <td class="text-nowrap">Memphis</td>
                           <td class="text-nowrap">18</td>
                           <td class="text-nowrap">$2700.00</td>
@@ -2300,10 +1854,9 @@
 
                         <!-- Row 13 -->
                         <tr>
+                          <td>REC13</td>
                           <td class="text-nowrap">Nord Stream AG</td>
-                          <td>PROJ016904</td>
-                          <td>RPROJ016901-1</td>
-                          {% comment %} <td class="text-nowrap">13/10/2024</td> {% endcomment %}
+                          <td class="text-nowrap">13/10/2024</td>
                           <td class="text-nowrap">Zug</td>
                           <td class="text-nowrap">12</td>
                           <td class="text-nowrap">$1800.00</td>
@@ -2320,33 +1873,12 @@
                             </a>
                           </td>
                         </tr>
-                        <tr>
-                          <td class="text-nowrap">Nord Stream AG</td>
-                          <td>PROJ016904</td>
-                          <td>RPROJ016901-2</td>
-                          {% comment %} <td class="text-nowrap">13/10/2024</td> {% endcomment %}
-                          <td class="text-nowrap">Zug</td>
-                          <td class="text-nowrap">12</td>
-                          <td class="text-nowrap">$1800.00</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">15/05</td>
-                          <td class="text-nowrap">30/11</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
+
                         <!-- Row 14 -->
                         <tr>
+                          <td>REC14</td>
                           <td class="text-nowrap">Shanghai Baosteel Group</td>
-                          <td>PROJ016905</td>
-                          <td>RPROJ016905-1</td>
-                          {% comment %} <td class="text-nowrap">14/03/2024</td> {% endcomment %}
+                          <td class="text-nowrap">14/03/2024</td>
                           <td class="text-nowrap">Shanghai</td>
                           <td class="text-nowrap">28</td>
                           <td class="text-nowrap">$4200.00</td>
@@ -2366,31 +1898,9 @@
 
                         <!-- Row 15 -->
                         <tr>
+                          <td>REC15</td>
                           <td class="text-nowrap">Nord Stream AG</td>
-                          <td>PROJ016906</td>
-                          <td>RPROJ016906-1</td>
-                          {% comment %} <td class="text-nowrap">15/04/2024</td> {% endcomment %}
-                          <td class="text-nowrap">Berlin</td>
-                          <td class="text-nowrap">21</td>
-                          <td class="text-nowrap">$3150.00</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">15/05</td>
-                          <td class="text-nowrap">31/10</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="text-nowrap">Nord Stream AG</td>
-                          <td>PROJ016906</td>
-                          <td>RPROJ016906-2</td>
-                          {% comment %} <td class="text-nowrap">15/04/2024</td> {% endcomment %}
+                          <td class="text-nowrap">15/04/2024</td>
                           <td class="text-nowrap">Berlin</td>
                           <td class="text-nowrap">21</td>
                           <td class="text-nowrap">$3150.00</td>
@@ -2410,10 +1920,9 @@
 
                         <!-- Row 16 -->
                         <tr>
+                          <td>REC16</td>
                           <td class="text-nowrap">Wavin</td>
-                          <td>PROJ016908</td>
-                          <td>RPROJ016908-1</td>
-                          {% comment %} <td class="text-nowrap">16/12/2024</td> {% endcomment %}
+                          <td class="text-nowrap">16/12/2024</td>
                           <td class="text-nowrap">London</td>
                           <td class="text-nowrap">16</td>
                           <td class="text-nowrap">$2400.00</td>
@@ -2430,54 +1939,12 @@
                             </a>
                           </td>
                         </tr>
-                        <tr>
-                          <td class="text-nowrap">Wavin</td>
-                          <td>PROJ016908</td>
-                          <td>RPROJ016908-2</td>
-                          {% comment %} <td class="text-nowrap">16/12/2024</td> {% endcomment %}
-                          <td class="text-nowrap">London</td>
-                          <td class="text-nowrap">16</td>
-                          <td class="text-nowrap">$2400.00</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">31/12</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="text-nowrap">Wavin</td>
-                          <td>PROJ016908</td>
-                          <td>RPROJ016908-3</td>
-                          {% comment %} <td class="text-nowrap">16/12/2024</td> {% endcomment %}
-                          <td class="text-nowrap">London</td>
-                          <td class="text-nowrap">16</td>
-                          <td class="text-nowrap">$2400.00</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">31/12</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
+
                         <!-- Row 17 -->
                         <tr>
+                          <td>REC17</td>
                           <td class="text-nowrap">Uponor</td>
-                          <td>PROJ016908</td>
-                          <td>RPROJ016908-1</td>
-                          {% comment %} <td class="text-nowrap">17/05/2024</td> {% endcomment %}
+                          <td class="text-nowrap">17/05/2024</td>
                           <td class="text-nowrap">Helsinki</td>
                           <td class="text-nowrap">13</td>
                           <td class="text-nowrap">$1950.00</td>
@@ -2497,10 +1964,9 @@
 
                         <!-- Row 18 -->
                         <tr>
+                          <td>REC18</td>
                           <td class="text-nowrap">McWane</td>
-                          <td>PROJ016909</td>
-                          <td>RPROJ016909-1</td>
-                          {% comment %} <td class="text-nowrap">18/06/2024</td> {% endcomment %}
+                          <td class="text-nowrap">18/06/2024</td>
                           <td class="text-nowrap">Dallas</td>
                           <td class="text-nowrap">24</td>
                           <td class="text-nowrap">$3600.00</td>
@@ -2520,10 +1986,9 @@
 
                         <!-- Row 19 -->
                         <tr>
+                          <td>REC19</td>
                           <td class="text-nowrap">Tenaris</td>
-                          <td>PROJ016910</td>
-                          <td>RPROJ016910-1</td>
-                          {% comment %} <td class="text-nowrap">19/04/2024</td> {% endcomment %}
+                          <td class="text-nowrap">19/04/2024</td>
                           <td class="text-nowrap">Milan</td>
                           <td class="text-nowrap">9</td>
                           <td class="text-nowrap">$1350.00</td>
@@ -2543,10 +2008,9 @@
 
                         <!-- Row 20 -->
                         <tr>
+                          <td>REC20</td>
                           <td class="text-nowrap">Shanghai Baosteel Group</td>
-                          <td>PROJ016911</td>
-                          <td>RPROJ016911-1</td>
-                          {% comment %} <td class="text-nowrap">20/01/2024</td> {% endcomment %}
+                          <td class="text-nowrap">20/01/2024</td>
                           <td class="text-nowrap">Beijing</td>
                           <td class="text-nowrap">26</td>
                           <td class="text-nowrap">$3900.00</td>
@@ -2605,7 +2069,7 @@
             <div class="col-6 mb-2">
               <label for="orderDate" class="form-label">Order Date</label>
               <input type="date" id="orderDate" class="form-control" value="2024-09-07" disabled>
-            </div>            
+            </div>
             <div class="col-6 mb-2">
               <label for="" class="form-label">Location</label>
               <input type="text" class="form-control" value="Utrecht" disabled>
@@ -2618,7 +2082,7 @@
               <label for="" class="form-label">Amount</label>
               <input type="text" class="form-control" value="7550" disabled>
             </div> {% endcomment %}
-          
+
           </div>
       </div>
           <div class="modal-footer">
@@ -2658,7 +2122,7 @@
                 <td><span class="badge bg-light-warning">Pick UP</span></td>
               </tr>
             </tbody>
-            
+
 
           </table>
       </div>
@@ -2689,7 +2153,7 @@
             <div class="col-6 mb-2">
               <label for="orderDate" class="form-label">Order Date</label>
               <input type="date" id="orderDate" class="form-control" value="2024-09-07" disabled>
-            </div>            
+            </div>
             <div class="col-6 mb-2">
               <label for="" class="form-label">Location</label>
               <input type="text" class="form-control" value="Utrecht" disabled>
@@ -2717,7 +2181,7 @@
                 <span></span> <i class="fa fa-caret-down"></i>
               </div>
             </div>
-          
+
           </div>
       </div>
           <div class="modal-footer">

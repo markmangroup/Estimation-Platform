@@ -309,7 +309,7 @@
   <script>
     function DownloadProductsInCSV(id, fileName) {
       var table = document.getElementById(id);
-  
+
       // Extract headers from the table
       var headers = [];
       var headerRow = table.querySelector("tr");
@@ -318,7 +318,7 @@
         headers.push('"' + col.innerText.replace(/"/g, '""') + '"'); // Wrap headers in quotes and escape double quotes
       });
       var csvContent = headers.join(",") + "\n";
-  
+
       // Add data rows to CSV content (start from the second row)
       var rows = table.querySelectorAll("tr");
       for (var i = 1; i < rows.length; i++) { // Start from index 1 to skip the header row
@@ -329,26 +329,26 @@
         });
         csvContent += rowData.join(",") + "\n";
       }
-  
+
       // Create Blob object
       var blob = new Blob([csvContent], { type: "text/csv" });
-  
+
       // Create temporary URL
       var url = window.URL.createObjectURL(blob);
-  
+
       // Create a link element
       var link = document.createElement("a");
       link.setAttribute("href", url);
       link.setAttribute("download", fileName + ".csv");
-  
+
       // Simulate a click on the link
       link.click();
-  
+
       // Remove the temporary URL
       window.URL.revokeObjectURL(url);
     }
   </script>
-  
+
   <!-- Download Quoted Price Products CSV File -->
   {% comment %} <script>
     function DownloadQuotedPriceProductsInCSV(id, fileName) {

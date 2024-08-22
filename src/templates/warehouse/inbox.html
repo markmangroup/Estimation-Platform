@@ -1,35 +1,19 @@
 {% load static %}
-<style>
-  .hidden {
-  display: none;
-}
-</style>
 <!-- Main Start -->
 <div class="email-application overflow-hidden">
   <div class="row">
     <div class="email-search-box w-100 p-2">
       <div class="row ml-2">
         <div class="email-app-menu">
-          <div class="list-group list-group-messages" style="margin-right: 10px;">
-            <a href="javascript:;" class="list-group-item list-group-item-action active border-0" data-target="all-emails">
-              <i class="ft-inbox mr-2"></i><span>Inbox</span>
-              <span class="badge bg-light-secondary badge-pill float-right mx-1">8</span>
-            </a>
-          </div>
-        </div>
-        <div class="email-app-menu">
-          <div class="list-group list-group-messages" style="margin-right: 10px;">
-            <a href="javascript:;" class="list-group-item list-group-item-action border-0" data-target="read-emails">
-              <i class="ft-inbox mr-2"></i><span>Read</span>
-              <span class="badge bg-light-secondary badge-pill float-right mx-1">6</span>
-            </a>
-          </div>
-        </div>
-        <div class="email-app-menu">
           <div class="list-group list-group-messages">
-            <a href="javascript:;" class="list-group-item list-group-item-action border-0" data-target="unread-emails">
-              <i class="ft-inbox mr-2"></i><span>Unread</span>
-              <span class="badge bg-light-secondary badge-pill float-right mx-1">2</span>
+            <a
+              href="javascript:;"
+              class="list-group-item list-group-item-action active border-0"
+            >
+              <i class="ft-inbox mr-2"></i><span>Inbox</span>
+              <span class="badge bg-light-secondary badge-pill float-right mx-1"
+                >8</span
+              >
             </a>
           </div>
         </div>
@@ -63,7 +47,7 @@
                   <div class="list-group list">
                     <div class="users-list-padding">
                       <!-- 1 -->
-                      <a class="list-group-item list-group-item-action border-0 email-unread" data-target="email-content-1">
+                      <a class="list-group-item list-group-item-action border-0" data-target="email-content-1">
                         <div class="media email-list-text p-0">
                           <span class="avatar bg-info mr-2">
                             <span class="avatar-content">W</span>
@@ -88,7 +72,7 @@
                       </a>
 
                       <!-- 2 -->
-                      <a class="list-group-item list-group-item-action border-0 email-read" data-target="email-content-2">
+                      <a class="list-group-item list-group-item-action border-0" data-target="email-content-2">
                         <div class="media email-list-text p-0">
                           <span class="avatar bg-danger mr-2">
                             <span class="avatar-content">W</span>
@@ -111,9 +95,9 @@
                           </div>
                         </div>
                       </a>
-                      
+
                       <!-- 3 -->
-                      <a class="list-group-item list-group-item-action border-0 email-unread" data-target="email-content-3">
+                      <a class="list-group-item list-group-item-action border-0" data-target="email-content-3">
                         <div class="media email-list-text p-0">
                           <span class="avatar bg-warning mr-2">
                             <span class="avatar-content">W</span>
@@ -136,9 +120,9 @@
                           </div>
                         </div>
                       </a>
-                      
+
                       <!-- 4 -->
-                      <a class="list-group-item list-group-item-action border-0 email-read" data-target="email-content-4">
+                      <a class="list-group-item list-group-item-action border-0" data-target="email-content-4">
                         <div class="media email-list-text p-0">
                           <span class="avatar bg-success mr-2">
                             <span class="avatar-content">W</span>
@@ -163,7 +147,7 @@
                       </a>
 
                       <!-- 5 -->
-                      <a class="list-group-item list-group-item-action border-0 email-read" data-target="email-content-5">
+                      <a class="list-group-item list-group-item-action border-0" data-target="email-content-5">
                         <div class="media email-list-text p-0">
                           <span class="avatar bg-warning mr-2">
                             <span class="avatar-content">W</span>
@@ -188,7 +172,7 @@
                       </a>
 
                       <!-- 6 -->
-                      <a class="list-group-item list-group-item-action border-0 email-read" data-target="email-content-6">
+                      <a class="list-group-item list-group-item-action border-0" data-target="email-content-6">
                         <div class="media email-list-text p-0">
                           <span class="avatar bg-info mr-2">
                             <span class="avatar-content">W</span>
@@ -211,7 +195,7 @@
                       </a>
 
                       <!-- 7 -->
-                      <a class="list-group-item list-group-item-action border-0 email-read" data-target="email-content-7">
+                      <a class="list-group-item list-group-item-action border-0" data-target="email-content-7">
                         <div class="media email-list-text p-0">
                           <span class="avatar bg-success mr-2">
                             <span class="avatar-content">W</span>
@@ -234,7 +218,7 @@
                       </a>
 
                       <!-- 8 -->
-                      <a class="list-group-item list-group-item-action border-0 email-read" data-target="email-content-8">
+                      <a class="list-group-item list-group-item-action border-0" data-target="email-content-8">
                         <div class="media email-list-text p-0">
                           <span class="avatar bg-warning mr-2">
                             <span class="avatar-content">W</span>
@@ -285,7 +269,7 @@
                               You have been entrusted with the responsibility of managing the Pick Up task for the order with ID "PROJ016968".
                             </p>
                             <div class="media">
-                              
+
                               <div class="media-body">
                                 <p class="m-0 mb-2"> Pick Up request for Order ID : <a href="{% url 'proposal:order_detail' %}">PROJ016968</a></p>
                                 <span>
@@ -367,12 +351,12 @@
                               You have been entrusted with the responsibility of managing the Return Pick Up task for the order with ID "PROJ016968"
                             </p>
                             <div class="media">
-                              
+
                               <div class="media-body">
                                 <p class="m-0 mb-2"> Pick Up request for Order ID : <a href="{% url 'proposal:order_detail' %}">PROJ016968</a></p>
                                 <span>
                                   <button type="button" class="btn btn-outline-info mr-2 mb-1"><i class="ft-check mr-1"></i>Accepted</button>
-                                  
+
                                 </span>
                               </div>
                             </div>
@@ -407,12 +391,12 @@
                               You have been entrusted with the responsibility of managing the Return Pick Up task for the order with ID "PROJ016968"
                             </p>
                             <div class="media">
-                              
+
                               <div class="media-body">
                                 <p class="m-0 mb-2"> Pick Up request for Order ID : <a href="{% url 'proposal:order_detail' %}">PROJ016968</a></p>
                                 <span>
                                   <button type="button" class="btn btn-outline-info mr-2 mb-1"><i class="ft-check mr-1"></i>Accepted</button>
-                                  
+
                                 </span>
                               </div>
                             </div>
@@ -458,7 +442,7 @@
         </div>
       </div>
     </div>
-    
+
   </div>
 </div>
 <!-- Main End -->
@@ -497,7 +481,7 @@
     const targetContent = document.getElementById(targetId);
     if (targetContent) {
       targetContent.style.display = "block";
-    
+
     }
   }
 
@@ -520,37 +504,3 @@
   });
 </script>
 <!-- Search Jqery End -->
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const buttons = document.querySelectorAll('.email-app-menu .list-group-item');
-    const emailItems = document.querySelectorAll('.email-app-list .list-group-item');
-
-    function showEmails(target) {
-      console.log("INNNNNNNNNNNNNNNN")
-      emailItems.forEach(item => {
-        if (target === 'all-emails') {
-          console.log("-=-=-===- All Mails");
-          item.classList.remove('hidden');
-        } else if (target === 'read-emails') {
-          console.log("-=-=-===- Reads Emails");
-          item.classList.toggle('hidden', !item.classList.contains('email-read'));
-        } else if (target === 'unread-emails') {
-          console.log("-=-=-===- Unread Emails");
-          item.classList.toggle('hidden', !item.classList.contains('email-unread'));
-        }
-      });
-    }
-
-    buttons.forEach(button => {
-      button.addEventListener('click', function() {
-        buttons.forEach(btn => btn.classList.remove('active'));
-        this.classList.add('active');
-        const target = this.getAttribute('data-target');
-        showEmails(target);
-      });
-    });
-
-    showEmails('all-emails');
-  });
-
-</script>

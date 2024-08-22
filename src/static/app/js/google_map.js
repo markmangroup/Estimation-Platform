@@ -1,6 +1,6 @@
 $(document).ready(function () {
     const map = new google.maps.Map(document.getElementById("maps-leaflet-marker-dragable"), {
-        center: { lat: 39.6832332500313, lng: -117.32223701168071  }, 
+        center: { lat: 39.6832332500313, lng: -117.32223701168071  },
         zoom: 6,
     });
 

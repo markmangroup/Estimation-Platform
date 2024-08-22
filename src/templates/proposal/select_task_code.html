@@ -1,15 +1,33 @@
 {% load static %}
 
 <div class="d-flex justify-content-end">
-  <button type="button" class="btn bg-light-primary mb-3 mt-2" data-backdrop="false" data-toggle="modal" data-target="#selectTaskCode">
-  <em class="ft-plus font-medium-5"></em> Add Tasks 
+  <button
+    type="button"
+    class="btn bg-light-secondary htmx-trigger-btn mb-2"
+    hx-get="{% url 'opportunity:select-task-model' opportunity.document_number %}"
+    hx-target="#selectTaskModal"
+    hx-trigger="click"
+    data-toggle="modal"
+    data-target="#selectTaskModal"
+  >
+    <em class="ft-plus font-medium-5"></em> Add Tasks
   </button>
 </div>
 
+<!-- Select Task Modal Start -->
+<div class="modal fade text-left" id="selectTaskModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true" data-backdrop="false">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div id="modelSelectTask">
+              <!-- Content loaded by htmx will appear here -->
+          </div>
+      </div>
+  </div>
+</div>
+<!-- Select Task Modal End -->
+
 <div class="table-responsive">
-  <table
-    class="table table-striped table-bordered zero-configuration"
-  >
+  <table id= "selected-task-table" class="table table-striped table-bordered">
     <thead>
         <tr>
             <th>Internal ID</th>
@@ -17,121 +35,105 @@
             <th>Description</th>
         </tr>
     </thead>
-    <tbody>
-      <!-- Row 1 -->
-      <tr>
-        <td>5</td>
-        <td>AU-000</td>
-        <td>Automation</td>
-      </tr>
-      <tr>
-        <td>6</td>
-        <td>AU-000 : AU-007</td>
-        <td>Automation</td>
-      </tr>
-    </tbody>
   </table>
 </div>
 
-<!-- Labor Modal Start -->
-<div
-  class="modal fade text-left"
-  id="selectTaskCode"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="myModalLabel5"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-md modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" id="myModalLabel5">Add Task</h4>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
-          <span aria-hidden="true"
-            ><i class="ft-x font-medium-2 text-bold-700"></i
-          ></span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <section id="multiple-select2">
-          <div class="card">
-            <div class="card-content">
-            <div class="card-body">
-                <div class="form-group">
-                <label>Select tasks</label>
-                <select class="select2 form-control" id="SelectDescription" multiple>
-                  <option value="AU-000" data-description="Automation">AU-000</option>
-                  <option value="AU-000:AU-001" data-description="Above Ground - Time & Materials">AU-000:AU-001</option>
-                  <option value="AU-000:AU-002" data-description="Ag Supply">AU-000:AU-002</option>
-                  <option value="AU-000:AU-003" data-description="Above Ground - Time & Materials">AU-000:AU-003</option>
-                  <option value="AU-000:AU-004" data-description="Ag Supply">AU-000:AU-004</option>
-                  <option value="AU-000:AU-005" data-description="Ag Supply">AU-000:AU-005</option>
-                  <option value="AU-000:AU-006" data-description="Above Ground - Time & Materials">AU-000:AU-006</option>
-                </select>
-                </div>
-            </div>
-            </div>
-          </div>
-        </section>
-      </div>
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn bg-light-secondary"
-          data-dismiss="modal"
-        >
-          Close
-        </button>
-        <button
-          id="addProductRow"
-          type="button"
-          class="btn bg-light-primary"
-          data-backdrop="false"
-          data-toggle="modal"
-          data-target="#addProduct"
-          onclick="copyLaborRow()"
-          data-dismiss="modal"
-        >
-          <em class="ft-plus font-medium-5"></em> Add
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Labor Modal End -->
+<!-- Htmx -->
+<script>
+  $(document).on('click', '.htmx-trigger-btn' , function (e) {
+    url = "{% url 'opportunity:select-task-model' opportunity.document_number %}"
+    htmx.ajax('GET',
+        url,
+        {
+          target:'#modelSelectTask',
+          swap:'innerHTML',
+    }).then(() => {
+        $('#selectTaskModal').toggleClass('hidden');
+    })
+  })
+</script>
+<!-- Htmx -->
 
-{% block script %}
-  <!-- Multi select js -->
-  <script src="{% static 'vendors/js/select2.full.min.js' %}"></script>
-  <script src="{% static 'app/js/select2.min.js' %}"></script>
-  <!-- Multi select js -->
+<!-- Datatabele -->
+<script>
+  var table_task = initializeDataTable();
 
-  <!-- Search with description -->
-  <script>
-    $(document).ready(function() {
-      $('#SelectDescription').select2({
-          width: '100%',
-          matcher: function(params, data) {
-              // If there are no search terms, return all options
-              if ($.trim(params.term) === '') {
-                  return data;
-              }
-              
-              // Check if the option text or description contains the search term
-              if (data.text.toUpperCase().indexOf(params.term.toUpperCase()) > -1 ||
-                  $(data.element).data('description').toUpperCase().indexOf(params.term.toUpperCase()) > -1) {
-                  return data;
-              }
-              // Return `null` if the term does not match
-              return null;
-          }
+  function initializeDataTable() {
+      return $('#selected-task-table').DataTable({
+          processing: true,
+          serverSide: true,
+          destroy: true,
+          ajax: {
+              url: "{% url 'opportunity:ajax-selected-task-list' opportunity.document_number %}",
+              type: 'GET',
+          },
+          columns: [
+          { data: 'task__internal_id', name: 'task__internal_id' },
+          { data: 'task__name', name: 'task__name' },
+          { data: 'task__description', name: 'task__description' }
+        ],
+
       });
+  }
+</script>
+<!-- Datatabele -->
+
+
+<!-- Go to Current Stage -->
+<script>
+  $(document).ready(function() {
+    var foundElements = $(".steps li").find(".current a");
+
+  });
+</script>
+<!-- Go to Current Stage -->
+
+<!-- Update Stages -->
+<script>
+  $(document).ready(function() {
+    $("a[href='#next']").on("click", function(e) {
+      console.log("Next Clicked");
+      var foundElements = $(".steps li").find(".current");
+      if (foundElements){
+        value = $(".current a span.step").text();
+        $.ajax({
+          url: '{% url "opportunity:update-stages" %}',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            document_number: "{{opportunity.document_number}}",
+            stage: `STAGE_${value}`,
+          }),
+          headers: {
+              'X-CSRFToken': "{{ csrf_token }}",
+          },
+          success: function(response) {
+              if (response.error) {
+                console.log("Error!!",response.error);
+              } else {
+                  console.log("Success!!");
+              }
+          },
+          error: function(xhr, status, error) {
+              console.error('Error:', error);
+          }
+        });
+      }
+      else{
+        console.log("Not found elements:");
+      }
     });
-  </script>
-  <!-- Search with description -->
-{% endblock script %}
+
+    $("a[href='#previous']").on("click", function(e) {
+      console.log("Previous Clicked");
+      var foundElements = $(".steps li").find(".current");
+      if (foundElements){
+        value = $(".current a span.step").text();
+      }
+      else{
+        console.log("Not found elements:");
+      }
+    });
+  });
+</script>
+<!-- Update Stages -->

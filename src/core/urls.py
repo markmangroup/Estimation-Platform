@@ -15,12 +15,20 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include(("apps.proposal.urls", 'proposal'), namespace="proposal")),
-    path("", include(("apps.user.urls", 'user'), namespace="user")),
+    path("accounts/", include("allauth.urls")),
+    path("", include(("apps.proposal.urls", "proposal"), namespace="proposal")),
+    path("", include(("apps.user.urls", "user"), namespace="user")),
+    # path("", include(("apps.master_data.urls", 'user'), namespace="master_data")),
+    path("", include(("apps.task.urls", "task"), namespace="task")),
+    path("", include(("apps.product.urls", "product"), namespace="product")),
+    path("", include(("apps.vendor.urls", "vendor"), namespace="vendor")),
+    path("", include(("apps.customer.urls", "customer"), namespace="customer")),
+    path("", include(("apps.labour_cost.urls", "labour_cost"), namespace="labour_cost")),
+    path("", include(("apps.opportunity.urls", "opportunity"), namespace="opportunity")),
 ]
 
 # API URLS

@@ -18,6 +18,3 @@
 #     from .local import *
 #     print('Invalid or missing ENV variable in .env file')
 #     print('Local environment is running')
-
-
-

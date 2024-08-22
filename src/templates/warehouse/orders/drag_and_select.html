@@ -1,5 +1,5 @@
 {% load static %}
-<button type="button" class="btn bg-light-primary" data-backdrop="false"  
+<button type="button" class="btn bg-light-primary" data-backdrop="false"
 data-toggle="modal" data-target="#show">
 <i class="ft-plus font-medium-5"></i> Create Delivery
 </button>
@@ -50,17 +50,15 @@ data-toggle="modal" data-target="#show">
           </div>
           <div class="col-6 mb-3">
             <label for="" class="form-label">Pick Up Site</label>
-            <input type="text" value="425 Webster Street" class="form-control">
-            {% comment %} <select name="" class="select2 form-control pickupSite" id="">
+            <select name="" class="select2 form-control pickupSite" id="">
               <option disabled selected>Select Option</option>
               <option value="Internal">Internal</option>
               <option value="Customer">Customer</option>
-            </select> {% endcomment %}
+            </select>
           </div>
           <div class="col-6 mb-3">
-            <label for="locationInput" class="form-label">Delivery Site</label>
-            <input type="text" id="locationInput" value="US Irrigation - Old RIver Road - Old" class="form-control">
-            <a id="mapLink" href="#" target="_blank" class="">Show on Map</a>
+            <label for="" class="form-label">Delivery Site</label>
+            <input type="text" value="US Irrigation - Old RIver Road - Old" class="form-control">
           </div>
           <div class="col-6 mb-3" id="internalFields" style="display: none;">
             <label for="warehouseLocation" class="form-label">Warehouse Location</label>
@@ -72,7 +70,7 @@ data-toggle="modal" data-target="#show">
               <option value="Corning">Corning</option>
             </select>
           </div>
-          
+
           <div class="col-6" id="customerFields" style="display: none;">
             <label for="selectName" class="form-label">Customer Location</label>
             <select class="select2 form-control customerLocation" id="selectName">
@@ -84,13 +82,13 @@ data-toggle="modal" data-target="#show">
             </select>
           </div>
         </div>
-        
+
         <div class="table-responsive">
           <table id="sample" class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th><input name="checkbox" type="checkbox" class="row-checkbox" /></th>
-                    <th>Material name</th>
+                    <th>Metrial name</th>
                     <th>Requested Qty</th>
                     <th>Quantity</th>
                 </tr>
@@ -219,7 +217,7 @@ data-toggle="modal" data-target="#show">
   $(document).ready(function() {
     $('.pickupSite').on('change', function() {
       var selectedValue = $(this).val();
-      
+
       if (selectedValue === 'Internal') {
         $('#internalFields').show();
         $('#customerFields').hide();
@@ -261,7 +259,7 @@ data-toggle="modal" data-target="#show">
     checkField();
     po_field.on('input', checkField);
   });
-</script> 
+</script>
 
 <!-- Return Shipping Carrier -->
 <script>
@@ -290,7 +288,7 @@ data-toggle="modal" data-target="#show">
     checkField();
     po_field.on('input', checkField);
   });
-</script> 
+</script>
 
 <!-- Search with description -->
 <script>
@@ -303,12 +301,12 @@ data-toggle="modal" data-target="#show">
               if ($.trim(params.term) === '') {
                   return data;
               }
-              
+
               // Check if the option text or description contains the search term
               var text = data.text ? data.text.toUpperCase() : '';
               var description = $(data.element).data('description') ? $(data.element).data('description').toUpperCase() : '';
               var searchTerm = params.term.toUpperCase();
-              
+
               if (text.indexOf(searchTerm) > -1 || description.indexOf(searchTerm) > -1) {
                   return data;
               }
@@ -317,18 +315,3 @@ data-toggle="modal" data-target="#show">
       });
   });
 </script>
-<script>
-  function updateMapLink() {
-    var location = document.getElementById('locationInput').value;
-    var encodedLocation = encodeURIComponent(location);
-    var mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`;
-    var mapLink = document.getElementById('mapLink');
-    mapLink.href = mapUrl;
-
-    mapLink.textContent = `Show on Map`;
-  }
-  document.getElementById('locationInput').addEventListener('input', updateMapLink);
-
-  updateMapLink();
-</script>
-

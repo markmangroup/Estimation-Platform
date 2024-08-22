@@ -1,4 +1,5 @@
 {% load static %}
+
 <div class="ml-3">
   <div class="row">
     <h5>
@@ -18,8 +19,8 @@
     </h5>
     <span class="ml-1">
       ORD-001
-    </span> 
-    
+    </span>
+
   </div>
 </div>
 
@@ -52,7 +53,7 @@
                     {% include "../file_upload.html" %}
                     {% include '../comment_table.html' %}
                 </fieldset>
-                
+
                 <h6>Delivered to customer</h6>
                 <fieldset id="tab-4" class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
                     {% include "./delivery.html" %}
@@ -99,28 +100,4 @@
 
 
 <script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
-<!-- <script>
-  document.addEventListener('DOMContentLoaded', function () {
-      // Get the tab parameter from the URL
-      const urlParams = new URLSearchParams(window.location.search);
-      const tab = urlParams.get('tab') || '{{ default_tab }}';  // Use context variable if URL parameter is not present
-  
-      console.log('Tab parameter:', tab);  // Debugging line
-  
-      // Remove the 'active' class from all fieldsets
-      document.querySelectorAll('fieldset').forEach(fieldset => {
-          fieldset.classList.remove('active');
-      });
-  
-      // Add the 'active' class to the desired tab
-      const activeTab = document.getElementById(`tab-${tab}`);
-      console.log('Active tab element:', activeTab);  // Debugging line
-      if (activeTab) {
-          activeTab.classList.add('active');
-      } else {
-          // Default to showing the first tab if no parameter is provided
-          document.getElementById('tab-1').classList.add('active');
-      }
-  });
-  </script> -->
-  
+

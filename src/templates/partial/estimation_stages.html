@@ -1,0 +1,33 @@
+{% if o.estimation_stage == "Select Task Code" %}
+    <span class="badge bg-light-secondary">
+        Select Task Code
+    </span>
+{% elif o.estimation_stage == "Upload CAD File" %}
+    <span class="badge bg-light-success">
+        Upload CAD File
+    </span>
+{% elif o.estimation_stage == "Material List" %}
+    <span class="badge bg-light-danger">
+        Material List
+    </span>
+{% elif o.estimation_stage == "Task Mapping" %}
+    <span class="badge bg-light-info">
+        Task Mapping
+    </span>
+{% elif o.estimation_stage == "Generate Estimate" %}
+    <span class="badge bg-light-secondary">
+        Generate Estimate
+    </span>
+{% elif o.estimation_stage == "Proposal Creation" %}
+    <span class="badge bg-grey">
+        Proposal Creation
+    </span>
+{% elif o.estimation_stage == "Proposal Preview" %}
+    <span class="badge bg-light-primary">
+        Proposal Preview
+    </span>
+{% else %}
+    <span class="badge bg-light-info">
+        Final Document
+    </span>
+{% endif %}

@@ -11,7 +11,7 @@
     <div class="card-body">
     <div class="row">
       <!-- Filter Start -->
-        
+
         <!-- Items -->
         <div class="col">
             <label for="" class="form-label font-weight-bold"
@@ -23,7 +23,7 @@
               <option value="Emily Johnson" data-number="108">8" VIC Clamps</option>
               <option value="Michael Brown" data-number="112">10" Perforated Suction Basket</option>
             </select>
-            
+
         </div>
 
         <!-- Customer -->
@@ -68,7 +68,7 @@
             <option value="Michael Brown">In Transit</option>
             <option value="Emily Johnson">Overdeo</option>
           </select>
-          
+
         </div> -->
 
         <!-- Date Range -->
@@ -156,7 +156,7 @@
             </tbody>
           </table>
         </div>
-        
+
       </div>
     </div>
 </div>
@@ -175,7 +175,7 @@
 
       const searchTerm = params.term.toLowerCase();
 
-      if (data.text.toLowerCase().includes(searchTerm) || 
+      if (data.text.toLowerCase().includes(searchTerm) ||
           (data.element && $(data.element).data('number') && $(data.element).data('number').toString().includes(searchTerm))) {
           return data;
       }
@@ -239,14 +239,14 @@
 <!-- Date picker -->
 <script type="text/javascript">
   $(document).ready(function() {
-  
+
       var start = moment().subtract(29, 'days');
       var end = moment();
-  
+
       function cb(start, end) {
           $('.reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
       }
-  
+
       $('.reportrange').daterangepicker({
           startDate: start,
           endDate: end,
@@ -259,9 +259,9 @@
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
           }
       }, cb);
-  
+
       cb(start, end);
-  
+
   });
 </script>
 <!-- Date picker -->

@@ -150,7 +150,7 @@ $(document).ready(function() {
         console.log("-=-=-=-=-=-=-=-= Clicked");
         var $input = $(this).closest('td').find('.inspection-qty');
         var $markComplete = $(this).closest('td').find('span.mark-completed');
-        
+
         $markComplete.hide();
         console.log("-=-=-=-=-=-=-=-= Hide");
         $input.prop('disabled', true);

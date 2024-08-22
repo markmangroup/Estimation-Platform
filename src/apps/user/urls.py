@@ -1,22 +1,15 @@
-"""laurel URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.urls import path
-from .views import LoginView, LogoutView
+
+from . import views
+
+app_name = "user"
 
 urlpatterns = [
-    path('', LoginView.as_view(), name='login'),
-    path('logout/', LogoutView.as_view(), name='logout'),
+    path("", views.LoginView.as_view(), name="login"),
+    path("logout/", views.LogoutView.as_view(), name="logout"),
+    path("authorization", views.AuthorizationView.as_view(), name="authorization"),
+    path("create", views.AddUserView.as_view(), name="create-user"),
+    path("user/<int:pk>/edit", views.UpdateUserView.as_view(), name="edit-user"),
+    path("user/delete/ajax", views.DeleteUserView.as_view(), name="ajax-user-delete"),
+    path("user/list/ajax", views.UserAjaxListView.as_view(), name="ajax-user-list"),
 ]

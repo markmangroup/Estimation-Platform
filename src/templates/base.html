@@ -9,7 +9,7 @@
       <meta name="keywords" content="" />
       <meta name="author" content="Laurel - AG & Water" />
       <title>Laurel - AG & Water</title>
-      <link rel="shortcut icon" type="image/png" href="{% static 'app/img/ico/favicon-32.png' %}" />
+      <link rel="shortcut icon" type="image/png" href="{% static 'app/img/logos/logo.png' %}">
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-touch-fullscreen" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -35,18 +35,25 @@
       <link rel="stylesheet" type="text/css" href="{% static 'vendors/css/dropzone.min.css' %}" />
       <link rel="stylesheet" href="{% static 'app/css/pages/form-wizard.min.css' %}" />
       <link rel="stylesheet" href="{% static 'app/css/pages/ex-component-sweet-alerts.min.css' %}" />
+      <link rel="stylesheet" href="{% static 'app/css/loader.css' %}" />
       <!-- END Page Level CSS-->
       <!-- BEGIN: Custom CSS-->
       <link rel="stylesheet" type="text/css" href="{% static 'app/assets/css/style.css' %}" />
       <!-- END: Custom CSS-->
+
+      <!-- datatable -->
+      {% comment %} <link rel="stylesheet" href="{% static 'app/css/data-tables/datatables.min.css' %}"> {% endcomment %}
+      <link href="{% static 'app/js/toster/toastr.min.css' %}" rel="stylesheet"/>
       <link rel="stylesheet" type="text/css" href="{% static 'vendors/css/select2.min.css' %}" />
       <link rel="stylesheet" href="{% static '/app/css/pages/app-email.min.css' %}" />
       <link rel="stylesheet" type="text/css" href="{% static 'vendors/css/dropzone.min.css' %}" />
       <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+      <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
    </head>
    <!-- END : Head-->
    <!-- BEGIN : Body-->
    <body class="vertical-layout vertical-menu 2-columns navbar-sticky pace-done nav-collapsed" data-menu="vertical-menu" data-col="2-columns">
+
       {% block nav %} {% endblock nav %}
       <!-- Navbar (Header) Ends-->
       <!-- ////////////////////////////////////////////////////////////////////////////-->
@@ -62,6 +69,7 @@
       <div class="sidenav-overlay"></div>
       <div class="drag-target"></div>
       <!-- BEGIN VENDOR JS-->
+      <script src="{% static 'app/js/jquery.min.js' %}"></script>
       <script src="{% static 'vendors/js/vendors.min.js' %}"></script>
       <script src="{% static 'vendors/js/switchery.min.js' %}"></script>
       <!-- BEGIN VENDOR JS-->
@@ -81,10 +89,12 @@
       <!-- BEGIN PAGE LEVEL JS-->
       <script src="{% static 'app/js/form-wizard.min.js' %}"></script>
       <!-- END PAGE LEVEL JS-->
-      <script src="{% static 'app/js/select2.min.js' %}"></script>
+      {% comment %} <script src="{% static 'app/js/select2.min.js' %}"></script> {% endcomment %}
+      <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
       <!-- BEGIN: Custom CSS-->
-      <script src="{% static 'app/assets/js/`' %}"></script>
       <script src="{% static 'app/js/ex-component-sweet-alerts.min.js' %}"></script>
+      <script src="{% static 'vendors/js/toastr.min.js' %}"></script>
+
       <!-- BEGIN PAGE VENDOR JS-->
       <script src="{% static 'vendors/js/datatable/jquery.dataTables.min.js' %}"></script>
       <script src="{% static 'vendors/js/datatable/dataTables.bootstrap4.min.js' %}"></script>
@@ -94,18 +104,27 @@
       <script src="{% static 'app/js/data-tables/dt-advanced-initialization.js' %}"></script>
       <script src="{% static 'vendors/js/datatable/buttons.print.min.js' %}"></script>
       <script src="{% static 'vendors/js/datatable/dataTables.buttons.min.js' %}"></script>
-      
+
+      <!-- Popover -->
+      <script src="{% static 'app/js/components-popover.min.js' %}"></script>
+
+      <!-- sweetaletrt -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.10.5/sweetalert2.min.js" integrity="sha512-WHVh4oxWZQOEVkGECWGFO41WavMMW5vNCi55lyuzDBID+dHg2PIxVufsguM7nfTYN3CEeQ/6NB46FWemzpoI6Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.10.5/sweetalert2.all.js" integrity="sha512-pjknpwZjBTgYFXV2ifufbyB54yMzCfrx6b7wvNtG7ylE6RVDIOfBKT9afNyVsMYSPTUkU2HQw1p0eWlF/q0DFQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.10.5/sweetalert2.all.min.js" integrity="sha512-cAiOMQ6IleoiPyH2UGR2k9OCclUh6tFL6RMnFsH26pntGnKyNtjwFpD7CodlP/TvYz+F7vLoBJQmIgSvScdzQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.10.5/sweetalert2.js" integrity="sha512-vMkSppYgIZ1yFYN6KbH5hBQ6zdE7u3ChwXY2VAueXzJwibG7Se9mJzPM0IwBcOmA1fGPPLD9vYSugAWofhzVJA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
       <!-- END PAGE LEVEL JS-->
       <!-- END: Custom CSS-->
       <script>
          // Get all "Read More" links
          const readMoreLinks = document.querySelectorAll('.read-more');
-         
+
          readMoreLinks.forEach((link, index) => {
            const modalId = `inlineComment${index + 1}`;
            link.setAttribute('data-toggle', 'modal');
            link.setAttribute('data-target', `#${modalId}`);
-         
+
            const modalTemplate = document.querySelector('.modal');
            const modalClone = modalTemplate.cloneNode(true);
            modalClone.setAttribute('id', modalId);
@@ -113,8 +132,40 @@
          });
       </script>
 
+      <script src="{% static 'app/js/htmx-swap.js' %}"></script>
+      <script src="{% static 'app/js/data-tables/datatables-init.js' %}"></script>
+      <script src="https://unpkg.com/htmx.org@1.9.2/dist/htmx.min.js"></script>
+
+      <script>
+      {% if messages %}
+         {% for i in messages %}
+            toastr.{{i.tags}}('{{ i }}', '{{i.tags|title}}', {
+            closeButton: true,
+            progressBar: true,
+            positionClass: 'toast-bottom-right',
+            timeOut: 6000
+            });
+         {% endfor %}
+      {% endif %}
+      </script>
       {% block script %}
-      
+
       {% endblock script %}
    </body>
 </html>
+
+<!-- Popover Js -->
+<script>
+   $(document).ready(function() {
+      var table = $('#opportunity-list').DataTable();
+
+      table.on('draw', function() {
+         console.log("DataTable drawn, initializing popovers.");
+         $('[data-toggle="popover"]').popover();
+      });
+
+      console.log("Document ready, initializing popovers.");
+      $('[data-toggle="popover"]').popover();
+});
+</script>
+<!-- Popover Js -->

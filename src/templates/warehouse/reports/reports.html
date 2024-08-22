@@ -5,7 +5,7 @@
         display: inline-block;
         padding-bottom: 5px; /* Space between text and line */
     }
-    
+
     .gradient-underline::after {
         content: '';
         position: absolute;
@@ -74,7 +74,7 @@
                             <div class="media-body text-left">
                             <h3 class="font-large-0 mb-0">Stock Movement Report</h3>
                             </div>
-                            
+
                         </div>
                         </div>
                         <div id="Widget-line-chart2" class="height-75 WidgetlineChart WidgetlineChartshadow mb-2">
@@ -113,7 +113,7 @@
                     <div class="media-body  text-left">
                     <h3 class="font-large-0  mb-0">Planned Removal Report</h3>
                     </div>
-                    
+
                 </div>
                 </div>
                 <div class="height-75">
@@ -133,7 +133,7 @@
                             <div class="media-body text-left">
                             <h3 class="mb-0">Planned Deliveries Report</h3>
                             </div>
-                        
+
                         </div>
                         </div>
                         <div class="height-100">
@@ -153,7 +153,7 @@
                     <div class="media-body text-left">
                     <h3 class="font-large-0 mb-0">Usages of Equipment</h3>
                     </div>
-                    
+
                 </div>
                 </div>
                 <div class="height-100">
@@ -172,34 +172,30 @@
     <!-- Revenue Report -->
     <div class="col-xl-3 col-lg-6 col-12">
         <a href="{% url 'proposal:revenue_report' %}">
-            <div class="card" style="height: 95%;">
+            <div class="card">
                 <div class="card-content">
-                    <div class="card-body">
-                        <img class="card-img img-fluid rounded mb-3" src="{% static 'app/img/report/revenue_report01.png' %}" alt="Card image cap" style="height: 260px;">
-                        <div class="media">
-                        <div class="media-body text-left">
-                            <h4 class="mb-1 primary">Revenue Report</h4>
-                            <p class="card-text" style="color: black;">Provides a summary of income generated from equipments rentals, including total revenue, segment breakdown.</p>
-                        </div>
-                        </div>
+                <div class="card-body">
+                    <div class="media">
+                    <div class="media-body text-left">
+                        <h4 class="mb-1 primary">Revenue Report</h4>
                     </div>
+                    </div>
+                </div>
                 </div>
             </div>
         </a>
     </div>
-    
+
     <!-- Stock Report -->
     <div class="col-xl-3 col-lg-6 col-12">
         <a href="{% url 'proposal:stock_report' %}">
-            <div class="card" style="height: 95%;">
+            <div class="card">
                 <div class="card-content">
                 <div class="card-body">
-                    <img class="card-img img-fluid rounded mb-3" src="{% static 'app/img/report/stock_report.jpg' %}" alt="Card image cap" style="height: 260px;">
                     <div class="media">
                     <div class="media-body text-left">
                         <h4 class="mb-1 primary">Stock Report</h4>
-                        {% comment %} <p class="card-text" style="color: black;">Shows inventory levels, including available, reserved, and out-of-service equipment, along with value assessments.</p> {% endcomment %}
-                        <p class="card-text" style="color: black;">Provides a detailed overview of equipment inventory, broken down by location / customer location (rented), in transit and warehouse (available) as of the selected reporting date. </p>
+
                     </div>
                     </div>
                 </div>
@@ -207,19 +203,19 @@
             </div>
         </a>
     </div>
-    
+
     <!-- Stock Movement Report -->
     <div class="col-xl-3 col-lg-6 col-12">
         <a href="{% url 'proposal:stock_movement_report' %}">
-            <div class="card" style="height: 95%;">
+            <div class="card">
                 <div class="card-content">
                 <div class="card-body">
-                    <img class="card-img img-fluid rounded mb-3" src="{% static 'app/img/report/stock_movement_report.jpg' %}" alt="Card image cap" style="height: 260px;">
                     <div class="media">
                     <div class="media-body text-left">
                         <h4 class="mb-1 primary">Stock Movement Report</h4>
-                        <p class="card-text" style="color: black;">Tracks all movements of equipment, including additions, removals, and transfers between locations.</p>
+
                     </div>
+
                     </div>
                 </div>
                 </div>
@@ -230,16 +226,15 @@
     <!-- In Transit Report  -->
     <div class="col-xl-3 col-lg-6 col-12">
         <a href="{% url 'proposal:in_transit_report' %}">
-            <div class="card" style="height: 95%;">
+            <div class="card">
                 <div class="card-content">
                 <div class="card-body">
-                    <img class="card-img img-fluid rounded mb-3" src="{% static 'app/img/report/in_tarnsit.png' %}" alt="Card image cap" style="height: 260px;">
                     <div class="media">
                     <div class="media-body text-left">
                         <h4 class="mb-1 primary">In Transit Report </h4>
-                        <p class="card-text" style="color: black;">Lists equipment currently being transported between locations or to/from customers.</p>
+
                     </div>
-                    
+
                     </div>
                 </div>
                 </div>
@@ -250,14 +245,13 @@
     <!-- Planned Removal Report -->
     <div class="col-xl-3 col-lg-6 col-12">
         <a href="{% url 'proposal:planned_removal_report' %}">
-            <div class="card" style="height: 95%;">
+            <div class="card">
                 <div class="card-content">
                 <div class="card-body">
-                    <img class="card-img img-fluid rounded mb-3" src="{% static 'app/img/report/remove.jpg' %}" alt="Card image cap" style="height: 260px;">
                     <div class="media">
                     <div class="media-body text-left">
                         <h4 class="mb-1 primary">Planned Removal Report</h4>
-                        <p class="card-text" style="color: black;">Details scheduled pickups or returns of equipment, including dates and locations.</p>
+
                     </div>
                     </div>
                 </div>
@@ -265,18 +259,16 @@
             </div>
         </a>
     </div>
-    
+
     <!-- Planned Deliveries Report -->
     <div class="col-xl-3 col-lg-6 col-12">
         <a href="{% url 'proposal:planned_deliveries_report' %}">
-            <div class="card" style="height: 95%;">
+            <div class="card">
                 <div class="card-content">
                 <div class="card-body">
-                    <img class="card-img img-fluid rounded mb-3" src="{% static 'app/img/report/Deliveries.jpg' %}" alt="Card image cap" style="height: 260px;">
                     <div class="media">
                     <div class="media-body text-left">
                         <h4 class="mb-1 primary">Planned Deliveries Report</h4>
-                        <p class="card-text" style="color: black;">Outlines upcoming equipment deliveries, with delivery dates, destinations, and customer details.</p>
                     </div>
                     </div>
                 </div>
@@ -284,18 +276,16 @@
             </div>
         </a>
     </div>
-    
+
     <!-- Usages Of Equipment Report -->
     <div class="col-xl-3 col-lg-6 col-12">
         <a href="{% url 'proposal:usages_of_equipment_report' %}">
-            <div class="card" style="height: 95%;">
+            <div class="card">
                 <div class="card-content">
                 <div class="card-body">
-                    <img class="card-img img-fluid rounded mb-3" src="{% static 'app/img/report/Usages.jpg' %}" alt="Card image cap" style="height: 260px">
                     <div class="media">
                         <div class="media-body text-left">
-                            <h4 class="mb-1 primary">Equipment Utilization Report</h4>
-                            <p class="card-text" style="color: black;">Analyzes how often and how long equipment has been rented, providing insights into utilization rates and demand.</p>
+                            <h4 class="mb-1 primary">Usages Of Equipment Report</h4>
                         </div>
                     </div>
                 </div>

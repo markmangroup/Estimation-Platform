@@ -1,0 +1,88 @@
+{% load static %}
+
+<div class="row">
+  <div class="col-12">
+    <div class="content-header">Labor Cost List</div>
+  </div>
+</div>
+
+<!-- Wizard Starts -->
+<section id="icon-tabs">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <h4 class="card-title"></h4>
+
+          <div class="float-right">
+            <button
+              type="button"
+              class="btn bg-light-secondary"
+              hx-get="{% url 'labour_cost:import-labour-cost' %}"
+              hx-target="#modelLabourCost"
+              hx-trigger="click"
+              data-toggle="modal"
+              data-target="#inlineForm"
+            >
+              <i class="fa ft-briefcase mr-1"></i>Import Labour Cost
+          </button>
+
+            <!-- Modal -->
+            <div
+              class="modal fade text-left"
+              id="inlineForm"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="myModalLabel33"
+              aria-hidden="true"
+              data-backdrop="false"
+            >
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                      <div id="modelLabourCost">
+                          <!-- Form content will be dynamically inserted here by HTMX -->
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-striped table-bordered" id="labour-cost-table">
+                  <thead>
+                    <tr>
+                      <th>Labor Task</th>
+                      <th>Local Labor Rates</th>
+                      <th>Out of Town Labor Rates</th>
+                      <th>Description</th>
+                      <th>Notes</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- User Data table Start -->
+<script>
+  targets = [];
+  table_id = "#labour-cost-table";
+  url = '{% url "labour_cost:labour-cost-list-ajax" %}';
+  columns = [
+      { data: 'labour_task', name: 'labour_task' },
+      { data: 'local_labour_rates', name: 'local_labour_rates' },
+      { data: 'out_of_town_labour_rates', name: 'out_of_town_labour_rates' },
+      { data: 'description', name: 'description' },
+      { data: 'notes', name: 'notes' },
+  ];
+</script>
+<!-- User Data table End -->

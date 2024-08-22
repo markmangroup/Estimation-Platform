@@ -52,25 +52,17 @@
         <li
           class="nav-item {% if 'opportunity-list' in request.path %}active{% endif %}"
         >
-          <a href="{% url 'proposal:opportunity_list' %}"
+          <a href="{% url 'opportunity:opportunity-list' %}"
             ><i class="ft-grid"></i
             ><span class="menu-title" data-i18n="Dashboard"
               >Opportunity</span
             ></a
           >
         </li>
-        {% comment %}
-        <li class="nav-item {% if 'inbox' in request.path %}active{% endif %}">
-          <a href="{% url 'proposal:inbox_list' %}"
-            ><i class="ft-inbox"></i
-            ><span class="menu-title" data-i18n="Dashboard">Inbox</span></a
-          >
-        </li>
-        {% endcomment %}
         <li
           class="nav-item {% if 'products' in request.path %}active{% endif %}"
         >
-          <a href="{% url 'proposal:product_list' %}"
+          <a href="{% url 'product:product-list' %}"
             ><i class="ft-list"></i
             ><span class="menu-title" data-i18n="Dashboard">Products</span></a
           >
@@ -78,7 +70,7 @@
         <li
           class="nav-item {% if 'labor-cost' in request.path %}active{% endif %}"
         >
-          <a href="{% url 'proposal:labor_cost_list' %}"
+          <a href="{% url 'labour_cost:labour-cost-list' %}"
             ><i class="ft-layers"></i
             ><span class="menu-title" data-i18n="Dashboard"
               >Labour Cost</span
@@ -88,42 +80,34 @@
         <li
           class="nav-item {% if 'customer' in request.path %}active{% endif %}"
         >
-          <a href="{% url 'proposal:customer_list' %}"
+          <a href="{% url 'customer:customer-list' %}"
             ><i class="ft-users"></i
             ><span class="menu-title" data-i18n="Dashboard">Customers</span></a
           >
         </li>
         <li class="nav-item {% if 'task' in request.path %}active{% endif %}">
-          <a href="{% url 'proposal:task_list' %}"
+          <a href="{% url 'task:task-list' %}"
             ><i class="ft-book"></i
             ><span class="menu-title" data-i18n="Dashboard">Tasks</span></a
           >
         </li>
         <li class="nav-item {% if 'vendor' in request.path %}active{% endif %}">
-          <a href="{% url 'proposal:vendor_list' %}"
+          <a href="{% url 'vendor:vendor-list' %}"
             ><i class="ft-truck"></i
             ><span class="menu-title" data-i18n="Dashboard">Vendors</span></a
           >
         </li>
-        {% comment %}
-        <li
-          class="nav-item {% if 'members' in request.path %}active{% endif %}"
-        >
-          <a href="{% url 'proposal:authorization' %}"
+        {% if user.is_superuser %}
+        <li class="nav-item {% if 'authorization' in request.path %}active{% endif %}">
+          <a href="{% url 'user:authorization' %}"
             ><i class="ft-user"></i
-            ><span class="menu-title" data-i18n="Dashboard"
-              >Authorization</span
-            ></a
+            ><span class="menu-title" data-i18n="Dashboard">Authorization</span></a
           >
         </li>
-        {% endcomment %}
+        {% endif %}
       </ul>
     </div>
   </div>
   <!-- main menu content-->
   <div class="sidebar-background"></div>
-  <!-- main menu footer-->
-  <!-- include includes/menu-footer-->
-  <!-- main menu footer-->
-  <!-- / main menu-->
 </div>

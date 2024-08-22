@@ -1,0 +1,155 @@
+{% load static %}
+<div class="ml-3">
+  <div class="row">
+    <h5>
+      Document Number :
+    </h5>
+    <span class="ml-1 mb-2">
+      {{opportunity.document_number}}
+    </span>
+  </div>
+</div>
+
+<!-- Wizard Starts -->
+<section id="icon-tabs">
+  <div class="row">
+    <div class="col-12">
+      <div class="card p-0 m-0">
+        <div class="card-content">
+          <div class="card-body py-0">
+            <form class="icons-tab-steps">
+              <h6>Select Task Code</h6>
+              <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                {% include "proposal/select_task_code.html" %}
+                {% include "proposal/file_upload.html" %}
+                {% include 'proposal/comment_table.html' %}
+              </fieldset>
+
+              <h6>Upload CAD File</h6>
+              <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                  {% include "proposal/upload_file.html" %}
+                  {% comment %} {% include "proposal/file_upload.html" %} {% endcomment %}
+                  {% comment %} {% include 'proposal/comment_table.html' %} {% endcomment %}
+              </fieldset>
+
+              <h6>Material List</h6>
+              <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                  <div class="accordion" id="accordionExample1">
+                    <div>
+                      <div
+                        id="headingAccordion1"
+                        class="card-header border-bottom pb-3"
+                      >
+                        <a
+                          data-toggle="collapse"
+                          href="#accordion1"
+                          aria-expanded="false"
+                          aria-controls="accordion1"
+                          class="card-title"
+                          >Material List</a
+                        >
+                      </div>
+                      <div
+                        id="accordion1"
+                        class="collapse"
+                        aria-labelledby="headingAccordion1"
+                        data-parent="#accordionExample1"
+                      >
+                        <div class="card-body">
+                          {% include "proposal/material_list.html" %}
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div
+                        id="headingAccordion3"
+                        class="card-header border-bottom pb-3"
+                      >
+                        <a
+                          data-toggle="collapse"
+                          href="#accordion3"
+                          aria-expanded="false"
+                          aria-controls="accordion3"
+                          class="card-title collapsed"
+                          >Glue & Additional Material</a
+                        >
+                      </div>
+                      <div
+                        id="accordion3"
+                        class="collapse"
+                        aria-labelledby="headingAccordion3"
+                        data-parent="#accordionExample1"
+                      >
+                        <div class="card-body">
+                          {% include "proposal/glue_material.html" %}
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div id="headingAccordion4" class="card-header">
+                        <a
+                          data-toggle="collapse"
+                          href="#accordion4"
+                          aria-expanded="false"
+                          aria-controls="accordion4"
+                          class="card-title collapsed"
+                          >Preliminary material list</a
+                        >
+                      </div>
+                      <div
+                        id="accordion4"
+                        class="collapse"
+                        aria-labelledby="headingAccordion4"
+                        data-parent="#accordionExample1"
+                      >
+                        <div class="card-body pb-0">
+                          {% include "proposal/final_material.html" %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {% comment %} {% include "proposal/file_upload.html" %}
+                  {% include 'proposal/comment_table.html' %} {% endcomment %}
+              </fieldset>
+
+              <h6>Task Mapping</h6>
+              <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                  {% include "proposal/tasks.html" %}
+                  {% comment %} {% include "proposal/file_upload.html" %}
+                  {% include 'proposal/comment_table.html' %} {% endcomment %}
+              </fieldset>
+
+              <h6>Generate Estimate</h6>
+              <fieldset class="mt-0" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                {% include "proposal/estimate.html" %}
+                {% comment %} {% include "proposal/file_upload.html" %}
+                {% include 'proposal/comment_table.html' %} {% endcomment %}
+              </fieldset>
+
+              <h6>Proposal Creation</h6>
+              <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                {% include 'proposal/based_on_task.html' %}
+                {% comment %} {% include "proposal/file_upload.html" %}
+                {% include 'proposal/comment_table.html' %} {% endcomment %}
+              </fieldset>
+
+              <h6>Proposal Preview</h6>
+              <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                {% include "proposal/proposal.html" %}
+                {% comment %} {% include "proposal/file_upload.html" %}
+                {% include 'proposal/comment_table.html' %} {% endcomment %}
+              </fieldset>
+
+              <h6>Final Documents</h6>
+              <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                {% include "proposal/proposal_final_documents.html" %}
+                {% comment %} {% include "proposal/file_upload.html" %}
+                {% include 'proposal/comment_table.html' %} {% endcomment %}
+              </fieldset>
+              <form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-import os
 import json
+import os
 
+from __future__ import unicode_literals
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.db import DEFAULT_DB_ALIAS, connections
@@ -15,17 +14,13 @@ class Command(BaseCommand):
     help = "Shows all available migrations for the current project"
 
     def add_arguments(self, parser):
+        parser.add_argument("release", action="store", help="The release file to generate")
         parser.add_argument(
-            'release',
-            action='store',
-            help='The release file to generate'
-        )
-        parser.add_argument(
-            '--database',
-            action='store',
-            dest='database',
+            "--database",
+            action="store",
+            dest="database",
             default=DEFAULT_DB_ALIAS,
-            help='Nominates a database to synchronize. Defaults to the "default" database.'
+            help='Nominates a database to synchronize. Defaults to the "default" database.',
         )
 
     def handle(self, *args, **options):
@@ -35,7 +30,7 @@ class Command(BaseCommand):
             os.path.join(settings.PROJECT_PATH, "releases"),
         )
 
-        db = options.get('database')
+        db = options.get("database")
 
         loader = MigrationLoader(connections[db], ignore_no_migrations=True)
         graph = loader.graph
@@ -48,9 +43,7 @@ class Command(BaseCommand):
                 continue
 
             if len(nodes) > 1:
-                name_str = "; ".join(
-                    "%s in %s" % (name, app) for app, name in nodes
-                )
+                name_str = "; ".join("%s in %s" % (name, app) for app, name in nodes)
                 raise CommandError(
                     "Conflicting migrations detected; multiple leaf nodes in the "
                     "migration graph: (%s).\nTo fix them run "
@@ -63,11 +56,11 @@ class Command(BaseCommand):
             leaf_migrations,
             sort_keys=True,
             indent=4,
-            separators=(',', ': '),
+            separators=(",", ": "),
         )
 
         if not os.path.exists(releases_dir):
             os.makedirs(releases_dir)
 
-        with open(os.path.join(releases_dir, "{}.json".format(options['release'])), "w") as fp:
+        with open(os.path.join(releases_dir, "{}.json".format(options["release"])), "w") as fp:
             fp.write(result)

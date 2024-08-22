@@ -13,8 +13,8 @@
         <tr>
           <th style="max-width:100px">Delivery ID</th>
           <th style="max-width:100px">Total Quantity</th>
-          <th style="max-width:100px">CheckIn Date</th> 
-          <th style="max-width:100px">Inspection Date</th> 
+          <th style="max-width:100px">CheckIn Date</th>
+          <th style="max-width:100px">Inspection Date</th>
         </tr>
       </thead>
       <tbody>
@@ -30,7 +30,7 @@
         <tr>
           <td>
           </td>
-  
+
           <!-- Inner table Start -->
           <td colspan="100">
             </div>
@@ -50,7 +50,7 @@
                     <th >Quantity</th>
                   </tr>
                 </thead>
-  
+
                 <tbody>
                     <tr>
                       <td>1</td>
@@ -73,13 +73,13 @@
                       </td>
                     </tr>
                 </tbody>
-                
+
               </table>
             </div>
-            
+
           </td>
-        </tr> 
-  
+        </tr>
+
         <!--Main Row 2 -->
         {% comment %} <tr>
           <td> PROJ016968	R2/2 </td>
@@ -89,10 +89,10 @@
         </tr>
 
         <tr>
-          
+
           <td>
           </td>
-  
+
           <!-- Inner table Start -->
           <td colspan="100">
             </div>
@@ -112,23 +112,23 @@
                     <th >Quantity</th>
                   </tr>
                 </thead>
-  
+
                 <tbody>
                     <tr>
                       <td>1</td>
                       <td> 20313 </td>
                       <td class="text-nowrap">Rental: 10" X 40' Yelomine Mainline</td>
-                      <td class="text-nowrap"> 
+                      <td class="text-nowrap">
                         <input type="text" class="form-control inspection-qty wizard-required" value="28" style="width: 100px;">
                         <span class="info mark-completed"><i class="ft-info"></i> Mark inspection as completed!! <a class="marked"><i class="ft-check success"></i></a>  <a><i class="ft-x danger"></i></a></span>
                         <small style="color: darkslategray;"></small>
                     </td>
                     </tr>
                 </tbody>
-                
+
               </table>
             </div>
-            
+
           </td>
         </tr> {% endcomment %}
 
@@ -166,7 +166,7 @@
                 <td>2 Oct, 2024</td>
                 <td><button class="btn btn-success">Completed</button></td>
             </tr>
-            
+
         </tbody>
     </table>
 </div> -->
@@ -184,7 +184,7 @@
         </div>
         <div class="modal-body">
             <div class="row">
-      
+
                 <div class="col-6">
                   <label>Item Number</label>
                   <div class="form-group">
@@ -223,7 +223,7 @@
                     />
                   </div>
                 </div>
-                
+
                 <div class="col-6 hide">
                   <label>Revised Quantity</label>
                   <div class="form-group">
@@ -249,7 +249,7 @@
                     />
                   </div>
                 </div>
-                
+
                 <div class="col-6 hide">
                   <label>Minus Quantity</label>
                   <div class="form-group">
@@ -262,7 +262,7 @@
                     />
                   </div>
                 </div>
-                
+
                 <div class="col-6">
                   <label>Reason</label>
                     <div class="form-group">
@@ -286,7 +286,7 @@
                     />
                   </div>
                 </div>
-  
+
             </div>
         </div>
         <div class="modal-footer">
@@ -305,44 +305,44 @@
       const $plusInput = $('#PluseQuantity');
       const $minusInput = $('#minusQuantity');
       const $revisedInput = $('#revisedQuantity');
-  
+
       function updatePlusQuantity() {
           const enteredRevisedQuantity = parseFloat($revisedInput.val()) || 0;
           const newPlusQuantity = Math.max(0, enteredRevisedQuantity - currentQuantity);
           $plusInput.val(newPlusQuantity);
       }
-  
-      
+
+
       function updateMinusQuantity() {
           const enteredRevisedQuantity = parseFloat($revisedInput.val()) || 0;
           const newMinusQuantity = Math.max(0, currentQuantity - enteredRevisedQuantity);
           $minusInput.val(newMinusQuantity);
       }
-  
-      
+
+
       function updateRevisedQuantity() {
           const plusQuantity = parseFloat($plusInput.val()) || 0;
           const minusQuantity = parseFloat($minusInput.val()) || 0;
           const newRevisedQuantity = currentQuantity + plusQuantity - minusQuantity;
           $revisedInput.val(newRevisedQuantity);
       }
-  
-      
+
+
       $plusInput.on('input', function() {
-          updateRevisedQuantity(); 
-          updateMinusQuantity();   
+          updateRevisedQuantity();
+          updateMinusQuantity();
       });
-  
+
       $minusInput.on('input', function() {
-          updateRevisedQuantity(); 
-          updatePlusQuantity();    
+          updateRevisedQuantity();
+          updatePlusQuantity();
       });
-  
+
       $revisedInput.on('input', function() {
-          updatePlusQuantity();    
-          updateMinusQuantity();   
+          updatePlusQuantity();
+          updateMinusQuantity();
       });
-  
+
 
       updateRevisedQuantity();
       updatePlusQuantity();

@@ -1,0 +1,19 @@
+<td>
+    {% if  o.design_estimation_note %}
+
+        <span
+            class="primary"
+            data-toggle="popover"
+            data-content="{{ o.design_estimation_note|escapejs }}"
+            data-placement="top"
+            ata-original-title="Design Estimation Note"
+            data-title="Design Estimation Note"
+            data-trigger="hover"
+            style="border:none; background:none;">
+            {{ o.design_estimation_note|slice:":30" }}...
+        </span>
+
+    {% else %}
+        <div class="text-center"> - </div>
+    {% endif %}
+</td>

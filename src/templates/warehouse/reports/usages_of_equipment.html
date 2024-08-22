@@ -5,7 +5,7 @@
 <script type="text/javascript" src="{% static 'datepicker/daterangepicker.min.js' %}" defer></script>
 <!-- Date picker -->
 
-<h4 class="mt-4">Equipment Utilization Report</h4>
+<h4 class="mt-4">Usages of Equipment</h4>
 
 <!-- Main -->
 <div class="card">
@@ -41,7 +41,7 @@
           <option value="Old River">Old River</option>
           <option value="Yuma">Yuma</option>
           </select>
-          
+
         </div>
 
         <!-- Date -->
@@ -99,7 +99,7 @@
                 <td> 25 </td>
                 <td> 75 </td>
               </tr>
-              
+
               <!-- Row 3 -->
               <tr>
                 <td> 140 </td>
@@ -112,7 +112,7 @@
 
               <!-- Row 5 -->
               <tr>
-                
+
                 <td> 120 </td>
                 <td class="text-nowrap">Skid Booster Pump</td>
                 <td class="text-nowrap">90%</td>
@@ -185,14 +185,14 @@
 <!-- Date picker -->
 <script type="text/javascript">
   $(document).ready(function() {
-  
+
       var start = moment().subtract(29, 'days');
       var end = moment();
-  
+
       function cb(start, end) {
           $('.reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
       }
-  
+
       $('.reportrange').daterangepicker({
           startDate: start,
           endDate: end,
@@ -205,9 +205,9 @@
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
           }
       }, cb);
-  
+
       cb(start, end);
-  
+
   });
 </script>
 
@@ -220,7 +220,7 @@
 
       const searchTerm = params.term.toLowerCase();
 
-      if (data.text.toLowerCase().includes(searchTerm) || 
+      if (data.text.toLowerCase().includes(searchTerm) ||
           (data.element && $(data.element).data('number') && $(data.element).data('number').toString().includes(searchTerm))) {
           return data;
       }
