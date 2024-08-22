@@ -8,9 +8,9 @@ import os
 # Override settings for development
 DEBUG = False
 
-ALLOWED_HOSTS = ['test-dev-eastus-webapp.azurewebsites.net']
+ALLOWED_HOSTS = ['test-dev-eastus-webapp.azurewebsites.net','www.laurel-ag.biz']
 
-CSRF_TRUSTED_ORIGINS = ['https://test-dev-eastus-webapp.azurewebsites.net']
+CSRF_TRUSTED_ORIGINS = ['https://test-dev-eastus-webapp.azurewebsites.net','https://www.laurel-ag.biz']
 
 DATABASES = {
     'default': {
