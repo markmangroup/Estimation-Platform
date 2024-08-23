@@ -36,8 +36,8 @@ DEBUG = True
 
 APPS_DIR = ROOT_DIR
 
-ALLOWED_HOSTS = ["*"]
-CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000", "https://laurel-hsfd.onrender.com"]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS").split(",")
 
 AUTH_USER_MODEL = "user.User"
 # Application definition
@@ -48,10 +48,6 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend",
 )
 
-LOGIN_REDIRECT_URL = "/choose_screens"
-LOGIN_URL = "/login"
-ACCOUNT_LOGOUT_ON_GET = True
-ACCOUNT_LOGOUT_REDIRECT_URL = "/login"
 
 DJANGO_APPS = [
     "django.contrib.admin",
@@ -127,8 +123,12 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT"),
     }
 }
 
@@ -196,6 +196,11 @@ SOCIALACCOUNT_PROVIDERS = {
         ]
     }
 }
+
+LOGIN_REDIRECT_URL = "/choose_screens"
+LOGIN_URL = "/login"
+ACCOUNT_LOGOUT_ON_GET = True
+ACCOUNT_LOGOUT_REDIRECT_URL = "/login"
 
 # Storage configuration
 AZURE_ACCOUNT_NAME = os.getenv("AZURE_ACCOUNT_NAME")
