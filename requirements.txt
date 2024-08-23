@@ -37,11 +37,21 @@ django-extensions~=2.2.9
 # Documentation
 sphinx~=3.0.3
 
-# Wsgi Handlers
-werkzeug~=1.0.1
-
-fabric3
+fabric3~=1.14.post1
 # pygraphviz
 
-# For Test
+openpyxl~=3.1.5
+pandas~=2.0.3
+django-datatables-too~=0.1.4
 
+# widget-tweaks
+django-widget-tweaks~=1.5.0
+
+# django-all-auth
+django-allauth~=64.0.0
+
+# Django Storage
+django-storages~=1.14.4
+
+#Azur Storage
+azure-storage-blob~=12.22.0
