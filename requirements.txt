@@ -57,4 +57,4 @@ django-storages~=1.14.4
 azure-storage-blob~=12.22.0
 
 #Multiselect Field
-django-multiselectfield==2.2.9
+django-multiselectfield
