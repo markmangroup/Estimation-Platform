@@ -68,6 +68,7 @@ THIRD_PARTY_APPS = [
 ]
 LOCAL_APPS = [
     "apps.user.apps.UserConfig",
+    "apps.proposal",
     "apps.proposal.product.apps.ProductConfig",
     "apps.proposal.vendor.apps.VendorConfig",
     "apps.proposal.task.apps.TaskConfig",
