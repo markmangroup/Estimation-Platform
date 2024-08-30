@@ -40,11 +40,10 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         User = get_user_model()
         user_obj = User.objects.filter(email=user.email)
 
-        if len(user_obj) == 0:
-
+        if not user_obj.exists():
             messages.error(
                 request,
-                "You are not authorized to access application, Please contact provider !!",
+                "Access Denied: You do not have the necessary permissions to access this application. Please contact your provider for assistance",
             )
             raise ImmediateHttpResponse(HttpResponseRedirect(reverse("user:login")))
 

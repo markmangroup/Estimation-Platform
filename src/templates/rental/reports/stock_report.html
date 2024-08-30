@@ -1,0 +1,238 @@
+{% load static %}
+<!-- Date picker -->
+<script type="text/javascript" src="{% static 'datepicker/jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'datepicker/moment.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'datepicker/daterangepicker.min.js' %}" defer></script>
+<!-- Date picker -->
+
+<h4 class="mt-4">Stock Report</h4>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="row">
+        <!-- Filters Start -->
+        
+          <!-- Items -->
+          <div class="col">
+            <label for="" class="form-label font-weight-bold"
+                >Equipment Name</label
+            >
+            <select class="select2 form-control" multiple>
+                <option value="All">ALL EXCEPT</option>
+                <option value="James Peter">10" Clamp</option>
+                <option value="Emily Johnson">8" VIC Clamps</option>
+                <option value="Michael Brown">3" X 30' Yelomine Laterals</option>
+            </select>
+            
+        </div>
+
+          <!-- Customer -->
+          <div class="col">
+            <label for="" class="form-label font-weight-bold"
+                >Location</label
+            >
+            <select class="select2 form-control" multiple>
+                <option value="All">ALL EXCEPT</option>
+                <option value="James Peter">325 Rd 192, Delano, CA 93215</option>
+                <option value="Emily Johnson">2920 Hwy 99 W, Corning, CA 96021</option>
+                <option value="Emily Johnson">In Transit</option>
+                <option value="Michael Brown">9213 Old River Rd. Bakersfield, CA 93311</option>	
+            </select>
+            
+        </div>
+          <!-- Date Range -->
+          <div class="col">
+            <label for="dateInput" class="form-label font-weight-bold">Date</label>
+            <input type="date" id="dateInput" class="form-control" value="2024-08-23">  
+          </div>
+        <!-- Filters End -->
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-content">
+      <div class="card-header">
+        <!-- Buttons -->
+        <div class="float-left ml-2">
+          <data class="row">
+            
+          </data>
+        </div>
+        <div class="float-right mb-3">
+          <div class="col-12 my-1">
+            <button
+              class="btn bg-light-info"
+              onclick="DownloadProductsInCSV('StockMovement')"
+            >
+              <em class="ft-download"></em> Stock Report CSV
+            </button>
+          </div>
+        </div>
+        <!-- Buttons -->
+      </div>
+      <div class="card-body">
+        <div id="StockMovement" class="table-responsive">
+          <table class="table table-striped table-bordered zero-configuration">
+            <thead>
+              <tr>
+                <th class="text-center">Date</th>
+                <th class="text-center">Equipment ID</th>
+                <th class="text-center">Equipment Name</th>
+                <th class="text-center">Location</th>
+                <th class="text-center">Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center">03-05-2024</td>
+                <td class="text-center">1714</td>
+                <td class="text-center">10" Clamp</td>
+                <td class="text-center">325 Rd 192, Delano, CA 93215</td>
+                <td class="text-right">10</td>
+              </tr>
+              <tr>
+                <td class="text-center">19-01-2024</td>
+                <td class="text-center">1715</td>
+                <td class="text-center">8" VIC Clamps</td>
+                <td class="text-center">9213 Old River Rd. Bakersfield, CA 93311</td>
+                <td class="text-right">15</td>
+              </tr>
+              <tr>
+                <td class="text-center">03-05-2024</td>
+                <td class="text-center">1716</td>
+                <td class="text-center">8" VIC Clamps</td>
+                <td class="text-center">In Transit</td>
+                <td class="text-right">5</td>
+              </tr>
+              <tr>
+                <td class="text-center">03-05-2024</td>
+                <td class="text-center">1717</td>
+                <td class="text-center">10" Clamp</td>
+                <td class="text-center">2920 Hwy 99 W, Corning, CA 96021</td>
+                <td class="text-right">16</td>
+              </tr>
+              <tr>
+                <td class="text-center">03-05-2024</td>
+                <td class="text-center">1720</td>
+                <td class="text-center">3" X 30' Yelomine Laterals</td>
+                <td class="text-center">In Transit</td>
+                <td class="text-right">12</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <script src="{% static 'vendors/js/select2.full.min.js' %}"></script>
+  <script src="{% static 'app/js/select2.min.js' %}"></script>
+
+  <!-- Download CSV formate Script Start -->
+  <script>
+    function DownloadProductsInCSV(id, fileName) {
+      var table = document.getElementById(id);
+  
+      // Extract headers from the table
+      var headers = [];
+      var headerRow = table.querySelector("tr");
+      var headerCols = headerRow.querySelectorAll("th, td");
+      headerCols.forEach(function(col) {
+        headers.push('"' + col.innerText.replace(/"/g, '""') + '"'); // Wrap headers in quotes and escape double quotes
+      });
+      var csvContent = headers.join(",") + "\n";
+  
+      // Add data rows to CSV content (start from the second row)
+      var rows = table.querySelectorAll("tr");
+      for (var i = 1; i < rows.length; i++) { // Start from index 1 to skip the header row
+        var rowData = [];
+        var cols = rows[i].querySelectorAll("td");
+        cols.forEach(function(col) {
+          rowData.push('"' + col.innerText.replace(/"/g, '""') + '"'); // Wrap cell data in quotes and escape double quotes
+        });
+        csvContent += rowData.join(",") + "\n";
+      }
+  
+      // Create Blob object
+      var blob = new Blob([csvContent], { type: "text/csv" });
+  
+      // Create temporary URL
+      var url = window.URL.createObjectURL(blob);
+  
+      // Create a link element
+      var link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", fileName + ".csv");
+  
+      // Simulate a click on the link
+      link.click();
+  
+      // Remove the temporary URL
+      window.URL.revokeObjectURL(url);
+    }
+  </script>
+  <!-- Download CSV formate Script End -->
+  
+  <!-- Date picker -->
+  <script type="text/javascript">
+    $(document).ready(function() {
+    
+        var start = moment().subtract(29, 'days');
+        var end = moment();
+    
+        function cb(start, end) {
+            $('.reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        }
+    
+        $('.reportrange').daterangepicker({
+            startDate: start,
+            endDate: end,
+            ranges: {
+              'Today': [moment(), moment()],
+              'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+              'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+              'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+              'This Month': [moment().startOf('month'), moment().endOf('month')],
+              'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            }
+        }, cb);
+    
+        cb(start, end);
+    
+    });
+  </script>
+  <script>
+    // JavaScript to change dropdown toggle text based on selection
+    document.querySelectorAll('.dropdown-item').forEach(item => {
+      item.addEventListener('click', function() {
+        let reportName = this.textContent.trim();
+        document.getElementById('selectReportsDropdown').textContent = reportName;
+      });
+    });
+  </script>
+
+<!-- Select2 Script Start -->
+<script>
+  function customMatcher(params, data) {
+      if ($.trim(params.term) === '') {
+          return data;
+      }
+
+      const searchTerm = params.term.toLowerCase();
+
+      if (data.text.toLowerCase().includes(searchTerm) || 
+          (data.element && $(data.element).data('number') && $(data.element).data('number').toString().includes(searchTerm))) {
+          return data;
+      }
+
+      return null;
+  }
+
+  $(".item-placeholder").select2({
+      placeholder: "Search For Item Number or Item",
+      allowClear: true,
+      matcher: customMatcher
+  });
+</script>
+<!-- Select2 Script End -->

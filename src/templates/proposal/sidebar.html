@@ -50,9 +50,9 @@
         data-menu="menu-navigation"
       >
         <li
-          class="nav-item {% if 'opportunity-list' in request.path %}active{% endif %}"
+          class="nav-item {% if 'proposal/opportunity-list' in request.path %}active{% endif %}"
         >
-          <a href="{% url 'opportunity:opportunity-list' %}"
+          <a href="{% url 'proposal_app:opportunity:opportunity-list' %}"
             ><i class="ft-grid"></i
             ><span class="menu-title" data-i18n="Dashboard"
               >Opportunity</span
@@ -60,17 +60,17 @@
           >
         </li>
         <li
-          class="nav-item {% if 'products' in request.path %}active{% endif %}"
+          class="nav-item {% if 'proposal/products' in request.path %}active{% endif %}"
         >
-          <a href="{% url 'product:product-list' %}"
+          <a href="{% url 'proposal_app:product:product-list' %}"
             ><i class="ft-list"></i
             ><span class="menu-title" data-i18n="Dashboard">Products</span></a
           >
         </li>
         <li
-          class="nav-item {% if 'labor-cost' in request.path %}active{% endif %}"
+          class="nav-item {% if 'proposal/labour-cost' in request.path %}active{% endif %}"
         >
-          <a href="{% url 'labour_cost:labour-cost-list' %}"
+          <a href="{% url 'proposal_app:labour_cost:labour-cost-list' %}"
             ><i class="ft-layers"></i
             ><span class="menu-title" data-i18n="Dashboard"
               >Labour Cost</span
@@ -78,21 +78,21 @@
           >
         </li>
         <li
-          class="nav-item {% if 'customer' in request.path %}active{% endif %}"
+          class="nav-item {% if 'proposal/customer' in request.path %}active{% endif %}"
         >
-          <a href="{% url 'customer:customer-list' %}"
+          <a href="{% url 'proposal_app:customer:customer-list' %}"
             ><i class="ft-users"></i
             ><span class="menu-title" data-i18n="Dashboard">Customers</span></a
           >
         </li>
-        <li class="nav-item {% if 'task' in request.path %}active{% endif %}">
-          <a href="{% url 'task:task-list' %}"
+        <li class="nav-item {% if 'proposal/task' in request.path %}active{% endif %}">
+          <a href="{% url 'proposal_app:task:task-list' %}"
             ><i class="ft-book"></i
             ><span class="menu-title" data-i18n="Dashboard">Tasks</span></a
           >
         </li>
-        <li class="nav-item {% if 'vendor' in request.path %}active{% endif %}">
-          <a href="{% url 'vendor:vendor-list' %}"
+        <li class="nav-item {% if 'proposal/vendor' in request.path %}active{% endif %}">
+          <a href="{% url 'proposal_app:vendor:vendor-list' %}"
             ><i class="ft-truck"></i
             ><span class="menu-title" data-i18n="Dashboard">Vendors</span></a
           >

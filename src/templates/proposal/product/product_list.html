@@ -17,7 +17,7 @@
             <button
               type="button"
               class="btn bg-light-secondary"
-              hx-get="{% url 'product:import-products' %}"
+              hx-get="{% url 'proposal_app:product:import-products' %}"
               hx-target="#modalContent"
               hx-trigger="click"
               data-toggle="modal"
@@ -527,7 +527,7 @@
 
   targets = [];
   table_id = "#product-table";
-  url = "{% url 'product:products-list-ajax' %}";
+  url = "{% url 'proposal_app:product:products-list-ajax' %}";
   columns = [
       { data: 'internal_id', name: 'internal_id' },
       { data: 'family', name: 'family' },

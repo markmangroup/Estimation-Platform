@@ -17,7 +17,7 @@
             <button
               type="button"
               class="btn bg-light-secondary"
-              hx-get="{% url 'task:import-task' %}"
+              hx-get="{% url 'proposal_app:task:import-task' %}"
               hx-target="#modalContent"
               hx-trigger="click"
               data-toggle="modal"
@@ -80,7 +80,7 @@
 
   targets = [];
   table_id = "#task-table";
-  url = "{% url 'task:task-list-ajax' %}";
+  url = "{% url 'proposal_app:task:task-list-ajax' %}";
   columns = [
       { data: 'internal_id', name: 'internal_id' },
       { data: 'name', name: 'name' },

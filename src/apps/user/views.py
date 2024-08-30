@@ -13,7 +13,7 @@ from django.views.generic.base import View
 from django.views.generic.edit import CreateView, UpdateView
 from django_datatables_too.mixins import DataTableMixin
 
-from apps.proposal.mixin import AdminMixin, ProposalCreateViewMixin
+from apps.rental.mixin import AdminMixin, ProposalCreateViewMixin
 from apps.user.models import User
 
 from .forms import UserForm, UserUpdateForm
@@ -32,7 +32,7 @@ class LoginView(TemplateView):
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         if request.user.is_authenticated:
-            return redirect("proposal:choose_screens")
+            return redirect("choose_screens")
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -84,7 +84,7 @@ class AddUserView(AdminMixin, CreateView):
     """View for adding a new user."""
 
     form_class = UserForm
-    template_name = "forms/authorization/add_user.html"
+    template_name = "proposal/forms/authorization/add_user.html"
 
     def get_success_url(self):
         """
@@ -121,7 +121,7 @@ class UserAjaxListView(AdminMixin, DataTableMixin, View):
 
     def _get_actions(self, obj):
         """Get Action buttons for table."""
-        t = get_template("partial/list_row_action_custom_url.html")
+        t = get_template("proposal/partial/list_row_action_custom_url.html")
 
         edit_url = reverse(
             "user:edit-user",
@@ -179,7 +179,7 @@ class UpdateUserView(AdminMixin, UpdateView):
 
     model = User
     form_class = UserUpdateForm
-    template_name = "forms/authorization/edit_user.html"
+    template_name = "proposal/forms/authorization/edit_user.html"
 
     def get_success_url(self):
         return reverse_lazy("user:authorization")
@@ -202,3 +202,12 @@ class DeleteUserView(AdminMixin, View):
         user_id = request.POST.get("id")
         User.objects.filter(id=user_id).delete()
         return JsonResponse({"message": "User Deleted Successfully."})
+
+
+class CheckUserAccountTypeView(View):
+    def get(self, request, *args, **kwargs):
+        if "Rental" in request.user.application_type and "Proposal" in request.user.application_type:
+            return redirect("proposal:choose_screens")
+        elif "Proposal" in request.user.application_type:
+            return redirect("proposal_app:opportunity:opportunity-list")
+        return redirect("proposal:map_view")

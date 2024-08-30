@@ -1,0 +1,586 @@
+{% load static %}
+<style>
+    .map-link {
+        display: inline-block;
+        margin-top: 10px;
+    }
+    .input-error {
+      border: 1px solid red;
+  }
+  
+</style>
+<style>
+  .hidden { display: none; }
+</style>
+<!-- Date picker Start -->
+<script type="text/javascript" src="{% static 'datepicker/moment.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'datepicker/daterangepicker.min.js' %}" defer></script>
+<!-- Date picker End -->
+
+<!-- Print Button Start -->
+<div class="float-left my-2 mt-3">
+  <button type="button" class="btn btn-primary print-button" data-table-id="table5">Print</button>
+</div>
+<!-- Print Button End -->
+
+<!-- Create Return Delivery Button Start -->
+<button type="button" class="btn bg-light-primary float-right mt-2 mb-2" data-backdrop="false" data-toggle="modal" data-target="#create_retrun_delivert">
+  <i class="ft-plus font-medium-5"></i> Create Return Delivery
+</button>
+<!-- Create Return Delivery Button End -->
+
+<!-- New Table View -->
+<div>
+  <table id="table5" class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th style="max-width:100px">Delivery ID</th>
+        <th style="max-width:100px">Total Quantity</th>
+        <th style="max-width:100px">Contract End Date</th> 
+        <th style="max-width:100px">Removal Date</th> 
+        <th style="max-width:50px">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!--Main Row 1 -->
+      <tr>
+        <td> OR20240200018-1 </td>
+        <td> 28 </td>
+        <td>2 Apr, 2024</td>
+        <td>2 Apr, 2024</td>
+        {% comment %} <td><input type="date" class="form-control today-date  wizard-required"></td> {% endcomment %}
+        <td>
+          <a href="" data-backdrop="false" data-toggle="modal" data-target="#update_retrun_delivert" title="Edit">
+            <i class="ft-edit font-medium-3 mr-2"></i>
+          </a>
+          <a href="" data-backdrop="false" data-toggle="modal" data-target="#" title="Remove">
+            <i class="fa fa-times font-medium-3 mr-2"></i>
+          </a>
+        </td>
+        
+      </tr>
+
+      <tr>
+        <td>
+        </td>
+
+        <!-- Inner table Start -->
+        <td colspan="100">
+          </div>
+          <div class="table-responsive">
+            <table
+            id="tableBody"
+              class="table table-striped table-bordered"
+                >
+              <thead>
+                <tr class="text-center">
+                  <th colspan="5" class="align-top">Items Information</th>
+                </tr>
+                <tr>
+                  <th>Sr No</th>
+                  <th>Internal Id</th>
+                  <th class="text-nowrap">Items</th>
+                  <th>Delivery Site</th>
+                  <th >Quantity</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td> 20315 </td>
+                    <td class="text-nowrap">Rental: 10" Plain Coupler</td>
+                    <td>
+                        <input type="text" id="locationInput" value="425 Webster Street" class="form-control">  
+                    </td>
+                    <td> <input type="text" class="form-control" value="14"> </td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td> 20314 </td>
+                    <td class="text-nowrap">Rental: 10" Tapped Coupler</td>
+                    <td>
+                        <input type="text" id="locationInput" value="425 Webster Street" class="form-control">
+                    </td>
+                    <td> <input type="text" class="form-control" value="14"> </td>
+                  </tr>
+              </tbody>
+              
+            </table>
+          </div>
+          
+        </td>
+      </tr> 
+
+      <!--Main Row 2 -->
+      <tr>
+        <td> OR20240200018-2 </td>
+        <td> 28 </td>
+        <td>2 Apr, 2024</td>
+        <td>2 Apr, 2024</td>
+        {% comment %} <td><input type="date" class="form-control today-date wizard-required"></td> {% endcomment %}
+        <td>
+          <a href="" data-backdrop="false" data-toggle="modal" data-target="#update_retrun_delivert" title="Edit">
+            <i class="ft-edit font-medium-3 mr-2"></i>
+          </a>
+          <a href="" data-backdrop="false" data-toggle="modal" data-target="#" title="Remove">
+            <i class="fa fa-times font-medium-3 mr-2"></i>
+          </a>
+        </td>
+        
+      </tr>
+
+      <tr>
+        <td>
+        </td>
+
+        <!-- Inner table Start -->
+        <td colspan="100">
+          </div>
+          <div class="table-responsive">
+            <table
+            id="tableBody"
+              class="table table-striped table-bordered"
+                >
+              <thead>
+                <tr class="text-center">
+                  <th colspan="5" class="align-top">Items Information</th>
+                </tr>
+                <tr>
+                  <th>Sr No</th>
+                  <th>Internal Id</th>
+                  <th class="text-nowrap">Items</th>
+                  <th>Delivery Site</th>
+                  <th >Quantity</th>
+
+                </tr>
+              </thead>
+
+              <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td> 20313 </td>
+                    <td class="text-nowrap">Rental: 13" Tapped Coupler</td>
+                    <td>
+                        <input type="text" id="locationInput" value="425 Webster Street" class="form-control">
+                    </td>
+                    <td> <input type="text" class="form-control" value="28"> </td>
+                  </tr>
+              </tbody>
+              
+            </table>
+          </div>
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<!-- New Table View -->
+
+<!-- Old Table View -->
+<!-- <div class="table-responsive mt-4">
+    <table class="table table-stripted file-export">
+        <thead>
+            <th>Delivery ID</th>
+            <th>Quantity</th>
+            <th>Pickup Date</th>
+            <th>Return Date</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td><a href="#" data-toggle="modal" data-target="#retrun_order_detail">RDLI-1</a></td>
+                <td>28</td>
+                <td>1 Oct, 2024</td>
+                <td>2 Oct, 2024</td>
+            </tr>
+
+            <tr>
+                <td><a href="#" data-toggle="modal" data-target="#retrun_order_detail">RDLI-2</a></td>
+                <td>28</td>
+                <td>1 Oct, 2024</td>
+                <td>2 Oct, 2024</td>
+            </tr>
+            
+        </tbody>
+    </table>
+</div> -->
+<!-- Old Table View -->
+
+<!-- Create Return Delivery Modal  Start -->
+<div class="modal fade text-left" id="create_retrun_delivert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel5">Create Delivery</h4>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true"
+            ><i class="ft-x font-medium-2 text-bold-700"></i
+          ></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row mb-3">
+          <div class="col-6 mb-3">
+            <label for="" class="form-label">Pick Up Date</label>
+            <input type="date" class="form-control">
+          </div>
+          <div class="col-6 mb-3">
+            <label for="" class="form-label">Delivery Date</label>
+            <input type="date" class="form-control">
+          </div>
+          <div class="row mb-3 container">
+            <div class="col mb-3">
+              <label for="" class="form-label">Deliver Directly to Customer</label>
+              <input id="create_directDelivery" name="createcheckbox" type="checkbox" class="checkbox_first"/>
+            </div>
+          </div> 
+          <div class="col-6 mb-3 hidden" id="create_orderFieldContainer">
+            <label for="orderField" class="form-label">Order</label>
+            <input id="create_orderField" name="order" type="text" class="form-control" />
+          </div>
+          <div class="col-6 mb-3">
+            <label for="" class="form-label">Shipping Carrier</label>
+            <select name="" class="select2 form-control Returnshipping">
+              <option disabled selected>Select Shipping Carrier</option>
+              <option value="Internal">Internal</option>
+              <option value="Hired">Hired</option>
+            </select>
+          </div>
+          <div class="col-6 mb-3" id="ReturnpoField" style="display: none;">
+            <label for="ReturnpoNumber" class="form-label">Enter PO</label>
+            <input type="text" id="ReturnpoNumber" class="form-control">
+          </div>
+          <div class="col-6 mb-3">
+            <label for="" class="form-label">Pick Up Site</label>
+            <input type="text" id="locationInput-retuen" value="US Irrigation - Old RIver Road - Old" class="form-control" disabled>
+            <a id="viewMapLink" href="#" target="_blank" class="map-link">Show on Map</a>
+            {% comment %} <select name="" class="select2 form-control ReturnpickupSite" id="">
+              <option disabled selected>Select Option</option>
+              <option value="Internal">Internal</option>
+              <option value="Customer">Customer</option>
+            </select> {% endcomment %}
+          </div>
+          <div class="col-6 mb-3">
+            <label for="locationInput-retuen" class="form-label">Delivery Site</label>
+            <input type="text" id="" value="425 Webster Street" class="form-control">
+          </div>            
+          <div class="col-6 mb-3" id="ReturninternalFields" style="display: none;">
+            <label for="warehouseLocation" class="form-label">Warehouse Location</label>
+            <select id="" class="select2 form-control warehouseLocation">
+              <option disabled selected>Select Location</option>
+              <option value="Bakersfield">Bakersfield</option>
+              <option value="Brawley">Brawley</option>
+              <option value="Colusa">Colusa</option>
+              <option value="Corning">Corning</option>
+            </select>
+          </div>
+          
+          <div class="col-6" id="ReturncustomerFields" style="display: none;">
+            <label for="selectname" class="form-label">Customer Location</label>
+            <select class="select2 form-control customerLocation" id="selectname">
+                <option disabled selected>Select Location</option>
+                <option value="ORD-1" data-description="John Dio">ORD-1</option>
+                <option value="ORD-2" data-description="John Weak">ORD-2</option>
+                <option value="ORD-3" data-description="Bruce Wayne">ORD-3</option>
+                <option value="ORD-4" data-description="Tony Stark">ORD-4</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="table-responsive">
+          <table id="sample" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th><input name="checkbox" type="checkbox" class="row-checkbox" /></th>
+                    <th>Material name</th>
+                    <th>Return Qty</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>Ball Valve Riser 3/4" FHTxMHT</td>
+                <td>10</td>
+                <td><input type="text" class="form-control" placeholder="Enter Qty"></td>
+              </tr>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>Cement - Dauber for Pint Can (HOSE FITTINGS)</td>
+                <td>12</td>
+                <td><input type="text" class="form-control" placeholder="Enter Qty"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn bg-light-secondary"
+          data-dismiss="modal"
+        >
+          Close
+        </button>
+        <button type="button" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Create Return Delivery Modal  End -->
+
+<!-- Edit Return Delivery Modal Start -->
+<div class="modal fade text-left" id="update_retrun_delivert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel5">Update Return Delivery : PROJ016968 R1/2</h4>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true"
+            ><i class="ft-x font-medium-2 text-bold-700"></i
+          ></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row mb-3">
+          <div class="col-6 mb-3">
+            <label for="" class="form-label">Contract End Date</label>
+            <input type="date" class="form-control" value="2024-02-04" disabled>
+          </div>
+          <div class="col-6 mb-3">
+            <label for="" class="form-label">Removal Date</label>
+            <input type="date" class="form-control" value="2024-08-07">
+          </div>
+        </div>
+        <div class="col-6 mb-3">
+          <label for="directDelivery" class="form-label">Deliver Directly to Customer</label>
+          <input id="directDelivery" name="checkbox" type="checkbox" class="checkbox_first"/>
+        </div>
+      
+        <div class="col-6 mb-3 hidden" id="orderFieldContainer">
+          <label for="orderField" class="form-label">Order</label>
+          <input id="orderField" name="order" type="text" class="form-control" />
+        </div>
+        
+        <div class="table-responsive">
+          <table id="sample" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th><input name="checkbox" type="checkbox" class="row-checkbox" /></th>
+                    <th>Internal ID</th>
+                    <th>Items</th>
+                    <th>Return Qty</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>20315</td>
+                <td>Rental: 10" Plain Coupler</td>
+                <td>14</td>
+                <td><input type="text" class="form-control" placeholder="Enter Qty" value="14"></td>
+              </tr>
+              <tr>
+                <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                <td>20314</td>
+                <td>Rental: 10" Tapped Coupler</td>
+                <td>14</td>
+                <td><input type="text" class="form-control" placeholder="Enter Qty" value="14"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn bg-light-secondary"
+          data-dismiss="modal"
+        >
+          Close
+        </button>
+        <button type="button" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Edit Return Delivery Modal Start -->
+
+<!-- Js for dropdown of create delivery Start -->
+<script>
+  $(document).ready(function() {
+    $('.ReturnpickupSite').on('change', function() {
+      var selectedValue = $(this).val();
+      
+      if (selectedValue === 'Internal') {
+        $('#ReturninternalFields').show();
+        $('#ReturncustomerFields').hide();
+      } else if (selectedValue === 'Customer') {
+        $('#ReturninternalFields').hide();
+        $('#ReturncustomerFields').show();
+      } else {
+        $('#ReturninternalFields').hide();
+        $('#ReturncustomerFields').hide();
+      }
+    });
+  })
+  
+  $(document).ready(function() {
+    $('.shippingCarrier').on('change', function() {
+        var selectshippingCarrier = $(this).val();
+        if (selectedValue === 'Hired') {           
+            $('#poField').show();
+        }
+        else{
+            $('#poField').hide();
+        }
+    });
+  });;
+</script>
+<!-- Js for dropdown of create delivery End -->
+
+<!-- Search with description Start -->
+<script>
+  $(document).ready(function() {
+      // Initialize Select2 on the select element
+      $('#selectname').select2({
+          width: '100%',
+          matcher: function(params, data) {
+              // If there are no search terms, return all options
+              if ($.trim(params.term) === '') {
+                  return data;
+              }
+              
+              // Check if the option text or description contains the search term
+              var text = data.text ? data.text.toUpperCase() : '';
+              var description = $(data.element).data('description') ? $(data.element).data('description').toUpperCase() : '';
+              var searchTerm = params.term.toUpperCase();
+              
+              if (text.indexOf(searchTerm) > -1 || description.indexOf(searchTerm) > -1) {
+                  return data;
+              }
+              return null;
+          }
+      });
+  });
+</script>
+<!-- Search with description End -->
+
+<!-- Date picker Start -->
+<script type="text/javascript">
+  $(document).ready(function() {
+  
+      var start = moment().subtract(29, 'days');
+      var end = moment();
+  
+      function cb(start, end) {
+          $('.reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+      }
+  
+      $('.reportrange').daterangepicker({
+          startDate: start,
+          endDate: end,
+          ranges: {}
+      }, cb);
+  
+      cb(start, end);
+  
+  });
+</script>
+<!-- Date picker End -->
+<!-- for map -->
+<script>
+  function updateMapLink() {
+      // Get the value from the input field
+      var location = document.getElementById('locationInput-retuen').value;
+      // Encode the location for the URL
+      var encodedLocation = encodeURIComponent(location);
+      // Create the Google Maps URL
+      var googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`;
+      // Update the href attribute of the anchor tag
+      document.getElementById('viewMapLink').href = googleMapsUrl;
+  }
+
+  // Attach an event listener to the input field to update the link on input changes
+  document.getElementById('locationInput-retuen').addEventListener('input', updateMapLink);
+
+  // Initialize the link when the page loads
+  document.addEventListener('DOMContentLoaded', updateMapLink);
+</script>
+
+<script>
+  var selectElement = document.getElementById('directDelivery');
+  var orderFieldContainer = document.getElementById('orderFieldContainer');
+  $("#directDelivery").on("change", function (e) {
+    var isChecked = $(this).prop('checked');
+    if (isChecked === true){
+      orderFieldContainer.classList.remove('hidden');
+    } else {
+      orderFieldContainer.classList.add('hidden');
+    }
+  });
+</script>
+<script>
+  var selectElement = document.getElementById('create_directDelivery');
+  var create_orderFieldContainer = document.getElementById('create_orderFieldContainer');
+  $("#create_directDelivery").on("change", function (e) {
+    var isChecked = $(this).prop('checked');
+    if (isChecked === true){
+      create_orderFieldContainer.classList.remove('hidden');
+    } else {
+      create_orderFieldContainer.classList.add('hidden');
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const orderField = document.getElementById('create_orderField');
+
+      function validateField() {
+          if (orderField.value.trim() === '') {
+              orderField.classList.add('input-error');
+          } else {
+              orderField.classList.remove('input-error');
+          }
+      }
+
+      // Validate field on input
+      orderField.addEventListener('input', validateField);
+
+      // Initial validation
+      validateField();
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const orderField = document.getElementById('orderField');
+
+      function validateField() {
+          if (orderField.value.trim() === '') {
+              orderField.classList.add('input-error');
+          } else {
+              orderField.classList.remove('input-error');
+          }
+      }
+
+      // Validate field on input
+      orderField.addEventListener('input', validateField);
+
+      // Initial validation (in case the field is pre-filled or restored)
+      validateField();
+  });
+</script>

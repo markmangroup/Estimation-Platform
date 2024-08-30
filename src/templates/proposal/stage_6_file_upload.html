@@ -1,0 +1,151 @@
+<!-- After Stage -->
+<div class="form-group">
+    <div class="row">
+      <div class="col-12">
+        <label for="stage_6_file-upload" class="btn btn-secondary mt-3">
+          <input id="stage_6_file-upload" type="file" style="display: none" />
+          Attach Documents
+        </label>
+        <br>
+        <span id="stage_6_file-name" class="ml-3"></span>
+      </div>
+      <div class="col-12">
+        <textarea rows="5" class="form-control square" id="stage_6_comment" placeholder="Add a comment" name="comment3"></textarea>
+      </div>
+      <button id="stage_6_file-save" class="btn btn-outline-success ml-3">Save</button>
+    </div>
+  </div>
+
+  <!-- Loader HTML -->
+  <div id="loader-container" class="stage_6_loader-container" style="display: none;">
+    <div id="loader">
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <p>Document Upload...</p>
+    </div>
+  </div>
+
+  <div class="table-responsive mt-3">
+    <table id="stage_6_document" class="table table-striped table-bordered" style="width:100%;">
+      <thead>
+        <tr class="text-center">
+          <th style="width: 25% !important">Documents</th>
+          <th style="width: 25% !important">Created at</th>
+          <th>Comments</th>
+        </tr>
+      </thead>
+    </table>
+  </div>
+
+  <!-- Attach Document -->
+  <script>
+    // Handle file selection
+    $('#stage_6_file-save').hide();
+    $('#stage_6_file-upload').on('change', function() {
+      var fileInput = $('#stage_6_file-upload')[0];
+      var file = fileInput.files[0];
+      var fileNameElement = $('#stage_6_file-name');
+      var file_save = $('#stage_6_file-save');
+
+      if (file) {
+        fileNameElement.text(file.name);
+        file_save.show();
+      } else {
+        fileNameElement.text('No file selected');
+        file_save.hide();
+      }
+    });
+
+    // Handle save button click
+    $('#stage_6_file-save').on('click', function(event) {
+      event.preventDefault();
+
+      var fileInput = $('#stage_6_file-upload')[0];
+      var file = fileInput.files[0];
+      var document_number = "{{opportunity.document_number}}";
+      var comment = $("#stage_6_comment").val();
+      var stage = "Proposal Creation"
+
+        var formData = new FormData();
+        formData.append('document', file);
+        formData.append('document_number', document_number);
+        formData.append('comment', comment);
+        formData.append('stage', stage);  // Send stage value
+
+        // Show loader
+        $('.stage_6_loader-container').show();
+
+        $.ajax({
+          url: '{% url "proposal_app:opportunity:upload-document" %}',
+          type: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          headers: {
+            'X-CSRFToken': "{{ csrf_token }}",
+          },
+          success: function(response) {
+            console.log('Success:', response);
+            stage_6_initializeDataTable();
+            $('#stage_6_file-upload').val(''); 
+            $('#stage_6_file-name').text('');
+            $('#stage_6_comment').val('');
+            $('#stage_6_file-save').hide();
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error:', textStatus, errorThrown);
+          },
+          complete: function() {
+            // Hide loader
+            $('.stage_6_loader-container').hide();
+          }
+        });
+     
+    });
+    $('#stage_6_comment').on('input', function() {
+      var comment = $(this).val();
+      var file_save = $('#stage_6_file-save');
+  
+      if (comment.trim() !== '') {
+        file_save.show(); 
+      } else {
+        file_save.hide(); 
+      }
+    });
+      function stage_6_initializeDataTable() {
+        var currentStage = "Proposal Creation"
+        console.log('currentStage: ', currentStage);
+
+        // Destroy any existing DataTable instance to avoid conflicts
+        if ($.fn.DataTable.isDataTable('#stage_6_document')) {
+          $('#stage_6_document').DataTable().destroy();
+        }
+
+        // Initialize or reinitialize DataTable
+        $('#stage_6_document').DataTable({
+          processing: true,
+          serverSide: true,
+          ajax: {
+            url: "{% url 'proposal_app:opportunity:ajax-document-list' opportunity.document_number 'stage' %}".replace('stage', currentStage),
+            type: 'GET',
+          },
+          columns: [
+            { data: 'document', name: 'document' },
+            { data: 'created_at', name: 'created_at' },
+            { data: 'comment', name: 'comment' },
+          ],
+        });
+      }
+    $(document).ready(function() {
+      stage_6_initializeDataTable();
+
+      $("a[href='#next'], a[href='#previous']").on("click", function(e) {
+        e.preventDefault(); // Prevent default link behavior
+        console.log('Navigation link clicked');
+        setTimeout(function() {
+          stage_6_initializeDataTable();
+        }, 500);
+      });
+    });
+  </script>

@@ -44,8 +44,8 @@
       <!-- datatable -->
       {% comment %} <link rel="stylesheet" href="{% static 'app/css/data-tables/datatables.min.css' %}"> {% endcomment %}
       <link href="{% static 'app/js/toster/toastr.min.css' %}" rel="stylesheet"/>
-      <link rel="stylesheet" type="text/css" href="{% static 'vendors/css/select2.min.css' %}" />
-      <link rel="stylesheet" href="{% static '/app/css/pages/app-email.min.css' %}" />
+      {% comment %} <link rel="stylesheet" type="text/css" href="{% static 'vendors/css/select2.min.css' %}" /> {% endcomment %}
+      {% comment %} <link rel="stylesheet" href="{% static '/app/css/pages/app-email.min.css' %}" /> {% endcomment %}
       <link rel="stylesheet" type="text/css" href="{% static 'vendors/css/dropzone.min.css' %}" />
       <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
       <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -104,6 +104,8 @@
       <script src="{% static 'app/js/data-tables/dt-advanced-initialization.js' %}"></script>
       <script src="{% static 'vendors/js/datatable/buttons.print.min.js' %}"></script>
       <script src="{% static 'vendors/js/datatable/dataTables.buttons.min.js' %}"></script>
+
+      <script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
 
       <!-- Popover -->
       <script src="{% static 'app/js/components-popover.min.js' %}"></script>

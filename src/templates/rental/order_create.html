@@ -1,0 +1,1014 @@
+{% load static %}
+
+<div class="card-header">
+  <div class="float-right">
+    <div class="modal fade text-left" id="add_product" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true" data-backdrop="false">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Create Order</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
+            </button>
+          </div>
+
+          <!-- Form Start -->
+          <form action="#">
+            <div class="modal-body">
+              <div class="row">
+                
+                <div class="col-6">
+                  <label>Customer </label>
+                  <div class="form-group">
+                    <select class="select2 form-control">
+                      <option selected disabled value="Select Customer">
+                        Select Customer
+                      </option>
+                      <option value="Flint General Enginieering">
+                        Flint General Enginieering
+                      </option>
+                      <option value="California Compaction">
+                        California Compaction
+                      </option>
+                      <option value="Rd 17  LLC">Rd 17 LLC</option>
+                      <option value="Cal Farm Fresh Produce LLC">
+                        Cal Farm Fresh Produce LLC
+                      </option>
+                      <option value="Tej Oliver's Ranch">
+                        Tej Oliver's Ranch
+                      </option>
+                      <option value="Kevin Giannelli">Kevin Giannelli</option>
+                      <option value="Bagdasarian Farms, LLC">
+                        Bagdasarian Farms, LLC
+                      </option>
+                      <option value="Lehn Family farms">
+                        Lehn Family farms
+                      </option>
+                      <option value="Fowler Packing">Fowler Packing</option>
+                      <option value="Leatherby Developement LLC">
+                        Leatherby Developement LLC
+                      </option>
+                      <option value="Justin Keeling">Justin Keeling</option>
+                      <option value="Reshad Sulymankhel">
+                        Reshad Sulymankhel
+                      </option>
+                      <option value="Barrios Farming">Barrios Farming</option>
+                      <option value="CapEx Engineering">
+                        CapEx Engineering
+                      </option>
+                      <option value="Wackman Ranch">Wackman Ranch</option>
+                      <option value="Paramdeep Chohan">Paramdeep Chohan</option>
+                      <option value="Paramdeep Chohan">Paramdeep Chohan</option>
+                      <option value="Overland Stockyard">
+                        Overland Stockyard
+                      </option>
+                      <option value="ROBINSON CALF RANCH">
+                        ROBINSON CALF RANCH
+                      </option>
+                      <option value="Bickford Ranch">Bickford Ranch</option>
+                      <option value="Prime Cleaners LLC">
+                        Prime Cleaners LLC
+                      </option>
+                      <option value="B&G Foods">B&G Foods</option>
+                      <option value="Maruti Ranch Inc.">
+                        Maruti Ranch Inc.
+                      </option>
+                      <option value="Wallace Brothers">Wallace Brothers</option>
+                      <option value="Hillside Farms">Hillside Farms</option>
+                      <option value="Alvarado Farming Services LLC">
+                        Alvarado Farming Services LLC
+                      </option>
+                      <option value="Sunridge Nurseries, Inc.">
+                        Sunridge Nurseries, Inc.
+                      </option>
+                      <option value="Yahav Agritech Consulting, LLC">
+                        Yahav Agritech Consulting, LLC
+                      </option>
+                      <option value="Hertz Farm Management">
+                        Hertz Farm Management
+                      </option>
+                      <option value="TDH Land & Cattle, LLC">
+                        TDH Land & Cattle, LLC
+                      </option>
+                      <option value="Silveira Farms">Silveira Farms</option>
+                      <option value="Robert Knorr">Robert Knorr</option>
+                      <option value="Martha Waterman">Martha Waterman</option>
+                      <option value="Horizon Farms LLC">
+                        Horizon Farms LLC
+                      </option>
+                      <option value="Grant Crum">Grant Crum</option>
+                      <option value="AC Foods">AC Foods</option>
+                      <option value="J&J Farms">J&J Farms</option>
+                      <option value="Peterson Farming Inc">
+                        Peterson Farming Inc
+                      </option>
+                      <option value="P&J Estes, Inc.">P&J Estes, Inc.</option>
+                      <option value="Roberto Ayala">Roberto Ayala</option>
+                      <option value="CTL Forest Management">
+                        CTL Forest Management
+                      </option>
+                      <option value="Delta View Farms">Delta View Farms</option>
+                      <option value="Jay LLC">Jay LLC</option>
+                      <option value="Innovative Produce">
+                        Innovative Produce
+                      </option>
+                      <option value="Nahal Farms LLC.">Nahal Farms LLC.</option>
+                      <option value="The Dutra Group">The Dutra Group</option>
+                      <option value="Pitigliano Farms">Pitigliano Farms</option>
+                      <option value="Rockford Elementary School District">
+                        Rockford Elementary School District
+                      </option>
+                      <option value="Villa Vicencio Vineyard">
+                        Villa Vicencio Vineyard
+                      </option>
+                      <option value="Gilbert Marroquin">
+                        Gilbert Marroquin
+                      </option>
+                      <option value="Day Break Pecans">Day Break Pecans</option>
+                      <option value="Yuma Union High School District">
+                        Yuma Union High School District
+                      </option>
+                      <option value="Brad Wright">Brad Wright</option>
+                      <option value="Tempe Farming / Todd Thelander">
+                        Tempe Farming / Todd Thelander
+                      </option>
+                      <option value="Lomo Cold Storage">
+                        Lomo Cold Storage
+                      </option>
+                      <option
+                        value="Lentz Construction General Engineering Contractor Inc"
+                      >
+                        Lentz Construction General Engineering Contractor Inc
+                      </option>
+                      <option value="Border Valley Trading">
+                        Border Valley Trading
+                      </option>
+                      <option value="Barbara Lauchland">
+                        Barbara Lauchland
+                      </option>
+                      <option value="Zuckerman Heritage, Inc">
+                        Zuckerman Heritage, Inc
+                      </option>
+                      <option value="Colusa Properties Inc.">
+                        Colusa Properties Inc.
+                      </option>
+                      <option value="Susan Upton">Susan Upton</option>
+                      <option value="JOE TEST">JOE TEST</option>
+                      <option value="Jake & Colleen Cecil">
+                        Jake & Colleen Cecil
+                      </option>
+                      <option value="Delta Education Vineyard">
+                        Delta Education Vineyard
+                      </option>
+                      <option value="Vido L. Andreotti Special Needs Trust">
+                        Vido L. Andreotti Special Needs Trust
+                      </option>
+                      <option value="Grobiero Farms">Grobiero Farms</option>
+                      <option value="Rebiero Brothers LLC">
+                        Rebiero Brothers LLC
+                      </option>
+                      <option value="Daou Vineyards">Daou Vineyards</option>
+                      <option value="Bebiero Brothers LLC">
+                        Bebiero Brothers LLC
+                      </option>
+                      <option value="Mark Kampmann">Mark Kampmann</option>
+                      <option value="University of Arizona">
+                        University of Arizona
+                      </option>
+                      <option value="Union Cemetery Association">
+                        Union Cemetery Association
+                      </option>
+                      <option value="Saul Hernandez">Saul Hernandez</option>
+                      <option value="Baja Industrial Welding, Inc.">
+                        Baja Industrial Welding, Inc.
+                      </option>
+                      <option value="Gee Singh">Gee Singh</option>
+                      <option value="Terry Stowells">Terry Stowells</option>
+                      <option value="Sunterra Produce">Sunterra Produce</option>
+                      <option value="Desert Premium Farms">
+                        Desert Premium Farms
+                      </option>
+                      <option value="Green Line Farming">
+                        Green Line Farming
+                      </option>
+                      <option value="Tyson Howze">Tyson Howze</option>
+                      <option value="Sisson Farms">Sisson Farms</option>
+                      <option value="The Burchell Nursery">
+                        The Burchell Nursery
+                      </option>
+                      <option value="Pinheiro and Deniz Partnership">
+                        Pinheiro and Deniz Partnership
+                      </option>
+                      <option value="Matthew Tweed">Matthew Tweed</option>
+                      <option value="ST. John Family Farms LLC">
+                        ST. John Family Farms LLC
+                      </option>
+                      <option value="Rio Bonito Ranch">Rio Bonito Ranch</option>
+                      <option value="Happy Orchards Inc">
+                        Happy Orchards Inc
+                      </option>
+                      <option value="Catherine-Elizabeth, Inc.">
+                        Catherine-Elizabeth, Inc.
+                      </option>
+                      <option value="Magnolia West Farms">
+                        Magnolia West Farms
+                      </option>
+                      <option value="Richard O'Sullivan">
+                        Richard O'Sullivan
+                      </option>
+                      <option value="Coastal Vineyard Services">
+                        Coastal Vineyard Services
+                      </option>
+                      <option value="Venter Family Estate">
+                        Venter Family Estate
+                      </option>
+                      <option value="Waybright Orchards">
+                        Waybright Orchards
+                      </option>
+                      <option value="Colusa Golf & Country Club">
+                        Colusa Golf & Country Club
+                      </option>
+                      <option value="Fantastic Farms, LLC">
+                        Fantastic Farms, LLC
+                      </option>
+                      <option value="FFR Animas, LLC.">FFR Animas, LLC.</option>
+                      <option value="City of Colusa">City of Colusa</option>
+                      <option value="MAS Property Holdings LLC">
+                        MAS Property Holdings LLC
+                      </option>
+                      <option value="Unit B Irrigation & Drainage">
+                        Unit B Irrigation & Drainage
+                      </option>
+                      <option value="Anndria Barcelona">
+                        Anndria Barcelona
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <label>Link NetSuite </label>
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      placeholder="Link NetSuite"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <label>Account Manager </label>
+                  <div class="form-group">
+                    <select class="select2 form-control">
+                      <option selected disabled value="Select Account Manager">
+                        Select Account Manager  
+                      </option>
+                      <option value="Flint General Enginieering">
+                        Flint General Enginieering
+                      </option>
+                      <option value="California Compaction">
+                        California Compaction
+                      </option>
+                      <option value="Rd 17  LLC">Rd 17 LLC</option>
+                      <option value="Cal Farm Fresh Produce LLC">
+                        Cal Farm Fresh Produce LLC
+                      </option>
+                      <option value="Tej Oliver's Ranch">
+                        Tej Oliver's Ranch
+                      </option>
+                      <option value="Kevin Giannelli">Kevin Giannelli</option>
+                      <option value="Bagdasarian Farms, LLC">
+                        Bagdasarian Farms, LLC
+                      </option>
+                      <option value="Lehn Family farms">
+                        Lehn Family farms
+                      </option>
+                      <option value="Fowler Packing">Fowler Packing</option>
+                      <option value="Leatherby Developement LLC">
+                        Leatherby Developement LLC
+                      </option>
+                      <option value="Justin Keeling">Justin Keeling</option>
+                      <option value="Reshad Sulymankhel">
+                        Reshad Sulymankhel
+                      </option>
+                      <option value="Barrios Farming">Barrios Farming</option>
+                      <option value="CapEx Engineering">
+                        CapEx Engineering
+                      </option>
+                      <option value="Wackman Ranch">Wackman Ranch</option>
+                      <option value="Paramdeep Chohan">Paramdeep Chohan</option>
+                      <option value="Paramdeep Chohan">Paramdeep Chohan</option>
+                      <option value="Overland Stockyard">
+                        Overland Stockyard
+                      </option>
+                      <option value="ROBINSON CALF RANCH">
+                        ROBINSON CALF RANCH
+                      </option>
+                      <option value="Bickford Ranch">Bickford Ranch</option>
+                      <option value="Prime Cleaners LLC">
+                        Prime Cleaners LLC
+                      </option>
+                      <option value="B&G Foods">B&G Foods</option>
+                      <option value="Maruti Ranch Inc.">
+                        Maruti Ranch Inc.
+                      </option>
+                      <option value="Wallace Brothers">Wallace Brothers</option>
+                      <option value="Hillside Farms">Hillside Farms</option>
+                      <option value="Alvarado Farming Services LLC">
+                        Alvarado Farming Services LLC
+                      </option>
+                      <option value="Sunridge Nurseries, Inc.">
+                        Sunridge Nurseries, Inc.
+                      </option>
+                      <option value="Yahav Agritech Consulting, LLC">
+                        Yahav Agritech Consulting, LLC
+                      </option>
+                      <option value="Hertz Farm Management">
+                        Hertz Farm Management
+                      </option>
+                      <option value="TDH Land & Cattle, LLC">
+                        TDH Land & Cattle, LLC
+                      </option>
+                      <option value="Silveira Farms">Silveira Farms</option>
+                      <option value="Robert Knorr">Robert Knorr</option>
+                      <option value="Martha Waterman">Martha Waterman</option>
+                      <option value="Horizon Farms LLC">
+                        Horizon Farms LLC
+                      </option>
+                      <option value="Grant Crum">Grant Crum</option>
+                      <option value="AC Foods">AC Foods</option>
+                      <option value="J&J Farms">J&J Farms</option>
+                      <option value="Peterson Farming Inc">
+                        Peterson Farming Inc
+                      </option>
+                      <option value="P&J Estes, Inc.">P&J Estes, Inc.</option>
+                      <option value="Roberto Ayala">Roberto Ayala</option>
+                      <option value="CTL Forest Management">
+                        CTL Forest Management
+                      </option>
+                      <option value="Delta View Farms">Delta View Farms</option>
+                      <option value="Jay LLC">Jay LLC</option>
+                      <option value="Innovative Produce">
+                        Innovative Produce
+                      </option>
+                      <option value="Nahal Farms LLC.">Nahal Farms LLC.</option>
+                      <option value="The Dutra Group">The Dutra Group</option>
+                      <option value="Pitigliano Farms">Pitigliano Farms</option>
+                      <option value="Rockford Elementary School District">
+                        Rockford Elementary School District
+                      </option>
+                      <option value="Villa Vicencio Vineyard">
+                        Villa Vicencio Vineyard
+                      </option>
+                      <option value="Gilbert Marroquin">
+                        Gilbert Marroquin
+                      </option>
+                      <option value="Day Break Pecans">Day Break Pecans</option>
+                      <option value="Yuma Union High School District">
+                        Yuma Union High School District
+                      </option>
+                      <option value="Brad Wright">Brad Wright</option>
+                      <option value="Tempe Farming / Todd Thelander">
+                        Tempe Farming / Todd Thelander
+                      </option>
+                      <option value="Lomo Cold Storage">
+                        Lomo Cold Storage
+                      </option>
+                      <option
+                        value="Lentz Construction General Engineering Contractor Inc"
+                      >
+                        Lentz Construction General Engineering Contractor Inc
+                      </option>
+                      <option value="Border Valley Trading">
+                        Border Valley Trading
+                      </option>
+                      <option value="Barbara Lauchland">
+                        Barbara Lauchland
+                      </option>
+                      <option value="Zuckerman Heritage, Inc">
+                        Zuckerman Heritage, Inc
+                      </option>
+                      <option value="Colusa Properties Inc.">
+                        Colusa Properties Inc.
+                      </option>
+                      <option value="Susan Upton">Susan Upton</option>
+                      <option value="JOE TEST">JOE TEST</option>
+                      <option value="Jake & Colleen Cecil">
+                        Jake & Colleen Cecil
+                      </option>
+                      <option value="Delta Education Vineyard">
+                        Delta Education Vineyard
+                      </option>
+                      <option value="Vido L. Andreotti Special Needs Trust">
+                        Vido L. Andreotti Special Needs Trust
+                      </option>
+                      <option value="Grobiero Farms">Grobiero Farms</option>
+                      <option value="Rebiero Brothers LLC">
+                        Rebiero Brothers LLC
+                      </option>
+                      <option value="Daou Vineyards">Daou Vineyards</option>
+                      <option value="Bebiero Brothers LLC">
+                        Bebiero Brothers LLC
+                      </option>
+                      <option value="Mark Kampmann">Mark Kampmann</option>
+                      <option value="University of Arizona">
+                        University of Arizona
+                      </option>
+                      <option value="Union Cemetery Association">
+                        Union Cemetery Association
+                      </option>
+                      <option value="Saul Hernandez">Saul Hernandez</option>
+                      <option value="Baja Industrial Welding, Inc.">
+                        Baja Industrial Welding, Inc.
+                      </option>
+                      <option value="Gee Singh">Gee Singh</option>
+                      <option value="Terry Stowells">Terry Stowells</option>
+                      <option value="Sunterra Produce">Sunterra Produce</option>
+                      <option value="Desert Premium Farms">
+                        Desert Premium Farms
+                      </option>
+                      <option value="Green Line Farming">
+                        Green Line Farming
+                      </option>
+                      <option value="Tyson Howze">Tyson Howze</option>
+                      <option value="Sisson Farms">Sisson Farms</option>
+                      <option value="The Burchell Nursery">
+                        The Burchell Nursery
+                      </option>
+                      <option value="Pinheiro and Deniz Partnership">
+                        Pinheiro and Deniz Partnership
+                      </option>
+                      <option value="Matthew Tweed">Matthew Tweed</option>
+                      <option value="ST. John Family Farms LLC">
+                        ST. John Family Farms LLC
+                      </option>
+                      <option value="Rio Bonito Ranch">Rio Bonito Ranch</option>
+                      <option value="Happy Orchards Inc">
+                        Happy Orchards Inc
+                      </option>
+                      <option value="Catherine-Elizabeth, Inc.">
+                        Catherine-Elizabeth, Inc.
+                      </option>
+                      <option value="Magnolia West Farms">
+                        Magnolia West Farms
+                      </option>
+                      <option value="Richard O'Sullivan">
+                        Richard O'Sullivan
+                      </option>
+                      <option value="Coastal Vineyard Services">
+                        Coastal Vineyard Services
+                      </option>
+                      <option value="Venter Family Estate">
+                        Venter Family Estate
+                      </option>
+                      <option value="Waybright Orchards">
+                        Waybright Orchards
+                      </option>
+                      <option value="Colusa Golf & Country Club">
+                        Colusa Golf & Country Club
+                      </option>
+                      <option value="Fantastic Farms, LLC">
+                        Fantastic Farms, LLC
+                      </option>
+                      <option value="FFR Animas, LLC.">FFR Animas, LLC.</option>
+                      <option value="City of Colusa">City of Colusa</option>
+                      <option value="MAS Property Holdings LLC">
+                        MAS Property Holdings LLC
+                      </option>
+                      <option value="Unit B Irrigation & Drainage">
+                        Unit B Irrigation & Drainage
+                      </option>
+                      <option value="Anndria Barcelona">
+                        Anndria Barcelona
+                      </option>
+                    </select>
+                    <!-- <input
+                      type="text"
+                      placeholder="Account Manager"
+                      class="form-control"
+                    /> -->
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <label>Region </label>
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      placeholder="Region"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <label>Customer Email </label>
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      placeholder="Customer Email"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <label>Pick-Up Location </label>
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      placeholder="Pick-Up Location"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <label>Delivery Location </label>
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      placeholder="Delivery Location"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <label>Water Source </label>
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      placeholder="Water Source"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <label>Crop </label>
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      placeholder="Crop "
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+
+                <div class="col">
+                  <table id="tableBody" class="table">
+                    <thead>
+                      <th>Items No.</th>
+                      <th>Items</th>
+                      <th>Quantity</th>
+                      <th>Per Unit Price</th>
+                      <th></th>
+                    </thead>
+                    <tbody>
+                      <tr id="newProduct">
+                        <td>
+                          <select class="select2 form-control">
+                            <option selected disabled>Select Items No.</option>
+                            <option value="Air Vent Assembly">112</option>
+                            <option value="Air Vent Installation">113</option>
+                            <option value="Automation: Backflush, Clock, Injector">114</option>
+                          </select>
+                        </td>
+                        <td>
+                          <select class="select2 form-control">
+                            <option selected disabled>Select Material Name</option>
+                            <option value="Air Vent Assembly">Air Vent Assembly</option>
+                            <option value="Air Vent Installation">Air Vent Installation</option>
+                            <option value="Automation: Backflush, Clock, Injector">Automation: Backflush, Clock, Injector</option>
+                          </select>
+                        </td>
+                        <td class="text-nowrap">
+                          <input type="text" class="form-control quantity" oninput="updateRentAmount()" />
+                        </td>
+                        <td class="text-nowrap">
+                          <input type="text" class="form-control price" oninput="updateRentAmount()" />
+                        </td>
+                        <td class="d-flex">
+                          <button class="btn btn-danger mr-2" onclick="removeRow(this)"><i class="fa fa-trash"></i></button>
+                          <button type="button" class="btn btn-primary" onclick="copyTableRow()"><i class="fa fa-plus"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>                    
+                    
+                  </table>
+                </div>
+
+                <div class="col-6">
+                  <label>Rent Amount</label>
+                  <div class="form-group">
+                    <input
+                      type="number"
+                      id="rentAmount"
+                      placeholder="Rent Amount"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+                
+                <div class="col">
+                  <label for="" class="form-label font-weight-bold">Rental Period</label>
+                  <div class="reportrange form-control" id="daterangepicker">
+                    <i class="fa fa-calendar"></i>&nbsp;
+                    <span id="rentalPeriod">Select Date Range</span> <i class="fa fa-caret-down"></i>
+                  </div>
+                </div>
+                
+                <div class="col-6">
+                  <div class="container">
+                    <label>Rent Per Month</label>
+                    <div class="form-group">
+                      <textarea id="rentPerMonth" placeholder="Rent Per Month" class="form-control" readonly rows="4"></textarea>
+                    </div>
+                  </div>
+                </div>
+                
+
+                <div class="col-12">
+                  <div class="form-group">
+                    <div class="row mb-2 pl-2">
+                      <label for="recurring-checkbox" class="mr-2">Recurring Order</label>
+                      <input type="checkbox" id="recurring-checkbox" />
+                  </div>
+                  </div>
+                </div>
+
+                <div class="card recurring" style="border: 1px solid darkgray; padding: 0px 0px 0px 20px;">
+                  <div class="card-header">
+                    <h6 class="mt-2"><i class="ft-check-circle mr-2"></i>Recurring</h6>
+                  </div>
+                  <div class="card-content">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-4">
+                          <div class="d-flex mb-2" style="gap: 10px;">
+                            <label class="form-label">Repeats:</label>
+                            <select id="repeatType" class="form-control" style="width: 150px;">
+                              <option selected disabled> Select Type</option>
+                              <option value="Week">Week</option>
+                              <option value="Month">Month</option>
+                              <option value="Year">Year</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="d-flex mb-2" style="gap: 10px;">
+                            <label class="form-label">For :</label>
+                            <input type="number" id="repeatValue" class="form-control" style="width: 100px;">
+                            <span id="timeUnit"></span>
+                          </div>
+                        </div>
+                        <div class="col-12 mb-2">
+                          <div class="d-flex" style="gap: 10px;">
+                            <label for="" class="form-label">From :</label>
+                            <input type="date" id="startDate" class="form-control" style="width: 150px;">
+                            <label for="" class="form-label">To :</label>
+                            <input type="date" id="endDate" class="form-control" style="width: 150px;">
+                          </div>
+                        </div>
+                        <div class="col-12">
+                          <small id="message"></small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <input
+                type="reset"
+                class="btn bg-light-secondary"
+                data-dismiss="modal"
+                value="Close"
+              />
+              <a href="{% url 'rental:order_detail' %}" class="btn btn-primary">Add Order</a>
+            </div>
+          </form>
+          <!-- Form End -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recurring Modal Start -->
+{% comment %} <div class="modal fade text-left" id="recurring_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true" data-backdrop="false">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel5">Recurring</h4>
+        <button type="button" class="close recurring-close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-2" style="gap: 10px;">
+          <label class="form-label">Repeats</label>
+          <select id="repeatType" class="form-control" style="width: 150px;">
+            <option selected disabled> Select Type</option>
+            <option value="Week">Week</option>
+            <option value="Month">Month</option>
+            <option value="Year">Year</option>
+          </select>
+        </div>
+        <div class="d-flex mb-2" style="gap: 10px;">
+          <span>For: </span>
+          <input type="number" id="repeatValue" class="form-control" style="width: 100px;">
+          <span id="timeUnit"></span>
+        </div>
+        <div class="d-flex" style="gap: 10px;">
+          <label for="" class="form-label">From :</label>
+          <input type="date" class="form-control" style="width: 150px;">
+          <label for="" class="form-label">To :</label>
+          <input type="date" class="form-control" style="width: 150px;">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger recurring-close" id="" data-dismiss="modal" aria-label="Close">Cancel</button>
+        <button type="button" class="btn btn-success" data-dismiss="modal" aria-label="Close">Complete</button>
+      </div>
+    </div>
+  </div>
+</div> {% endcomment %}
+<!-- Recurring Modal End -->
+
+<!-- Js Start -->
+<script src="{% static 'app/js/jquery.min.js' %}"></script>
+<script src="{% static 'vendors/js/select2.full.min.js' %}"></script>
+<script src="{% static 'app/js/select2.min.js' %}"></script>
+<!-- Js End -->
+
+<!-- Date picker Start -->
+<script type="text/javascript" src="{% static 'datepicker/moment.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'datepicker/daterangepicker.min.js' %}" defer></script>
+<!-- Date picker End -->
+
+<!-- Date picker Start -->
+<script type="text/javascript">
+  $(document).ready(function() {
+  
+      var start = moment().subtract(29, 'days');
+      var end = moment();
+  
+      function cb(start, end) {
+          $('.reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+      }
+  
+      $('.reportrange').daterangepicker({
+          startDate: start,
+          endDate: end,
+          ranges: {}
+      }, cb);
+  
+      cb(start, end);
+  
+  });
+</script>
+
+{% comment %} this will Calculate Rant amount {% endcomment %}
+
+<!-- Rant amount calculate -->
+<script>
+  function updateRentAmount() {
+    let totalAmount = 0;
+    // Get all rows in the table body
+    const rows = document.querySelectorAll('#tableBody tbody tr');
+
+    rows.forEach(row => {
+      // Get quantity and price input values
+      const quantityInput = row.querySelector('.quantity');
+      const priceInput = row.querySelector('.price');
+
+      const quantity = parseFloat(quantityInput.value) || 0;
+      const price = parseFloat(priceInput.value) || 0;
+
+      // Calculate total amount for the current row
+      totalAmount += quantity * price;
+    });
+
+    // Update the rent amount input field
+    document.getElementById('rentAmount').value = totalAmount.toFixed(2);
+  }
+
+  function removeRow(button) {
+    const row = button.closest('tr');
+    row.remove();
+    updateRentAmount();
+  }
+
+  function copyTableRow() {
+    const tableBody = document.querySelector('#tableBody tbody');
+    const newRow = tableBody.querySelector('tr').cloneNode(true);
+    
+    // Clear input values in the new row
+    newRow.querySelectorAll('input').forEach(input => input.value = '');
+    
+    tableBody.appendChild(newRow);
+    
+    // Add event listeners for new row inputs
+    newRow.querySelectorAll('input').forEach(input => input.addEventListener('input', updateRentAmount));
+    
+    updateRentAmount();
+  }
+</script>
+
+<!-- Date picker End -->
+
+<script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
+
+<!-- Copy Row JS Start -->
+<script>
+  function CopyTableRow() {
+    
+    var tableBody = document.getElementById("tableBody");
+    console.log("Table Body:", tableBody);
+    
+    var rowToCopy = document.getElementById("newProduct");
+    console.log("Row to Copy:", rowToCopy);
+    
+    totalRows = 1;
+    
+    for (var i = 0; i < totalRows; i++) {
+      console.log("Copying row", i + 1);
+      // Clone the row
+      var clonedRow = rowToCopy.cloneNode(true);
+      console.log("Cloned Row:", clonedRow);
+      tableBody.appendChild(clonedRow);
+      console.log("Row appended to table body");
+    }
+  }
+</script>
+<!-- Copy Row JS End -->
+
+<!-- CheckBox Modal -->
+<script>
+  $(document).ready(function() {
+    // Get the modal
+    // var modal = $('#recurring_modal');
+    var fildset = $(".recurring")
+    
+    // Get the checkbox
+    var checkbox = $('#recurring-checkbox');
+    var clsbtn = $('.recurring-close');
+    
+    // Default hidden
+    fildset.hide();
+
+    // When the checkbox is changed
+    checkbox.on('change', function() {
+      if (this.checked) {
+        fildset.show();
+      }else{
+        fildset.hide();
+      }
+    });
+  });
+</script>
+<!-- CheckBox Modal -->
+
+<!-- Script For reccuring types -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const repeatType = document.getElementById('repeatType');
+      const repeatValue = document.getElementById('repeatValue');
+      const timeUnit = document.getElementById('timeUnit');
+      const startDateInput = document.getElementById('startDate');
+      const endDateInput = document.getElementById('endDate');
+      const message = $('#message');
+
+      repeatType.addEventListener('change', updateMessage);
+      repeatValue.addEventListener('input', updateMessage);
+      startDateInput.addEventListener('change', updateMessage);
+      endDateInput.addEventListener('change', updateMessage);
+
+      function updateMessage() {
+          const selectedValue = repeatType.value;
+          const value = repeatValue.value;
+          const startDateValue = startDateInput.value;
+          const endDateValue = endDateInput.value;
+
+          let dateRange = '';
+          if (startDateValue && endDateValue) {
+              dateRange = `from ${startDateValue} to ${endDateValue}`;
+          }
+
+          switch (selectedValue) {
+              case 'Week':
+                  timeUnit.textContent = 'Week(s)';
+                  if (value) {
+                      message.html(`Occurs every week for ${value} week${value > 1 ? 's' : ''}, ${dateRange}`);
+                  } else {
+                      message.html(`Occurs every week, ${dateRange}`);
+                  }
+                  break;
+              case 'Month':
+                  timeUnit.textContent = 'Month(s)';
+                  if (value) {
+                      message.html(`Occurs every month for ${value} month${value > 1 ? 's' : ''}, ${dateRange}`);
+                  } else {
+                      message.html(`Occurs every month, ${dateRange}`);
+                  }
+                  break;
+              case 'Year':
+                  timeUnit.textContent = 'Year(s)';
+                  if (value) {
+                      message.html(`Occurs every year for ${value} year${value > 1 ? 's' : ''}, ${dateRange}`);
+                  } else {
+                      message.html(`Occurs every year, ${dateRange}`);
+                  }
+                  break;
+              default:
+                  timeUnit.textContent = '';
+                  message.html('');
+          }
+      }
+  });
+</script>
+
+<!-- Script For reccuring types -->
+
+<!-- Script For disabled state of the "Rental Period" section: -->
+<script>
+  $(document).ready(function() {
+    // Get the modal and elements
+    var rentalPeriod = $('.reportrange'); // Adjust this if needed
+    var recurringCheckbox = $('#recurring-checkbox');
+    
+    // Initially hide the rental period if the checkbox is checked
+    toggleRentalPeriod(recurringCheckbox.is(':checked'));
+
+    // Toggle rental period visibility based on the checkbox state
+    recurringCheckbox.on('change', function() {
+      toggleRentalPeriod(this.checked);
+    });
+
+    function toggleRentalPeriod(isRecurring) {
+      if (isRecurring) {
+        rentalPeriod.prop('disabled', true);
+        rentalPeriod.closest('.col').hide(); // Hide the entire column
+      } else {
+        rentalPeriod.prop('disabled', false);
+        rentalPeriod.closest('.col').show(); // Show the entire column
+      }
+    }
+  });
+</script>
+
+<!-- This will calculate rant par month -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+<script>
+  $(function() {
+    $('#daterangepicker').daterangepicker({
+      locale: { format: 'YYYY-MM-DD' },
+      startDate: moment().startOf('month'),
+      endDate: moment().endOf('month'),
+      opens: 'left'
+    }, function(start, end) {
+      $('#rentalPeriod').html(start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+      calculateRentPerMonth();
+    });
+
+    $('#rentAmount').on('input', calculateRentPerMonth);
+
+    function calculateRentPerMonth() {
+      var rentAmount = parseFloat($('#rentAmount').val());
+      var period = $('#rentalPeriod').text().split(' to ');
+
+      if (!rentAmount || period.length !== 2) return;
+
+      var startDate = moment(period[0]);
+      var endDate = moment(period[1]);
+
+      // Calculate the total number of months in the rental period
+      var months = [];
+      var currentMonthStart = startDate.clone().startOf('month');
+
+      while (currentMonthStart <= endDate) {
+        months.push(currentMonthStart.format('YYYY-MM'));
+        currentMonthStart.add(1, 'month').startOf('month');
+      }
+
+      var numberOfMonths = months.length;
+      var rentPerMonth = rentAmount / numberOfMonths;
+
+      var rentPerMonthText = '';
+      months.forEach(function(month) {
+        rentPerMonthText += moment(month).format('MMMM YYYY') + ': ' + rentPerMonth.toFixed(2) + '\n';
+      });
+
+      $('#rentPerMonth').val(rentPerMonthText);
+    }
+  });
+</script>

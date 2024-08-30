@@ -1,0 +1,62 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'vendors/css/leaflet.css' %}">
+<link rel="stylesheet" href="{% static 'app/css/pages/map-leaflet.min.css' %}">
+
+<div class="card">
+    <div class="card-body">
+        <section id="maps-leaflet">
+            <div id="legend">
+                <div class="legend-item">
+                    <img src="{% static 'app/img/blue2.png' %}" width="35" height="35" alt="Warehouse Icon">
+                    <span>Warehouse</span>
+                </div>
+                <div class="legend-item">
+                    <img src="{% static 'app/img/red2.png' %}" width="35" height="35" alt="Customer Icon">
+                    <span>Customer</span>
+                </div>
+            </div>
+            <div id="maps-leaflet-marker-dragable" class="maps-leaflet-container"></div>
+        </section>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBfimrFLSTYP3EjNsQsZCkh46hv9r07_H4"></script>
+<script src="{% static 'app/js/google_map.js' %}"></script>
+
+<script>
+    const Icon = "{% static 'app/img/red2.png' %}";
+    const BlueIcon = "{% static 'app/img/blue2.png' %}";
+
+    const WarehouseDetail = "{% url 'rental:warehouse_detail' %}"
+    const CustomerDetail = "{% url 'rental:customer_detail' %}"
+
+    // List Warehouse coordinates
+    const warehouse = [ 
+        { lat: 35.39580115188971, lng: -119.14463375865422, name: "Bakersfield", address: "123 Main St, Bakersfield, CA 93301"},
+        { lat: 39.187611407547266, lng: -121.99771378920418, name: "Colusa", address: "456 Market St, Colusa, CA 95932"},
+        { lat: 39.90926300585871, lng: -122.19822254499798, name: "Corning", address: "789 Oak St, Corning, CA 96021" },
+        { lat: 35.79583031504095, lng: -119.14371293165505, name: "Delano", address: "101 Pine St, Delano, CA 93215" },
+        { lat: 36.27100172059975, lng: -119.65025294513107, name: "Hanford", address: "202 Elm St, Hanford, CA 93230" },
+        { lat: 36.666898753889406, lng: -121.25074331628146, name: "Hollister", address: "303 Cedar St, Hollister, CA 95023"},
+        { lat: 38.08757551439287, lng: -121.30011501808069, name: "Lodi", address: "404 Birch St, Lodi, CA 95240" },
+        { lat: 35.27130656247793, lng: -119.11068637400149, name: "Old River", address: "505 Willow St, Old River, CA 93263" },
+        { lat: 32.69999087183313, lng: -114.51258941826562, name: "Yuma", address: "606 Palm St, Yuma, AZ 85364" },
+    ];
+    
+    // List Customer coordinates
+    const customers = [
+        { lat: 38.12522521172127, lng: -122.25152284670179, name: "Brooke Marchy", address: "789 Redwood Dr, Santa Rosa, CA 95401", product: { name: "High-Speed Drill", url: "{% url 'rental:warehouse_products' %}" } },
+        { lat: 39.209166838511294, lng: -122.00915622458773, name: "Patrick Stern", address: "321 Pine Ave, Ukiah, CA 95482", product: { name: "Laser Cutter", url: "{% url 'rental:warehouse_products' %}" } },
+        { lat: 34.01322640556352, lng: -118.24474898211936, name: "Zachary Scott", address: "456 Maple St, Los Angeles, CA 90012", product: { name: "CNC Milling Machine", url: "{% url 'rental:warehouse_products' %}" } },
+        { lat: 40.45531042709092, lng: -122.2599201177242, name: "William Martin", address: "654 Oak Dr, Redding, CA 96001", product: { name: "Electric Sander", url: "{% url 'rental:warehouse_products' %}" } },
+        { lat: 38.23219172407918, lng: -122.32319198902375, name: "Brooke Marchy", address: "789 Elm St, Napa, CA 94558", product: { name: "Hydraulic Press", url: "{% url 'rental:warehouse_products' %}" } },
+        { lat: 36.346590870503036, lng: -119.59350759115779, name: "Matthew VanWhy", address: "101 Birch St, Fresno, CA 93721", product: { name: "3D Printer", url: "{% url 'rental:warehouse_products' %}" } },
+        { lat: 36.40884732974863, lng: -119.56482118745464, name: "William Martin", address: "202 Cedar St, Clovis, CA 93612", product: { name: "Welding Machine", url: "{% url 'rental:warehouse_products' %}" } },
+        { lat: 35.36485995652878, lng: -118.99458028934146, name: "Steven Roland", address: "303 Willow St, Bakersfield, CA 93309", product: { name: "Drill Press", url: "{% url 'rental:warehouse_products' %}" } },
+        { lat: 32.23287843422204, lng: -110.95902038944466, name: "Joseph Turner", address: "404 Palm Dr, Tucson, AZ 85701", product: { name: "Band Saw", url: "{% url 'rental:warehouse_products' %}" } },
+        { lat: 35.64173022063601, lng: -120.78421400097423, name: "Lochlan Buckingham", address: "505 Maple Ave, San Luis Obispo, CA 93401", product: { name: "Surface Grinder", url: "{% url 'rental:warehouse_products' %}" } },
+    ];
+    
+</script>

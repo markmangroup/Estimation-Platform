@@ -17,11 +17,7 @@
       type="image/x-icon"
       href="https://pixinvent.com/apex-angular-4-bootstrap-admin-template/app-assets/img/ico/favicon.ico"
     />
-    <link
-      rel="shortcut icon"
-      type="image/png"
-      href="{% static 'app/img/ico/favicon-32.png' %}"
-    />
+    <link rel="shortcut icon" type="image/png" href="{% static 'app/img/logos/logo.png' %}">
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-touch-fullscreen" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -120,7 +116,212 @@
       href="{% static 'app/assets/css/style.css' %}"
     />
     <link href="{% static 'app/js/toster/toastr.min.css' %}" rel="stylesheet"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
     <!-- END: Custom CSS-->
+    <style>
+      / General styles /
+      .circle_border {
+        max-width: 100%;
+        height: auto;
+      }
+      
+      .choose_proposal_btn, .choose_calculator_btn {
+        text-align: center;
+        padding: 1rem 2rem;
+        font-size: 1.2rem; / Base button text size /
+      }
+      
+      .font-large-2 {
+        font-size: 1.5rem; / Base font size for larger text /
+      }
+      
+      .font-large-1 {
+        font-size: 1.25rem; / Base font size for smaller large text /
+      }
+    
+      / Mobile Devices /
+      @media (max-width: 767px) {
+        .row.match-height {
+          height: auto !important;
+        }
+        .main-content {
+          padding-top: 2rem;
+        }
+        .col {
+          padding-top: 2rem !important;
+          padding-bottom: 2rem !important;
+        }
+        .circle_border {
+          width: 100%; / Full width for small screens /
+        }
+        .choose_proposal_btn, .choose_calculator_btn {
+          display: block;
+          width: 90%; / Full width for buttons on small screens /
+          margin: 0 auto;
+          padding: 1rem;
+          font-size: 1rem;
+        }
+      }
+    
+      / Tablets /
+      @media (min-width: 768px) and (max-width: 1024px) {
+        .row.match-height {
+          height: auto !important;
+        }
+        .main-content {
+          padding-top: 2rem;
+        }
+        .col {
+          padding-top: 2rem !important;
+          padding-bottom: 2rem !important;
+        }
+        .font-large-2 {
+          font-size: 1.75rem; / Slightly larger for tablets /
+        }
+        .font-large-1 {
+          font-size: 1.5rem; / Slightly larger for tablets /
+        }
+        .circle_border {
+          max-width: 80%; / Adjust image size for tablets /
+        }
+        .choose_proposal_btn, .choose_calculator_btn {
+          width: 80%; / Adjust button size for tablets /
+          margin: 0 auto;
+        }
+      }
+    
+      / Laptops /
+      @media (min-width: 1025px) and (max-width: 1440px) {
+        .row.match-height {
+          height: auto !important;
+        }
+        .main-content {
+          padding-top: 2rem;
+        }
+        .col {
+          padding-top: 2rem !important;
+          padding-bottom: 2rem !important;
+        }
+        .font-large-2 {
+          font-size: 2rem; / Larger font size for laptops /
+        }
+        .font-large-1 {
+          font-size: 1.75rem; / Larger font size for laptops /
+        }
+        .circle_border {
+          max-width: 70%; / Adjust image size for laptops /
+        }
+        .choose_proposal_btn, .choose_calculator_btn {
+          width: 60%; / Adjust button size for laptops /
+          margin: 0 auto;
+        }
+      }
+    </style><style>
+      / General styles /
+      .circle_border {
+        max-width: 100%;
+        height: auto;
+      }
+    
+      .choose_proposal_btn, .choose_calculator_btn {
+        text-align: center;
+        padding: 1rem 2rem;
+        font-size: 1.2rem; / Base button text size /
+      }
+    
+      .font-large-2 {
+        font-size: 1.5rem; / Base font size for larger text /
+      }
+    
+      .font-large-1 {
+        font-size: 1.25rem; / Base font size for smaller large text /
+      }
+    
+      / Prevent horizontal overflow /
+      body, html {
+        overflow-x: hidden; / Hide horizontal overflow /
+      }
+    
+      / Mobile Devices /
+      @media (max-width: 767px) {
+        .row.match-height {
+          height: auto !important;
+        }
+        .main-content {
+          padding-top: 2rem;
+        }
+        .col {
+          padding-top: 2rem !important;
+          padding-bottom: 2rem !important;
+        }
+        .circle_border {
+          width: 100%; / Full width for small screens /
+        }
+        .choose_proposal_btn, .choose_calculator_btn {
+          display: block;
+          width: 90%; / Full width for buttons on small screens /
+          margin: 0 auto;
+          padding: 1rem;
+          font-size: 1rem;
+        }
+      }
+    
+      / Tablets /
+      @media (min-width: 768px) and (max-width: 1024px) {
+        .row.match-height {
+          height: auto !important;
+        }
+        .main-content {
+          padding-top: 2rem;
+        }
+        .col {
+          padding-top: 2rem !important;
+          padding-bottom: 2rem !important;
+        }
+        .font-large-2 {
+          font-size: 1.75rem; / Slightly larger for tablets /
+        }
+        .font-large-1 {
+          font-size: 1.5rem; / Slightly larger for tablets /
+        }
+        .circle_border {
+          max-width: 80%; / Adjust image size for tablets /
+        }
+        .choose_proposal_btn, .choose_calculator_btn {
+          width: 80%; / Adjust button size for tablets /
+          margin: 0 auto;
+        }
+      }
+    
+      / Laptops /
+      @media (min-width: 1025px) and (max-width: 1440px) {
+        .row.match-height {
+          height: auto !important;
+        }
+        .main-content {
+          padding-top: 2rem;
+        }
+        .col {
+          padding-top: 2rem !important;
+          padding-bottom: 2rem !important;
+        }
+        .font-large-2 {
+          font-size: 2rem; / Larger font size for laptops /
+        }
+        .font-large-1 {
+          font-size: 1.75rem; / Larger font size for laptops /
+        }
+        .circle_border {
+          max-width: 70%; / Adjust image size for laptops /
+        }
+        .choose_proposal_btn, .choose_calculator_btn {
+          width: 60%; / Adjust button size for laptops /
+          margin: 0 auto;
+        }
+      }
+    </style>
+    
   </head>
 
   <body
@@ -132,7 +333,7 @@
       <div class="main-panel">
         <div class="main-content">
           <div class="row match-height" style="height: 100vh">
-            <div class="col" style="background: #ece1c5; padding-top: 5.5rem">
+            <div class="col-lg-6 col-md-12" style="background: #ece1c5; padding-top: 5.5rem">
               <div class="row justify-content-center text-center pb-0 mb-5">
                 <img
                   class="circle_border"
@@ -150,7 +351,7 @@
               </div>
               <div class="row justify-content-center mt-5">
                 <a
-                  href="{% url 'opportunity:opportunity-list' %}"
+                  href="{% url 'proposal_app:opportunity:opportunity-list' %}"
                   class="choose_proposal_btn"
                 >
                   <div class="font-large-1 p-2">
@@ -162,7 +363,7 @@
                 </a>
               </div>
             </div>
-            <div class="col" style="background: #d5b78d; padding-top: 5.5rem">
+            <div class="col-lg-6 col-md-12" style="background: #d5b78d; padding-top: 5.5rem">
               <div class="row justify-content-center text-center pb-0 mb-5">
                 <img
                   class="circle_border"
@@ -179,7 +380,7 @@
               <div class="row justify-content-center mt-5">
                 <!-- For coming soon page, change warehouse_list to coming_soon -->
                 <a
-                  href="{% url 'proposal:map_view' %}"
+                  href="{% url 'rental:map_view' %}"
                   class="choose_calculator_btn"
                 >
                   <div class="font-large-1 p-2">

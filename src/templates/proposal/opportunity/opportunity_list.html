@@ -1,0 +1,688 @@
+{% load static %}
+<style>
+  .sort-options {
+    display: block;
+    border: 1px solid #ddd;
+    background: #f9f9f9;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    width: 300px;
+    height: 380px;
+    overflow: auto;
+    position: absolute;
+    border-radius: 8px;
+}
+.sort-options button.selected {
+  background-color: #b9ceff; /* Light green background */
+  border-color: #ddd; /* Light green border */
+  color: black; /* Dark green text */
+}
+.filter-icon {
+  margin-left: 5px;
+  display: none; /* Hidden by default */
+  vertical-align: middle; /* Align icon with text */
+}
+.filter-icon.active {
+  display: inline; /* Show when active */
+}
+.sort-options button {
+    display: block;
+    margin-bottom: 10px;
+    {% comment %} width: 100%; {% endcomment %}
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    background-color: #fff616d89 !important;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.sort-options button:hover {
+    background-color: #f0f0f0;
+    border-color: #ccc;
+}
+
+.sort-select {
+    margin-top: 10px;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.column-name {
+    margin-bottom: 15px;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+}
+
+.label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.search-label {
+    margin-top: 10px;
+    font-weight: bold;
+}
+</style>
+<div class="row">
+  <div class="col-12">
+    <div class="content-header">Opportunity List</div>
+  </div>
+</div>
+
+<!-- Wizard Starts -->
+<section id="icon-tabs">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <h4 class="card-title"></h4>
+          <div class="float-right">
+            <button
+              type="button"
+              class="btn bg-light-secondary"
+              hx-get="{% url 'proposal_app:opportunity:import-opportunity' %}"
+              hx-target="#modelOpportunity"
+              hx-trigger="click"
+              data-toggle="modal"
+              data-target="#inlineForm"
+            >
+              <i class="fa ft-briefcase mr-1"></i>Import Opportunity
+          </button>
+
+            <!-- Modal -->
+            <div class="modal fade text-left" id="inlineForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true" data-backdrop="false">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                      <div id="modelOpportunity">
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+      </div>
+
+        <div class="card">
+          <div class="card-content">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-striped table-bordered" id="opportunity-list">
+                  <thead>
+                    <tr>
+                      <th data-column="document_number">Document Number
+                        <span class="filter-icon" data-column="document_number">
+                          <!-- Inline SVG Icon -->
+                          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20" viewBox="0 0 256 256" xml:space="preserve">
+                          <defs>
+                          </defs>
+                          <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)" >
+                            <path d="M 52.537 80.466 V 45.192 L 84.53 2.999 C 85.464 1.768 84.586 0 83.041 0 H 6.959 C 5.414 0 4.536 1.768 5.47 2.999 l 31.994 42.192 v 43.441 c 0 1.064 1.163 1.719 2.073 1.167 l 11.758 -7.127 C 52.065 82.205 52.537 81.368 52.537 80.466 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(151,90,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                          </g>
+                          </svg>
+                        </span>
+                      </th>
+                      <th data-column="designer">Designer
+                        <span class="filter-icon" data-column="designer">
+                          <!-- Inline SVG Icon -->
+                          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20" viewBox="0 0 256 256" xml:space="preserve">
+                          <defs>
+                          </defs>
+                          <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)" >
+                            <path d="M 52.537 80.466 V 45.192 L 84.53 2.999 C 85.464 1.768 84.586 0 83.041 0 H 6.959 C 5.414 0 4.536 1.768 5.47 2.999 l 31.994 42.192 v 43.441 c 0 1.064 1.163 1.719 2.073 1.167 l 11.758 -7.127 C 52.065 82.205 52.537 81.368 52.537 80.466 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(151,90,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                          </g>
+                          </svg>
+                        </span>
+                      </th>
+                      <th data-column="estimator">Estimator
+                        <span class="filter-icon" data-column="estimator">
+                          <!-- Inline SVG Icon -->
+                          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20" viewBox="0 0 256 256" xml:space="preserve">
+                          <defs>
+                          </defs>
+                          <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)" >
+                            <path d="M 52.537 80.466 V 45.192 L 84.53 2.999 C 85.464 1.768 84.586 0 83.041 0 H 6.959 C 5.414 0 4.536 1.768 5.47 2.999 l 31.994 42.192 v 43.441 c 0 1.064 1.163 1.719 2.073 1.167 l 11.758 -7.127 C 52.065 82.205 52.537 81.368 52.537 80.466 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(151,90,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                          </g>
+                          </svg>
+                        </span>
+                      </th>
+                      <th data-column="pump_electrical_designer">Pump Electrical Designer
+                        <span class="filter-icon" data-column="pump_electrical_designer">
+                          <!-- Inline SVG Icon -->
+                          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20" viewBox="0 0 256 256" xml:space="preserve">
+                          <defs>
+                          </defs>
+                          <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)" >
+                            <path d="M 52.537 80.466 V 45.192 L 84.53 2.999 C 85.464 1.768 84.586 0 83.041 0 H 6.959 C 5.414 0 4.536 1.768 5.47 2.999 l 31.994 42.192 v 43.441 c 0 1.064 1.163 1.719 2.073 1.167 l 11.758 -7.127 C 52.065 82.205 52.537 81.368 52.537 80.466 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(151,90,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                          </g>
+                          </svg>
+                        </span>
+                      </th>
+                      <th data-column="design_estimation_note">Design Estimation Note
+                        <span class="filter-icon" data-column="design_estimation_note">
+                          <!-- Inline SVG Icon -->
+                          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20" viewBox="0 0 256 256" xml:space="preserve">
+                          <defs>
+                          </defs>
+                          <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)" >
+                            <path d="M 52.537 80.466 V 45.192 L 84.53 2.999 C 85.464 1.768 84.586 0 83.041 0 H 6.959 C 5.414 0 4.536 1.768 5.47 2.999 l 31.994 42.192 v 43.441 c 0 1.064 1.163 1.719 2.073 1.167 l 11.758 -7.127 C 52.065 82.205 52.537 81.368 52.537 80.466 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(151,90,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                          </g>
+                          </svg>
+                        </span>
+                      </th>
+                      <th data-column="estimation_stage">Estimation Stage
+                        <span class="filter-icon" data-column="estimation_stage">
+                          <!-- Inline SVG Icon -->
+                          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20" viewBox="0 0 256 256" xml:space="preserve">
+                          <defs>
+                          </defs>
+                          <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)" >
+                            <path d="M 52.537 80.466 V 45.192 L 84.53 2.999 C 85.464 1.768 84.586 0 83.041 0 H 6.959 C 5.414 0 4.536 1.768 5.47 2.999 l 31.994 42.192 v 43.441 c 0 1.064 1.163 1.719 2.073 1.167 l 11.758 -7.127 C 52.065 82.205 52.537 81.368 52.537 80.466 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(151,90,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                          </g>
+                          </svg>
+                        </span>
+                      </th>
+                      <th data-column="updated_at">Updated At
+                        <span class="filter-icon" data-column="updated_at">
+                          <!-- Inline SVG Icon -->
+                          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20" viewBox="0 0 256 256" xml:space="preserve">
+                          <defs>
+                          </defs>
+                          <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)" >
+                            <path d="M 52.537 80.466 V 45.192 L 84.53 2.999 C 85.464 1.768 84.586 0 83.041 0 H 6.959 C 5.414 0 4.536 1.768 5.47 2.999 l 31.994 42.192 v 43.441 c 0 1.064 1.163 1.719 2.073 1.167 l 11.758 -7.127 C 52.065 82.205 52.537 81.368 52.537 80.466 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(151,90,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                          </g>
+                          </svg>
+                        </span>
+                      </th>
+                      <th data-column="actions">Actions
+                        <span class="filter-icon" data-column="actions">
+                          <!-- Inline SVG Icon -->
+                          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20" viewBox="0 0 256 256" xml:space="preserve">
+                          <defs>
+                          </defs>
+                          <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)" >
+                            <path d="M 52.537 80.466 V 45.192 L 84.53 2.999 C 85.464 1.768 84.586 0 83.041 0 H 6.959 C 5.414 0 4.536 1.768 5.47 2.999 l 31.994 42.192 v 43.441 c 0 1.064 1.163 1.719 2.073 1.167 l 11.758 -7.127 C 52.065 82.205 52.537 81.368 52.537 80.466 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(151,90,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                          </g>
+                          </svg>
+                        </span>
+                      </th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Document Modal -->
+    <div
+      class="modal fade text-left"
+      id="opportunity_documents"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="myModalLabel33"
+      aria-hidden="true"
+      data-backdrop="false"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel5">
+              Opportunity Documents
+            </h4>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true"
+                ><i class="ft-x font-medium-2 text-bold-700"></i
+              ></span>
+            </button>
+          </div>
+          <form action="#">
+            <div class="modal-body">
+              <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                  <thead>
+                    <tr>
+                      <th style="max-width: 100px">Document</th>
+                      <th>Stage</th>
+                      <th>Created At</th>
+                      <th style="max-width: 150px">Comments</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a
+                          href="#"
+                          class="d-flex"
+                          style="font-size: 16px; justify-content: center"
+                        >
+                          <span>File1</span>
+                          <div style="margin-top: 2px; margin-left: 5px">
+                            <i class="icon-cloud-download"></i>
+                          </div>
+                        </a>
+                      </td>
+                      <td>
+                        <span class="badge bg-light-warning">Labor List</span>
+                      </td>
+                      <td>
+                        <div
+                          class="d-flex"
+                          style="font-size: 16px; justify-content: center"
+                        >
+                          <span>20-05-2024</span>
+                        </div>
+                      </td>
+                      <td>
+                        Farming pumps and pipes ar...
+                        <a
+                          class="text-primary"
+                          data-toggle="modal"
+                          data-target="#inlineCommentModel"
+                          >Read More</a
+                        >
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <a
+                          href="#"
+                          class="d-flex"
+                          style="font-size: 16px; justify-content: center"
+                        >
+                          <span>File2</span>
+                          <div style="margin-top: 2px; margin-left: 5px">
+                            <i class="icon-cloud-download"></i>
+                          </div>
+                        </a>
+                      </td>
+                      <td>
+                        <span class="badge bg-light-info">Task Mapping</span>
+                      </td>
+                      <td>
+                        <div
+                          class="d-flex"
+                          style="font-size: 16px; justify-content: center"
+                        >
+                          <span>22-05-2024</span>
+                        </div>
+                      </td>
+                      <td>
+                        Farming pumps and pipes ar...
+                        <a
+                          class="text-primary"
+                          data-toggle="modal"
+                          data-target="#inlineCommentModel"
+                          >Read More</a
+                        >
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <a
+                          href="#"
+                          class="d-flex"
+                          style="font-size: 16px; justify-content: center"
+                        >
+                          <span>File3</span>
+                          <div style="margin-top: 2px; margin-left: 5px">
+                            <i class="icon-cloud-download"></i>
+                          </div>
+                        </a>
+                      </td>
+                      <td>
+                        <span class="badge bg-light-danger">Material List</span>
+                      </td>
+                      <td>
+                        <div
+                          class="d-flex"
+                          style="font-size: 16px; justify-content: center"
+                        >
+                          <span>24-05-2024</span>
+                        </div>
+                      </td>
+                      <td>
+                        Farming pumps and pipes ar...
+                        <a
+                          class="text-primary"
+                          data-toggle="modal"
+                          data-target="#inlineCommentModel"
+                          >Read More</a
+                        >
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-primary mr-2"
+                data-dismiss="modal"
+              >
+                <i class="ft-check-square mr-1"></i>OK
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="{% static 'app/js/jquery.min.js' %}"></script>
+<script src="{% static 'vendors/js/datatable/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'datepicker/moment.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'datepicker/daterangepicker.min.js' %}" defer></script>
+<script>
+  $(document).ready(function() {
+    var table = initializeDataTable({}, [], false);
+    var currentFilters = {};
+    var currentOrder = [];
+    var storedDateRange = null;
+
+    function initializeDataTable(filters = {}, order = [], ordering = true) {
+        return $('#opportunity-list').DataTable({
+            processing: true,
+            serverSide: true,
+            destroy: true,
+            ajax: {
+                url: "{% url 'proposal_app:opportunity:opportunity-list-ajax' %}",
+                type: 'GET',
+                data: function(d) {
+                    d.filters = JSON.stringify(filters);
+                    d.order_values = JSON.stringify(order);
+                }
+            },
+            columns: [
+                { data: 'document_number', name: 'document_number' },
+                { data: 'designer', name: 'designer' },
+                { data: 'estimator', name: 'estimator' },
+                { data: 'pump_electrical_designer', name: 'pump_electrical_designer' },
+                { data: 'design_estimation_note', name: 'design_estimation_note' },
+                { data: 'estimation_stage', name: 'estimation_stage' },
+                { data: 'updated_at', name: 'updated_at' },
+                { data: 'actions', name: 'actions', orderable: false, searchable: false }
+            ],
+            order: order,
+            ordering: ordering
+        });
+    }
+
+    function updateFilterIcon(columnName, show) {
+      $('.filter-icon').removeClass('active');
+      if (show) {
+          var icon = $(`.filter-icon[data-column="${columnName}"]`);
+          icon.addClass('active');
+      }
+  }
+
+    $('#opportunity-list thead th').on('click', function() {
+        var columnIndex = $(this).index();
+        var columnNames = [
+            'document_number',
+            'designer',
+            'estimator',
+            'pump_electrical_designer',
+            'design_estimation_note',
+            'estimation_stage',
+            'updated_at',
+            'actions'
+        ];
+
+        var columnName = columnNames[columnIndex];
+        var excludedColumns = ['actions'];
+        if (excludedColumns.includes(columnName)) {
+            return;
+        }
+
+        var sortOptionsDiv = $('.sort-options');
+        sortOptionsDiv.remove();
+
+        if (columnName === 'updated_at') {
+            sortOptionsDiv = createDateSortOptions(columnIndex);
+            if (storedDateRange) {
+                $('#date-range-picker').val(storedDateRange); // Reapply stored date range
+            }
+        } else {
+            sortOptionsDiv = createSortOptions(columnIndex);
+        }
+        sortOptionsDiv.show();
+
+        $('#opportunity-list thead th').removeClass('active');
+        $(this).addClass('active');
+
+        sortOptionsDiv.find('.column-name').text($(this).text().trim());
+
+        var baseUrl = "{% url 'proposal_app:opportunity:opportunity-filter' 'Column' %}";
+        var url = baseUrl.replace('Column', encodeURIComponent(columnName));
+
+        $('#filter-options').select2({
+            ajax: {
+                url: url,
+                dataType: 'json',
+                data: function(params) {
+                    return {
+                        search: params.term,
+                        page: params.page || 1
+                    };
+                },
+                processResults: function(data, params) {
+                    params.page = params.page || 1;
+
+                    return {
+                        results: data.options.map(function(option) {
+                            return {
+                                id: option,
+                                text: option
+                            };
+                        }),
+                        pagination: {
+                            more: data.more
+                        }
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 2 // Trigger AJAX call after 2 characters
+        });
+
+        if (currentFilters.column === columnIndex) {
+            $('#filter-options').val(currentFilters.values).trigger('change');
+            $('#filter-type').val(currentFilters.filter_type);
+            $('#filter-value').val(currentFilters.filter_value);
+        }
+    });
+
+    $(document).on('click', '.sort-option', function() {
+      $('.sort-option').removeClass('selected').css({"border":"","background-color":""});
+      $(this).addClass('selected').css({"border": "1px solid #7495e3","background-color": "#b9ceff"});
+      currentOrder = $(this).data('order');
+    });
+
+    $(document).on('click', '#apply-filters', function() {
+        var selectedOptions = $('#filter-options').val();
+        var filter_type = $('#filter-type').val();
+        var filter_value = $('#filter-value').val();
+        var dateRangeValue = $('#date-range-picker').val();
+
+        storedDateRange = dateRangeValue;
+
+        var activeColumnIndex = $('#opportunity-list thead th.active').index();
+        var columnNames = [
+            'document_number',
+            'designer',
+            'estimator',
+            'pump_electrical_designer',
+            'design_estimation_note',
+            'estimation_stage',
+            'updated_at',
+            'actions'
+        ];
+        var columnName = columnNames[activeColumnIndex];
+
+        var order = [[activeColumnIndex, currentOrder]]; // Use currentOrder
+
+        var filters = {
+            column: activeColumnIndex,
+            values: selectedOptions,
+            filter_type: filter_type,
+            filter_value: filter_value,
+            date_range: dateRangeValue
+        };
+
+        currentFilters = filters;
+        updateFilterIcon(columnName, true);
+
+        table.destroy();
+        table = initializeDataTable(filters, order, false);
+        $('.sort-options').css('display', 'none');
+    });
+
+    $(document).on('click', '#clear-filters', function() {
+        // Clear filters and reset the DataTable
+        currentFilters = {};
+        currentOrder = [];
+        storedDateRange = null;
+
+        $('#filter-options').val(null).trigger('change');
+        $('#filter-type').val('');
+        $('#filter-value').val('');
+        $('#date-range-picker').val('');
+
+        $('.filter-icon').removeClass('active');
+
+        table.destroy();
+        table = initializeDataTable({}, [], false);
+        $('.sort-options').css('display', 'none');
+    });
+
+    function createSortOptions(column) {
+        var columnHeader = $('#opportunity-list thead th').eq(column);
+        var offset = columnHeader.offset();
+
+        var sortOptionsDiv = $('<div class="sort-options"></div>');
+        sortOptionsDiv.css({
+            top: offset.top + columnHeader.outerHeight(),
+            left: offset.left,
+            position: 'absolute'
+        });
+
+        sortOptionsDiv.html(`
+            <label><b>Sort</b></label>
+            <div class="row">
+                <div class="col-6">
+                    <button class="sort-option" style="width:100%;" data-order="asc">A-Z</button>
+                </div>
+                <div class="col-6">
+                    <button class="sort-option" style="width:100%;" data-order="desc">Z-A</button>
+                </div>
+            </div>
+            <label><b>Search</b></label>
+            <select id="filter-options" class="sort-select multiple-select2" multiple></select>
+            <label><b>Actions</b></label>
+            <select id="filter-type" class="sort-select form-control">
+                <option value="">Select Options</option>
+                <option value="equals">Equals</option>
+                <option value="not_equals">Does Not Equal</option>
+                <option value="begins_with">Begins With</option>
+                <option value="not_begins_with">Does Not Begin With</option>
+                <option value="ends_with">Ends With</option>
+                <option value="not_ends_with">Does Not End With</option>
+                <option value="contains">Contains</option>
+                <option value="not_contains">Does Not Contain</option>
+            </select>
+            <input type="text" id="filter-value" class="sort-input form-control mt-3" placeholder="Enter value">
+            <div class="row justify-content-between align-items-center mt-3">
+              <div class="col-auto">
+                <button id="clear-filters" class="btn bg-light-secondary">Clear </button>
+              </div>
+              <div class="col-auto">
+                <button id="apply-filters" class="btn bg-light-secondary">Apply</button>
+              </div>
+            </div>
+        `);
+
+        $('body').append(sortOptionsDiv);
+
+        return sortOptionsDiv;
+    }
+
+    function createDateSortOptions(column) {
+        var columnHeader = $('#opportunity-list thead th').eq(column);
+        var offset = columnHeader.offset();
+
+        var sortOptionsDiv = $('<div class="sort-options"></div>');
+        sortOptionsDiv.css({
+            top: offset.top + columnHeader.outerHeight(),
+            left: offset.left,
+            position: 'absolute'
+        });
+
+        sortOptionsDiv.html(`
+            <label><b>Sort</b></label>
+            <div class="row">
+                <div class="col-6">
+                    <button class="sort-option" style="width:100%;" data-order="asc">Oldest</button>
+                </div>
+                <div class="col-6">
+                    <button class="sort-option" style="width:100%;" data-order="desc">Newest</button>
+                </div>
+            </div>
+            <label><b>Filter by Date</b></label>
+            <input type="text" id="date-range-picker" class="sort-input form-control mt-2" placeholder="Select Date Range">
+            <div class="row justify-content-between align-items-center mt-3">
+              <div class="col-auto">
+                <button id="clear-filters" class="btn bg-light-secondary">Clear </button>
+              </div>
+              <div class="col-auto">
+                <button id="apply-filters" class="btn bg-light-secondary">Apply</button>
+              </div>
+            </div>
+        `);
+
+        $('body').append(sortOptionsDiv);
+
+        $('#date-range-picker').daterangepicker({
+            locale: {
+                format: 'YYYY-MM-DD'
+            },
+            autoUpdateInput: false,
+            opens: 'right'
+        });
+
+        $('#date-range-picker').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+        });
+
+        $('#date-range-picker').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
+
+        return sortOptionsDiv;
+    }
+
+    $(document).mouseup(function(e) {
+      var container = $(".sort-options");
+      if (!container.is(e.target) && container.has(e.target).length === 0 && !$(e.target).closest('.daterangepicker').length) {
+          container.hide();
+      }
+  });
+
+  $(".sort-trigger").click(function() {
+      $(".sort-options").show();
+  });
+});
+</script>

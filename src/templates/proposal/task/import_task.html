@@ -25,7 +25,7 @@
         </span>
     </button>
 </div>
-<form id="importTaskForm" hx-post="{% url 'task:import-task' %}" hx-target="#modalContent" hx-swap="#inlineForm" enctype="multipart/form-data" novalidate>
+<form id="importTaskForm" hx-post="{% url 'proposal_app:task:import-task' %}" hx-target="#modalContent" hx-swap="#inlineForm" enctype="multipart/form-data" novalidate>
     {% csrf_token %}
     <div class="modal-body">
         <label>Upload File </label>
@@ -75,7 +75,7 @@
             $loader.show();
 
             $.ajax({
-                url: "{% url 'task:import-task' %}",
+                url: "{% url 'proposal_app:task:import-task' %}",
                 type: 'POST',
                 data: formData,
                 processData: false,

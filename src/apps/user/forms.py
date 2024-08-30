@@ -60,7 +60,7 @@ class UserForm(forms.ModelForm):
 class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ["first_name", "last_name", "email", "is_active"]
+        fields = ["first_name", "last_name", "email", "is_superuser", "is_active"]
 
         widgets = {
             "first_name": forms.TextInput(attrs={"class": "form-control"}),
@@ -69,4 +69,7 @@ class UserUpdateForm(forms.ModelForm):
             "mobile": forms.TextInput(attrs={"class": "form-control"}),
         }
 
-        labels = {"is_active": "Enabled/Disabled"}
+        labels = {
+            "is_superuser": "Admin",
+            "is_active": "Enabled/Disabled",
+        }

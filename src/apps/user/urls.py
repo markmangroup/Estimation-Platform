@@ -12,4 +12,5 @@ urlpatterns = [
     path("user/<int:pk>/edit", views.UpdateUserView.as_view(), name="edit-user"),
     path("user/delete/ajax", views.DeleteUserView.as_view(), name="ajax-user-delete"),
     path("user/list/ajax", views.UserAjaxListView.as_view(), name="ajax-user-list"),
+    path("redirect/", views.CheckUserAccountTypeView.as_view(), name="redirect"),
 ]
