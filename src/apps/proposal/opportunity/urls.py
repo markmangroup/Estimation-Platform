@@ -6,6 +6,7 @@ app_name = "opportunity"
 
 
 urlpatterns = [
+    path("search", views.SearchView.as_view(), name="search"),
     path("opportunity-list", views.OpportunityList.as_view(), name="opportunity-list"),
     path(
         "opportunity-list/ajax",

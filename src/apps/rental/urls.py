@@ -35,7 +35,6 @@ warehouse_urls = [
         name="return_delivery_list",
     ),
     path("inbox", views.InboxView.as_view(), name="inbox"),
-    path("search", views.SearchView.as_view(), name="search"),
 ]
 
 reports_urls = [

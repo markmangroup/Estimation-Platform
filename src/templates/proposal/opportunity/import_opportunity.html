@@ -61,46 +61,45 @@
         var label = input.nextElementSibling;
         label.textContent = fileName;
     }
-</script>
+    
+    document.body.addEventListener('htmx:beforeRequest', function(evt) {
+        var $loader = $('#loader-container');
+        $loader.show();
+    });
 
-<script>
-    $(document).ready(function() {
-        $('#importOpportunityForm').on('submit', function(event) {
-            event.preventDefault();
+    document.body.addEventListener('htmx:beforeSwap', function(evt) {
+        
+        var $loader = $('#loader-container');
 
-            var $form = $(this);
-            var formData = new FormData(this);
-            var $loader = $('#loader-container');
+        if(evt.detail.xhr.status === 200){
+            console.log("evt.detail.xhr.status", evt.detail.xhr.status)
+            console.log("evt.detail.xhr.response", evt.detail.xhr.response)
+            
+            // Parse the JSON response
+            var response = JSON.parse(evt.detail.xhr.response);
+            
+            // Check if response contains a success message
+            if (response.status === 'success') {
+                $loader.hide();
+                evt.detail.shouldSwap = false;
 
-            $loader.show();
-
-            $.ajax({
-                url: "{% url 'proposal_app:opportunity:import-opportunity' %}",
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                headers: {
-                    'X-CSRFToken': $form.find('[name=csrfmiddlewaretoken]').val()
-                },
-                success: function(response) {
-                    if(response.status == "success" || response.code == 200) {
-                        $loader.hide();
-                        $("#inlineForm").modal('hide');
-                        $("#inlineForm .modal-body").html('');
-                        $("#opportunity-list").DataTable().ajax.reload(null, false);
-                        toastr.success(response.message, 'Success', {
-                            closeButton: true,
-                            progressBar: true,
-                            positionClass: 'toast-bottom-right',
-                            timeOut: 6000
-                        });
-                    }
-                },
-                error: function(e) {
-                    $loader.hide();
-                }
-            });
-        });
+                // Hide the modal
+                $("#inlineForm").modal('hide');
+                
+                // Clear the modal body
+                $("#inlineForm .modal-body").html('');
+                
+                // Reload the DataTable
+                $("#opportunity-list").DataTable().ajax.reload(null, false);
+                
+                // Display message
+                toastr.success(response.message, 'Success', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-bottom-right',
+                    timeOut: 6000
+                });
+            }
+        }
     });
 </script>
