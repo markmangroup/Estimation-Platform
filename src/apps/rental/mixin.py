@@ -107,7 +107,7 @@ class ProposalDetailViewMixin(LoginBaseMixin, DetailView):
         return context
 
 
-class WarehouseViewMixin(LoginBaseMixin, TemplateView):
+class WarehouseViewMixin(TemplateView):
     """
     Mixin for rendering warehouse-related views.
     """

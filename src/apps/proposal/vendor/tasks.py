@@ -52,29 +52,13 @@ def import_vendor_from_file(file):
 
     df = df.fillna("")
     vendor_list = df.to_dict(orient="records")
+    # print("vendor_list", vendor_list)
     keys = vendor_list[0].keys()
 
     keys_list = sorted(keys)
     columns_list_sorted = sorted(columns_list)
 
     if keys_list == columns_list_sorted:
-        # Check if all values in 'Internal ID' are integers
-        for record in vendor_list:
-            internal_id = record["Internal ID"]
-            try:
-                # Try converting 'Internal ID' to an integer
-                int(internal_id)
-            except ValueError:
-                return {"error": "All 'Internal ID' values must be integers. Please correct the file and upload again."}
-
-        # Convert 'Internal ID' to integers and process records
-        for record in vendor_list:
-            try:
-                record["Internal ID"] = int(record["Internal ID"])
-            except ValueError:
-                context["messages"].append(f"Invalid 'Internal ID' in record: {record}. Must be an integer.")
-                skip_vendor.append(record)
-                continue
         for record in vendor_list:
             print("record: ", record)
             try:
@@ -105,7 +89,7 @@ def import_vendor_from_file(file):
 
             if skip_vendor:
                 print("Skipped records:", skip_vendor)
-        print(context)
+        # print(context)
         return context
 
     else:
