@@ -25,7 +25,29 @@ from .models import (
 )
 from .tasks import import_opportunity_from_xlsx
 
+class SearchView(View):
+    def get(self, request, *args, **kwargs) -> JsonResponse:
+        """
+        Handle GET requests to search for opportunities by document number.
 
+        Retrieves the 'query' parameter from the request, filters `Opportunity`
+        for records where `document_number` contains the query string, and returns
+        the results in JSON format.
+
+        :request (HttpRequest): The HTTP request object containing query parameters.
+
+        Returns:
+        - JsonResponse: JSON response with a list of matching `document_number` values.
+        """
+        query = request.GET.get("query", "")
+        results = []
+        # Check length of query
+        if len(query) > 3 and query:
+            # Set limit with results
+            results = Opportunity.objects.filter(document_number__icontains=query).values("document_number")[:5]
+        return JsonResponse({"results": list(results)})
+    
+    
 class OpportunityList(ProposalViewMixin):
     """
     View to display a list of Opportunities.
