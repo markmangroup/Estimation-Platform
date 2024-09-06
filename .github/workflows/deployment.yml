@@ -77,7 +77,7 @@ jobs:
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'laurelag-${{ github.event.inputs.environment }}-eastus-rg'
+          app-name: 'laurelag-${{ github.event.inputs.environment }}-eastus-webapp'
           slot-name: 'Production'
           startup-command: './startup.sh'
           
