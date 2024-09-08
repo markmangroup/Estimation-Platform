@@ -6,16 +6,7 @@ on:
   push:
     branches:
       - main # Deployment (dev and prod) happens after merging to main
-  workflow_dispatch: # Allows manual triggering of the workflow
-    inputs:
-      environment:
-        type: choice
-        description: 'Azure Environment for deployment'
-        required: true
-        default: 'dev'
-        options:
-          - 'dev'
-          - 'prod'
+  workflow_dispatch:
 
 jobs:
   # Build job that runs when a PR is opened
@@ -49,11 +40,11 @@ jobs:
             release.zip
             !venv/
 
-  # Dev deployment job that triggers only after merging into the main branch or via manual dispatch
+  # Dev deployment job that triggers only after merging into the main branch
   deploy_dev:
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'dev' # Dev deployment only from main branch or manually for dev environment
+    if: github.ref == 'refs/heads/main' # Dev deployment runs only from the main branch
     permissions:
       id-token: write # Required for requesting the JWT
 
@@ -78,16 +69,17 @@ jobs:
         id: deploy-to-webapp
         with:
           app-name: 'laurelag-dev-eastus-webapp'
-          slot-name: 'Development'
+          slot-name: 'Production'
           startup-command: './startup.sh'
 
-  # Prod deployment job that triggers after dev deployment or via manual dispatch
+  # Prod deployment job that triggers after the dev deployment, with manual approval
   deploy_prod:
     runs-on: ubuntu-latest
     needs: deploy_dev # Prod deployment happens after dev deployment is successful
-    if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'prod' # Prod deployment only from main branch or manually for prod environment
+    if: github.ref == 'refs/heads/main' # Prod deployment only runs from main branch
     environment:
       name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       id-token: write # Required for requesting the JWT
 
@@ -99,6 +91,11 @@ jobs:
 
       - name: Unzip artifact for deployment
         run: unzip release.zip
+
+      - name: Manual approval for production deployment
+        uses: hoverkraft/approval-action@v1
+        with:
+          approvers: 'abhishek-markman' # Replace with the actual GitHub username of approvers
 
       - name: Login to Azure
         uses: azure/login@v2
