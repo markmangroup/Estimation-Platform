@@ -92,11 +92,6 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
-      - name: Manual approval for production deployment
-        uses: hoverkraft/approval-action@v1
-        with:
-          approvers: 'abhishek-markman' # Replace with the actual GitHub username of approvers
-
       - name: Login to Azure
         uses: azure/login@v2
         with:
