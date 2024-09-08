@@ -1,10 +1,12 @@
 name: Build and deploy Laurel Application
 
 on:
+  pull_request: # Build will happen on PR creation
+    types: [opened, synchronize]
   push:
     branches:
-      - main
-  workflow_dispatch:
+      - main # Deployment (dev and prod) happens after merging to main
+  workflow_dispatch: # Allows manual triggering of the workflow
     inputs:
       environment:
         type: choice
@@ -12,10 +14,11 @@ on:
         required: true
         default: 'dev'
         options:
-        - 'dev'
-        - 'prod'
+          - 'dev'
+          - 'prod'
 
 jobs:
+  # Build job that runs when a PR is opened
   build:
     runs-on: ubuntu-latest
 
@@ -31,11 +34,9 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
-      
+
       - name: Install dependencies
         run: pip install -r requirements.txt
-        
-      # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
@@ -48,14 +49,15 @@ jobs:
             release.zip
             !venv/
 
-  deploy:
+  # Dev deployment job that triggers only after merging into the main branch or via manual dispatch
+  deploy_dev:
     runs-on: ubuntu-latest
     needs: build
+    if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'dev' # Dev deployment only from main branch or manually for dev environment
     environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+      name: 'Development'
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write # Required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
@@ -73,11 +75,44 @@ jobs:
           tenant-id: '11855f13-2464-464a-8e0a-b51873160cd3'
           subscription-id: 'cffda582-a060-4e87-994f-9cff463aa651'
 
-      - name: 'Deploy to Azure Web App'
+      - name: 'Deploy to Azure Web App - Development'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'laurelag-${{ github.event.inputs.environment }}-eastus-webapp'
+          app-name: 'laurelag-dev-eastus-webapp'
+          slot-name: 'Development'
+          startup-command: './startup.sh'
+
+  # Prod deployment job that triggers after dev deployment or via manual dispatch
+  deploy_prod:
+    runs-on: ubuntu-latest
+    needs: deploy_dev # Prod deployment happens after dev deployment is successful
+    if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'prod' # Prod deployment only from main branch or manually for prod environment
+    environment:
+      name: 'Production'
+    permissions:
+      id-token: write # Required for requesting the JWT
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: python-app
+
+      - name: Unzip artifact for deployment
+        run: unzip release.zip
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: '63d8c1a5-9944-4003-b6c7-24ce70956a9b'
+          tenant-id: '11855f13-2464-464a-8e0a-b51873160cd3'
+          subscription-id: 'cffda582-a060-4e87-994f-9cff463aa651'
+
+      - name: 'Deploy to Azure Web App - Production'
+        uses: azure/webapps-deploy@v3
+        id: deploy-to-webapp
+        with:
+          app-name: 'laurelag-prod-eastus-webapp'
           slot-name: 'Production'
           startup-command: './startup.sh'
-          
