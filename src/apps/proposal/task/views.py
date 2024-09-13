@@ -10,7 +10,6 @@ from apps.proposal.task.tasks import import_task_from_file
 from apps.rental.mixin import ProposalViewMixin
 
 
-# Create your views here.
 class TaskListView(ProposalViewMixin):
     """
     View class for rendering the list of proposal task.

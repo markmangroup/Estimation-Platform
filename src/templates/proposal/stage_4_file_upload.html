@@ -88,10 +88,16 @@
           success: function(response) {
             console.log('Success:', response);
             stage_4_initializeDataTable();
-            $('#stage_4_file-upload').val(''); 
+            $('#stage_4_file-upload').val('');
             $('#stage_4_file-name').text('');
             $('#stage_4_comment').val('');
             $('#stage_4_file-save').hide();
+            toastr.success("Document Uploaded On 'Task Mapping' Successfully!", 'Success', {
+              closeButton: true,
+              progressBar: true,
+              positionClass: 'toast-bottom-right',
+              timeOut: 6000
+            });
           },
           error: function(jqXHR, textStatus, errorThrown) {
             console.error('Error:', textStatus, errorThrown);
@@ -101,16 +107,16 @@
             $('.stage_4_loader-container').hide();
           }
         });
-      
+
     });
     $('#stage_4_comment').on('input', function() {
       var comment = $(this).val();
       var file_save = $('#stage_4_file-save');
-  
+
       if (comment.trim() !== '') {
-        file_save.show(); 
+        file_save.show();
       } else {
-        file_save.hide(); 
+        file_save.hide();
       }
     });
       function stage_4_initializeDataTable() {
@@ -137,7 +143,7 @@
           ],
         });
       }
-      
+
     $(document).ready(function() {
       stage_4_initializeDataTable();
 

@@ -68,16 +68,16 @@
     });
 
     document.body.addEventListener('htmx:beforeSwap', function(evt) {
-        
+
         var $loader = $('#loader-container');
 
         if(evt.detail.xhr.status === 200){
             console.log("evt.detail.xhr.status", evt.detail.xhr.status)
             console.log("evt.detail.xhr.response", evt.detail.xhr.response)
-            
+
             // Parse the JSON response
             var response = JSON.parse(evt.detail.xhr.response);
-            
+
             // Check if response contains a success message
             if (response.status === 'success') {
                 $loader.hide();
@@ -85,13 +85,13 @@
 
                 // Hide the modal
                 $("#inlineForm").modal('hide');
-                
+
                 // Clear the modal body
                 $("#inlineForm .modal-body").html('');
-                
+
                 // Reload the DataTable
                 $("#customer-table").DataTable().ajax.reload(null, false);
-                
+
                 // Display message
                 toastr.success(response.message, 'Success', {
                     closeButton: true,

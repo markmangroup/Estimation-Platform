@@ -18,15 +18,28 @@
   Dropzone.autoDiscover = false;
 
   var myDropzone = new Dropzone("#dpz-single-file", {
-    url: "{% url 'proposal_app:opportunity:upload-cad-file' %}", // URL to which files are sent
-    paramName: "file",       // The name that will be used to transfer the file
-    maxFiles: 1,             // Limit the number of files
-    acceptedFiles: ".Tmp",   // Restrict file types
-    autoProcessQueue: false, // Disable automatic file upload
-    addRemoveLinks: true,    // Add links to remove files
-    dictDefaultMessage: "Drag an .Tmp file here to upload", // Dropzone default message
+    url: "{% url 'proposal_app:opportunity:upload-cad-file' %}",
+    paramName: "file",
+    maxFiles: 1,
+    acceptedFiles: ".Tmp",
+    autoProcessQueue: false,
+    addRemoveLinks: true,
+    dictDefaultMessage: "Drag an .Tmp file here to upload",
     headers: {
       'X-CSRFToken': "{{ csrf_token }}"
+    },
+    // Custom error message handling
+    init: function() {
+      this.on("error", function(file, response) {
+        var errorMessage = response || "An error occurred while uploading the file.";
+        toastr.error(errorMessage, 'Error', {
+          closeButton: true,
+          progressBar: true,
+          positionClass: 'toast-bottom-right',
+          timeOut: 6000
+        });
+        this.removeFile(file);
+      });
     }
   });
 
@@ -52,18 +65,29 @@
   });
 
   myDropzone.on("success", function(file, response) {
+    // Reload DataTable
     $("#material-list").DataTable().ajax.reload(null, false);
+    $("#glue-and-additional-list").DataTable().ajax.reload(null, false);
+    $("#preliminary-material-list").DataTable().ajax.reload(null, false);
+
+    // Success Message
     toastr.success(response.message, 'Success', {
       closeButton: true,
       progressBar: true,
       positionClass: 'toast-bottom-right',
       timeOut: 6000
-    })
+    });
   });
 
   myDropzone.on("error", function(file, response) {
-    // Handle error
-    alert(response.error);
+    // Error Message
+    //alert(response.error);
+    toastr.error(response.error, 'Error', {
+      closeButton: true,
+      progressBar: true,
+      positionClass: 'toast-bottom-right',
+      timeOut: 6000
+    });
   });
 </script>
 {% endblock script %}

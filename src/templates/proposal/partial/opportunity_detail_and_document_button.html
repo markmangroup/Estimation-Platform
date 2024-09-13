@@ -5,10 +5,34 @@
         <a href="{{edit_url}}" class="success"> <i class="fa ft-eye font-medium-3 mr-2"></i></a>
 
         <!-- TODO: Make Dynamic -->
-        <a type="button" class="info p-0o" data-toggle="modal" data-target="#opportunity_documents" data-backdrop="false" style="all: unset">
+        <a
+            type="button"
+            class="info p-0o htmx-trigger-btn-opportunity-document"
+            data-url="{% url 'proposal_app:opportunity:opportunity-document-list' o.document_number %}"
+            hx-target="#documnet_content"
+            hx-trigger="click"
+            data-toggle="modal"
+            data-target="#opportunity_documents"
+            data-backdrop="false"
+            style="all: unset"
+        >
             <i class="ft-file-text font-medium-3 ml-1"></i>
         </a>
-        <!-- <a href="#" class="info p-0 user-delete-btn"><i class="ft-file-text font-medium-3 ml-1"></i></a> -->
     </div>
-
 </td>
+
+<script>
+    $(document).on('click', '.htmx-trigger-btn-opportunity-document' , function (e) {
+        console.log("Document Clicked !!");
+      url = $(this).data("url")
+      htmx.ajax('GET',
+          url,
+          {
+            target:'#documnet_content',
+            swap:'innerHTML',
+      }).then(() => {
+          $('#opportunity_documentsl').toggleClass('hidden');
+      })
+  })
+  </script>
+  <!-- Htmx -->

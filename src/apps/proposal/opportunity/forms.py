@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from apps.proposal.opportunity.models import Document
+from apps.proposal.opportunity.models import Document, TaskMapping
 
 
 class ImportOpportunityCSVForm(forms.Form):
@@ -45,3 +45,16 @@ class UploadDocumentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["document"].required = False
+
+
+class AddTaskForm(forms.ModelForm):
+    """
+    Add Task from for manually adding tasks.
+    """
+
+    class Meta:
+        model = TaskMapping
+        fields = [
+            "code",
+            "description",
+        ]

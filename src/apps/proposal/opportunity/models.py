@@ -203,3 +203,47 @@ class PreliminaryMaterialList(BaseModel):
 
     class Meta:
         verbose_name = "Proposal Preliminary Material"
+
+
+class TaskMapping(BaseModel):
+
+    opportunity = models.ForeignKey(Opportunity, on_delete=models.CASCADE, related_name="task_mapping_opportunity")
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="task_mapping_tasks", blank=True, null=True)
+
+    # Manually added tasks
+    code = models.CharField(_("Task Code"), max_length=255, blank=True, null=True)
+    description = models.CharField(_("Task Description"), max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        if self.code:
+            return f"{self.id} - {self.opportunity.document_number} - {self.code}"
+        return f"{self.id} - {self.opportunity.document_number} - {self.task.name}"
+
+    class Meta:
+        verbose_name = "Proposal Task Mapping"
+
+
+class AssignedProduct(BaseModel):
+
+    task_mapping = models.ForeignKey(TaskMapping, on_delete=models.CASCADE, related_name="assigned_products")
+    is_assign = models.BooleanField(_("Is Assigned Product/Labour"), default=False)
+
+    # Task-Product
+    quantity = models.FloatField(_("Quantity"), blank=True, null=True)
+    item_code = models.CharField(_("Item Code"), max_length=255, blank=True, null=True)
+    description = models.TextField(_("Description"), blank=True, null=True)
+    standard_cost = models.FloatField(_("Standard Cost"), blank=True, null=True)
+    vendor_quoted_cost = models.FloatField(_("Vendor Quoted Cost"), blank=True, null=True)
+    vendor = models.CharField(_("Vendor"), max_length=255, blank=True, null=True)
+    comment = models.CharField(_("Comment"), max_length=255, blank=True, null=True)
+
+    # Task-Labor
+    labor_task = models.CharField(_("Labor Task"), max_length=255, blank=True, null=True)
+    local_cost = models.FloatField(_("Labor Local Cost"), blank=True, null=True)
+    out_of_town_cost = models.FloatField(_("Out Of Town Cost"), blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.id} - {self.task_mapping.id}"
+
+    class Meta:
+        verbose_name = "Proposal Assigned Product"

@@ -1,7 +1,5 @@
-from django.http import JsonResponse
-from django.views.generic import TemplateView, View
+from django.views.generic import TemplateView
 
-from apps.proposal.opportunity.models import Opportunity
 from apps.rental.mixin import LoginBaseMixin, WarehouseViewMixin
 
 # Create your views here.
