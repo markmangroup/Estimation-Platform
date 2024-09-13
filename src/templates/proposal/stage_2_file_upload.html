@@ -68,7 +68,7 @@
       var comment = $("#stage_2_comment").val();
       var stage = "Upload CAD File"
 
-      
+
         var formData = new FormData();
         formData.append('document', file);
         formData.append('document_number', document_number);
@@ -90,10 +90,16 @@
           success: function(response) {
             console.log('Success:', response);
             stage_2_initializeDataTable();
-            $('#stage_2_file-upload').val(''); 
+            $('#stage_2_file-upload').val('');
             $('#stage_2_file-name').text('');
             $('#stage_2_comment').val('');
             $('#stage_2_file-save').hide();
+            toastr.success("Document Uploaded On 'Upload CAD file' Successfully!", 'Success', {
+              closeButton: true,
+              progressBar: true,
+              positionClass: 'toast-bottom-right',
+              timeOut: 6000
+            });
           },
           error: function(jqXHR, textStatus, errorThrown) {
             console.error('Error:', textStatus, errorThrown);
@@ -103,19 +109,19 @@
             $('.stage_2_loader-container').hide();
           }
         });
-      
+
     });
     $('#stage_2_comment').on('input', function() {
       var comment = $(this).val();
       var file_save = $('#stage_2_file-save');
-  
+
       if (comment.trim() !== '') {
-        file_save.show(); 
+        file_save.show();
       } else {
-        file_save.hide(); 
+        file_save.hide();
       }
     });
-  
+
       function stage_2_initializeDataTable() {
         var currentStage = "Upload CAD File"
         console.log('currentStage: ', currentStage);
@@ -140,7 +146,7 @@
           ],
         });
       }
-      
+
       $(document).ready(function() {
         // Initial call to set up DataTable
       stage_2_initializeDataTable();

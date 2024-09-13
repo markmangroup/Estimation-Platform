@@ -52,7 +52,7 @@ def import_vendor_from_file(file):
 
     df = df.fillna("")
     vendor_list = df.to_dict(orient="records")
-    # print("vendor_list", vendor_list)
+    print("vendor_list", vendor_list)
     keys = vendor_list[0].keys()
 
     keys_list = sorted(keys)

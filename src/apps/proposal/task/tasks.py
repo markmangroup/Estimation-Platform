@@ -15,7 +15,6 @@ def import_task_from_file(file):
     Returns:
         dict: A context dictionary containing messages about the import process or an error message if the file columns don't match the expected format.
     """
-    print("TASKSSSSSSSSSSSSSSSSSSSSSSSSSSS......................")
     file_extension = os.path.splitext(file.name)[1]
     context = {"messages": []}
     skip_labour_cost = []

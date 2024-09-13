@@ -65,7 +65,7 @@
 
   // Handle save button click
   $('#stage_1_file-save').on('click', function(event) {
-    event.preventDefault();
+    // event.preventDefault();
 
     var fileInput = $('#stage_1_file-upload')[0];
     var file = fileInput.files[0];
@@ -94,10 +94,18 @@
         success: function(response) {
           console.log('Success:', response);
           stage_1_initializeDataTable();
-          $('#stage_1_file-upload').val(''); 
+          $('#stage_1_file-upload').val('');
           $('#stage_1_file-name').text('');
           $('#stage_1_comment').val('');
           $('#stage_1_file-save').hide();
+
+          toastr.success("Document Uploaded On 'Select Task' Successfully!", 'Success', {
+            closeButton: true,
+            progressBar: true,
+            positionClass: 'toast-bottom-right',
+            timeOut: 6000
+          });
+
         },
         error: function(jqXHR, textStatus, errorThrown) {
           console.error('Error:', textStatus, errorThrown);
@@ -113,9 +121,9 @@
     var file_save = $('#stage_1_file-save');
 
     if (comment.trim() !== '') {
-      file_save.show(); 
+      file_save.show();
     } else {
-      file_save.hide(); 
+      file_save.hide();
     }
   });
   function stage_1_initializeDataTable() {

@@ -89,10 +89,16 @@
           success: function(response) {
             console.log('Success:', response);
             stage_5_initializeDataTable();
-            $('#stage_5_file-upload').val(''); 
+            $('#stage_5_file-upload').val('');
             $('#stage_5_file-name').text('');
             $('#stage_5_comment').val('');
             $('#stage_5_file-save').hide();
+            toastr.success("Document Uploaded On 'Generate Estimate' Successfully!", 'Success', {
+              closeButton: true,
+              progressBar: true,
+              positionClass: 'toast-bottom-right',
+              timeOut: 6000
+            });
           },
           error: function(jqXHR, textStatus, errorThrown) {
             console.error('Error:', textStatus, errorThrown);
@@ -102,16 +108,16 @@
             $('.stage_5_loader-container').hide();
           }
         });
-     
+
     });
     $('#stage_5_comment').on('input', function() {
       var comment = $(this).val();
       var file_save = $('#stage_5_file-save');
-  
+
       if (comment.trim() !== '') {
-        file_save.show(); 
+        file_save.show();
       } else {
-        file_save.hide(); 
+        file_save.hide();
       }
     });
 

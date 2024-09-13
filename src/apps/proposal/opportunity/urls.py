@@ -41,6 +41,11 @@ urlpatterns = [
         name="ajax-document-list",
     ),
     path("upload-document", views.UploadDocument.as_view(), name="upload-document"),
+    path(
+        "opportunity-document-list/<str:document_number>/ajax",
+        views.OpportunityDocumentView.as_view(),
+        name="opportunity-document-list",
+    ),
     path("opportunity-list/ajax", views.OpportunityListAjaxView.as_view(), name="opportunity-list-ajax"),
     path("import-opportunity", views.OpportunityCreateFromCSVFormView.as_view(), name="import-opportunity"),
     path("filter/<str:column>/", views.OpportunityFilterView.as_view(), name="opportunity-filter"),
@@ -65,4 +70,28 @@ urlpatterns = [
         views.GenerateEstimateTable.as_view(),
         name="generate_estimate_table",
     ),
+    path(
+        "assign-prod-labor/<str:document_number>/<int:task_id>",
+        views.AssignProdLabor.as_view(),
+        name="assign-prod-labor",
+    ),
+    path(
+        "assign-prod/delete/ajax",
+        views.DeleteAssignProdLabor.as_view(),
+        name="assign-prod-delete-ajax",
+    ),
+    path(
+        "assign-prod/update/ajax",
+        views.UpdateAssignProdView.as_view(),
+        name="assign-prod-update-ajax",
+    ),
+    path("add-task/<str:document_number>", views.AddTaskView.as_view(), name="add-task"),
+    path("add-prod-row-ajax", views.AddProdRowView.as_view(), name="add-prod-row-ajax"),
+
+    # --Search path
+    path("item-code-search", views.ItemCodeSearchView.as_view(), name="item-code-search"),
+    path("item-description-search", views.ItemDescriptionSearchView.as_view(), name="item-description-search"),
+    path("vendor-search", views.VendorSearchView.as_view(), name="vendor-search"),
+    path("task-search", views.TaskSearchView.as_view(), name="task-search"),
+    path("labor-task-search", views.LaborTaskSearchView.as_view(), name="labor-task-search")
 ]

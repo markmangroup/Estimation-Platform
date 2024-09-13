@@ -162,11 +162,9 @@
       var table = $('#opportunity-list').DataTable();
 
       table.on('draw', function() {
-         console.log("DataTable drawn, initializing popovers.");
          $('[data-toggle="popover"]').popover();
       });
 
-      console.log("Document ready, initializing popovers.");
       $('[data-toggle="popover"]').popover();
 });
 </script>

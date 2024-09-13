@@ -1,0 +1,125 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="myModalLabel5">Assign Products</h4>
+    <button
+        type="button"
+        class="close"
+        data-dismiss="modal"
+        aria-label="Close">
+        <span aria-hidden="true">
+            <i class="ft-x font-medium-2 text-bold-700"></i>
+        </span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="table-responsive">
+        <table id="sample" class="table table-bordered table-striped assign_prod">
+            <thead>
+                <tr>
+                    <th><input name="checkbox" type="checkbox" class="row-checkbox" /></th>
+                    <th>Combined Quantities</th>
+                    <th>Description</th>
+                    <th>Item Number</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for p in products %}
+                <tr>
+                    <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                    <td>{{p.combined_quantities_from_both_import}}</td>
+                    <td>{{p.description}}</td>
+                    <td>{{p.item_number}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <button
+    type="button"
+    class="btn bg-light-secondary"
+    data-dismiss="modal"
+    >
+    Close
+    </button>
+    <button type="button" id="save-button" class="btn btn-primary">Save</button>
+</div>
+
+<!-- Test js for drag and select -->
+<script>
+    $(document).ready(function() {
+        var isMouseDown = false,
+        isHighlighted;
+
+        $("#sample input:checkbox").click(function() {
+        return false;
+        })
+        $("#sample tr")
+        .mousedown(function() {
+            isMouseDown = true;
+            $(this).toggleClass("highlighted");
+            isHighlighted = $(this).hasClass("highlighted");
+            $(this).find("input:checkbox").prop("checked", isHighlighted);
+            return false; // prevent text selection
+        })
+        .mouseover(function() {
+            if (isMouseDown) {
+            $(this).toggleClass("highlighted", isHighlighted);
+            $(this).find("input:checkbox").prop("checked", isHighlighted);
+            }
+        })
+        .bind("selectstart", function() {
+            return false;
+        })
+
+        $(document)
+        .mouseup(function() {
+            isMouseDown = false;
+        });
+    });
+</script>
+<!-- Test js for drag and select -->
+
+<script>
+    $(document).ready(function() {
+        
+        $('.assign_prod').DataTable({
+            "lengthChange": false,
+            "paging": false,
+            "info": false,
+            
+        });
+
+        function getSelectedCheckboxes() {
+            var selectedItems = [];
+            $("#sample input:checkbox:checked").each(function() {
+                var row = $(this).closest("tr");
+                var item = {
+                    internal_id: row.find("td").eq(3).text()
+                };
+                selectedItems.push(item);
+            });
+            return selectedItems;
+        }
+
+        $("#save-button").click(function() {
+            var selectedItems = getSelectedCheckboxes();
+
+            $.ajax({
+                type: "POST",
+                url: "/proposal/assign-prod-labor/{{document_number}}/{{task_id}}",
+                data: {
+                    'items': JSON.stringify(selectedItems),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    console.log('Server response:', response);
+                    window.location.reload();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+    });
+</script>

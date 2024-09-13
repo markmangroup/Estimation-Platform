@@ -1,0 +1,134 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="myModalLabel5">
+      Opportunity Documents - {{ document_number }}
+    </h4>
+    <button
+      type="button"
+      class="close"
+      data-dismiss="modal"
+      aria-label="Close"
+    >
+      <span aria-hidden="true"
+        ><i class="ft-x font-medium-2 text-bold-700"></i
+      ></span>
+    </button>
+  </div>
+  <form action="#">
+    <div class="modal-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th style="max-width: 100px">Document</th>
+              <th>Stage</th>
+              <th>Created At</th>
+              <th style="max-width: 150px">Comments</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for opp_doc in opportunity_document %}
+                <tr>
+                <td>
+                    <a href="#" class="d-flex" style="font-size: 16px; justify-content: center">
+                    <span class="wrap">{{opp_doc.document}}</span>
+                    {% if opp_doc.document %}
+                      <div style="margin-top: 2px; margin-left: 5px">
+                        <i class="icon-cloud-download"></i>
+                      </div>
+                    {% else %}
+                      <span> - </span>
+                    {% endif %}
+                    </a>
+                </td>
+                <td>
+                  {% if opp_doc.stage == "Select Task Code" %}
+                      <span class="badge bg-light-secondary">
+                          Select Task Code
+                      </span>
+                  {% elif opp_doc.stage == "Upload CAD File" %}
+                      <span class="badge bg-light-success">
+                          Upload CAD File
+                      </span>
+                  {% elif opp_doc.stage == "Material List" %}
+                      <span class="badge bg-light-danger">
+                          Material List
+                      </span>
+                  {% elif opp_doc.stage == "Task Mapping" %}
+                      <span class="badge bg-light-info">
+                          Task Mapping
+                      </span>
+                  {% elif opp_doc.stage == "Generate Estimate" %}
+                      <span class="badge bg-light-secondary">
+                          Generate Estimate
+                      </span>
+                  {% elif opp_doc.stage == "Proposal Creation" %}
+                      <span class="badge bg-grey">
+                          Proposal Creation
+                      </span>
+                  {% elif opp_doc.stage == "Proposal Preview" %}
+                      <span class="badge bg-light-primary">
+                          Proposal Preview
+                      </span>
+                  {% else %}
+                      <span class="badge bg-light-info">
+                          Final Document
+                      </span>
+                  {% endif %}
+                </td>
+                <td>
+                    <div class="d-flex" style="font-size: 16px; justify-content: center">
+                      <span>{{opp_doc.created_at|date:"m-d-Y"}}</span>
+                    </div>
+                </td>
+                <td>
+                  {% if opp_doc.comment|length > 10 %}
+                      <span>{{ opp_doc.comment|slice:":10" }}...</span>
+                      <span
+                        class="primary"
+                        data-toggle="popover"
+                        data-content="{{ opp_doc.comment|escapejs }}"
+                        data-placement="top"
+                        data-original-title="Document Comment"
+                        data-trigger="click"
+                        style="border:none; background:none;">
+                        Read More
+                      </span>
+                  {% else %}
+                      <span>{{ opp_doc.comment }}</span>
+                  {% endif %}
+              </td>
+                </tr>
+            {% empty %}
+                <td colspan="4" class="text-center">
+                    No Document Upload Yet....
+                </td>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn btn-primary mr-2"
+        data-dismiss="modal"
+      >
+        <i class="ft-check-square mr-1"></i>OK
+      </button>
+    </div>
+  </form>
+
+<!-- Popover -->
+<script>
+    $(document).ready(function(){
+        // Initialize all popovers on page load
+        $('[data-toggle="popover"]').popover();
+
+        // Ensure popovers are closed when clicking outside
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest('[data-toggle="popover"]').length) {
+                $('[data-toggle="popover"]').popover('hide');
+            }
+        });
+    });
+</script>

@@ -68,7 +68,6 @@ THIRD_PARTY_APPS = [
 ]
 LOCAL_APPS = [
     "apps.user.apps.UserConfig",
-    "apps.proposal",
     "apps.proposal.product.apps.ProductConfig",
     "apps.proposal.vendor.apps.VendorConfig",
     "apps.proposal.task.apps.TaskConfig",
@@ -196,9 +195,6 @@ SOCIALACCOUNT_PROVIDERS = {
         ]
     }
 }
-
-SECURE_SSL_REDIRECT = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 LOGIN_URL = "/"
 LOGIN_REDIRECT_URL = "/choose_screens"

@@ -69,7 +69,7 @@
       var comment = $("#stage_3_comment").val();
       var stage = "Material List"
 
-      
+
         var formData = new FormData();
         formData.append('document', file);
         formData.append('document_number', document_number);
@@ -91,10 +91,17 @@
           success: function(response) {
             console.log('Success:', response);
             stage_3_initializeDataTable();
-            $('#stage_3_file-upload').val(''); 
+            $('#stage_3_file-upload').val('');
             $('#stage_3_file-name').text('');
             $('#stage_3_comment').val('');
             $('#stage_3_file-save').hide();
+
+            toastr.success("Document Uploaded On 'Material List' Successfully!", 'Success', {
+              closeButton: true,
+              progressBar: true,
+              positionClass: 'toast-bottom-right',
+              timeOut: 6000
+            });
           },
           error: function(jqXHR, textStatus, errorThrown) {
             console.error('Error:', textStatus, errorThrown);
@@ -104,16 +111,16 @@
             $('.stage_3_loader-container').hide();
           }
         });
-      
+
     });
     $('#stage_3_comment').on('input', function() {
       var comment = $(this).val();
       var file_save = $('#stage_3_file-save');
-  
+
       if (comment.trim() !== '') {
-        file_save.show(); 
+        file_save.show();
       } else {
-        file_save.hide(); 
+        file_save.hide();
       }
     });
       function stage_3_initializeDataTable() {
