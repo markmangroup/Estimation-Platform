@@ -35,7 +35,7 @@
               <option value="James Peter">Emily Pair</option>
             <option value="Emily Johnson">Brooke Marchy</option>
             <option value="Michael Brown">Paul Leimgruber</option>
-          </select>          
+          </select>
         </div>
 
         <!-- Date -->
@@ -97,7 +97,7 @@
                 <td class="text-right">60%</td>
                 <td class="text-center">2024-08-25 to 2024-08-31</td>
               </tr>
-              
+
               <!-- Row 3 -->
               <tr>
                 <td class="text-center">EQ2002</td>
@@ -206,14 +206,14 @@
 <!-- Date picker -->
 <script type="text/javascript">
   $(document).ready(function() {
-  
+
       var start = moment().subtract(29, 'days');
       var end = moment();
-  
+
       function cb(start, end) {
           $('.reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
       }
-  
+
       $('.reportrange').daterangepicker({
           startDate: start,
           endDate: end,
@@ -226,9 +226,9 @@
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
           }
       }, cb);
-  
+
       cb(start, end);
-  
+
   });
 </script>
 
@@ -241,7 +241,7 @@
 
       const searchTerm = params.term.toLowerCase();
 
-      if (data.text.toLowerCase().includes(searchTerm) || 
+      if (data.text.toLowerCase().includes(searchTerm) ||
           (data.element && $(data.element).data('number') && $(data.element).data('number').toString().includes(searchTerm))) {
           return data;
       }

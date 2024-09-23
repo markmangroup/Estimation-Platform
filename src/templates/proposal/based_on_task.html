@@ -27,11 +27,37 @@
 
   <!-- Create Proposal Button -->
   <div class="d-flex justify-content-end mr-3">
-    <button type="button" class="btn bg-light-primary mb-3 mt-2" data-backdrop="false" data-toggle="modal" data-target="#proposalCreatetion">
-    <em class="ft-plus font-medium-5"></em> Create Proposal
+    <button
+      type="button"
+      class="btn bg-light-primary mb-3 mt-2 htmx-trigger-crate-proposal-btn"
+      hx-get="{% url 'proposal_app:opportunity:create-proposal-ajax' opportunity.document_number %}"
+      data-url="{% url 'proposal_app:opportunity:create-proposal-ajax' opportunity.document_number %}"
+      hx-target="#ProposalContent"
+      hx-trigger="click"
+      data-toggle="modal"
+      data-target="#proposalCreatetion">
+      <em class="ft-plus font-medium-5"></em> Create Proposal
     </button>
   </div>
-  <!-- Create Proposal Button -->
+
+  <!-- Craete Proposal Modal -->
+  <div
+    class="modal fade text-left"
+    id="proposalCreatetion"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="myModalLabel33"
+    aria-hidden="true"
+    data-backdrop="false">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div id="ProposalContent">
+                <!-- Form content will be dynamically inserted here by HTMX -->
+            </div>
+        </div>
+    </div>
+  </div>
+
 
   <div class="card">
     <div class="card-content">
@@ -43,699 +69,152 @@
               <th class="text-center">Task summary</th>
             </thead>
             <tbody>
-              <!-- Row 1 -->
-              <tr>
-                <td>
-                  <input type="text" class="form-control" value="Rutu Rental">
-                </td>
-                <td>
-                  <table class="table table-striped table-bordered">
-                    <thead>
-                      <tr>
-                        <th>Task Code</th>
-                        <th>Task Description</th>
-                        <th>Include Items?</th>
-                        <th class="text-right">Price</th>
-                        <th class="text-center">
-                          <a data-toggle="collapse" href="#collapse25" aria-expanded="true" aria-controls="collapse25" class="card-title">
-                            <i class="ft-chevron-down font-medium-5"></i>
-                          </a>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody id="collapse25" role="tabpanel" aria-labelledby="headingcollapse25" class="collapse show">
-                      <tr>
-                        <th>
-                          <span class="font-weight-bold">DR-001</span>
-                        </th>
-                        <td>
-                          <span>
-                            <input
-                              type="text"
-                              class="form-control"
-                              id=""
-                              value="Design, Material and Installation of Connection to Mainline"
-                          /></span>
-                          <div class="table-responsive">
-                            <div style="margin-top: 3px; margin-bottom: 3px">
-                              <div>
-                                <button
-                                  type="button"
-                                  class="btn bg-light-primary"
-                                  data-toggle="modal"
-                                  data-target="#add_product"
-                                >
-                                  <i class="fa ft-plus-circle mr-1"></i>Add Items
-                                </button>
-                              </div>
-
-                              <div class="table-responsive" style="margin-top: 3px">
-                                <table class="table table-striped table-bordered mb-0">
-                                  <thead>
-                                    <tr>
-                                      <th class="text-center">Item Code</th>
-                                      <th class="text-center">Item Description</th>
-                                      <th class="text-center">Quantity</th>
-                                      <th class="text-center">Price</th>
-                                    </tr>
-                                  </thead>
-
-                                  <tbody>
-                                    <tr>
-                                      <td class="text-nowrap">
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          id=""
-                                          value=""
-                                          placeholder="Item Code"
-                                        />
-                                      </td>
-                                      <td>
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          id=""
-                                          value=""
-                                          placeholder="Item Description"
-                                        />
-                                      </td>
-                                      <td>
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          id=""
-                                          value=""
-                                          placeholder="Quantity"
-                                        />
-                                      </td>
-                                      <td>
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          id=""
-                                          value=""
-                                          placeholder="Price"
-                                        />
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </div>
-                              <div class="modal-footer m-0 p-0">
-                                <button type="button" class="btn btn-primary">
-                                  Save
-                                </button>
-                              </div>
-                            </div>
-                            <table class="table table-striped table-bordered mb-0">
+              {% load custom_filters %}
+              {% for grp_name, data in grouped_proposals.items %}
+                  <tr>
+                      <td>
+                          <input type="text" class="form-control grp_name" data-document="{{opportunity.document_number}}"  data-id="{{data.proposal_ids}}" value="{{ grp_name }}">
+                      </td>
+                      <td>
+                          <table class="table table-striped table-bordered">
                               <thead>
-                                <tr class="text-center">
-                                  <th>Item Code</th>
-                                  <th>Item Description</th>
-                                  <th>Quantity</th>
-                                  <th>Price</th>
-                                  <th>Total</th>
-                                </tr>
+                                  <tr>
+                                      <th>Task Code</th>
+                                      <th>Task Description</th>
+                                      <th>Include Items?</th>
+                                      <th class="text-right">Price</th>
+                                      <th class="text-center">
+                                          <a data-toggle="collapse" href="#collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapse{{ forloop.counter }}" class="card-title">
+                                              <i class="ft-chevron-down font-medium-5"></i>
+                                          </a>
+                                      </th>
+                                  </tr>
                               </thead>
-                              <tbody>
-                                <tr>
-                                  <td>2800-117465</td>
-                                  <td>Ball Repalcement</td>
-                                  <td>95</td>
-                                  <td>$0.8125</td>
-                                  <td>$59.124</td>
-                                </tr>
+                              <tbody id="collapse{{ forloop.counter }}" role="tabpanel" aria-labelledby="headingcollapse{{ forloop.counter }}" class="collapse show">
+
+                                  {% for task, products in data.assigned_products.items %}
+                                  <tr>
+                                      <td>
+                                          {% if task.task.name %}
+                                              <span class="font-weight-bold task_name">{{ task.task.name }}</span>
+                                          {% else %}
+                                              <span class="font-weight-bold task_name">{{ task.code }}</span>
+                                          {% endif %}
+                                      </td>
+                                      <td>
+                                          {% if task.task.name %}
+                                              <input type="text" class="form-control" value="{{ task.task.description }}" />
+                                          {% else %}
+                                              <input type="text" class="form-control" value="{{ task.description }}" />
+                                          {% endif %}
+                                          <div class="table-responsive">
+                                              <button type="button" class="btn bg-light-primary mt-2 add_items" data-id="{{task.id}}">
+                                                  <i class="fa ft-plus-circle mr-1"></i>Add Items
+                                              </button>
+                                              <table class="table table-striped table-bordered mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">Item Code</th>
+                                                        <th class="text-center">Item Description</th>
+                                                        <th class="text-center">Quantity</th>
+                                                        <th class="text-center">Price</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="item-body-{{task.id}}">
+                                                    <tr>
+                                                        <td class="text-nowrap">
+                                                          <input type="text" class="form-control item_code" value="" placeholder="Labor Task" />
+                                                        </td>
+                                                        <td>
+                                                          <input type="text" class="form-control description" value="" placeholder="Item Description" />
+                                                        </td>
+                                                        <td>
+                                                          <input type="text" class="form-control quantity" class="" value="" placeholder="Quantity" />
+                                                        </td>
+                                                        <td>
+                                                          <input type="text" class="form-control price" class="price" value="" placeholder="Price" />
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="float-right mb-3 save-div m-0 p-0">
+                                              <button type="button" data-id="{{task.id}}" class="btn btn-primary save-btn">Save</button>
+                                            </div>
+
+                                            <br>
+                                              <table class="table table-striped table-bordered mb-0">
+                                                  <thead>
+                                                      <tr>
+                                                          <th class="text-center">Item Code</th>
+                                                          <th class="text-center">Item Description</th>
+                                                          <th class="text-center">Quantity</th>
+                                                          <th class="text-center">Price</th>
+                                                      </tr>
+                                                  </thead>
+                                                  <tbody>
+
+                                                      {% for p in products %}
+                                                      <tr>
+                                                          <td class="text-nowrap">
+                                                              {% if p.item_code %}
+                                                                  <input type="text" class="form-control" value="{{ p.item_code }}" placeholder="Item Code" />
+                                                              {% else %}
+                                                                  <input type="text" class="form-control" value="{{ p.labor_task }}" placeholder="Labor Task" />
+                                                              {% endif %}
+                                                          </td>
+                                                          <td>
+                                                              <input type="text" class="form-control" value="{{ p.description }}" placeholder="Item Description" />
+                                                          </td>
+                                                          <td>
+                                                              <input type="text" class="form-control" class="" value="{{ p.quantity }}" placeholder="Quantity" />
+                                                          </td>
+                                                          <td>
+                                                              {% if p.standard_cost %}
+                                                                <input type="text" class="form-control" class="price" value="{{ p.standard_cost }}" placeholder="Price" />
+                                                              {% else %}
+                                                                <input type="text" class="form-control" class="price" value="{{ p.local_cost }}" placeholder="Price" />
+                                                              {% endif %}
+
+                                                          </td>
+                                                      </tr>
+                                                      {% endfor %}
+                                                  </tbody>
+                                              </table>
+                                              <input type="text" class="form-control" value="" placeholder="write description">
+
+                                          </div>
+                                      </td>
+                                      <td>
+                                          <div class="custom-control custom-checkbox">
+                                              <input type="checkbox" data-id="{{ task.id }}" class="custom-control-input checkbox" {% if task.include %}checked{% endif %} name="customCheck{{ task.id }}" id="custom-check-{{ task.id }}" />
+                                              <label class="custom-control-label" for="custom-check-{{ task.id }}"></label>
+                                          </div>
+                                      </td>
+                                      <td class="text-right">
+                                          <span class="total">{{ data.task_totals|get_item:task }}</span>
+                                      </td>
+                                      <td>
+                                        {% if task.task.name %}
+                                          <button type="button" class="btn btn-danger delete-task-btn" data-id="{{task.id}}" data-title="{{task.task.name}}" data-url="{% url 'proposal_app:opportunity:task-delete-ajax' %}"><em class="fa fa-trash"></em></button>
+                                        {% else %}
+                                          <button type="button" class="btn btn-danger delete-task-btn" data-id="{{task.id}}" data-title="{{task.code}}" data-url="{% url 'proposal_app:opportunity:task-delete-ajax' %}"><em class="fa fa-trash"></em></button>
+                                        {% endif %}
+                                      </td>
+                                  </tr>
+                                  {% endfor %}
+                                  <tr>
+                                      <th scope="row"></th>
+                                      <th class="text-right"><p>TOTAL ESTIMATE - ITEMS LISTED :</p></th>
+                                      <th></th>
+                                      <th class="text-right">{{ data.main_total }}</th>
+                                  </tr>
                               </tbody>
-                            </table>
-                          </div>
+                          </table>
+                      </td>
+                  </tr>
+              {% endfor %}
+          </tbody>
 
-                          <input placeholder="Task Description" class="form-control" />
-                        </td>
-                        <td>
-                          <div class="custom-control custom-checkbox">
-                            <input
-                              type="checkbox"
-                              class="custom-control-input"
-                              checked
-                              name="customCheck"
-                              id="custom-check-1"
-                            />
-                            <label
-                              class="custom-control-label"
-                              for="custom-check-1"
-                            ></label>
-                          </div>
-                        </td>
-                        <td class="text-right">
-                          <span>$9,936.32</span>
-                        </td>
-                        <td><button class="btn btn-danger"><em class="fa fa-trash" /></button></td>
-                      </tr>
-                      <tr>
-                        <th>
-                          <span class="font-weight-bold">EL-000</span>
-                        </th>
-                        <td>
-                          <span>
-                            <input
-                              type="text"
-                              class="form-control"
-                              id=""
-                              value="Design, Material and Installation of Connection to Mainline"
-                          /></span>
-                          <div class="table-responsive">
-                            <div style="margin-top: 3px; margin-bottom: 3px">
-                              <div>
-                                <button
-                                  type="button"
-                                  class="btn bg-light-primary"
-                                  data-toggle="modal"
-                                  data-target="#add_product"
-                                >
-                                  <i class="fa ft-plus-circle mr-1"></i>Add Items
-                                </button>
-                              </div>
-
-                              <div class="table-responsive" style="margin-top: 3px">
-                                <table class="table table-striped table-bordered mb-0">
-                                  <thead>
-                                    <tr>
-                                      <th class="text-center">Item Code</th>
-                                      <th class="text-center">Item Description</th>
-                                      <th class="text-center">Quantity</th>
-                                      <th class="text-center">Price</th>
-                                    </tr>
-                                  </thead>
-
-                                  <tbody>
-                                    <tr>
-                                      <td class="text-nowrap">
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          id=""
-                                          value=""
-                                          placeholder="Item Code"
-                                        />
-                                      </td>
-                                      <td>
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          id=""
-                                          value=""
-                                          placeholder="Item Description"
-                                        />
-                                      </td>
-                                      <td>
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          id=""
-                                          value=""
-                                          placeholder="Quantity"
-                                        />
-                                      </td>
-                                      <td>
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          id=""
-                                          value=""
-                                          placeholder="Price"
-                                        />
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </div>
-                              <div class="modal-footer m-0 p-0">
-                                <button type="button" class="btn btn-primary">
-                                  Save
-                                </button>
-                              </div>
-                            </div>
-                            <table class="table table-striped table-bordered mb-0">
-                              <thead>
-                                <tr class="text-center">
-                                  <th>Item Code</th>
-                                  <th>Item Description</th>
-                                  <th>Quantity</th>
-                                  <th>Price</th>
-                                  <th>Total</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td>2800-117465</td>
-                                  <td>Ball Repalcement</td>
-                                  <td>95</td>
-                                  <td>$0.8125</td>
-                                  <td>$59.124</td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                          <input placeholder="Task Description" class="form-control" />
-                        </td>
-                        <td>
-                          <div class="custom-control custom-checkbox">
-                            <input
-                              type="checkbox"
-                              class="custom-control-input"
-                              name="customCheck"
-                              id="custom-check-2"
-                            />
-                            <label
-                              class="custom-control-label"
-                              for="custom-check-2"
-                            ></label>
-                          </div>
-                        </td>
-                        <td class="text-right">
-                          <span>$4,572.02</span>
-                        </td>
-                        <td><button class="btn btn-danger"><em class="fa fa-trash" /></button></td>
-                      </tr>
-                      <tr>
-                        <th>
-                          <span class="font-weight-bold">FI-000</span>
-                        </th>
-                        <td>
-                          <span
-                            ><input
-                              type="text"
-                              class="form-control"
-                              id=""
-                              value="Design, Material and Installation of Connection to Mainline"
-                          /></span>
-                          <div class="table-responsive">
-                            <div style="margin-top: 3px; margin-bottom: 3px">
-                              <div>
-                                <button
-                                  type="button"
-                                  class="btn bg-light-primary"
-                                  data-toggle="modal"
-                                  data-target="#add_product"
-                                >
-                                  <i class="fa ft-plus-circle mr-1"></i>Add Items
-                                </button>
-                              </div>
-
-                              <div class="table-responsive" style="margin-top: 3px">
-                                <table class="table table-striped table-bordered mb-0">
-                                  <thead>
-                                    <tr>
-                                      <th class="text-center">Item Code</th>
-                                      <th class="text-center">Item Description</th>
-                                      <th class="text-center">Quantity</th>
-                                      <th class="text-center">Price</th>
-                                    </tr>
-                                  </thead>
-
-                                  <tbody>
-                                    <tr>
-                                      <td class="text-nowrap">
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          id=""
-                                          value=""
-                                          placeholder="Item Code"
-                                        />
-                                      </td>
-                                      <td>
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          id=""
-                                          value=""
-                                          placeholder="Item Description"
-                                        />
-                                      </td>
-                                      <td>
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          id=""
-                                          value=""
-                                          placeholder="Quantity"
-                                        />
-                                      </td>
-                                      <td>
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          id=""
-                                          value=""
-                                          placeholder="Price"
-                                        />
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </div>
-                              <div class="modal-footer m-0 p-0">
-                                <button type="button" class="btn btn-primary">
-                                  Save
-                                </button>
-                              </div>
-                            </div>
-                            <table class="table table-striped table-bordered mb-0">
-                              <thead>
-                                <tr class="text-center">
-                                  <th>Item Code</th>
-                                  <th>Item Description</th>
-                                  <th>Quantity</th>
-                                  <th>Price</th>
-                                  <th>Total</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td>2800-117465</td>
-                                  <td>Ball Repalcement</td>
-                                  <td>95</td>
-                                  <td>$0.8125</td>
-                                  <td>$59.124</td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                          <input placeholder="Task Description" class="form-control" />
-                        </td>
-                        <td>
-                          <div class="custom-control custom-checkbox">
-                            <input
-                              type="checkbox"
-                              class="custom-control-input"
-                              name="customCheck"
-                              id="custom-check-5"
-                            />
-                            <label
-                              class="custom-control-label"
-                              for="custom-check-5"
-                            ></label>
-                          </div>
-                        </td>
-                        <td class="text-right">
-                          <span>$15,295.07</span>
-                        </td>
-                        <td><button class="btn btn-danger"><em class="fa fa-trash" /></button></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"></th>
-                        <th class="text-right">
-                          <p>TOTAL ESTIMATE - ITEMS LISTED :</p>
-                        </th>
-                        <th></th>
-                        <th class="text-right">$30303.41</th>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
-
-              <!-- Row 2 -->
-              <tr>
-                <td>
-                  <input type="text" class="form-control" value="Test Rental">
-                </td>
-                <td>
-                  <table class="table table-striped table-bordered">
-                    <thead>
-                      <tr>
-                        <th>Task Code</th>
-                        <th>Task Description</th>
-                        <th>Include Items?</th>
-                        <th class="text-right">Price</th>
-                        <th class="text-center">
-                          <a data-toggle="collapse" href="#collapse26" aria-expanded="true" aria-controls="collapse26" class="card-title">
-                          <em class="ft-chevron-down font-medium-5"></em>
-                          </a>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody id="collapse26" role="tabpanel" aria-labelledby="headingCollapse12" class="collapse show">
-
-                      <tr>
-                        <th>
-                          <span class="font-weight-bold">EL-000</span>
-                        </th>
-                        <td>
-                          <span>
-                            <input
-                              type="text"
-                              class="form-control"
-                              id=""
-                              value="Design, Material and Installation of Connection to Mainline"
-                          /></span>
-                          <div class="table-responsive">
-                            <div style="margin-top: 3px; margin-bottom: 3px">
-                              <div>
-                                <button
-                                  type="button"
-                                  class="btn bg-light-primary"
-                                  data-toggle="modal"
-                                  data-target="#add_product"
-                                >
-                                  <i class="fa ft-plus-circle mr-1"></i>Add Items
-                                </button>
-                              </div>
-
-                              <div class="table-responsive" style="margin-top: 3px">
-                                <table class="table table-striped table-bordered mb-0">
-                                  <thead>
-                                    <tr>
-                                      <th class="text-center">Item Code</th>
-                                      <th class="text-center">Item Description</th>
-                                      <th class="text-center">Quantity</th>
-                                      <th class="text-center">Price</th>
-                                    </tr>
-                                  </thead>
-
-                                  <tbody>
-                                    <tr>
-                                      <td class="text-nowrap">
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          id=""
-                                          value=""
-                                          placeholder="Item Code"
-                                        />
-                                      </td>
-                                      <td>
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          id=""
-                                          value=""
-                                          placeholder="Item Description"
-                                        />
-                                      </td>
-                                      <td>
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          id=""
-                                          value=""
-                                          placeholder="Quantity"
-                                        />
-                                      </td>
-                                      <td>
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          id=""
-                                          value=""
-                                          placeholder="Price"
-                                        />
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </div>
-                              <div class="modal-footer m-0 p-0">
-                                <button type="button" class="btn btn-primary">
-                                  Save
-                                </button>
-                              </div>
-                            </div>
-                            <table class="table table-striped table-bordered mb-0">
-                              <thead>
-                                <tr class="text-center">
-                                  <th>Item Code</th>
-                                  <th>Item Description</th>
-                                  <th>Quantity</th>
-                                  <th>Price</th>
-                                  <th>Total</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td>2800-117465</td>
-                                  <td>Ball Repalcement</td>
-                                  <td>95</td>
-                                  <td>$0.8125</td>
-                                  <td>$59.124</td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                          <input placeholder="Task Description" class="form-control" />
-                        </td>
-                        <td>
-                          <div class="custom-control custom-checkbox">
-                            <input
-                              type="checkbox"
-                              class="custom-control-input"
-                              name="customCheck"
-                              id="custom-check-6"
-                            />
-                            <label
-                              class="custom-control-label"
-                              for="custom-check-6"
-                            ></label>
-                          </div>
-                        </td>
-                        <td class="text-right">
-                          <span>$4,572.02</span>
-                        </td>
-                        <td><button class="btn btn-danger"><em class="fa fa-trash" /></button></td>
-                      </tr>
-                      <tr>
-                        <th>
-                          <span class="font-weight-bold">FI-000</span>
-                        </th>
-                        <td>
-                          <span
-                            ><input
-                              type="text"
-                              class="form-control"
-                              id=""
-                              value="Design, Material and Installation of Connection to Mainline"
-                          /></span>
-                          <div class="table-responsive">
-                            <div style="margin-top: 3px; margin-bottom: 3px">
-                              <div>
-                                <button
-                                  type="button"
-                                  class="btn bg-light-primary"
-                                  data-toggle="modal"
-                                  data-target="#add_product"
-                                >
-                                  <i class="fa ft-plus-circle mr-1"></i>Add Items
-                                </button>
-                              </div>
-
-                              <div class="table-responsive" style="margin-top: 3px">
-                                <table class="table table-striped table-bordered mb-0">
-                                  <thead>
-                                    <tr>
-                                      <th class="text-center">Item Code</th>
-                                      <th class="text-center">Item Description</th>
-                                      <th class="text-center">Quantity</th>
-                                      <th class="text-center">Price</th>
-                                    </tr>
-                                  </thead>
-
-                                  <tbody>
-                                    <tr>
-                                      <td class="text-nowrap">
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          id=""
-                                          value=""
-                                          placeholder="Item Code"
-                                        />
-                                      </td>
-                                      <td>
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          id=""
-                                          value=""
-                                          placeholder="Item Description"
-                                        />
-                                      </td>
-                                      <td>
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          id=""
-                                          value=""
-                                          placeholder="Quantity"
-                                        />
-                                      </td>
-                                      <td>
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          id=""
-                                          value=""
-                                          placeholder="Price"
-                                        />
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </div>
-                              <div class="modal-footer m-0 p-0">
-                                <button type="button" class="btn btn-primary">
-                                  Save
-                                </button>
-                              </div>
-                            </div>
-                            <table class="table table-striped table-bordered mb-0">
-                              <thead>
-                                <tr class="text-center">
-                                  <th>Item Code</th>
-                                  <th>Item Description</th>
-                                  <th>Quantity</th>
-                                  <th>Price</th>
-                                  <th>Total</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td>2800-117465</td>
-                                  <td>Ball Repalcement</td>
-                                  <td>95</td>
-                                  <td>$0.8125</td>
-                                  <td>$59.124</td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                          <input placeholder="Task Description" class="form-control" />
-                        </td>
-                        <td>
-                          <div class="custom-control custom-checkbox">
-                            <input
-                              type="checkbox"
-                              class="custom-control-input"
-                              name="customCheck"
-                              id="custom-check-3"
-                            />
-                            <label
-                              class="custom-control-label"
-                              for="custom-check-3"
-                            ></label>
-                          </div>
-                        </td>
-                        <td class="text-right">
-                          <span>$15,295.07</span>
-                        </td>
-                        <td><button class="btn btn-danger"><em class="fa fa-trash" /></button></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
-            </tbody>
           </table>
         </div>
       </div>
@@ -744,78 +223,239 @@
 </div>
 <!-- Main -->
 
-<!-- Proposal Createtion Modal Start -->
-<div class="modal fade text-left" id="proposalCreatetion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" aria-hidden="true">
-  <div class="modal-dialog modal-md modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" id="myModalLabel5">Create Proposal</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <section id="multiple-select2">
-          <div class="card">
-            <div class="card-content">
-              <div class="card-body">
-                  <div class="form-group">
-                    <label>Group Name</label>
-                    <input type="text" class="form-control" placeholder="Enter Group Name">
-                  </div>
-                  <div class="form-group">
-                    <label>Task Code</label>
-                    <select id="mySelect" class="select2" multiple>
-                      <option value="AU-000" data-description="Automation">AU-000</option>
-                      <option value="AU-000:AU-001" data-description="Above Ground - Time & Materials">AU-000:AU-001</option>
-                      <option value="AU-000:AU-002" data-description="Ag Supply">AU-000:AU-002</option>
-                      <option value="AU-000:AU-003" data-description="Above Ground - Time & Materials">AU-000:AU-003</option>
-                      <option value="AU-000:AU-004" data-description="Ag Supply">AU-000:AU-004</option>
-                      <option value="AU-000:AU-005" data-description="Ag Supply">AU-000:AU-005</option>
-                      <option value="AU-000:AU-006" data-description="Above Ground - Time & Materials">AU-000:AU-006</option>
-                    </select>
-                  </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn bg-light-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn bg-light-primary" data-dismiss="modal"><em class="ft-plus font-medium-5"></em> Create</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Proposal Createtion Modal End -->
 
 {% block script %}
-  <!-- Multi select js -->
-  <script src="{% static 'vendors/js/select2.full.min.js' %}"></script>
-  <script src="{% static 'app/js/select2.min.js' %}"></script>
-  <!-- Multi select js -->
 
-  <!-- Search with description -->
+  <!-- Htmx -->
+  <script>
+    $(document).on('click', '.htmx-trigger-crate-proposal-btn' , function (e) {
+
+      var url = $(this).data('url');
+      htmx.ajax('GET',
+          url,
+          {
+            target:'#ProposalContent',
+            swap:'innerHTML',
+      }).then(() => {
+          $('#proposalCreatetion').toggleClass('hidden');
+      })
+    });
+  </script>
+
+  <!-- Select 2-->
+  <script>
+    $(".select2").select2();
+  </script>
+
+  <!-- Delete tasks -->
+  <script>
+    $(document).on('click', '.delete-task-btn', function (e) {
+      var id = $(this).data("id")
+      var task_name = $(this).data("title")
+
+      if (task_name == "None") {
+        task_name = ""
+      }
+      var url = $(this).data("url")
+      var delete_ele = $(this)
+
+      Swal.fire({
+        html: `Are you sure you want to delete <b>${task_name}</b>?`,
+        icon: 'question',
+        showCloseButton: true,
+        showCancelButton: true,
+        confirmButtonColor: "#7442DB",
+
+      }).then((result) => {
+
+        if (result.isConfirmed) {
+          // $(this).closest('tr').remove();
+          $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+              "id": id,
+              "csrfmiddlewaretoken": '{{ csrf_token }}'
+            },
+            success: function (data) {
+              window.location.reload();
+            }
+          });
+        }else {
+                Swal.fire("Cencel delete", "", "info");
+              }
+      })
+    })
+  </script>
+
+  <!-- Group Name Editable -->
+  <script>
+    $(".grp_name").on("keypress", function(e) {
+      if (e.which === 13) {
+          e.preventDefault();
+          var value = $(this).val();
+          var ids = $(this).data("id");
+          var document = $(this).data("document");
+
+          // console.log("Value -==--==--=", value);
+          // console.log("IDs -==--==--=", ids);
+          // console.log("document -==--==--=", document);
+
+          $.ajax({
+            type: "POST",
+            url: "{% url 'proposal_app:opportunity:group-name-update-ajax' %}",
+            data: {
+              "ids": `${ids}`,
+              "group_name": value,
+              "document": document,
+              "csrfmiddlewaretoken": '{{ csrf_token }}'
+            },
+            success: function (response) {
+              toastr.success(response.message, 'Updated', {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-bottom-right',
+                timeOut: 6000
+              });
+            }
+          });
+      }
+    });
+  </script>
+
+  <!-- Add dynamic items -->
+  <script>
+    $(".add_items").on('click', function(e){
+        var $id = $(this).data('id');
+        var $itemBody = $(`#item-body-${$id}`);
+        const uniqueNumber = Math.floor(Date.now() + Math.random() * 1000);
+        var $newRow = `
+            <tr id=${uniqueNumber}>
+                <td class="text-nowrap">
+                    <input type="text" class="form-control item_code" placeholder="Labor Task" />
+                </td>
+                <td>
+                    <input type="text" class="form-control description" placeholder="Item Description" />
+                </td>
+                <td>
+                    <input type="text" class="form-control quantity" placeholder="Quantity" />
+                </td>
+                <td>
+                    <input type="text" class="form-control price" placeholder="Price" />
+                </td>
+            </tr>
+        `;
+        $itemBody.append($newRow);
+    });
+  </script>
+
+  <!-- Save button-->
   <script>
     $(document).ready(function() {
-      $('#mySelect').select2({
-          width: '100%',
-          matcher: function(params, data) {
-              // If there are no search terms, return all options
-              if ($.trim(params.term) === '') {
-                  return data;
-              }
+      $('.save-btn').click(function() {
+          const taskId = $(this).data('id');
+          console.log("taskId", taskId)
 
-              // Check if the option text or description contains the search term
-              if (data.text.toUpperCase().indexOf(params.term.toUpperCase()) > -1 ||
-                  $(data.element).data('description').toUpperCase().indexOf(params.term.toUpperCase()) > -1) {
-                  return data;
+          const $tbody = $('#item-body-' + taskId);
+          const itemsToSave = [];
+
+          // Iterate through each row in the tbody
+          $tbody.find('tr').each(function() {
+              const itemCode = $(this).find('.item_code').val();
+              const description = $(this).find('.description').val();
+              const quantity = $(this).find('.quantity').val();
+              const price = $(this).find('.price').val();
+              if (itemCode) {
+                  itemsToSave.push({
+                      taskId: taskId,
+                      itemCode: itemCode,
+                      description: description,
+                      quantity: quantity,
+                      price: price
+                  });
               }
-              // Return `null` if the term does not match
-              return null;
-          }
+          });
+          console.log(itemsToSave);
+          $.ajax({
+              type: "POST",
+              url: "{% url 'proposal_app:opportunity:add-items-ajax' %}",
+              data: JSON.stringify(itemsToSave),
+              headers: {
+                'X-CSRFToken': "{{ csrf_token }}",
+              },
+              contentType: "application/json",
+              success: function(response) {
+                if(response.status == "success"){
+                  toastr.success(response.message, 'Added', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-bottom-right',
+                    timeOut: 6000
+                  });
+                } else {
+                  toastr.error(response.message, 'Error', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-bottom-right',
+                    timeOut: 6000
+                  });
+                }
+              },
+              error: function(error) {
+                  // Handle error
+                  toastr.Error(error.message, 'Error', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-bottom-right',
+                    timeOut: 6000
+                  });
+              }
+          });
       });
     });
   </script>
-  <!-- Search with description -->
+
+  <!-- CheckBox Update -->
+  <script>
+    $(".checkbox").on("click", function(e) {
+
+      $id = $(this).data("id");
+
+      $.ajax({
+        type: "POST",
+        url: "{% url 'proposal_app:opportunity:include-items-ajax' %}",
+        data: JSON.stringify({ "id": $id }),
+        headers: {
+          'X-CSRFToken': "{{ csrf_token }}",
+        },
+        contentType: "application/json",
+        success: function(response) {
+          if(response.status == "success"){
+            toastr.success(response.message, 'Updated', {
+              closeButton: true,
+              progressBar: true,
+              positionClass: 'toast-bottom-right',
+              timeOut: 6000
+            });
+          } else {
+            toastr.error(response.message, 'Error', {
+              closeButton: true,
+              progressBar: true,
+              positionClass: 'toast-bottom-right',
+              timeOut: 6000
+            });
+          }
+        },
+        error: function(error) {
+            // Handle error
+            toastr.Error(error.message, 'Error', {
+              closeButton: true,
+              progressBar: true,
+              positionClass: 'toast-bottom-right',
+              timeOut: 6000
+            });
+        }
+      });
+    })
+  </script>
 {% endblock script %}
