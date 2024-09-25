@@ -4,7 +4,7 @@
       function generateUniqueId() {
           return "id" + Math.random().toString(16).slice(2);
       }
-      
+
       // Handle 'Add Row' button click
       $('.add-row-btn').on('click', function() {
           var unique_id = generateUniqueId();
@@ -66,14 +66,14 @@
                 cache: true
             }
           });
-          
+
           // Item code start
           $('.select2-item-code').select2({
             placeholder: 'Select Item Code',
             ajax: {
                 url: item_code_url,
                 dataType: 'json',
-                delay: 250, 
+                delay: 250,
                 data: function (params) {
                     return {
                         q: params.term
@@ -87,10 +87,10 @@
                 cache: true
             }
           });
-        
+
           function updateDescription(value, id) {
             var $select2Element = $(`select[data-id="${id}"].select2-item-description.js-example-programmatic.form-control`);
-            
+
             // Initialize Select2
             $select2Element.select2({
                 ajax: {
@@ -110,7 +110,7 @@
                     cache: true
                 }
             });
-        
+
             // When Select2 is initialized, set the selected value
             $select2Element.on('select2:open', function() {
                 setTimeout(function() {
@@ -120,7 +120,7 @@
           }
 
           $(document).on('change', '.select2-item-code', function(e) {
-            
+
             // item code
             var $input = $(e.target);
             var id = $input.data("id");
@@ -128,7 +128,7 @@
 
             var value = $input.val();
             console.log("value",value);
-            
+
             // Payload data
             data = {
               value: value,
@@ -163,7 +163,7 @@
             ajax: {
                 url: item_description_url,
                 dataType: 'json',
-                delay: 250, 
+                delay: 250,
                 data: function (params) {
                     return {
                         q: params.term
@@ -183,7 +183,7 @@
       $(document).on('click', '.remove-row-btn', function() {
           $(this).closest('tr').remove();
       });
-      
+
       $(document).on('input', '.quantity', function(){
           var quantity_id = $(this).data('id');
           console.log("quantity_id", quantity_id);
@@ -192,7 +192,7 @@
       });
 
       $(document).on('click', '.save', function(){
-        
+
         // Get the closest <tr> element to the clicked save button
         var $row = $(this).closest('tr');
 
@@ -223,7 +223,7 @@
         console.log("Sell Total:", sellTotal);
         console.log("Gross:", gross);
         console.log("Gross %:", grossP);
-        
+
         data = {
           quantity: quantity,
           item_code: item_code,
@@ -291,7 +291,7 @@
 
       for (var i = 0; i < totalRows; i++) {
           var clonedRow = rowToCopy.cloneNode(true);
-          
+
           // Remove ID and adjust class for cloned rows
           clonedRow.removeAttribute('id');
           clonedRow.classList.add('dynamic-row');
@@ -424,7 +424,7 @@
             ajax: {
                 url: item_code_url,
                 dataType: 'json',
-                delay: 250, 
+                delay: 250,
                 data: function (params) {
                     return {
                         q: params.term
@@ -438,10 +438,10 @@
                 cache: true
             }
         });
-        
+
         function updateDescription(value, id) {
           var $select2Element = $(`select[data-id="${id}"].select2-item-description.js-example-programmatic.form-control`);
-          
+
           // Initialize Select2
           $select2Element.select2({
               ajax: {
@@ -461,7 +461,7 @@
                   cache: true
               }
           });
-      
+
           // When Select2 is initialized, set the selected value
           $select2Element.on('select2:open', function() {
               setTimeout(function() {
@@ -471,7 +471,7 @@
         }
 
         $(document).on('change', '.select2-item-code', function(e) {
-          
+
           // item code
           var $input = $(e.target);
           var id = $input.data("id");
@@ -479,7 +479,7 @@
 
           var value = $input.val();
           console.log("value",value);
-          
+
           // Payload data
           data = {
             value: value,
@@ -499,7 +499,7 @@
                 console.log("std_cost", response.std_cost);
                 updateDescription(response.description, id);
                 var $stdCostField = $(`input[data-id="${id}"][id="std_cost"]`);
-                $stdCostField.val(response.std_cost); 
+                $stdCostField.val(response.std_cost);
               }
             },
             error: function(xhr, status, error) {
@@ -516,7 +516,7 @@
           ajax: {
               url: item_description_url,
               dataType: 'json',
-              delay: 250, 
+              delay: 250,
               data: function (params) {
                   return {
                       q: params.term
@@ -569,7 +569,7 @@
                   data: function (params) {
                       return {
                           q: params.term,
-                          document_number: "{{ opportunity.document_number }}", 
+                          document_number: "{{ opportunity.document_number }}",
                       };
                   },
                   processResults: function (data) {
@@ -580,7 +580,7 @@
                   cache: true
               }
           });
-      }); 
+      });
 
   // <!-- Labour Task -->
     $(document).ready(function() {

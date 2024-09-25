@@ -7,6 +7,7 @@ from .models import (
     MaterialList,
     Opportunity,
     PreliminaryMaterialList,
+    ProposalCreation,
     SelectTaskCode,
     TaskMapping,
 )
@@ -22,3 +23,4 @@ admin.site.register(GlueAndAdditionalMaterial)
 admin.site.register(PreliminaryMaterialList)
 admin.site.register(TaskMapping)
 admin.site.register(AssignedProduct)
+admin.site.register(ProposalCreation)

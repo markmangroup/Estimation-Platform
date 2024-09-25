@@ -66,9 +66,9 @@ urlpatterns = [
         name="preliminary-material-list-ajax",
     ),
     path(
-        "generate_estimate_table",
+        "<str:document_number>/estimate-table",
         views.GenerateEstimateTable.as_view(),
-        name="generate_estimate_table",
+        name="generate-estimate-table",
     ),
     path(
         "assign-prod-labor/<str:document_number>/<int:task_id>",
@@ -87,11 +87,65 @@ urlpatterns = [
     ),
     path("add-task/<str:document_number>", views.AddTaskView.as_view(), name="add-task"),
     path("add-prod-row-ajax", views.AddProdRowView.as_view(), name="add-prod-row-ajax"),
-
+    path(
+        "<int:task_id>/update-estimation-products/ajax",
+        views.UpdateEstimationProduct.as_view(),
+        name="update-estimation-products-ajax",
+    ),
+    path(
+        "<int:task_id>/update-estimation-labor/ajax",
+        views.UpdateEstimationLabor.as_view(),
+        name="update-estimation-labor-ajax",
+    ),
+    path("update-estimation-table/ajax", views.UpdateEstimationTable.as_view(), name="update-estimation-table-ajax"),
+    path("<str:document_number>/create-proposal/ajax", views.CreateProposalView.as_view(), name="create-proposal-ajax"),
+    path(
+        "task/delete/ajax",
+        views.DeleteTaskView.as_view(),
+        name="task-delete-ajax",
+    ),
+    path(
+        "group-name/update/ajax",
+        views.UpdateGroupName.as_view(),
+        name="group-name-update-ajax",
+    ),
+    path(
+        "add-items/ajax",
+        views.AddItemsView.as_view(),
+        name="add-items-ajax",
+    ),
+    path(
+        "include-items/ajax",
+        views.UpdateItemIncludeView.as_view(),
+        name="include-items-ajax",
+    ),
+    # --KPI path
+    path(
+        "<str:document_number>/total-cost-breakdown-ajax",
+        views.TotalCostBreakdown.as_view(),
+        name="total-cost-breakdown-ajax",
+    ),
+    path(
+        "<str:document_number>/total-sale-breakdown-ajax",
+        views.TotalSaleBreakdown.as_view(),
+        name="total-sale-breakdown-ajax",
+    ),
+    path(
+        "<str:document_number>/total-gp-breakdown-ajax",
+        views.TotalGPBreakdown.as_view(),
+        name="total-gp-breakdown-ajax",
+    ),
+    path(
+        "<str:document_number>/total-gp-per-breakdown-ajax",
+        views.TotalGPPerBreakdown.as_view(),
+        name="total-gp-per-breakdown-ajax",
+    ),
     # --Search path
     path("item-code-search", views.ItemCodeSearchView.as_view(), name="item-code-search"),
     path("item-description-search", views.ItemDescriptionSearchView.as_view(), name="item-description-search"),
     path("vendor-search", views.VendorSearchView.as_view(), name="vendor-search"),
     path("task-search", views.TaskSearchView.as_view(), name="task-search"),
-    path("labor-task-search", views.LaborTaskSearchView.as_view(), name="labor-task-search")
+    path("labor-task-search", views.LaborTaskSearchView.as_view(), name="labor-task-search"),
+    path("labor-task-name-search", views.LaborTaskNameView.as_view(), name="labor-task-name-search"),
+    path("labor-description-search", views.LaborDescriptionView.as_view(), name="labor-task-description-search"),
 ]

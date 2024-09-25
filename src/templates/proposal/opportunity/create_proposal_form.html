@@ -1,0 +1,111 @@
+{% load static %}
+<div class="modal-header">
+    <h4 class="modal-title" id="myModalLabel5">Create Proposal</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
+        </button>
+    </div>
+    <div class="modal-body">
+    <section id="multiple-select2">
+        <div class="card">
+            <div class="card-content">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>Group Name</label>
+                        <input type="text" class="form-control grp_name" name="grp_name" placeholder="Enter Group Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Task Code</label>
+                        <select id="SelectDescription" class="selected_tasks" multiple>
+                            {% for t in task_mapping_obj %}
+                                {% if t.task.name %}
+                                    <option value="{{t.id}}" data-description="{{t.task.description}}">{{t.task.name}}</option>
+                                {% else %}
+                                    <option value="{{t.id}}" data-description="{{t.description}}">{{t.code}}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn bg-light-secondary" data-dismiss="modal">Close</button>
+    <button type="button" class="btn bg-light-primary" id="AddProposal"><em class="ft-plus font-medium-5"></em> Create</button>
+</div>
+
+
+<!-- Multi select js -->
+<script src="{% static 'vendors/js/select2.full.min.js' %}"></script>
+<script src="{% static 'app/js/select2.min.js' %}"></script>
+
+<!-- Search with description start -->
+<script>
+    $(document).ready(function() {
+        $('#SelectDescription').select2({
+            width: '100%',
+            matcher: function(params, data) {
+                // If there are no search terms, return all options
+                if ($.trim(params.term) === '') {
+                    return data;
+                }
+
+                if (data.text.toUpperCase().indexOf(params.term.toUpperCase()) > -1 ||
+                    $(data.element).data('description').toUpperCase().indexOf(params.term.toUpperCase()) > -1) {
+                    return data;
+                }
+                return null;
+            }
+        });
+        });
+</script>
+<!-- Search with description end -->
+
+<script>
+    $(document).ready(function() {
+        $('#AddProposal').on('click', function(event) {
+            event.preventDefault();
+
+            const selectedValues = $('#SelectDescription').val();
+            const GrpName = $('.grp_name').val();
+            console.log(selectedValues);
+            console.log(GrpName);
+
+            if (selectedValues.length > 0) {
+                $.ajax({
+                    url: '{% url "proposal_app:opportunity:create-proposal-ajax" document_number %}',
+                    type: 'POST',
+                    data: {
+                        task: selectedValues,
+                        grp_name: GrpName,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    traditional: true,
+                    success: function(response) {
+                        console.log('Success:', response);
+                        window.location.reload();
+                    },
+                    error: function(response) {
+                        console.log("response", response.responseJSON.message);
+                        // Display message
+                        toastr.error(response.responseJSON.message, 'Error', {
+                            closeButton: true,
+                            progressBar: true,
+                            positionClass: 'toast-bottom-right',
+                            timeOut: 6000
+                        });
+                    }
+                });
+            } else {
+                alert('Please select a task.');
+            }
+        });
+
+        $('#SelectDescription').on('change', function() {
+            const selectedValues = $(this).val();
+            console.log('Selected tasks:', selectedValues);
+        });
+    });
+</script>

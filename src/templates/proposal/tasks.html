@@ -15,9 +15,6 @@
 
   <!-- Add manully task button -->
   <div class="text-right my-2">
-    <button type="button" class="btn btn-primary save-all-btn">
-        Save All
-    </button>
     <button type="button" class="btn bg-light-primary htmx-trigger-btn-add-task"
             data-url="{% url 'proposal_app:opportunity:add-task' opportunity.document_number %}"
             hx-get="{% url 'proposal_app:opportunity:add-task' opportunity.document_number %}"
@@ -295,35 +292,67 @@
 
 
         <!-- Labor start -->
-        {% for l in task_mapping_labor_list %}
+        {% for t_id, t_info in task_mapping_labor_list.items %}
           <tr>
             <td >
-              <select data-id="{{l.task.id}}" class="select2-labor-task form-control">
-                <option selected disabled>{{l.task.name}}</option>
+              <select data-id="{{t_id}}" class="select2-labor-task form-control">
+                <option selected disabled>{{t_info.task.task.name}}</option>
               </select>
             </td>
-            <td><input type="text" class="form-control" id="" value="{{l.task.description}}" disabled/></td>
+            <td><input type="text" class="form-control" id="" value="{{t_info.task.task.description}}" disabled/></td>
             <td>$0.00</td>
             <td>0.00</td>
             <td>0</td>
             <td>EA</td>
             <td>$0.00</td>
             <td>
-              <a data-toggle="collapse" href="#collapse{{l.id}}" aria-expanded="true" aria-controls="collapse{{l.id}}" class="card-title">
+              <a data-toggle="collapse" href="#collapse{{t_id}}" aria-expanded="true" aria-controls="collapse{{t_id}}" class="card-title">
                 <em class="ft-chevron-down font-medium-5"></em>
               </a>
             </td>
           </tr>
-          <tr id="collapse{{l.id}}" role="tabpanel" aria-labelledby="headingCollapse{{l.id}}" class="collapse">
+          <tr id="collapse{{t_id}}" role="tabpanel" aria-labelledby="headingCollapse{{t_id}}" class="collapse">
             <td>
             </td>
 
             <td colspan="100">
               <div class="text-right my-2">
                 <button  type="button" class="btn bg-light-primary" data-backdrop="false"
-                  data-toggle="modal" data-target="#addProduct">
+                  data-toggle="modal" data-target="#addlabor{{t_id}}">
                     <em class="ft-plus font-medium-5"></em> Add labor
                 </button>
+
+                <!-- Add Labor Modal -->
+                <div class="modal fade text-left" id="addlabor{{t_id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" aria-hidden="true">
+                  <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel5">Add labor</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <section id="multiple-select2">
+                          <div class="card">
+                            <div class="card-content">
+                              <div class="card-body">
+                                <div class="form-group">
+                                    <label>Enter the number of fields</label>
+                                    <input id="totalRows{{t_id}}" type="text" class="form-control mb-1" placeholder="Enter the number of fields">
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                        </section>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn bg-light-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" data-id="{{t_id}}" class="btn btn-primary add-multi-labor-row-btn" data-dismiss="modal"><em class="ft-plus font-medium-5"></em> Add Labor</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
               </div>
               <div class="table-responsive">
@@ -365,23 +394,18 @@
 
                   <tbody id="labor-{{t_id}}">
 
-                    {% if l.labor_task %}
+                    {% for ap in t_info.assigned_products %}
                       <tr>
                         <td>{{foorloop.counter}}</td>
 
-                        <td class="text-nowrap">{{l.labor_task}}</td>
-                        <td>{{l.description}}</td>
+                        <td class="text-nowrap">{{ap.labor_task}}</td>
+                        <td>{{ap.description}}</td>
                         <td class="text-nowrap">
-                          <input
-                                  type="text"
-                                  class="form-control"
-                                  id=""
-                                  value="{{l.quantity}}"
-                                />
+                          <input type="text" class="form-control quantity" data-id="{{ap.id}}" value="{{ap.quantity}}"/>
                         </td>
-                        <td class="text-nowrap">{{l.local_cost}}</td>
-                        <td class="text-nowrap">{{l.out_of_town_cost}}</td>
-                        <td><input  type="text" class="form-control" value="{{l.comment}}" placeholder="Enter comment"></td>
+                        <td class="text-nowrap">{{ap.local_cost}}</td>
+                        <td class="text-nowrap">{{ap.out_of_town_cost}}</td>
+                        <td><input  type="text" id="comment-{{ap.id}}" data-id="{{ ap.id }}" class="form-control comment" value="{{ap.comment}}" placeholder="Enter comment"></td>
                         <td>5.00</td>
                         <td>11.85</td>
 
@@ -395,28 +419,22 @@
 
                         <td>13.83</td>
 
-                        <td><button class="btn btn-danger"><em class="fa fa-trash" /></button></td>
+                        <td><button type="button" class="btn btn-danger assign-prod-delete-btn" data-id="{{ap.id}}" data-title="{{ap.description}} - {{ t_info.task.task.name }}" data-url="{% url   'proposal_app:opportunity:assign-prod-delete-ajax' %}"><em class="fa fa-trash"></em></button></td>
                       </tr>
-                    {% endif %}
+                    {% endfor %}
 
                       <tr id="row-{{t_id}}" class="new_prod">
                         <td>
                         </td>
 
                         <td>
-                          <select class="mySelect2 select2 form-control">
-                            <option value="Select labor task" disabled>Select labor task</option>
-                            <option value="Air Vent Assembly">Air Vent Assembly</option>
-                            <option value="Air Vent Installation">Air Vent Installation</option>
-                            <option value="Automation: Backflush, Clock, Injector">Automation: Backflush, Clock, Injector</option>
+                          <select class="labour-task-name form-control">
+                              <!-- Data will apper here -->
                           </select>
                         </td>
                         <td class="text-nowrap">
-                          <select class="mySelect3 select2 form-control">
-                            <option selected disabled>Select description Name</option>
-                            <option value="Per Vent">Per Vent</option>
-                            <option value="Minimum">Minimum</option>
-                            <option value="Per Sprinkler body">Per Sprinkler body</option>
+                          <select class="labour-description form-control">
+                            <!-- Data will apper here -->
                           </select>
                         </td>
                         <td>
@@ -520,7 +538,7 @@
         function generateUniqueId() {
             return "id" + Math.random().toString(16).slice(2);
         }
-        
+
         // Handle 'Add Row' button click
         $('.add-row-btn, .add-multi-row-btn').on('click', function(e) {
           console.log("Clicked.........")
@@ -537,7 +555,7 @@
               console.log("numRows", numRows)
               multi_row = true;
           }
-          
+
           console.log("multi", multi_row)
 
           // Function to generate a new row with a unique ID
@@ -554,7 +572,7 @@
                       <select data-id="${unique_id}" class="select2-item-description js-example-programmatic form-control">
                       </select>
                   </td>
-                  <td><input data-id="${unique_id}" id="std_cost" type="text" class="form-control standard-cost" placeholder="Enter Standard Cost"></td>
+                  <td><input data-id="${unique_id}" type="text" class="form-control standard-cost" placeholder="Enter Standard Cost"></td>
                   <td><input type="text" class="form-control quoted-cost" placeholder="Enter Quoted Cost"></td>
                   <td>
                       <select data-id="${unique_id}" class="select2-vendor vendor form-control">
@@ -579,7 +597,7 @@
               html = generateRow(unique_id);
 
               task_id = $(this).data('id');
-              
+
               if (multi_row) {
                 var currentRow = $(this).closest('tr').find(`#row-template-${task_id}`);
               } else {
@@ -621,7 +639,7 @@
                 ajax: {
                     url: '{% url "proposal_app:opportunity:item-code-search" %}',
                     dataType: 'json',
-                    delay: 250, 
+                    delay: 250,
                     data: function (params) {
                         return {
                             q: params.term
@@ -672,7 +690,7 @@
 
                 save = $row.find('.save');
                 save.css('display', 'block');
-                
+
                 // Payload data
                 data = {
                   value: value,
@@ -688,7 +706,7 @@
                   success: function(response) {
                     if (response.code == 200) {
                       updateDescription(response.description, id);
-                      var $stdCostField = $(`input[data-id="${id}"][id="std_cost"]`);
+                      var $stdCostField = $(`input[data-id="${id}"].standard-cost`);
                       $stdCostField.val(response.std_cost);
                     }
                   },
@@ -705,7 +723,7 @@
                 ajax: {
                     url: '{% url "proposal_app:opportunity:item-description-search" %}',
                     dataType: 'json',
-                    delay: 250, 
+                    delay: 250,
                     data: function (params) {
                         return {
                             q: params.term
@@ -726,141 +744,72 @@
         $(document).on('click', '.remove-row-btn', function() {
             $(this).closest('tr').remove();
         });
-        
-        $(document).on('input', '.quantity', function(){
-            var quantity_id = $(this).data('id');
-            console.log("quantity_id", quantity_id);
-            var quantity_value = $(this).val();
-            console.log("quantity_value", quantity_value);
-        });
 
-        /* $(document).on('click', '.save', function(){
-          var $row = $(this).closest('tr');
+        // Handle Save All data on next click
+        $("a[href='#next']").on('click', function() {
 
-          // Extract data from the row
-          var quantity = $row.find('.quantity').val();
-          var item_code = $row.find('.select2-item-code').val();
-          var description = $row.find('.select2-item-description').val();
-          var vendor = $row.find('.select2-vendor').val();
-          var standardCost = $row.find('.standard-cost').val();
-          var quotedCost = $row.find('.quoted-cost').val();
-          var comment = $row.find('.comment').val();
-          var total = $row.find('.total').val();
-          var sell = $row.find('.sell').val();
-          var sellTotal = $row.find('.sell-total').val();
-          var gross = $row.find('.gross').val();
-          var grossP = $row.find('.gross-p').val();
+          var foundElements = $(".steps li").find(".current");
+          current_stage_value = $(".current a span.step").text();
 
-          // Log the extracted data
-          console.log("Quantity:", quantity);
-          console.log("Item Code:", item_code);
-          console.log("Description:", description);
-          console.log("Vendor:", vendor);
-          console.log("Standard Cost:", standardCost);
-          console.log("Quoted Cost:", quotedCost);
-          console.log("Comment:", comment);
-          console.log("Total:", total);
-          console.log("Sell:", sell);
-          console.log("Sell Total:", sellTotal);
-          console.log("Gross:", gross);
-          console.log("Gross %:", grossP);
-          
-          data = {
-            quantity: quantity,
-            item_code: item_code,
-            description: description,
-            vendor: vendor,
-            standardCost: standardCost,
-            quotedCost: quotedCost,
-            comment: comment,
-            task_id: task_id,
-          }
-
-          $.ajax({
-            url: '{% url "proposal_app:opportunity:add-prod-row-ajax" %}',
-            type: 'POST',
-            data: data,
-            headers: {
-              'X-CSRFToken': "{{ csrf_token }}",
-            },
-            success: function(response) {
-              console.log('API call success:', response);
-              save = $row.find('.save');
-              save.css('display', 'none');
-              toastr.success(response.message, 'Success', {
-                closeButton: true,
-                progressBar: true,
-                positionClass: 'toast-bottom-right',
-                timeOut: 6000
-              });
-            },
-            error: function(xhr, status, error) {
-              console.error('API call error:', status, error);
-              toastr.error(xhr.responseJSON.message, 'Error', {
-                closeButton: true,
-                progressBar: true,
-                positionClass: 'toast-bottom-right',
-                timeOut: 6000
-              });
-            }
-          });
-        }); */
-
-        // Handle "Save All" button click
-        // TODO: change class to "a[href='#next']"
-        $('.save-all-btn').on('click', function() {
+          console.log("", current_stage_value)
           var rowsData = [];
-          
-          $('tr.new_prod').each(function() {
-              var $row = $(this);
-              
-              var rowData = {
-                  task_id: $row.find('.task_id').val(),
-                  quantity: $row.find('.quantity').val(),
-                  item_code: $row.find('.select2-item-code').val(),
-                  description: $row.find('.select2-item-description').val(),
-                  vendor: $row.find('.select2-vendor').val(),
-                  standardCost: $row.find('.standard-cost').val(),
-                  quotedCost: $row.find('.quoted-cost').val(),
-                  comment: $row.find('.comment').val(),
-                  total: $row.find('.total').val(),
-                  sell: $row.find('.sell').val(),
-                  sellTotal: $row.find('.sell-total').val(),
-                  gross: $row.find('.gross').val(),
-                  grossP: $row.find('.gross-p').val()
-              };
-              
-              rowsData.push(rowData);
-          });
 
-          $.ajax({
-              url: '{% url "proposal_app:opportunity:add-prod-row-ajax" %}',
-              type: 'POST',
-              data: {
-                  rows: rowsData,
-              },
-              headers: {
-                  'X-CSRFToken': "{{ csrf_token }}",
-              },
-              success: function(response) {
-                  console.log('API call success:', response);
-                  toastr.success(response.message, 'Success', {
-                      closeButton: true,
-                      progressBar: true,
-                      positionClass: 'toast-bottom-right',
-                      timeOut: 6000
+          if (current_stage_value == "5"){
+            $('tr.new_prod').each(function() {
+                var $row = $(this);
+
+                var rowData = {
+                    task_id: $row.find('.task_id').val(),
+                    quantity: $row.find('.quantity').val(),
+                    item_code: $row.find('.select2-item-code').val(),
+                    description: $row.find('.select2-item-description').val(),
+                    vendor: $row.find('.select2-vendor').val(),
+                    standardCost: $row.find('.standard-cost').val(),
+                    quotedCost: $row.find('.quoted-cost').val(),
+                    comment: $row.find('.comment').val(),
+                    total: $row.find('.total').val(),
+                    sell: $row.find('.sell').val(),
+                    sellTotal: $row.find('.sell-total').val(),
+                    gross: $row.find('.gross').val(),
+                    grossP: $row.find('.gross-p').val(),
+                    task_name: $row.find('.labour-task-name').val(),
+                    labor_description: $row.find('.labour-description').val(),
+                    local_cost: $row.find('.local_cost').val(),
+                    out_of_town_cost: $row.find('.out_of_town_cost').val(),
+                };
+
+                rowsData.push(rowData);
+            });
+
+            $.ajax({
+                url: '{% url "proposal_app:opportunity:add-prod-row-ajax" %}',
+                type: 'POST',
+                data: {
+                    rows: rowsData,
+                },
+                headers: {
+                    'X-CSRFToken': "{{ csrf_token }}",
+                },
+                success: function(response) {
+                    console.log('API call success:', response);
+                    toastr.success(response.message, 'Success', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-bottom-right',
+                        timeOut: 6000
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('API call error:', status, error);
+                    toastr.error(xhr.responseJSON.message, 'Error', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-bottom-right',
+                        timeOut: 6000
                   });
-              },
-              error: function(xhr, status, error) {
-                  console.error('API call error:', status, error);
-                  toastr.error(xhr.responseJSON.message, 'Error', {
-                      closeButton: true,
-                      progressBar: true,
-                      positionClass: 'toast-bottom-right',
-                      timeOut: 6000
-                });
-              }
-          });
+                }
+            });
+          }
         });
 
     });
@@ -876,9 +825,9 @@
         function generateUniqueId() {
             return "id" + Math.random().toString(16).slice(2);
         }
-        
+
         // Handle 'Add Row' button click
-        $('.add-labor-row').on('click', function(e) {
+        $('.add-labor-row, .add-multi-labor-row-btn').on('click', function(e) {
           console.log("Clicked.........")
           var unique_id;
           var html;
@@ -887,13 +836,13 @@
           task_id = $(this).data('id');
 
           var numRows = 1;
-          if ($input.hasClass("add-multi-row-btn")) {
+          if ($input.hasClass("add-multi-labor-row-btn")) {
               var total_rows = $(`#totalRows${task_id}`).val();
               numRows = parseInt(total_rows, 10) || 1;
               console.log("numRows", numRows)
               multi_row = true;
           }
-          
+
           console.log("multi", multi_row)
 
           // Function to generate a new row with a unique ID
@@ -903,24 +852,24 @@
 
                   <td> <input type="hidden" class="task_id" value="${task_id}"> </td>
                   <td>
-                    <select data-id="${unique_id}" class="labour-select select2 form-control">
+                    <select data-id="${unique_id}" class="labour-task-name form-control">
                     </select>
                   </td>
                   <td class="text-nowrap">
-                    <select data-id="${unique_id}" class="labour-description select2 form-control">
+                    <select data-id="${unique_id}" class="labour-description form-control">
                     </select>
                   </td>
                   <td>
                     <input type="text" class="form-control quantity" placeholder="Enter Qunatity">
                   </td>
                   <td id="standardCost13" class="text-nowrap">
-                    <input type="text" class="form-control" value="35.00" placeholder="Enter local cost">
+                    <input type="text" data-id="${unique_id}" id="local_cost" class="local_cost form-control" value="35.00" placeholder="Enter local cost">
                   </td>
                   <td class="text-nowrap">
-                    <input type="text" class="form-control" value="35.00" placeholder="Enter out of town cost">
+                    <input type="text" data-id="${unique_id}" id="out_of_town_cost" class="out_of_town_cost form-control" value="35.00" placeholder="Enter out of town cost">
                   </td>
                   <td>
-                    <input type="text" class="form-control"placeholder="Enter comment">
+                    <input type="text" class="form-control comment"placeholder="Enter comment">
                   </td>
                   <td><input  type="text" class="form-control" value="5.00" placeholder="Enter comment"></td>
                   <td>
@@ -950,9 +899,10 @@
               html = generateRow(unique_id);
 
               task_id = $(this).data('id');
-              
+
               if (multi_row) {
-                var currentRow = $(this).closest('tr').find(`#row-${unique_id}`);
+                console.log("Multi row added -=-=--=-=");
+                var currentRow = $(this).closest('tr').find(`#row-${task_id}`);
               } else {
                 var currentRow = $(this).closest('tr');
               }
@@ -964,67 +914,110 @@
               // Insert the new row before the current row
               tableBody.append(html);
               $(`#row-${unique_id}`).insertBefore(currentRow);
+
+              $('.labour-task-name').select2({
+                placeholder: 'Select task Name',
+                ajax: {
+                    url: '{% url "proposal_app:opportunity:labor-task-name-search" %}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.results
+                        };
+                    },
+                    cache: true
+                  }
+              });
+
+              $('.labour-description').select2({
+                placeholder: 'Select task description',
+                ajax: {
+                    url: '{% url "proposal_app:opportunity:labor-task-description-search" %}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.results
+                        };
+                    },
+                    cache: true
+                  }
+              });
           }
         });
 
         $(document).on('click', '.remove-row-btn', function() {
             $(this).closest('tr').remove();
         });
-        
-        // Handle "Save All" button click
-        // TODO: change class to "a[href='#next']"
-        $('.save-all-btn').on('click', function() {
-          var rowsData = [];
-          
-          $('tr.new_prod').each(function() {
-              var $row = $(this);
-              
-              var rowData = {
-                  task_id: $row.find('.task_id').val(),
-                  quantity: $row.find('.quantity').val(),
-                  item_code: $row.find('.select2-item-code').val(),
-                  description: $row.find('.select2-item-description').val(),
-                  vendor: $row.find('.select2-vendor').val(),
-                  standardCost: $row.find('.standard-cost').val(),
-                  quotedCost: $row.find('.quoted-cost').val(),
-                  comment: $row.find('.comment').val(),
-                  total: $row.find('.total').val(),
-                  sell: $row.find('.sell').val(),
-                  sellTotal: $row.find('.sell-total').val(),
-                  gross: $row.find('.gross').val(),
-                  grossP: $row.find('.gross-p').val()
-              };
-              
-              rowsData.push(rowData);
+
+        function updateDescription(value, id) {
+          var $select2Element = $(`select[data-id="${id}"].labour-description`);
+
+          // Initialize Select2
+          $select2Element.select2({
+              ajax: {
+                  url: '{% url "proposal_app:opportunity:labor-task-description-search" %}',
+                  dataType: 'json',
+                  delay: 250,
+                  data: function(params) {
+                      return {
+                          q: value
+                      };
+                  },
+                  processResults: function(data) {
+                      return {
+                          results: data.results
+                      };
+                  },
+                  cache: true
+              }
           });
+        }
+
+        $(document).on('change', '.labour-task-name', function(e) {
+
+          var $row = $(this).closest('tr');
+
+          // item code
+          var $input = $(e.target);
+          var id = $input.data("id");
+          var value = $input.val();
+
+          // Payload data
+          data = {
+            value: value,
+          }
 
           $.ajax({
-              url: '{% url "proposal_app:opportunity:add-prod-row-ajax" %}',
-              type: 'POST',
-              data: {
-                  rows: rowsData,
-              },
-              headers: {
-                  'X-CSRFToken': "{{ csrf_token }}",
-              },
-              success: function(response) {
-                  console.log('API call success:', response);
-                  toastr.success(response.message, 'Success', {
-                      closeButton: true,
-                      progressBar: true,
-                      positionClass: 'toast-bottom-right',
-                      timeOut: 6000
-                  });
-              },
-              error: function(xhr, status, error) {
-                  console.error('API call error:', status, error);
-                  toastr.error(xhr.responseJSON.message, 'Error', {
-                      closeButton: true,
-                      progressBar: true,
-                      positionClass: 'toast-bottom-right',
-                      timeOut: 6000
-                });
+            url: '{% url "proposal_app:opportunity:labor-task-name-search" %}',
+            type: 'POST',
+            data: data,
+            headers: {
+              'X-CSRFToken': "{{ csrf_token }}",
+            },
+            success: function(response) {
+              if (response.code == 200) {
+                var $localcost = $(`input[data-id="${id}"][id="local_cost"]`);
+                var $out_of_town_cost = $(`input[data-id="${id}"][id="out_of_town_cost"]`);
+                updateDescription(response.description, id);
+                $localcost.val(response.local_labor_rates);
+                $out_of_town_cost.val(response.out_of_town_labour_rates);
               }
+            },
+            error: function(xhr, status, error) {
+              console.log("Error:", error);
+            }
           });
         });
 
@@ -1059,7 +1052,7 @@
 
         for (var i = 0; i < totalRows; i++) {
             var clonedRow = rowToCopy.cloneNode(true);
-            
+
             // Remove ID and adjust class for cloned rows
             clonedRow.removeAttribute('id');
             clonedRow.classList.add('dynamic-row');
@@ -1198,7 +1191,7 @@
               ajax: {
                   url: '{% url "proposal_app:opportunity:item-code-search" %}',
                   dataType: 'json',
-                  delay: 250, 
+                  delay: 250,
                   data: function (params) {
                       return {
                           q: params.term
@@ -1212,10 +1205,10 @@
                   cache: true
               }
           });
-          
+
           function updateDescription(value, id) {
             var $select2Element = $(`select[data-id="${id}"].select2-item-description.js-example-programmatic.form-control`);
-            
+
             // Initialize Select2
             $select2Element.select2({
                 ajax: {
@@ -1235,7 +1228,7 @@
                     cache: true
                 }
             });
-        
+
             // When Select2 is initialized, set the selected value
             $select2Element.on('select2:open', function() {
                 setTimeout(function() {
@@ -1249,10 +1242,10 @@
             var $input = $(e.target);
             var id = $input.data("id");
             console.log("id", id);
-            
+
             var value = $input.val();
             console.log("value",value);
-            
+
             // Payload data
             data = {
               value: value,
@@ -1272,7 +1265,7 @@
                   console.log("std_cost", response.std_cost);
                   updateDescription(response.description, id);
                   var $stdCostField = $(`input[data-id="${id}"][id="std_cost"]`);
-                  $stdCostField.val(response.std_cost); 
+                  $stdCostField.val(response.std_cost);
                 }
               },
               error: function(xhr, status, error) {
@@ -1291,7 +1284,7 @@
             ajax: {
                 url: '{% url "proposal_app:opportunity:item-description-search" %}',
                 dataType: 'json',
-                delay: 250, 
+                delay: 250,
                 data: function (params) {
                     return {
                         q: params.term
@@ -1348,7 +1341,7 @@
                     data: function (params) {
                         return {
                             q: params.term,
-                            document_number: "{{ opportunity.document_number }}", 
+                            document_number: "{{ opportunity.document_number }}",
                         };
                     },
                     processResults: function (data) {
@@ -1360,7 +1353,7 @@
                 }
             });
         });
-    </script>  
+    </script>
 
     <!-- Labour Task -->
     <script>
@@ -1389,6 +1382,57 @@
             });
         });
     </script>
+
+    <!-- Labor task name -->
+    <script>
+      $(document).ready(function() {
+        $('.labour-task-name ').select2({
+          placeholder: 'Select task Name',
+          ajax: {
+              url: '{% url "proposal_app:opportunity:labor-task-name-search" %}',
+              dataType: 'json',
+              delay: 250,
+              data: function (params) {
+                  return {
+                      q: params.term
+                  };
+              },
+              processResults: function (data) {
+                  return {
+                      results: data.results
+                  };
+              },
+              cache: true
+            }
+        });
+      });
+    </script>
+
+    <!-- Labor task description -->
+    <script>
+      $(document).ready(function() {
+        $('.labour-description ').select2({
+          placeholder: 'Select task description',
+          ajax: {
+              url: '{% url "proposal_app:opportunity:labor-task-description-search" %}',
+              dataType: 'json',
+              delay: 250,
+              data: function (params) {
+                  return {
+                      q: params.term
+                  };
+              },
+              processResults: function (data) {
+                  return {
+                      results: data.results
+                  };
+              },
+              cache: true
+            }
+        });
+      });
+    </script>
+
   <!-- Search -->
 
   <!-- Assigned Product Htmx -->

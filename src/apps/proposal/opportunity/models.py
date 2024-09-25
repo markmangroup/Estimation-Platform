@@ -214,10 +214,136 @@ class TaskMapping(BaseModel):
     code = models.CharField(_("Task Code"), max_length=255, blank=True, null=True)
     description = models.CharField(_("Task Description"), max_length=255, blank=True, null=True)
 
+    labor_gp_percent = models.FloatField(_("Labor GP %"), max_length=255, default=25.0, blank=True, null=True)
+    mat_gp_percent = models.FloatField(_("Mat GP %"), max_length=255, default=10.0, blank=True, null=True)
+    s_and_h = models.FloatField(_("S & H"), max_length=255, default=10.0, blank=True, null=True)
+
+    include = models.BooleanField(_("Include Items"), default=True)
+
     def __str__(self):
         if self.code:
             return f"{self.id} - {self.opportunity.document_number} - {self.code}"
         return f"{self.id} - {self.opportunity.document_number} - {self.task.name}"
+
+    @property
+    def labor_cost(self):
+        """
+        Return fixed labor cost. Modify this if you have a real calculation.
+        """
+        return 1000  # Example fixed value; replace with actual logic
+
+    @property
+    def labor_sell(self):
+        """
+        Calculate `Labor sell` based on `labor_cost` and `labor_gp_percent`.
+        """
+        if self.labor_cost is not None and self.labor_gp_percent is not None:
+            try:
+                labor_cost = float(self.labor_cost)
+                labor_gp_percent = float(self.labor_gp_percent) / 100
+                if (1 - labor_gp_percent) != 0:
+                    return round(labor_cost / (1 - labor_gp_percent), 2)
+            except (ValueError, ZeroDivisionError):
+                return 0
+        return 0
+
+    @property
+    def labor_gp(self):
+        """
+        Calculate `Labor GP $` as the difference between `labor_sell` and `labor_cost`.
+        """
+        try:
+            labor_sell = float(self.labor_sell)
+            labor_cost = float(self.labor_cost)
+            return round(labor_sell - labor_cost, 2)
+        except ValueError:
+            return 0
+
+    @property
+    def mat_cost(self):
+        """
+        Return fixed MAT cost. Modify this if you have a real calculation.
+        """
+        return 12  # Example fixed value; replace with actual logic
+
+    @property
+    def mat_plus_mu(self):
+        """
+        Calculate `MAT + Mu` based on `mat_cost` and `mat_gp_percent`.
+        """
+        if self.mat_gp_percent is not None:
+            try:
+                mat_cost = float(self.mat_cost)
+                mat_gp_percent = float(self.mat_gp_percent) / 100  # Convert percentage to decimal
+                if (1 - mat_gp_percent) != 0:
+                    return round(mat_cost / (1 - mat_gp_percent), 2)
+            except (ValueError, ZeroDivisionError):
+                return 0
+        return 0
+
+    @property
+    def mat_gp(self):
+        """
+        Calculate `MAT GP $` as the difference between `mat_plus_mu` and `mat_cost`.
+        """
+        try:
+            return round(self.mat_plus_mu - float(self.mat_cost), 2)
+        except ValueError:
+            return 0
+
+    @property
+    def sales_tax(self):
+        """
+        Calculate `Sales Tax` as 25% of `mat_plus_mu`.
+        """
+        try:
+            return round(self.mat_plus_mu * 0.25, 2)
+        except (ValueError, TypeError):
+            return 0
+
+    @property
+    def mat_sell(self):
+        """
+        Calculate `MAT sell` as the sum of `mat_plus_mu` and `sales_tax`.
+        """
+        try:
+            return round(self.mat_plus_mu + self.sales_tax, 2)
+        except (ValueError, TypeError):
+            return 0
+
+    @property
+    def mat_tax_labor(self):
+        """
+        Calculate `MAT, TAX, LABOR` as the sum of `mat_sell` and `labor_sell`.
+        """
+        try:
+            return round(self.mat_sell + self.labor_sell, 2)
+        except (ValueError, TypeError):
+            return 0
+
+    @property
+    def comb_gp(self):
+        """
+        Calculate `COMB GP %` as the ratio of total GP to total cost.
+        """
+        try:
+            total_gp = self.mat_gp + self.labor_gp
+            total_cost = self.labor_sell + self.mat_plus_mu
+            return round((total_gp / total_cost) * 100, 2) if total_cost != 0 else 0
+        except (ValueError, ZeroDivisionError):
+            return 0
+
+    @property
+    def acre(self):
+        """
+        Calculate `$/Acre` based on `mat_tax_labor` and `mat_gp_percent`.
+        """
+        if self.mat_gp_percent is not None:
+            try:
+                return self.mat_tax_labor / float(self.mat_gp_percent) if float(self.mat_gp_percent) != 0 else 0
+            except (ValueError, ZeroDivisionError):
+                return 0
+        return 0
 
     class Meta:
         verbose_name = "Proposal Task Mapping"
@@ -247,3 +373,16 @@ class AssignedProduct(BaseModel):
 
     class Meta:
         verbose_name = "Proposal Assigned Product"
+
+
+class ProposalCreation(BaseModel):
+
+    opportunity = models.ForeignKey(Opportunity, on_delete=models.CASCADE, related_name="proposal_creation_opportunity")
+    group_name = models.CharField(_("Group Name"), max_length=255)
+    task_mapping = models.ForeignKey(TaskMapping, on_delete=models.CASCADE, related_name="proposal_tasks")
+
+    def __str__(self):
+        return f"{self.id} - {self.group_name} - {self.task_mapping.id}"
+
+    class Meta:
+        verbose_name = "Proposal Creation"
