@@ -2,12 +2,14 @@ import random
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.db.models import Q
 
 from apps.proposal.opportunity.models import (
     Invoice,
     Opportunity,
     SelectTaskCode,
     TaskMapping,
+    Document
 )
 
 
@@ -51,3 +53,22 @@ def save_task_mapping_tasks(sender, instance, created, **kwargs):
             code=instance.task.name,
             description=instance.task.description,
         )
+
+
+@receiver(post_save, sender=Document)
+def remove_document(sender, instance, created, **kwargs):
+    """
+    Remove documents.
+
+    :Arg sender: The model class that sent the signal (Document).
+    :Arg instance: The actual instance of SelectTaskCode that was saved.
+    :Arg created: Boolean indicating if a new record was created.
+    :Arg **kwargs: Additional keyword arguments..
+    """
+    if created:
+        document_obj = Document.objects.filter(
+            Q(document__isnull=True) | Q(document=''),
+            Q(comment__isnull=True) | Q(comment='')
+        )
+        # print("document_obj", document_obj)
+        document_obj.delete()
