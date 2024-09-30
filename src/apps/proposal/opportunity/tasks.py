@@ -7,6 +7,7 @@ from .models import Opportunity
 
 
 def import_opportunity_from_xlsx(file):
+    print("called -=-=-====-=-=-")
     file_extension = os.path.splitext(file.name)[1]
     context = {"messages": []}
     skip_opportunity = []
@@ -98,6 +99,8 @@ def import_opportunity_from_xlsx(file):
                     skip_opportunity.append(record)
                     continue
 
+                print("Document Number", document_number)
+                print("Document Number", type(document_number))
                 opportunity, created = Opportunity.objects.update_or_create(
                     document_number=document_number,
                     defaults={

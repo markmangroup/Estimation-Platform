@@ -17,6 +17,7 @@ from django.utils.dateparse import parse_date
 from django.views.generic import CreateView, FormView, TemplateView, View
 from django_datatables_too.mixins import DataTableMixin
 
+from apps.proposal.customer.models import Customer
 from apps.proposal.labour_cost.models import LabourCost
 from apps.proposal.product.models import Product
 from apps.proposal.task.models import Task
@@ -28,6 +29,7 @@ from .models import (
     AssignedProduct,
     Document,
     GlueAndAdditionalMaterial,
+    Invoice,
     MaterialList,
     Opportunity,
     PreliminaryMaterialList,
@@ -326,16 +328,65 @@ class OpportunityDetail(ProposalDetailViewMixin):
         task_mappings = TaskMapping.objects.filter(opportunity__document_number=document_number)
         filtered_task_mappings = task_mappings.exclude(task__description__icontains="labor")
         task_mapping_ids = filtered_task_mappings.values_list("id", flat=True)
+
         assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids)
+
         tasks_with_products = {}
 
         for task in filtered_task_mappings:
+            task_assigned_products = assigned_products.filter(task_mapping_id=task.id)
+
+            total_quantity = sum(product.quantity for product in task_assigned_products)
+            total_price = sum(
+                product.standard_cost if product.standard_cost else product.vendor_quoted_cost
+                for product in task_assigned_products
+            )
+
+            total_percent = sum(product.gross_profit_percentage for product in task_assigned_products)
+
             tasks_with_products[task.id] = {
                 "task": task,
-                "assigned_products": assigned_products.filter(task_mapping_id=task.id),
+                "assigned_products": task_assigned_products,
+                "total_quantity": round(total_quantity, 2),
+                "total_price": round(total_price, 2),
+                "total_percent": round(total_percent, 2),
             }
 
         return tasks_with_products
+
+    def _get_task_total(self, document_number):
+        task_mappings = TaskMapping.objects.filter(opportunity__document_number=document_number)
+        filtered_task_mappings = task_mappings.exclude(task__description__icontains="labor")
+        task_mapping_ids = filtered_task_mappings.values_list("id", flat=True)
+
+        assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids)
+
+        tasks_with_products = {}
+
+        for task in filtered_task_mappings:
+            task_assigned_products = assigned_products.filter(task_mapping_id=task.id)
+
+            total_quantity = sum(product.quantity for product in task_assigned_products)
+            total_price = sum(
+                product.standard_cost if product.standard_cost else product.vendor_quoted_cost
+                for product in task_assigned_products
+            )
+
+            tasks_with_products[task.id] = {
+                "total_quantity": total_quantity,
+                "total_price": total_price,
+            }
+
+        # Calculate grand total price correctly
+        grand_total_price = sum(v["total_price"] for v in tasks_with_products.values())
+
+        grand_total_quantity = sum(v["total_quantity"] for v in tasks_with_products.values())
+
+        total_data = {
+            "grand_total_price": round(grand_total_price, 2),
+            "grand_total_quantity": round(grand_total_quantity, 2),
+        }
+        return total_data
 
     def _get_labour_tasks(self, document_number):
         task_mappings = TaskMapping.objects.filter(opportunity__document_number=document_number)
@@ -434,25 +485,131 @@ class OpportunityDetail(ProposalDetailViewMixin):
             # Add the ProposalCreation ID to the list
             result[group_name]["proposal_ids"].append(proposal.id)
 
-            assigned_products = proposal.task_mapping.assigned_products.all()
+            # Fetch all assigned products for the task
+            assigned_products = proposal.task_mapping.assigned_products.all()  # Get all assigned products
             task_object = proposal.task_mapping
-            for product in assigned_products:
-                result[group_name]["assigned_products"][task_object].append(product)
 
-                if product.quantity and product.standard_cost:
-                    value = product.quantity * product.standard_cost
+            # Initialize an empty list for filtered assigned products
+            filtered_assigned_products = []
+
+            for product in assigned_products:
+                if product.is_select:  # Only include selected products
+                    filtered_assigned_products.append(product)
+
+                    # Calculate value based on available costs
+                    quantity = product.quantity or 0
+                    standard_cost = product.standard_cost or 0
+                    local_cost = product.local_cost or 0
+
+                    if quantity and standard_cost:
+                        value = quantity * standard_cost
+                    elif quantity and local_cost:
+                        value = quantity * local_cost
+                    else:
+                        value = 0
+
                     result[group_name]["task_totals"][task_object] += value
                     result[group_name]["main_total"] += value
-                else:
-                    value = product.quantity * product.local_cost
-                    result[group_name]["task_totals"][task_object] += value
-                    result[group_name]["main_total"] += value
+
+            # Store the filtered assigned products
+            result[group_name]["assigned_products"][task_object] = filtered_assigned_products
 
         for group_data in result.values():
             group_data["assigned_products"] = dict(group_data["assigned_products"])
             group_data["task_totals"] = dict(group_data["task_totals"])
 
         return result
+
+    def _get_proposal_totals(self, document_number):
+
+        invoice = Invoice.objects.get(opportunity__document_number=document_number)
+
+        proposal_creations = ProposalCreation.objects.filter(opportunity__document_number=document_number)
+
+        # Get the related TaskMapping objects
+        task_mappings = TaskMapping.objects.filter(id__in=proposal_creations.values_list("task_mapping_id", flat=True))
+
+        # Include all task mappings
+        filtered_task_mappings = task_mappings
+
+        # Get task mapping IDs for the assigned products
+        task_mapping_ids = filtered_task_mappings.values_list("id", flat=True)
+
+        # Retrieve assigned products linked to these task mappings
+        assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids)
+
+        tasks_with_products = {}
+        for task in filtered_task_mappings:
+            task_assigned_products = assigned_products.filter(task_mapping_id=task.id)
+
+            total_quantity = sum(product.quantity for product in task_assigned_products)
+
+            total_price = sum(
+                (product.standard_cost or product.vendor_quoted_cost or 0) * product.quantity
+                for product in task_assigned_products
+            )
+
+            total_local_cost = sum(
+                product.local_cost * product.quantity
+                for product in task_assigned_products
+                if product.local_cost is not None
+            )
+
+            tasks_with_products[task.id] = {
+                "total_quantity": total_quantity,
+                "total_price": total_price,
+                "total_local_cost": total_local_cost,
+            }
+
+        # Calculate grand total price correctly
+        total_price_sum = sum(v["total_price"] for v in tasks_with_products.values())
+        print(f"total_price_sum {type(total_price_sum)}: {total_price_sum}")
+        total_local_cost_sum = sum(v["total_local_cost"] for v in tasks_with_products.values())
+        print(f"total_local_cost_sum {type(total_local_cost_sum)}: {total_local_cost_sum}")
+        grand_total_price = total_price_sum + total_local_cost_sum
+        print("grand_total_price", grand_total_price)
+
+        # final price with taxes
+        final_total_price = grand_total_price + invoice.sales_tax + invoice.other_tax + (invoice.tax_rate / 100)
+
+        total_data = {
+            "grand_total_price": round(grand_total_price, 2),
+            "final_total_price": round(final_total_price, 2),
+        }
+
+        return total_data
+
+    def _get_new_material_master_data(self, document_number):
+
+        task_mapping_obj = TaskMapping.objects.filter(opportunity__document_number=document_number).values_list(
+            "id", flat=True
+        )
+        new_material_master_data_obj = AssignedProduct.objects.filter(
+            task_mapping__id__in=task_mapping_obj, is_assign=False
+        )
+        return new_material_master_data_obj
+
+    def _get_cost_variances_data(self, document_number):
+        task_mapping_obj = TaskMapping.objects.filter(opportunity__document_number=document_number).values_list(
+            "id", flat=True
+        )
+        cost_variances_data = AssignedProduct.objects.filter(
+            task_mapping__id__in=task_mapping_obj,
+            vendor_quoted_cost__isnull=False,
+        )
+        return cost_variances_data
+
+    def _get_netsuite_extract_data(self, document_number):
+        # First, get the task mapping objects related to the current opportunity
+        task_mapping_objs = TaskMapping.objects.filter(opportunity__document_number=document_number)
+
+        # Then, get the assigned products related to those task mappings
+        assigned_products = AssignedProduct.objects.filter(task_mapping__in=task_mapping_objs)
+
+        # If you want to convert it to a list or perform further operations
+        assigned_products_list = list(assigned_products)
+        # print("assigned_products_list", assigned_products_list)
+        return assigned_products_list
 
     def get_context_data(self, **kwargs):
         """
@@ -461,6 +618,9 @@ class OpportunityDetail(ProposalDetailViewMixin):
         context = super().get_context_data(**kwargs)
         document_number = self.kwargs.get("document_number")
         opportunity = Opportunity.objects.get(document_number=document_number)
+        invoice = Invoice.objects.get(opportunity=opportunity)
+        
+        context["invoice"] = invoice        
         context["stage"] = opportunity.estimation_stage
         context["task_mapping_list"] = self._get_tasks(document_number)
         context["task_mapping_labor_list"] = self._get_labour_tasks(document_number)
@@ -468,7 +628,78 @@ class OpportunityDetail(ProposalDetailViewMixin):
         context["task_labor_list"] = self._get_task_labor(document_number)
         context["total"] = self._get_total(document_number)
         context["grouped_proposals"] = self._get_proposal_creation(document_number)
+        context["new_material_master_data"] = self._get_new_material_master_data(document_number)
+        context["cost_variances_data"] = self._get_cost_variances_data(document_number)
+        context["netsuite_extract_data"] = self._get_netsuite_extract_data(document_number)
+        context["grand_total"] = self._get_task_total(document_number)
+        context["proposal_total"] = self._get_proposal_totals(document_number)
+
         return context
+
+
+class UpdateOpportunityView(View):
+    """
+    Update Opportunity view
+    """
+
+    def update_date(self, data):
+        try:
+            opportunity_obj = Opportunity.objects.get(document_number=data["document_number"][0])
+            if data["type"][0] == "job":
+                opportunity_obj.job = data["value"][0]
+                opportunity_obj.save()
+                response_message = {
+                    "status": "success",
+                    "message": "Job updated successfully",
+                }
+            elif data["type"][0] == "job_name":
+                opportunity_obj.job_name = data["value"][0]
+                opportunity_obj.save()
+                response_message = {
+                    "status": "success",
+                    "message": "Job name Updated successfully",
+                }
+            elif data["type"][0] == "project":
+                opportunity_obj.project = data["value"][0]
+                opportunity_obj.save()
+                response_message = {
+                    "status": "success",
+                    "message": "Project name Updated successfully",
+                }
+            elif data["type"][0] == "ranch":
+                opportunity_obj.ranch_name = data["value"][0]
+                opportunity_obj.save()
+                response_message = {
+                    "status": "success",
+                    "message": "Ranch name Updated successfully",
+                }
+            elif data["type"][0] == "term_and_condition":
+
+                json_data = json.loads(data["value"][0])
+                if opportunity_obj.term_and_condition != json_data:
+                    opportunity_obj.term_and_condition = json_data
+                    opportunity_obj.save()
+                    response_message = {
+                        "status": "success",
+                        "message": "Terms Updated successfully",
+                    }
+                else:
+                    response_message = {}
+            return response_message
+        except Exception as e:
+            print("Error [UpdateOpportunity][update_date]", e)
+            return {"status": "error", "message": "something went wrong please try again"}
+
+    def post(self, request, *args, **kwargs):
+        try:
+            body_unicode = request.body.decode("utf-8")
+            data = urllib.parse.parse_qs(body_unicode)
+            print(f"data ==>>: {data}")
+            response = self.update_date(data)
+            return JsonResponse(response)
+        except Exception as e:
+            print("Error [UpdateOpportunity]", e)
+            return JsonResponse({"status": "error", "message": "something went wrong please try again"}, status=400)
 
 
 class SelectedTaskListAjaxView(DataTableMixin, View):
@@ -599,7 +830,7 @@ class DocumentListAjaxView(DataTableMixin, View):
 
     def _get_documents(self, obj):
         if obj.document:
-            return f"<div class='text-center'><a href='{obj.document.url}' download><i class='icon-cloud-download'></i> File</a></div>"
+            return f"<div class='text-center'><a href='{obj.file_path}' target='_blank' download><i class='icon-cloud-download'></i> {obj.document.name}</a></div>"
         else:
             return "<div class='text-center'>-</div>"
 
@@ -647,12 +878,12 @@ class UploadDocument(CreateView):
         document_number = self.request.POST.get("document_number")
         comment = self.request.POST.get("comment")
         stage = self.request.POST.get("stage")
-        print("stage: ", stage)
         opportunity_object = Opportunity.objects.get(document_number=document_number)
-        form.instance.opportunity = opportunity_object
-        form.instance.stage = stage
-        form.instance.comment = comment
-        form.save()
+        if document_number or comment:
+            form.instance.opportunity = opportunity_object
+            form.instance.stage = stage
+            form.instance.comment = comment
+            form.save()
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -676,7 +907,7 @@ class UpdateStages(View):
             data = json.loads(request.body)
             document_number = data.get("document_number")
             updated_stage = data.get("stage")
-            print(f"updated_stage : {updated_stage}")
+            # print(f"updated_stage : {updated_stage}")
 
             if not document_number or not updated_stage:
                 return JsonResponse({"error": "Missing required fields"}, status=400)
@@ -1240,8 +1471,7 @@ class UploadCADFile(View):
         uploaded_file = request.FILES["file"]
         document_number = request.POST.get("document_number")
 
-        if uploaded_file.name.endswith(".Tmp"):
-
+        if uploaded_file.name.lower().endswith(".tmp"):
             # Generate and save Material List
             # NOTE: Converted Macro code into python ("Split List")
             material_list = self.generate_material_list(uploaded_file, document_number)
@@ -1353,9 +1583,9 @@ class MaterialListAjaxView(DataTableMixin, View):
         """Return the list of items for this view."""
         if self.search:
             return qs.filter(
-                Q(quantity_icontains=self.search)
-                | Q(description_icontains=self.search)
-                | Q(item_number_icontains=self.search)
+                Q(quantity__icontains=self.search)
+                | Q(description__icontains=self.search)
+                | Q(item_number__icontains=self.search)
             )
         return qs
 
@@ -1390,10 +1620,10 @@ class GlueAndAdditionalMaterialAjaxView(DataTableMixin, View):
         """Return the list of items for this view."""
         if self.search:
             return qs.filter(
-                Q(quantity_icontains=self.search)
-                | Q(description_icontains=self.search)
-                | Q(item_number_icontains=self.search)
-                | Q(category_icontains=self.search)
+                Q(quantity__icontains=self.search)
+                | Q(description__icontains=self.search)
+                | Q(item_number__icontains=self.search)
+                | Q(category__icontains=self.search)
             )
         return qs
 
@@ -1429,13 +1659,13 @@ class PreliminaryMaterialListAjaxView(DataTableMixin, View):
         """Return the list of items for this view."""
         if self.search:
             return qs.filter(
-                Q(irricad_imported_quantities_icontains=self.search)
-                | Q(glue_and_additional_mat_quantities_icontains=self.search)
-                | Q(combined_quantities_from_both_import_icontains=self.search)
-                | Q(description_icontains=self.search)
-                | Q(item_number_icontains=self.search)
-                | Q(category_icontains=self.search)
-                | Q(bag_bundle_quantity_icontains=self.search)
+                Q(irricad_imported_quantities__icontains=self.search)
+                | Q(glue_and_additional_mat_quantities__icontains=self.search)
+                | Q(combined_quantities_from_both_import__icontains=self.search)
+                | Q(description__icontains=self.search)
+                | Q(item_number__icontains=self.search)
+                | Q(category__icontains=self.search)
+                | Q(bag_bundle_quantity__icontains=self.search)
             )
         return qs
 
@@ -1475,20 +1705,20 @@ class AssignProdLabor(TemplateView):
         assigned_item_codes = AssignedProduct.objects.filter(task_mapping__id=task_mapping_id).values_list(
             "item_code", flat=True
         )
-        print("Assigned product ==>", assigned_item_codes)
+        # print("Assigned product ==>", assigned_item_codes)
 
         try:
             assigned_product_ids = [int(code) for code in assigned_item_codes]
         except ValueError:
             assigned_product_ids = []
-        print("Assigned product ID's ==>", assigned_product_ids)
+        # print("Assigned product ID's ==>", assigned_product_ids)
 
         available_products = all_products.exclude(item_number__in=assigned_product_ids)
         return available_products
 
     def post(self, request, *args, **kwargs):
         data = json.loads(request.POST.get("items", "[]"))
-        print("data ==>", data)
+        # print("data ==>", data)
         document_number = self.kwargs["document_number"]
         task_id = self.kwargs.get("task_id")
 
@@ -1559,12 +1789,12 @@ class UpdateAssignProdView(View):
         input_type = data.get("type", [""])[0]
         id = data.get("id", [""])[0]
         value = data.get("value", [""])[0]
-        print("value", value)
+        # print("value", value)
 
-        try:
-            assigned_prod = AssignedProduct.objects.get(id=id)
-        except Exception:
+        if input_type == "task" or input_type == "task":
             task_mapping = TaskMapping.objects.get(id=id)
+        else:
+            assigned_prod = AssignedProduct.objects.get(id=id)
 
         if input_type == "quantity":
 
@@ -1673,6 +1903,7 @@ class AddProdRowView(View):
     """
 
     def format_data(self, input_data):
+        print("input_data", input_data)
         result = {}
 
         for key, value in input_data.items():
@@ -1696,72 +1927,115 @@ class AddProdRowView(View):
                 task_data["task_id"] = task_id
                 result[task_id].append(task_data)
 
+        overall_data_saved = False
+
         for task_id, products in result.items():
-            print("task_id: ", task_id)
-            print("products:", products)
-            try:
-                task_mapping = TaskMapping.objects.get(id=task_id)
-            except TaskMapping.DoesNotExist:
-                print(f"TaskMapping with ID {task_id} does not exist.")
-                return {"status": "error", "message": "Something went wrong please try again after some time."}
+            task_mapping = TaskMapping.objects.get(id=task_id)
+            data_saved = False
 
             for product in products:
+                item_code = product.get("item_code")
+                task_name = product.get("task_name")
+                std_cost = product.get("standardCost")
+                local_cost = product.get("local_cost")
+                labor_task = product.get("task_name")
+                labor_description = product.get("labor_description")
+                item_description = product.get("description")
 
-                if product.get("item_code", ""):
+                if not item_code and not task_name:
+                    print("No item code or task name found, skipping...")
+                    continue
+
+                if item_code:
+
+                    if not std_cost:
+                        return {"status": "warning", "message": "Please add standard cost"}
+
                     try:
-                        product_obj = Product.objects.get(id=product.get("item_code", ""))
-                        item_code = product_obj.internal_id
+                        vendor = Vendor.objects.get(id=product.get("vendor"))
+                    except Exception:
+                        vendor = None
+
+                    try:
+                        product_obj = Product.objects.get(id=item_code)
+                        product_item_code = product_obj.internal_id
+                    except Exception:
+                        product_item_code = item_code
+
+                    try:
+                        product_obj = Product.objects.get(id=item_description)
                         description = product_obj.description
                     except Exception:
-                        item_code = product.get("item_code", "")
-                        description = product.get("description", "")
-                else:
-                    try:
-                        labor_obj = LabourCost.objects.get(id=product.get("task_name", ""))
-                        task_name = labor_obj.labour_task
-                        task_description = labor_obj.description
-                    except Exception:
-                        task_name = product.get("task_name", "")
-                        task_description = product.get("labor_description", "")
+                        description = item_description
 
-                try:
-                    vendor = Vendor.objects.get(id=product.get("vendor", ""))
-                except Exception:
-                    vendor = None
-
-                if product.get("item_code", ""):
+                    # Save data
                     AssignedProduct.objects.create(
                         task_mapping=task_mapping,
                         quantity=float(product.get("quantity", 0)),
-                        item_code=item_code,
+                        item_code=product_item_code,
                         description=description,
                         standard_cost=float(product.get("standardCost", 0)),
                         vendor_quoted_cost=float(product.get("quotedCost", 0)),
                         vendor=vendor,
                         comment=product.get("comment", ""),
                     )
-                else:
+                    data_saved = True
+
+                elif task_name:
+
+                    if not local_cost:
+                        return {"status": "warning", "message": "Please add local cost"}
+
+                    try:
+                        print("IN tryyyyyyyyyy")
+                        labor_obj = LabourCost.objects.get(id=task_name)
+                        task_name_value = labor_obj.labour_task
+                    except Exception:
+                        print("IN Exceprion")
+                        task_name_value = labor_task
+
+                    try:
+                        labor_obj = LabourCost.objects.get(id=labor_description)
+                        task_description = labor_obj.description
+                    except Exception:
+                        task_description = labor_description
+
+                    # Save data
                     AssignedProduct.objects.create(
                         task_mapping=task_mapping,
                         quantity=float(product.get("quantity", 0)),
                         description=task_description,
-                        labor_task=task_name if task_name else "",
-                        local_cost=product.get("local_cost", ""),
-                        out_of_town_cost=product.get("out_of_town_cost", ""),
+                        labor_task=task_name_value if task_name_value else "",
+                        local_cost=product.get("local_cost", 0),
+                        out_of_town_cost=product.get("out_of_town_cost", 0),
                         comment=product.get("comment", ""),
                     )
+                    data_saved = True
 
-        return {"status": "success", "message": "Product added successfully"}
+            if data_saved:
+                overall_data_saved = True
+
+        if overall_data_saved:
+            return {"status": "success", "message": "Product added successfully"}
+        else:
+            return {"status": "empty", "message": ""}
 
     def post(self, request, *args, **kwargs):
         try:
             body_unicode = request.body.decode("utf-8")
             data = urllib.parse.parse_qs(body_unicode)
-            print("Data -=-==-=-=-=", data)
+            if data == {}:
+                return JsonResponse({"status": "empty", "message": "Please enter data"})
             response = self.format_data(data)
-            # response = self.generate_prod_rows(data)
+            if response["status"] == "success":
+                messages.success(self.request, response["message"])
+            elif response["status"] == "warning":
+                messages.warning(self.request, response["message"])
+            elif response["status"] == "error":
+                messages.error(self.request, response["message"])
             return JsonResponse(response)
         except json.JSONDecodeError:
+            messages.error(self.request, "Something went wrong please try again")
             return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
 
 
@@ -2058,17 +2332,19 @@ class AddItemsView(View):
 
     def add_items(self, data):
         try:
+            saved = False
             for i in data:
-                task_mapping_object = TaskMapping.objects.get(id=i["taskId"])
-                AssignedProduct.objects.create(
-                    task_mapping=task_mapping_object,
-                    item_code=i["itemCode"],
-                    description=i["description"],
-                    quantity=i["quantity"],
-                    standard_cost=i["price"],
+                assigned_prod = AssignedProduct.objects.get(
+                    id=int(i["itemCode"]),
                 )
+                assigned_prod.is_select = True
+                assigned_prod.save()
+                saved = True
 
-            response = {"status": "success", "message": "Item added successfully"}
+            if saved:
+                response = {"status": "success", "message": "Item added successfully"}
+            else:
+                response = {"status": "warning", "message": "No item to add"}
         except Exception as e:
             print("ERROR: [AddItemsView][2035]", e)
             response = {"status": "error", "message": "Something went wrong please try again"}
@@ -2084,6 +2360,62 @@ class AddItemsView(View):
             return JsonResponse(response)
         except json.JSONDecodeError:
             return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
+
+
+class AddDescriptionView(View):
+    """
+    Add dynamically generated description.
+    """
+
+    def add_description(self, data):
+        try:
+            print("data:", data)
+            saved = False
+
+            for task_id in data:
+                task_mapping_obj = TaskMapping.objects.get(id=task_id)
+
+                # Prepare new descriptions based on incoming data
+                new_descriptions = []
+
+                for description_dict in data[task_id]:
+                    # print(f'description_dict {type(description_dict)}: {description_dict}')
+                    for key, value in description_dict.items():
+                        if value:
+                            # print("Adding new description:", {key: value})
+                            new_descriptions.append({key: value})
+
+                if new_descriptions:
+                    # print("task_mapping_obj.extra_description == new_descriptions", task_mapping_obj.extra_description == new_descriptions)
+                    # print("task_mapping", task_mapping_obj.extra_description)
+                    # print("Updating descriptions...", new_descriptions)
+                    if task_mapping_obj.extra_description != new_descriptions:
+                        task_mapping_obj.extra_description = new_descriptions
+                        task_mapping_obj.save()
+                        saved = True
+                else:
+                    # print("IN elseeeeeeeeeeeeeeeee")
+                    task_mapping_obj.extra_description = []
+                    task_mapping_obj.save()
+                    saved = True
+
+            if saved:
+                return {"status": "success", "message": "Description updated successfully"}
+            else:
+                return {"status": "empty", "message": ""}
+
+        except Exception as e:
+            print("Error [AddDescriptionView][add_description]", e)
+            return {"status": "error", "message": "Something went wrong, please try again"}
+
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            response = self.add_description(data)
+            return JsonResponse(response)
+        except Exception as e:
+            print("Error [AddDescriptionView]", e)
+            return JsonResponse({"status": "error", "message": "Something went wrong please try again"})
 
 
 class UpdateItemIncludeView(View):
@@ -2107,6 +2439,189 @@ class UpdateItemIncludeView(View):
         except Exception as e:
             print("ERROR: [UpdateItemIncludeView][2071]", e)
             return JsonResponse({"status": "error", "message": "Something went wrong please try again"})
+
+
+class UpdateTaskMappingView(View):
+    """
+    Update task mapping fields view.
+    """
+
+    def post(self, request, *args, **kwargs):
+        try:
+
+            body_unicode = request.body.decode("utf-8")
+            data = urllib.parse.parse_qs(body_unicode)
+
+            try:
+
+                task_mapping_obj = TaskMapping.objects.get(id=data.get("id")[0])
+
+                if data.get("type")[0] == "task_code":
+                    task_mapping_obj.code = data.get("value")[0]
+                    task_mapping_obj.save()
+                    return JsonResponse({"status": "success", "message": "Task code updated successfully"}, status=200)
+                elif data.get("type")[0] == "task_description":
+                    task_mapping_obj.description = data.get("value")[0]
+                    task_mapping_obj.save()
+                    return JsonResponse(
+                        {"status": "success", "message": "Task description updated successfully"}, status=200
+                    )
+                elif data.get("type")[0] == "approve":
+                    task_mapping_obj.approve = data.get("value")[0]
+                    task_mapping_obj.save()
+                    return JsonResponse(
+                        {"status": "success", "message": "Approve & Initial	updated successfully"}, status=200
+                    )
+
+            except Exception as e:
+                print("Error: [UpdateTaskMappingView][1]", e)
+                return JsonResponse({"status": "error", "message": "Something went wrong please try again"}, status=400)
+
+        except Exception as e:
+            print("Error: [UpdateTaskMappingView][2]", e)
+            return JsonResponse({"status": "error", "message": "Something went wrong please try again"}, status=400)
+
+
+class UpdateProposalItemsView(View):
+    """
+    Update proposal items of task.
+    """
+
+    def update_data(self, data):
+        try:
+
+            assigned_pro_obj = AssignedProduct.objects.get(id=data.get("id")[0])
+
+            if data.get("input_type")[0] == "prod_item_code":
+                assigned_pro_obj.item_code = data.get("value")[0]
+                assigned_pro_obj.save()
+                response_message = {"status": "success", "message": "Item Code Updated successfully"}
+            elif data.get("input_type")[0] == "prod_labor_task":
+                assigned_pro_obj.labor_task = data.get("value")[0]
+                assigned_pro_obj.save()
+                response_message = {"status": "success", "message": "Item Updated successfully"}
+            elif data.get("input_type")[0] == "prod_local_cost":
+                value = data.get("value")[0]
+                assigned_pro_obj.local_cost = float(value.replace("$", "").strip())
+                assigned_pro_obj.save()
+                response_message = {"status": "success", "message": "Price Updated successfully"}
+            elif data.get("input_type")[0] == "prod_description":
+                assigned_pro_obj.description = data.get("value")[0]
+                assigned_pro_obj.save()
+                response_message = {"status": "success", "message": "Description Updated successfully"}
+            elif data.get("input_type")[0] == "prod_quantity":
+                assigned_pro_obj.quantity = data.get("value")[0]
+                assigned_pro_obj.save()
+                response_message = {"status": "success", "message": "Quantity Updated successfully"}
+            elif data.get("input_type")[0] == "prod_cost":
+                value = data.get("value")[0]
+                assigned_pro_obj.standard_cost = float(value.replace("$", "").strip())
+                assigned_pro_obj.save()
+                response_message = {"status": "success", "message": "Price Updated successfully"}
+
+            return response_message
+
+        except Exception as e:
+            print("Error [UpdateProposalItemsView][update_data]", e)
+            return {"status": "error", "message": "Something went wrong please try again"}
+
+    def post(self, request, *args, **kwargs):
+        try:
+            body_unicode = request.body.decode("utf-8")
+            data = urllib.parse.parse_qs(body_unicode)
+            response = self.update_data(data)
+            return JsonResponse(response)
+        except Exception as e:
+            print("Error: [UpdateProposalItemsView][2]", e)
+            return JsonResponse({"status": "error", "message": "Something went wrong please try again"}, status=400)
+
+
+class UpdateInvoiceView(View):
+    """
+    Update Invoice view
+    """
+
+    def update_data(self, data):
+        try:
+            invoice_obj = Invoice.objects.get(id=data["id"][0])
+            if data["type"][0] == "invoice_number":
+                invoice_obj.invoice_number = data["value"][0]
+                invoice_obj.save()
+                response_message = {"status": "success", "message": "Invoice Number Updated successfully"}
+            elif data["type"][0] == "invoice_date":
+                invoice_obj.invoice_data = data["value"][0]
+                invoice_obj.save()
+                response_message = {"status": "success", "message": "Invoice Date Updated successfully"}
+            elif data["type"][0] == "deposit":
+                invoice_obj.deposit_amount = data["value"][0]
+                invoice_obj.save()
+                response_message = {"status": "success", "message": "Deposit Updated successfully"}
+            elif data["type"][0] == "address":
+                invoice_obj.billing_address = data["value"][0]
+                invoice_obj.save()
+                response_message = {"status": "success", "message": "Address Updated successfully"}
+            elif data["type"][0] == "other_tax":
+                invoice_obj.other_tax = data["value"][0]
+                invoice_obj.save()
+                response_message = {"status": "success", "message": "Other Tax Updated successfully"}
+            elif data["type"][0] == "tax_rate":
+                invoice_obj.tax_rate = data["value"][0]
+                invoice_obj.save()
+                response_message = {"status": "success", "message": "Tax Rate Updated successfully"}
+            elif data["type"][0] == "sales_tax":
+                invoice_obj.sales_tax = data["value"][0]
+                invoice_obj.save()
+                response_message = {"status": "success", "message": "Sales Tax Updated successfully"}
+            elif data["type"][0] == "to-address":
+                invoice_obj.deposit_address = data["value"][0]
+                invoice_obj.save()
+                response_message = {"status": "success", "message": "Address Updated successfully"}
+            elif data["type"][0] == "buyer":
+                invoice_obj.buyer = data["value"][0]
+                invoice_obj.save()
+                response_message = {"status": "success", "message": "Buyer Updated successfully"}
+            elif data["type"][0] == "buyer-date":
+                invoice_obj.buyer_date = data["value"][0]
+                invoice_obj.save()
+                response_message = {"status": "success", "message": "Buyer Date Updated successfully"}
+            elif data["type"][0] == "buyer-name":
+                invoice_obj.buyer_name = data["value"][0]
+                invoice_obj.save()
+                response_message = {"status": "success", "message": "Buyer Name Updated successfully"}
+            elif data["type"][0] == "buyer-position":
+                invoice_obj.buyer_position = data["value"][0]
+                invoice_obj.save()
+                response_message = {"status": "success", "message": "Buyer Position Updated successfully"}
+            elif data["type"][0] == "seller":
+                invoice_obj.seller = data["value"][0]
+                invoice_obj.save()
+                response_message = {"status": "success", "message": "Seller Updated successfully"}
+            elif data["type"][0] == "seller-date":
+                invoice_obj.seller_date = data["value"][0]
+                invoice_obj.save()
+                response_message = {"status": "success", "message": "Seller Date Updated successfully"}
+            elif data["type"][0] == "seller-name":
+                invoice_obj.seller_name = data["value"][0]
+                invoice_obj.save()
+                response_message = {"status": "success", "message": "Seller Name Updated successfully"}
+            elif data["type"][0] == "seller-position":
+                invoice_obj.seller_position = data["value"][0]
+                invoice_obj.save()
+                response_message = {"status": "success", "message": "Seller Position Updated successfully"}
+            return response_message
+        except Exception as e:
+            print("Error [UpdateInvoiceView][update_data]", e)
+            return {"status": "error", "message": "Something went wrong please try again"}
+
+    def post(self, request, *args, **kwargs):
+        try:
+            body_unicode = request.body.decode("utf-8")
+            data = urllib.parse.parse_qs(body_unicode)
+            response = self.update_data(data)
+            return JsonResponse(response)
+        except Exception as e:
+            print("Error [UpdateInvoiceView]", e)
+            return JsonResponse({"status": "error", "message": "Something went wrong please try again"}, status=400)
 
 
 # --Breakdown Estimation
@@ -2274,6 +2789,52 @@ class VendorSearchView(View):
         return JsonResponse({"results": vendor_list})
 
 
+class CustomerSearchView(View):
+    """
+    Customer Search View
+    """
+
+    def get(self, request, *args, **kwargs):
+        search_term = request.GET.get("q", "")
+        customers = Customer.objects.filter(name__icontains=search_term)[:15]
+        customer_list = [{"id": customer.id, "text": customer.name} for customer in customers]
+        return JsonResponse({"results": customer_list})
+
+    def post(self, request, *args, **kwargs):
+        try:
+            body_unicode = request.body.decode("utf-8")
+            data = urllib.parse.parse_qs(body_unicode)
+
+            try:
+                # Save customer into opportunity
+                customer_obj = Customer.objects.get(id=data.get("value")[0])
+                opportunity_obj = Opportunity.objects.get(document_number=data.get("document_number")[0])
+                opportunity_obj.customer = customer_obj
+                opportunity_obj.save()
+                messages.success(request, "Customer Added successfully")
+                return JsonResponse({"code": 200, "status": "success", "message": "Customer Added successfully"})
+            except Exception as e:
+                print("Error:[2293]", e)
+                messages.error(request, "Something went wrong while adding customer, please try again!!")
+                return JsonResponse(
+                    {
+                        "code": 400,
+                        "status": "error",
+                        "message": "Something went wrong while adding customer, please try again!!",
+                    }
+                )
+
+        except Exception as e:
+            print("ERROR: [CustomerSearchView][2304]", e)
+            return JsonResponse(
+                {
+                    "code": 400,
+                    "status": "error",
+                    "message": "Something went wrong while adding customer, please try again after some time!!",
+                }
+            )
+
+
 class TaskSearchView(View):
     def get(self, request, *args, **kwargs):
         search_term = request.GET.get("q", "")
@@ -2335,5 +2896,38 @@ class LaborTaskNameView(View):
                 "description": labor_obj.description,
                 "local_labor_rates": labor_obj.local_labour_rates,
                 "out_of_town_labour_rates": labor_obj.out_of_town_labour_rates,
+            }
+        )
+
+
+class TaskItemView(View):
+    """
+    Task Item code search view.
+    """
+
+    def get(self, request, *args, **kwargs):
+        search_term = request.GET.get("q", "")
+        task_id = kwargs["task_id"]
+        # print("task_id", task_id)
+        task_item = AssignedProduct.objects.filter(task_mapping__id=task_id, item_code__icontains=search_term).exclude(
+            is_select=True
+        )[:15]
+        task_item_list = [{"id": t.id, "text": t.item_code} for t in task_item]
+        return JsonResponse({"results": task_item_list})
+
+    def post(self, request, *args, **kwargs):
+        body_unicode = request.body.decode("utf-8")
+        data = urllib.parse.parse_qs(body_unicode)
+        id = data["value"][0]
+        assigned_prod = AssignedProduct.objects.get(id=id)
+        return JsonResponse(
+            {
+                "code": 200,
+                "message": "success",
+                "description": assigned_prod.description,
+                "quantity": assigned_prod.quantity,
+                "price": (
+                    assigned_prod.standard_cost if assigned_prod.standard_cost else assigned_prod.vendor_quoted_cost
+                ),
             }
         )

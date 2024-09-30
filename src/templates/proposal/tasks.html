@@ -41,7 +41,6 @@
 
         <!-- Task Start-->
         {% for t_id, t_info in task_mapping_list.items %}
-
             {% if  t_info.task.code %}
                 <tr>
                   <td>
@@ -52,11 +51,11 @@
                   <td>
                       <input type="text" class="form-control" value="{{ t_info.task.description }}" disabled />
                   </td>
-                  <td>$0.00</td>
-                  <td>0.00</td>
-                  <td>0</td>
+                  <td>${{ t_info.total_price }}</td>
+                  <td>{{ t_info.total_percent }}%</td>
+                  <td>{{ t_info.total_quantity }}</td>
                   <td>EA</td>
-                  <td>$0.00</td>
+                  <td>${{ t_info.total_price }}</td>
                   <td>
                       <a data-toggle="collapse" href="#collapse{{ t_id }}" aria-expanded="true" aria-controls="collapse{{ t_id }}" class="card-title">
                           <em class="ft-chevron-down font-medium-5"></em>
@@ -174,7 +173,11 @@
                                       {% endif %}
 
                                     <td class="text-nowrap">{{ ap.item_code }}</td>
-                                    <td>{{ ap.description }}</td>
+                                    {% if ap.description %}
+                                      <td>{{ ap.description }}</td>
+                                    {% else %}
+                                      <td> - </td>
+                                    {% endif %}
                                     <td id="standardCost{{ ap.id }}" class="text-nowrap">{{ ap.standard_cost }}</td>
                                     {% if ap.vendor_quoted_cost == None %}
                                       <td>
@@ -216,11 +219,17 @@
                                         <input type="text" id="comment-{{ap.id}}" data-id="{{ ap.id }}" class="form-control comment" placeholder="Enter comment" value="{{ ap.comment }}"></td>
                                       {% endif %}
 
-                                    <td>{{ ap.standard_cost }}</td>
-                                    <td><input type="text" class="form-control" placeholder="Enter comment" value="{{ ap.sell }}"></td>
-                                    <td>0</td>
-                                    <td>20</td>
-                                    <td>20%</td>
+                                    <td>
+                                      {% if ap.vendor_quoted_cost %}
+                                        {{ ap.vendor_quoted_cost }}
+                                      {% else %}
+                                        {{ ap.standard_cost }}
+                                      {% endif %}
+                                    </td>
+                                    <td>{{ ap.sell }}</td>
+                                    <td>{{ ap.sell }}</td>
+                                    <td>{{ ap.gross_profit }}</td>
+                                    <td>{{ ap.gross_profit_percentage }}</td>
                                     <td>
                                       {% if t_info.task.code %}
                                         <button type="button" class="btn btn-danger assign-prod-delete-btn" data-id="{{ap.id}}" data-title="{{ap.description}} - {{ t_info.task.code }}" data-url="{% url   'proposal_app:opportunity:assign-prod-delete-ajax' %}"><em class="fa fa-trash"></em></button>
@@ -237,8 +246,8 @@
                                 {% endfor %}
                                 <!-- Genarate dynamic rows -->
                                 <tr id="row-template-{{ t_id }}" class="new_prod">
-                                    <td></td>
-                                    <td class="text-nowrap"><input type="text" class="form-control" placeholder="Enter Quantity"></td>
+                                    <td><input type="hidden" class="task_id" value="{{ t_id }}"></td>
+                                    <td class="text-nowrap"><input type="text" class="form-control quantity" data-id="quantity-{{t_id}}" placeholder="Enter Quantity"></td>
                                     <td class="text-nowrap">
                                         <select data-id="{{ t_id }}" class="select2-item-code js-example-programmatic form-control">
                                             <!-- Data will apper here -->
@@ -249,19 +258,19 @@
                                             <!-- Data will apper here -->
                                         </select>
                                     </td>
-                                    <td><input type="text" class="form-control" data-id="{{ t_id }}" id="std_cost" placeholder="Enter Standard Cost"></td>
-                                    <td><input type="text" class="form-control" placeholder="Enter Quoted Cost"></td>
+                                    <td><input type="text" class="form-control standard-cost" data-id="{{ t_id }}" id="std_cost" placeholder="Enter Standard Cost"></td>
+                                    <td><input type="text" class="form-control quoted-cost" placeholder="Enter Quoted Cost"></td>
                                     <td>
-                                        <select class="select2-vendor form-control">
+                                        <select data-id="{{ t_id }}" class="select2-vendor vendor form-control">
                                           <option selected disabled>Select Vendor Name</option>
                                         </select>
                                     </td>
-                                    <td><input type="text" class="form-control" placeholder="Enter comment"></td>
-                                    <td><input type="text" class="form-control" placeholder="Enter Total"></td>
-                                    <td><input type="text" class="form-control" placeholder="Enter Sell"></td>
-                                    <td><input type="text" class="form-control" placeholder="Enter Total"></td>
-                                    <td><input type="text" class="form-control" placeholder="Enter Gross %"></td>
-                                    <td><input type="text" class="form-control" placeholder="Enter Gross %"></td>
+                                    <td><input type="text" class="form-control comment" placeholder="Enter comment"></td>
+                                    <td><input type="text" class="form-control total" placeholder="Enter Total"></td>
+                                    <td><input type="text" class="form-control sell" placeholder="Enter Sell"></td>
+                                    <td><input type="text" class="form-control sell-total" placeholder="Enter Total"></td>
+                                    <td><input type="text" class="form-control gross" placeholder="Enter Gross %"></td>
+                                    <td><input type="text" class="form-control gross-p" placeholder="Enter Gross %"></td>
                                     <td class="d-flex">
                                         <button type="button" class="btn btn-danger mr-2 remove-row-btn"><i class="fa fa-trash"></i></button>
                                         <button type="button" data-id="{{t_id}}" class="btn btn-primary add-row-btn"><i class="fa fa-plus"></i></button>
@@ -280,9 +289,9 @@
             <tr>
                 <th></th>
                 <th>Total</th>
-                <th>$15,550.00</th>
+                <th>${{grand_total.grand_total_price}}</th>
                 <th></th>
-                <th>90</th>
+                <th>{{grand_total.grand_total_quantity}}</th>
                 <th></th>
                 <th></th>
                 <th></th>
@@ -424,45 +433,44 @@
                     {% endfor %}
 
                       <tr id="row-{{t_id}}" class="new_prod">
-                        <td>
-                        </td>
 
+                        <td> <input type="hidden" class="task_id" value="{{t_id}}"> </td>
                         <td>
-                          <select class="labour-task-name form-control">
+                          <select data-id="{{t_id}}" class="labour-task-name form-control">
                               <!-- Data will apper here -->
                           </select>
                         </td>
                         <td class="text-nowrap">
-                          <select class="labour-description form-control">
+                          <select data-id="{{t_id}}" class="labour-description form-control">
                             <!-- Data will apper here -->
                           </select>
                         </td>
                         <td>
-                          <input type="text" class="form-control" placeholder="Enter Description">
-                        </td>
-                        <td id="standardCost13" class="text-nowrap">
-                          <input type="text" class="form-control" value="35.00" placeholder="Enter Standard Cost">
+                          <input type="text" class="form-control quantity" placeholder="Enter Quantity">
                         </td>
                         <td class="text-nowrap">
-                          <input type="text" class="form-control" value="35.00" placeholder="Enter Quoted Cost">
+                          <input type="text" class="local_cost form-control" data-id="{{t_id}}" id="local_cost" value="" placeholder="Enter local Cost">
+                        </td>
+                        <td class="text-nowrap">
+                          <input type="text" class="out_of_town_cost form-control" data-id="{{t_id}}" id="out_of_town_cost" value="" placeholder="Enter out of town Cost">
                         </td>
                         <td>
-                          <input type="text" class="form-control"placeholder="Enter comment">
+                          <input type="text" class="form-control comment"placeholder="Enter comment">
                         </td>
-                        <td><input  type="text" class="form-control" value="5.00" placeholder="Enter comment"></td>
+                        <td><input  type="text" class="form-control" value="" placeholder="Enter comment"></td>
                         <td>
-                          <input type="text" class="form-control" value="11.85" placeholder="Enter Total">
-                        </td>
-
-                        <td>
-                          <input type="text" class="form-control" value="0.9" placeholder="Enter Sell">
-                        </td>
-                        <td>
-                          <input type="text" class="form-control" value="64.124" placeholder="Enter Total">
+                          <input type="text" class="form-control" value="" placeholder="Enter Total">
                         </td>
 
                         <td>
-                          <input type="text" class="form-control" value="13.83" placeholder="Enter Gross %">
+                          <input type="text" class="form-control" value="" placeholder="Enter Sell">
+                        </td>
+                        <td>
+                          <input type="text" class="form-control" value="" placeholder="Enter Total">
+                        </td>
+
+                        <td>
+                          <input type="text" class="form-control" value="" placeholder="Enter Gross %">
                         </td>
 
                         <td class="d-flex">
@@ -615,6 +623,7 @@
               // Initialize select2 for the new selects
               $('.select2-vendor').select2({
                 placeholder: 'Select Vendor Name',
+                tags: true, // Enable the tagging feature
                 ajax: {
                     url: '{% url "proposal_app:opportunity:vendor-search" %}',
                     dataType: 'json',
@@ -636,6 +645,7 @@
               // Item code start
               $('.select2-item-code').select2({
                 placeholder: 'Select Item Code',
+                tags: true, // Enable the tagging feature
                 ajax: {
                     url: '{% url "proposal_app:opportunity:item-code-search" %}',
                     dataType: 'json',
@@ -654,7 +664,7 @@
                 }
               });
 
-              function updateDescription(value, id) {
+              /*function updateDescription(value, id) {
                 var $select2Element = $(`select[data-id="${id}"].select2-item-description.js-example-programmatic.form-control`);
 
                 // Initialize Select2
@@ -676,6 +686,51 @@
                         cache: true
                     }
                 });
+              }*/
+
+              function updateDescription(value, id) {
+                var $select2Element = $(`select[data-id="${id}"].select2-item-description.js-example-programmatic.form-control`);
+
+                // Initialize Select2 if not already initialized
+                if (!$select2Element.hasClass('select2-hidden')) {
+                    $select2Element.select2({
+                        ajax: {
+                            url: '{% url "proposal_app:opportunity:item-description-search" %}',
+                            dataType: 'json',
+                            delay: 250,
+                            data: function(params) {
+                                return {
+                                    q: value
+                                };
+                            },
+                            processResults: function(data) {
+                                // Clear existing options
+                                $select2Element.empty();
+
+                                // Populate new options
+                                $.each(data.results, function(index, item) {
+                                    var newOption = new Option(item.text, item.id, false, false);
+                                    $select2Element.append(newOption);
+                                });
+
+                                // Check if there are results and set the first as selected
+                                if (data.results.length > 0) {
+                                    $select2Element.val(data.results[0].id).trigger('change');
+                                }
+
+                                return {
+                                    results: data.results
+                                };
+                            },
+                            cache: true
+                        }
+                    });
+                }
+
+                // Manually trigger AJAX request without opening dropdown
+                $select2Element.select2('data', null); // Clear previous data
+                $select2Element.select2('open'); // Trigger AJAX without user action
+                $select2Element.select2('close'); // Close dropdown immediately after fetching
               }
 
               $(document).on('change', '.select2-item-code', function(e) {
@@ -720,6 +775,7 @@
 
               $(`.select2-item-description`).select2({
                 placeholder: 'Select Item description',
+                tags: true, // Enable the tagging feature
                 ajax: {
                     url: '{% url "proposal_app:opportunity:item-description-search" %}',
                     dataType: 'json',
@@ -755,7 +811,9 @@
           var rowsData = [];
 
           if (current_stage_value == "5"){
+            console.log("Innnnnnnnnnnnnnnnnnnnnnnnn");
             $('tr.new_prod').each(function() {
+                console.log("Innnnnnnnnnnnnnnnnnnnnnnnn 222222");
                 var $row = $(this);
 
                 var rowData = {
@@ -781,6 +839,8 @@
                 rowsData.push(rowData);
             });
 
+            console.log("rowData", rowsData);
+
             $.ajax({
                 url: '{% url "proposal_app:opportunity:add-prod-row-ajax" %}',
                 type: 'POST',
@@ -792,21 +852,19 @@
                 },
                 success: function(response) {
                     console.log('API call success:', response);
-                    toastr.success(response.message, 'Success', {
-                        closeButton: true,
-                        progressBar: true,
-                        positionClass: 'toast-bottom-right',
-                        timeOut: 6000
-                    });
+                    if (response.status == "success"){
+                      window.location.reload();
+                    }else if( response.status == "warning"){
+                      window.location.reload();
+                    }else if( response.status == "error"){
+                      window.location.reload();
+                    }
                 },
-                error: function(xhr, status, error) {
+                error: function(response) {
                     console.error('API call error:', status, error);
-                    toastr.error(xhr.responseJSON.message, 'Error', {
-                        closeButton: true,
-                        progressBar: true,
-                        positionClass: 'toast-bottom-right',
-                        timeOut: 6000
-                  });
+                    if( response.status == "error"){
+                      window.location.reload();
+                    }
                 }
             });
           }
@@ -843,7 +901,7 @@
               multi_row = true;
           }
 
-          console.log("multi", multi_row)
+          // console.log("multi", multi_row)
 
           // Function to generate a new row with a unique ID
           function generateRow(unique_id) {
@@ -917,6 +975,7 @@
 
               $('.labour-task-name').select2({
                 placeholder: 'Select task Name',
+                tags: true, // Enable the tagging feature
                 ajax: {
                     url: '{% url "proposal_app:opportunity:labor-task-name-search" %}',
                     dataType: 'json',
@@ -937,6 +996,7 @@
 
               $('.labour-description').select2({
                 placeholder: 'Select task description',
+                tags: true, // Enable the tagging feature
                 ajax: {
                     url: '{% url "proposal_app:opportunity:labor-task-description-search" %}',
                     dataType: 'json',
@@ -961,7 +1021,7 @@
             $(this).closest('tr').remove();
         });
 
-        function updateDescription(value, id) {
+        /*function updateDescription(value, id) {
           var $select2Element = $(`select[data-id="${id}"].labour-description`);
 
           // Initialize Select2
@@ -983,6 +1043,51 @@
                   cache: true
               }
           });
+        }*/
+
+        function updateDescription(value, id) {
+          var $select2Element = $(`select[data-id="${id}"].labour-description`);
+
+          // Initialize Select2 if not already initialized
+          if (!$select2Element.hasClass('select2-hidden')) {
+              $select2Element.select2({
+                  ajax: {
+                      url: '{% url "proposal_app:opportunity:labor-task-description-search" %}',
+                      dataType: 'json',
+                      delay: 250,
+                      data: function(params) {
+                          return {
+                              q: value
+                          };
+                      },
+                      processResults: function(data) {
+                          // Clear existing options
+                          $select2Element.empty();
+
+                          // Populate new options
+                          $.each(data.results, function(index, item) {
+                              var newOption = new Option(item.text, item.id, false, false);
+                              $select2Element.append(newOption);
+                          });
+
+                          // Check if there are results and set the first as selected
+                          if (data.results.length > 0) {
+                              $select2Element.val(data.results[0].id).trigger('change');
+                          }
+
+                          return {
+                              results: data.results
+                          };
+                      },
+                      cache: true
+                  }
+              });
+          }
+
+          // Manually trigger AJAX request without opening dropdown
+          $select2Element.select2('data', null); // Clear previous data
+          $select2Element.select2('open'); // Trigger AJAX without user action
+          $select2Element.select2('close'); // Close dropdown immediately after fetching
         }
 
         $(document).on('change', '.labour-task-name', function(e) {
@@ -1107,134 +1212,120 @@
     });
   </script>
 
-  <script>
-      $(document).ready(function() {
-
-          const data = [
-              { id: '2800-118501', text: '2800-118501' },
-              { id: '2800-118534', text: '2800-118534' },
-              { id: '2803-118501', text: '2803-118501' }
-          ];
-
-          $('.mySelect2').select2({
-              tags: true, // Enable tagging
-              data: data,
-              placeholder: 'Select tasks',
-              allowClear: true
-          });
-
-          $('.mySelect2').on('select2:select', function(e) {
-            const selectedData = e.params.data;
-
-            // Check if the selected value is in the predefined data
-            const isCustom = !data.some(item => item.id === selectedData.id);
-
-            if (isCustom) {
-                // Add new custom option if it does not exist
-                const newOption = new Option(selectedData.id, selectedData.id, true, true);
-                $('.mySelect2').append(newOption).trigger('change');
-
-                // Clear other fields
-                $('.new_prod input[type="text"]').val('');
-                $('.mySelect3').val(null).trigger('change');
-            } else {
-                // Optionally handle cases where the value is in predefined data
-                console.log('Selected predefined value:', selectedData.id);
-            }
-          });
-      });
-
-      $(document).ready(function() {
-
-        const data = [
-          { id: 'Ball Valve Riser 3/4" FHTxMHT', text: 'Ball Valve Riser 3/4" FHTxMHT' },
-          { id: 'FIGURE 8 062', text: 'FIGURE 8 062' },
-        ];
-
-        $('.mySelect3').select2({
-            tags: true, // Enable tagging
-            data: data,
-            placeholder: 'Select tasks',
-            allowClear: true
-        });
-
-        $('.mySelect3').on('select2:select', function(e) {
-          const selectedData = e.params.data;
-
-          // Check if the selected value is in the predefined data
-          const isCustom = !data.some(item => item.id === selectedData.id);
-
-          if (isCustom) {
-              // Add new custom option if it does not exist
-              const newOption = new Option(selectedData.id, selectedData.id, true, true);
-              $('.mySelect3').append(newOption).trigger('change');
-
-              // Clear other fields
-              $('.new_prod input[type="text"]').val('');
-              $('.mySelect2').val(null).trigger('change');
-          } else {
-              // Optionally handle cases where the value is in predefined data
-              console.log('Selected predefined value:', selectedData.id);
-          }
-        });
-      });
-
-  </script>
-
   <!-- Search -->
 
     <!-- Item code -->
     <script>
       $(document).ready(function() {
           $('.select2-item-code').select2({
-              placeholder: 'Select Item Code',
-              ajax: {
-                  url: '{% url "proposal_app:opportunity:item-code-search" %}',
-                  dataType: 'json',
-                  delay: 250,
-                  data: function (params) {
-                      return {
-                          q: params.term
-                      };
-                  },
-                  processResults: function (data) {
-                      return {
-                          results: data.results
-                      };
-                  },
-                  cache: true
-              }
+            placeholder: 'Select Item Code',
+            tags: true, // Enable the tagging feature
+            ajax: {
+                url: '{% url "proposal_app:opportunity:item-code-search" %}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.results
+                    };
+                },
+                cache: true
+            }
           });
+
+          /* function updateDescription(value, id) {
+            var $select2Element = $(`select[data-id="${id}"].select2-item-description.js-example-programmatic.form-control`);
+
+            // Initialize Select2 if not already initialized
+            if (!$select2Element.hasClass('select2-hidden')) {
+                $select2Element.select2({
+                    ajax: {
+                        url: '{% url "proposal_app:opportunity:item-description-search" %}',
+                        dataType: 'json',
+                        delay: 250,
+                        data: function(params) {
+                            return {
+                                q: value
+                            };
+                        },
+                        processResults: function(data) {
+                            // Clear existing options
+                            $select2Element.empty();
+
+                            // Populate new options
+                            $.each(data.results, function(index, item) {
+                                var newOption = new Option(item.text, item.id, false, false);
+                                $select2Element.append(newOption);
+                            });
+
+                            // Check if there are results and set the first as selected
+                            if (data.results.length > 0) {
+                                $select2Element.val(data.results[0].id).trigger('change');
+                            }
+
+                            return {
+                                results: data.results
+                            };
+                        },
+                        cache: true
+                    }
+                });
+            }
+
+            // Manually trigger AJAX request without opening dropdown
+            $select2Element.select2('data', null); // Clear previous data
+            $select2Element.select2('open'); // Trigger AJAX without user action
+            $select2Element.select2('close'); // Close dropdown immediately after fetching
+          } */
 
           function updateDescription(value, id) {
             var $select2Element = $(`select[data-id="${id}"].select2-item-description.js-example-programmatic.form-control`);
 
-            // Initialize Select2
-            $select2Element.select2({
-                ajax: {
-                    url: '{% url "proposal_app:opportunity:item-description-search" %}',
-                    dataType: 'json',
-                    delay: 250,
-                    data: function(params) {
-                        return {
-                            q: value
-                        };
-                    },
-                    processResults: function(data) {
-                        return {
-                            results: data.results
-                        };
-                    },
-                    cache: true
-                }
-            });
+            // Initialize Select2 if not already initialized
+            if (!$select2Element.hasClass('select2-hidden')) {
+                $select2Element.select2({
+                    ajax: {
+                        url: '{% url "proposal_app:opportunity:item-description-search" %}',
+                        dataType: 'json',
+                        delay: 250,
+                        data: function(params) {
+                            return {
+                                q: value
+                            };
+                        },
+                        processResults: function(data) {
+                            // Clear existing options
+                            $select2Element.empty();
 
-            // When Select2 is initialized, set the selected value
-            $select2Element.on('select2:open', function() {
-                setTimeout(function() {
-                    $select2Element.val(value).change();
-                }, 100);
-            });
+                            // Populate new options
+                            $.each(data.results, function(index, item) {
+                                var newOption = new Option(item.text, item.id, false, false);
+                                $select2Element.append(newOption);
+                            });
+
+                            // Check if there are results and set the first as selected
+                            if (data.results.length > 0) {
+                                $select2Element.val(data.results[0].id).trigger('change');
+                            }
+
+                            return {
+                                results: data.results
+                            };
+                        },
+                        cache: true
+                    }
+                });
+            }
+
+            // Manually trigger AJAX request without opening dropdown
+            $select2Element.select2('data', null); // Clear previous data
+            $select2Element.select2('open'); // Trigger AJAX without user action
+            $select2Element.select2('close'); // Close dropdown immediately after fetching
           }
 
           $(document).on('change', '.select2-item-code', function(e) {
@@ -1281,6 +1372,7 @@
       $(document).ready(function() {
         $('.select2-item-description').select2({
             placeholder: 'Select Item description',
+            tags: true, // Enable the tagging feature
             ajax: {
                 url: '{% url "proposal_app:opportunity:item-description-search" %}',
                 dataType: 'json',
@@ -1363,6 +1455,7 @@
                 dropdownAutoWidth: true,
                 width: 'resolve',
                 placeholder: 'Select Task Name',
+
                 ajax: {
                     url: '{% url "proposal_app:opportunity:labor-task-search" %}',
                     dataType: 'json',
@@ -1386,8 +1479,91 @@
     <!-- Labor task name -->
     <script>
       $(document).ready(function() {
+
+        function updateDescription(value, id) {
+          var $select2Element = $(`select[data-id="${id}"].labour-description`);
+
+          // Initialize Select2 if not already initialized
+          if (!$select2Element.hasClass('select2-hidden')) {
+              $select2Element.select2({
+                  ajax: {
+                      url: '{% url "proposal_app:opportunity:labor-task-description-search" %}',
+                      dataType: 'json',
+                      delay: 250,
+                      data: function(params) {
+                          return {
+                              q: value
+                          };
+                      },
+                      processResults: function(data) {
+                          // Clear existing options
+                          $select2Element.empty();
+
+                          // Populate new options
+                          $.each(data.results, function(index, item) {
+                              var newOption = new Option(item.text, item.id, false, false);
+                              $select2Element.append(newOption);
+                          });
+
+                          // Check if there are results and set the first as selected
+                          if (data.results.length > 0) {
+                              $select2Element.val(data.results[0].id).trigger('change');
+                          }
+
+                          return {
+                              results: data.results
+                          };
+                      },
+                      cache: true
+                  }
+              });
+          }
+
+          // Manually trigger AJAX request without opening dropdown
+          $select2Element.select2('data', null); // Clear previous data
+          $select2Element.select2('open'); // Trigger AJAX without user action
+          $select2Element.select2('close'); // Close dropdown immediately after fetching
+        }
+
+        $(document).on('change', '.labour-task-name', function(e) {
+
+          var $row = $(this).closest('tr');
+
+          // item code
+          var $input = $(e.target);
+          var id = $input.data("id");
+          var value = $input.val();
+
+          // Payload data
+          data = {
+            value: value,
+          }
+
+          $.ajax({
+            url: '{% url "proposal_app:opportunity:labor-task-name-search" %}',
+            type: 'POST',
+            data: data,
+            headers: {
+              'X-CSRFToken': "{{ csrf_token }}",
+            },
+            success: function(response) {
+              if (response.code == 200) {
+                var $localcost = $(`input[data-id="${id}"][id="local_cost"]`);
+                var $out_of_town_cost = $(`input[data-id="${id}"][id="out_of_town_cost"]`);
+                updateDescription(response.description, id);
+                $localcost.val(response.local_labor_rates);
+                $out_of_town_cost.val(response.out_of_town_labour_rates);
+              }
+            },
+            error: function(xhr, status, error) {
+              console.log("Error:", error);
+            }
+          });
+        });
+
         $('.labour-task-name ').select2({
           placeholder: 'Select task Name',
+          tags: true, // Enable the tagging feature
           ajax: {
               url: '{% url "proposal_app:opportunity:labor-task-name-search" %}',
               dataType: 'json',
@@ -1413,6 +1589,7 @@
       $(document).ready(function() {
         $('.labour-description ').select2({
           placeholder: 'Select task description',
+          tags: true, // Enable the tagging feature
           ajax: {
               url: '{% url "proposal_app:opportunity:labor-task-description-search" %}',
               dataType: 'json',
@@ -1505,14 +1682,13 @@
       $(".quantity, .vendor-quoted-cost, .comment").on("keydown", function(e) {
         // Check if Enter key is pressed (keyCode 13)
         if (e.key === 'Enter' || e.keyCode === 13) {
-          e.preventDefault();  // Prevent the default action of the Enter key
+          e.preventDefault();
 
           var $input = $(e.target);
           var id = $input.data("id");
           var value = $input.val();
           var inputType = '';
 
-          // Determine the input type based on the class
           if ($input.hasClass("quantity")) {
             inputType = 'quantity';
           } else if ($input.hasClass("vendor-quoted-cost")) {
@@ -1521,11 +1697,9 @@
             inputType = 'comment';
           }
 
-          // Log the values based on the input type
           console.log(inputType.charAt(0).toUpperCase() + inputType.slice(1) + " Id:", id);
           console.log(inputType.charAt(0).toUpperCase() + inputType.slice(1) + " Value:", value);
 
-          // AJAX call to a single endpoint
           $.ajax({
             url: '{% url "proposal_app:opportunity:assign-prod-update-ajax" %}', // Replace with your actual URL
             type: 'POST',

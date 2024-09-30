@@ -13,13 +13,21 @@
       <div class="col-4">
         <div class="row">
           <p class="font-weight-bold mr-1">Job:</p>
-          <p>Existing</p>
+          {% if opportunity.job %}
+            <p>{{ opportunity.job }}</p>
+          {% else %}
+            <p> - </p>
+          {% endif %}
         </div>
       </div>
       <div class="col-4">
         <div class="row">
           <p class="font-weight-bold mr-1">Job Name:</p>
-          <p>Existing Pump Relocation & New 10 Discharge</p>
+          {% if opportunity.job_name %}
+            <p>{{opportunity.job_name}}</p>
+          {% else %}
+            <p> - </p>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -58,7 +66,8 @@
     </div>
   </div>
 
-
+  </button>
+  <!-- Proposal Creation Table -->
   <div class="card">
     <div class="card-content">
       <div class="card-body">
@@ -103,9 +112,9 @@
                                       </td>
                                       <td>
                                           {% if task.task.name %}
-                                              <input type="text" class="form-control" value="{{ task.task.description }}" />
+                                              <input type="text" class="form-control" value="{{ task.task.description }}" disabled>
                                           {% else %}
-                                              <input type="text" class="form-control" value="{{ task.description }}" />
+                                              <input type="text" class="form-control" value="{{ task.description }}" disabled>
                                           {% endif %}
                                           <div class="table-responsive">
                                               <button type="button" class="btn bg-light-primary mt-2 add_items" data-id="{{task.id}}">
@@ -123,16 +132,18 @@
                                                 <tbody id="item-body-{{task.id}}">
                                                     <tr>
                                                         <td class="text-nowrap">
-                                                          <input type="text" class="form-control item_code" value="" placeholder="Labor Task" />
+                                                          <select class="select-item-code" data-url="{% url 'proposal_app:opportunity:task-item-search' task.id %}" data-task="{{task.id}}" name="" id="">
+                                                            <option selected disabled>Select Item code</option>
+                                                          </select>
                                                         </td>
                                                         <td>
-                                                          <input type="text" class="form-control description" value="" placeholder="Item Description" />
+                                                          <input type="text" class="form-control description" value="" placeholder="Item Description" / disabled>
                                                         </td>
                                                         <td>
-                                                          <input type="text" class="form-control quantity" class="" value="" placeholder="Quantity" />
+                                                          <input type="text" class="form-control quantity" class="" value="" placeholder="Quantity" / disabled>
                                                         </td>
                                                         <td>
-                                                          <input type="text" class="form-control price" class="price" value="" placeholder="Price" />
+                                                          <input type="text" class="form-control price" class="price" value="" placeholder="Price" / disabled>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -155,33 +166,45 @@
 
                                                       {% for p in products %}
                                                       <tr>
-                                                          <td class="text-nowrap">
-                                                              {% if p.item_code %}
-                                                                  <input type="text" class="form-control" value="{{ p.item_code }}" placeholder="Item Code" />
-                                                              {% else %}
-                                                                  <input type="text" class="form-control" value="{{ p.labor_task }}" placeholder="Labor Task" />
-                                                              {% endif %}
-                                                          </td>
-                                                          <td>
-                                                              <input type="text" class="form-control" value="{{ p.description }}" placeholder="Item Description" />
-                                                          </td>
-                                                          <td>
-                                                              <input type="text" class="form-control" class="" value="{{ p.quantity }}" placeholder="Quantity" />
-                                                          </td>
-                                                          <td>
-                                                              {% if p.standard_cost %}
-                                                                <input type="text" class="form-control" class="price" value="{{ p.standard_cost }}" placeholder="Price" />
-                                                              {% else %}
-                                                                <input type="text" class="form-control" class="price" value="{{ p.local_cost }}" placeholder="Price" />
-                                                              {% endif %}
-
+                                                          {% if p.item_code %}
+                                                            <td class="text-nowrap">{{ p.item_code }}</td>
+                                                          {% else %}
+                                                            <td class="text-nowrap">{{ p.labor_task }}</td>
+                                                          {% endif %}
+                                                          <td>{{ p.description }}</td>
+                                                          <td>{{ p.quantity }}</td>
+                                                          {% if p.standard_cost %}
+                                                            <td>{{ p.standard_cost }}</td>
+                                                          {% else %}
+                                                            <td>{{ p.local_cost }}</td>
+                                                          {% endif %}
                                                           </td>
                                                       </tr>
                                                       {% endfor %}
                                                   </tbody>
                                               </table>
-                                              <input type="text" class="form-control" value="" placeholder="write description">
 
+                                              {% load custom_filters %}
+                                                {% for description in task.extra_description %}
+                                                  {% for key, value in description.items %}
+                                                  <table>
+                                                    <tbody>
+                                                      <tr>
+                                                        <td style="width: 100%;"><input type="text" data-id="{{ task.id }}" class="form-control task-description description-{{ task.id }}" value="{{ value }}" placeholder="Write description"></td>
+                                                        <td><em class="fa fa-trash fa-lg danger remove-description"></em></td>
+                                                      </tr>
+                                                    </tbody>
+                                                  </table>
+                                                  {% endfor %}
+                                                {% endfor %}
+                                                <table class="description-table">
+                                                  <tbody>
+                                                    <tr>
+                                                      <td style="width: 100%;"><input type="text" data-id="{{ task.id }}" class="form-control task-description description-{{ task.id }}" value="" placeholder="Write description"></td>
+                                                      <td><em class="fa fa-trash fa-lg danger remove-description"></em></td>
+                                                    </tr>
+                                                  </tbody>
+                                                </table>
                                           </div>
                                       </td>
                                       <td>
@@ -191,7 +214,7 @@
                                           </div>
                                       </td>
                                       <td class="text-right">
-                                          <span class="total">{{ data.task_totals|get_item:task }}</span>
+                                          <span class="total">{{ data.task_totals|get_item:task|round_value:2 }}</span>
                                       </td>
                                       <td>
                                         {% if task.task.name %}
@@ -242,7 +265,7 @@
     });
   </script>
 
-  <!-- Select 2-->
+  <!-- Select 2 -->
   <script>
     $(".select2").select2();
   </script>
@@ -323,16 +346,87 @@
     });
   </script>
 
+  <!-- Item code for "Add item button"-->
+  <script>
+    $(".select-item-code").select2({
+      placeholder: 'Select Item Code',
+      ajax: {
+          url: function () {
+            return $(this).data("url");
+          },
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+              return {
+                  q: params.term
+              };
+          },
+          processResults: function (data) {
+              return {
+                  results: data.results
+              };
+          },
+          cache: true
+      }
+    });
+  </script>
+
+  <!-- Update row data -->
+  <script>
+    $(document).on('change', '.select-item-code', function(e) {
+      // item code
+      var $input = $(e.target);
+      var id = $input.data("task");
+      var $row = $(this).closest('tr');
+      var value = $input.val();
+      var url = $input.data("url");
+
+      var data = {
+        value: value,
+      }
+
+      $.ajax({
+        url: url,
+        type: 'POST',
+        data: data,
+        headers: {
+          'X-CSRFToken': "{{ csrf_token }}",
+        },
+        success: function(response) {
+          if (response.code == 200) {
+
+            var $description = $row.find('.description');
+            var $quantity = $row.find('.quantity');
+            var $price = $row.find('.price');
+
+            // Update value
+            $description.val(response.description);
+            $quantity.val(response.quantity);
+            $price.val(response.price);
+          }
+        },
+        error: function(xhr, status, error) {
+          console.log("Error:", error);
+        }
+      });
+
+    });
+  </script>
+
   <!-- Add dynamic items -->
   <script>
     $(".add_items").on('click', function(e){
         var $id = $(this).data('id');
+        var $task_id = $(this).data('task');
         var $itemBody = $(`#item-body-${$id}`);
+        var $url = "{% url 'proposal_app:opportunity:task-item-search' 0 %}".replace(0, $id);
         const uniqueNumber = Math.floor(Date.now() + Math.random() * 1000);
         var $newRow = `
             <tr id=${uniqueNumber}>
                 <td class="text-nowrap">
-                    <input type="text" class="form-control item_code" placeholder="Labor Task" />
+                    <select class="select-item-code" data-url="${$url}" data-task="${$id}">
+                        <option selected disabled>Select item code</option>
+                    </select>
                 </td>
                 <td>
                     <input type="text" class="form-control description" placeholder="Item Description" />
@@ -346,6 +440,70 @@
             </tr>
         `;
         $itemBody.append($newRow);
+
+        $(".select-item-code").select2({
+          placeholder: 'Select Item Code',
+          ajax: {
+              url: function () {
+                return $(this).data("url");
+              },
+              dataType: 'json',
+              delay: 250,
+              data: function (params) {
+                  return {
+                      q: params.term
+                  };
+              },
+              processResults: function (data) {
+                  return {
+                      results: data.results
+                  };
+              },
+              cache: true
+          }
+        });
+
+        $(document).on('change', '.select-item-code', function(e) {
+
+          // item code
+          var $input = $(e.target);
+          var id = $input.data("id");
+          var $row = $(this).closest('tr');
+          console.log("$row", $row);
+          var value = $input.val();
+
+          // Payload data
+          var data = {
+            value: value,
+          }
+
+          $.ajax({
+            url: $url,
+            type: 'POST',
+            data: data,
+            headers: {
+              'X-CSRFToken': "{{ csrf_token }}",
+            },
+            success: function(response) {
+              if (response.code == 200) {
+
+                var $description = $row.find('.description');
+                var $quantity = $row.find('.quantity');
+                var $price = $row.find('.price');
+
+                // Update value
+                $description.val(response.description);
+                $quantity.val(response.quantity);
+                $price.val(response.price);
+              }
+            },
+            error: function(xhr, status, error) {
+              console.log("Error:", error);
+            }
+          });
+
+        });
+
     });
   </script>
 
@@ -361,17 +519,11 @@
 
           // Iterate through each row in the tbody
           $tbody.find('tr').each(function() {
-              const itemCode = $(this).find('.item_code').val();
-              const description = $(this).find('.description').val();
-              const quantity = $(this).find('.quantity').val();
-              const price = $(this).find('.price').val();
+              const itemCode = $(this).find('.select-item-code').val();
               if (itemCode) {
                   itemsToSave.push({
                       taskId: taskId,
                       itemCode: itemCode,
-                      description: description,
-                      quantity: quantity,
-                      price: price
                   });
               }
           });
@@ -392,8 +544,8 @@
                     positionClass: 'toast-bottom-right',
                     timeOut: 6000
                   });
-                } else {
-                  toastr.error(response.message, 'Error', {
+                } else if(response.status == "warning") {
+                  toastr.warning(response.message, 'Warning', {
                     closeButton: true,
                     progressBar: true,
                     positionClass: 'toast-bottom-right',
@@ -458,4 +610,194 @@
       });
     })
   </script>
+
+  <!-- Generate And Save Dynamic Description -->
+  <script>
+    $(document).on("keypress", ".task-description", function(e) {
+        var data = {};
+
+        if (e.which == 13) {
+            e.preventDefault();
+
+            var id = $(this).data("id");
+            var value = $(this).val();
+            const uniqueNumber = Math.floor(Date.now() + Math.random() * 1000);
+
+            var $currentRow = $(this).closest('.description-table tr');
+            var $newRow = `
+              <tr>
+                <td style="width: 100%;"><input type="text" data-id="${id}" class="form-control task-description" value="" placeholder="Write description" data-id="${id}"></td>
+                <td><em class="fa fa-trash fa-lg danger remove-description"></em></td>
+              </tr>
+            `;
+
+            $currentRow.after($newRow);
+            $currentRow.next().find('.task-description').focus();
+
+            // remove rows
+            $(".remove-description").on("click", function(e){
+              e.preventDefault();
+
+                  var row = $(this).closest('tr');
+
+                  // Remove the row from the DOM
+                  if (row.length) {
+                      row.remove();
+                      console.log("Row removed successfully.");
+                  } else {
+                      console.error("Row not found!");
+                  }
+            });
+
+
+            if (!data[id]) {
+                data[id] = [{}];
+            }
+            var lastEntry = data[id][data[id].length - 1];
+            var newKey = Object.keys(lastEntry).length + 1;
+            lastEntry[newKey] = value;
+        }
+    });
+
+    $(document).ready(function() {
+      function updateDescriptionObject() {
+          var description_jaon = {};
+          $(".task-description").each(function() {
+              var taskId = $(this).data("id");
+              var text = $(this).val();
+
+              if (!description_jaon[taskId]) {
+                  description_jaon[taskId] = [];
+              }
+
+              var nextKey = description_jaon[taskId].length + 1;
+
+              description_jaon[taskId].push({
+                  [nextKey]: text
+              });
+          });
+
+          // Check description data
+          console.log(description_jaon);
+          return description_jaon;
+      }
+
+      // Handler for adding descriptions
+      $("a[href='#next']").on('click', function(e) {
+          var current_stage_value = $(".current a span.step").text();
+
+          if (current_stage_value == "7") {
+              var description_jaon = updateDescriptionObject();
+              // console.log("description_json", description_jaon)
+
+              $.ajax({
+                  type: "POST",
+                  url: "{% url 'proposal_app:opportunity:add-description-ajax' %}",
+                  data: JSON.stringify(description_jaon),
+                  headers: {
+                      'X-CSRFToken': "{{ csrf_token }}",
+                  },
+                  contentType: "application/json",
+                  success: function(response) {
+                      console.log("Success!!");
+                      if (response.status == "success") {
+                        window.location.reload();
+                      }
+                  },
+                  error: function(response) {
+                      toastr.error(response.message, 'Error', {
+                          closeButton: true,
+                          progressBar: true,
+                          positionClass: 'toast-bottom-right',
+                          timeOut: 6000
+                      });
+                  }
+              });
+          }
+      });
+
+      // Handler for deleting a description
+      $(document).on('click', '.remove-description', function(e) {
+          e.preventDefault();
+
+          var row = $(this).closest('tr');
+
+          // Remove the row from the DOM
+          if (row.length) {
+              row.remove();
+              console.log("Row removed successfully.");
+          } else {
+              console.error("Row not found!");
+          }
+
+          // Update the description object after removal
+          var description_jaon = updateDescriptionObject();
+          console.log("Updated description after deletion:", description_jaon);
+      });
+
+      // Optional: Function to handle save action after deletion
+      function saveDescriptions() {
+          var description_jaon = updateDescriptionObject();
+
+          $.ajax({
+              type: "POST",
+              url: "{% url 'proposal_app:opportunity:add-description-ajax' %}",
+              data: JSON.stringify(description_jaon),
+              headers: {
+                  'X-CSRFToken': "{{ csrf_token }}",
+              },
+              contentType: "application/json",
+              success: function(response) {
+                  if (response.status == "success") {
+                      toastr.success(response.message, 'Saved', {
+                          closeButton: true,
+                          progressBar: true,
+                          positionClass: 'toast-bottom-right',
+                          timeOut: 6000
+                      });
+                      window.location.reload(true);
+                  } else if (response.status == "error") {
+                      toastr.warning(response.message, 'Warning', {
+                          closeButton: true,
+                          progressBar: true,
+                          positionClass: 'toast-bottom-right',
+                          timeOut: 6000
+                      });
+                  }
+              },
+              error: function(response) {
+                  toastr.error(response.message, 'Error', {
+                      closeButton: true,
+                      progressBar: true,
+                      positionClass: 'toast-bottom-right',
+                      timeOut: 6000
+                  });
+              }
+          });
+      }
+
+      // Example usage of the save function after a delete
+      $(document).on('click', '.save-descriptions', function() {
+          saveDescriptions();
+      });
+    });
+  </script>
+
+  <!-- Remove Description -->
+  <script>
+    $(".remove-description").on("click", function(e){
+      e.preventDefault();
+
+          var row = $(this).closest('tr');
+
+          // Remove the row from the DOM
+          if (row.length) {
+              row.remove();
+              console.log("Row removed successfully.");
+          } else {
+              console.error("Row not found!");
+          }
+    });
+  </script>
+
 {% endblock script %}

@@ -39,16 +39,29 @@
               <tbody>
                 <tr>
                   <td><b>Job:</b></td>
-                  <td>1213</td>
+                  <td>
+                    {% if opportunity.job %}
+                      <input type="text" class="form-control job" data-document={{opportunity.document_number}} value="{{opportunity.job}}" placeholder="Enter job"></td>
+                    {% else %}
+                      <input type="text" class="form-control job" data-document={{opportunity.document_number}} value="" placeholder="Enter job"></td>
+                    {% endif %}
                 </tr>
                 <tr>
                   <td><b>Customer:</b></td>
-                  <td class="users-view-latest-activity">Martha Waterman</td>
+                  <td class="users-view-latest-activity">
+                    <select data-document={{opportunity.document_number}} class="customer-select">
+                      <option selected disabled>{{ opportunity.customer.name }}</option>
+                    </select>
+                  </td>
                 </tr>
                 <tr>
                   <td><b>Project:</b></td>
                   <td class="users-view-verified">
-                    Existing Pump Relocation and New 10" Discharge
+                    {% if opportunity.project %}
+                      <input type="text" class="form-control project" data-document={{opportunity.document_number}} value="{{ opportunity.project }}" placeholder="Enter job"></td>
+                    {% else %}
+                      <input type="text" class="form-control project" data-document={{opportunity.document_number}} value="" placeholder="Enter Project name"></td>
+                    {% endif %}
                   </td>
                 </tr>
               </tbody>
@@ -82,15 +95,15 @@
                     <td><b>NetSuite Costs:</b></td>
                     <td>
                       <span class="badge bg-success users-view-status"
-                        >$30,196.95</span
+                        > - </span
                       >
                     </td>
                   </tr>
                   <tr>
                     <td><b>GP Calc Costs:</b></td>
                     <td>
-                      <span class="badge bg-success users-view-status"
-                        >$30,196.95</span
+                      <span class="badge bg-success users-view-status total_gp"
+                        >${{total.total_gp}}</span
                       >
                     </td>
                   </tr>
@@ -167,7 +180,7 @@
                 <div class="card-body py-0">
                   <div class="media">
                     <div class="media-body success text-left">
-                      <h3 id="total_gp" class="font-large-1 success mb-0">
+                      <h3 class="font-large-1 success mb-0 total_gp">
                         ${{total.total_gp}}
                       </h3>
                       <span>Total GP</span>
@@ -222,7 +235,7 @@
           <div class="card-body">
             <div style="max-height: 550px; overflow-y: auto">
               <div class="table-responsive">
-                <table class="table table-bordered custom-configuration" id="enstimate-table">
+                <table class="table table-bordered custom-configuration" id="enstimate-table" style="width: 100% !important;">
                   <thead>
                       <tr style="border: 1px solid red">
                         <th colspan="2"></th>
@@ -695,7 +708,7 @@
 
     $("#total_cost").text(`${total_cost.toFixed(2)}`);
     $("#total_sale").text(`${total_sale.toFixed(2)}`);
-    $("#total_gp").text(`${total_gp.toFixed(2)}`);
+    $(".total_gp").text(`${total_gp.toFixed(2)}`);
     $("#total_gp_percent").text(`${total_gp_percent.toFixed(2)}`);
 
   }
@@ -762,6 +775,68 @@
         }
       });
 
+  });
+
+  $(".job_name, .job, .project, .ranch").on("change", function(e){
+    var document_number = $(this).data("document");
+    var $input = $(e.target);
+    var value = "";
+    var type = "";
+
+    if ($input.hasClass("job_name")){
+      value = $(this).val();
+      type = "job_name";
+      $(".job_name").val(value);
+    }else if ($input.hasClass("job")){
+      value = $(this).val();
+      type = "job";
+      $(".job").val(value);
+    }else if ($input.hasClass("project")){
+      value = $(this).val();
+      type = "project";
+      $(".project").val(value);
+    }else if ($input.hasClass("ranch")){
+      value = $(this).val();
+      type = "ranch";
+      $(".ranch").val(value);
+    }
+
+    // Payload data
+    data = {
+      "type": type,
+      "value": value,
+      "document_number": document_number,
+    }
+
+    console.log("data", data);
+
+    $.ajax({
+      url: '{% url "proposal_app:opportunity:update-opportunity-ajax" %}',
+      type: 'POST',
+      data: data,
+      headers: {
+        'X-CSRFToken': "{{ csrf_token }}",
+      },
+      success: function(response) {
+        console.log('API call success:', response);
+        toastr.success(response.message, 'Success', {
+          closeButton: true,
+          progressBar: true,
+          positionClass: 'toast-bottom-right',
+          timeOut: 6000
+        });
+      },
+      error: function(xhr, status, error) {
+        console.error('API call error:', status, error);
+        toastr.error(xhr.responseJSON.message, 'Error', {
+          closeButton: true,
+          progressBar: true,
+          positionClass: 'toast-bottom-right',
+          timeOut: 6000
+        });
+      }
+
+    });
   });
 </script>
 

@@ -49,11 +49,38 @@
             <td>$9.00</td>
             <td>Geyserville - Geyserville Inn</td>
           </tr>
+
+          <!-- Missmatched Lop -->
+          <!--{% for n in new_material_master_data %}
+              <tr>
+                <td>{{ n.description }}</td>
+
+                {% if n.standard_cost %}
+                  <td>${{ n.standard_cost }}</td>
+                {% elif n.local_cost %}
+                  <td>${{ n.local_cost }}</td>
+                {% else %}
+                  <td> - </td>
+                {% endif %}
+
+                {% if n.vendor_quoted_cost %}
+                  <td>${{ n.vendor_quoted_cost }}</td>
+                {% else %}
+                  <td> - </td>
+                {% endif %}
+
+                {% if n.vendor %}
+                  <td>{{ n.vendor }}</td>
+                {% else %}
+                  <td> - </td>
+                {% endif %}
+
+              </tr>
+          {% endfor %} -->
         </tbody>
       </table>
     </div>
   </div>
-  <!-- Mismatched Products end -->
 
   <!-- Netsuite Compatible Products starts -->
   <div class="row">
@@ -157,11 +184,29 @@
             <td>PIPE PVC IPS CL125 2" SW</td>
             <td>605714</td>
           </tr>
+
+          <!-- Netsuite lop -->
+          <!-- {% for netsuite_data in netsuite_extract_data  %}
+            <tr>
+              {% if netsuite_data.task_mapping.task.internal_id %}
+              <td>{{ netsuite_data.task_mapping.task.internal_id }}</td>
+              {% else %}
+              <td> - </td>
+              {% endif %}
+              <td>{{ netsuite_data.task_mapping.code }}</td>
+              <td>{{ netsuite_data.quantity }}</td>
+              <td>{{ netsuite_data.description }}</td>
+              {% if  netsuite_data.item_code %}
+                <td>{{ netsuite_data.item_code }}</td>
+              {% else %}
+                <td> - </td>
+              {% endif %}
+            </tr>
+          {% endfor %} -->
         </tbody>
       </table>
     </div>
   </div>
-  <!-- Netsuite Compatible Products end -->
 
   <!-- Quoted Price Products starts -->
   <div class="row">
@@ -172,10 +217,11 @@
             <th>Item Code</th>
             <th>Standard Cost</th>
             <th>Vendor Quoted Cost</th>
-            <th>Vendor Name</th
+            <th>Vendor Name</th>
           </tr>
         </thead>
         <tbody>
+          
           <!-- Row 1 -->
           <tr>
             <td>2800-117500</td>
@@ -223,12 +269,30 @@
             <td>75.915</td>
             <td>Salvador Gomez</td>
           </tr>
+
+          <!-- Quoted lop -->
+          <!-- {% for q in cost_variances_data %}
+            <tr>
+              <td>{{ q.item_code }}</td>
+              <td>${{ q.standard_cost }}</td>
+              {% if q.vendor_quoted_cost %}
+                <td>${{ q.vendor_quoted_cost }}</td>
+              {% else %}
+                <td> - </td>
+              {% endif %}
+              {% if q.vendor %}
+                <td>{{ q.vendor }}</td>
+              {% else %}
+                <td> - </td>
+              {% endif %}
+            </tr>
+          {% endfor %} -->
         </tbody>
       </table>
     </div>
   </div>
-  <!-- Quoted Price Products end -->
 
+  <!-- Buttons -->
   <div class="row">
     <div class="col-12 my-1">
       <button type="button" class="btn bg-light-primary" onclick="printContent('proposal')">
@@ -239,7 +303,7 @@
       <button
         type="button"
         class="btn bg-light-info"
-        onclick="DownloadProductsInCSV('MismatchedProducts')"
+        onclick="DownloadProductsInCSV('MismatchedProducts', 'new_material_master_data')"
       >
         <em class="ft-download"></em> New Material Master Data
       </button>
@@ -249,7 +313,7 @@
       <button
         type="button"
         class="btn bg-light-secondary"
-        onclick="DownloadProductsInCSV('QuotedPriceProducts')"
+        onclick="DownloadProductsInCSV('QuotedPriceProducts', 'costs_variances')"
       >
         <em class="ft-download"></em>Costs Variances
       </button>
@@ -258,7 +322,7 @@
       <button
         type="button"
         class="btn bg-light-success"
-        onclick="DownloadProductsInCSV('NetSuiteProducts')"
+        onclick="DownloadProductsInCSV('NetSuiteProducts', 'netsuite_extract')"
       >
         <em class="ft-download"></em>Netsuite Extract
       </button>
@@ -267,48 +331,6 @@
 </div>
 {% block script %}
   <!-- Download CSV File -->
-  {% comment %} <script>
-    function DownloadProductsInCSV(id, fileName) {
-      var table = document.getElementById(id);
-
-      // Extract headers from the table
-      var headers = [];
-      var headerRow = table.querySelector("tr");
-      var headerCols = headerRow.querySelectorAll("th, td");
-      headerCols.forEach(function (col) {
-        headers.push(col.innerText.trim());
-      });
-      var csvContent = headers.join(",") + "\n";
-
-      // Add data rows to CSV content
-      var rows = table.querySelectorAll("tr");
-      rows.forEach(function (row) {
-        var rowData = [];
-        var cols = row.querySelectorAll("td");
-        cols.forEach(function (col) {
-          rowData.push('"' + col.innerText.replace(/"/g, '""') + '"');
-        });
-        csvContent += rowData.join(",") + "\n";
-      });
-
-      // Create Blob object
-      var blob = new Blob([csvContent], { type: "text/csv" });
-
-      // Create temporary URL
-      var url = window.URL.createObjectURL(blob);
-
-      // Create a link element
-      var link = document.createElement("a");
-      link.setAttribute("href", url);
-      link.setAttribute("download", fileName + ".csv");
-
-      // Simulate a click on the link
-      link.click();
-
-      // Remove the temporary URL
-      window.URL.revokeObjectURL(url);
-    }
-  </script> {% endcomment %}
   <script>
     function DownloadProductsInCSV(id, fileName) {
       var table = document.getElementById(id);
@@ -318,102 +340,87 @@
       var headerRow = table.querySelector("tr");
       var headerCols = headerRow.querySelectorAll("th, td");
       headerCols.forEach(function(col) {
-        headers.push('"' + col.innerText.replace(/"/g, '""') + '"'); // Wrap headers in quotes and escape double quotes
+        headers.push('"' + col.innerText.replace(/"/g, '""') + '"');
       });
       var csvContent = headers.join(",") + "\n";
 
-      // Add data rows to CSV content (start from the second row)
       var rows = table.querySelectorAll("tr");
-      for (var i = 1; i < rows.length; i++) { // Start from index 1 to skip the header row
+      for (var i = 1; i < rows.length; i++) {
         var rowData = [];
         var cols = rows[i].querySelectorAll("td");
         cols.forEach(function(col) {
-          rowData.push('"' + col.innerText.replace(/"/g, '""') + '"'); // Wrap cell data in quotes and escape double quotes
+          rowData.push('"' + col.innerText.replace(/"/g, '""') + '"');
         });
         csvContent += rowData.join(",") + "\n";
       }
 
-      // Create Blob object
       var blob = new Blob([csvContent], { type: "text/csv" });
 
-      // Create temporary URL
       var url = window.URL.createObjectURL(blob);
 
-      // Create a link element
       var link = document.createElement("a");
       link.setAttribute("href", url);
       link.setAttribute("download", fileName + ".csv");
 
-      // Simulate a click on the link
       link.click();
 
-      // Remove the temporary URL
       window.URL.revokeObjectURL(url);
     }
   </script>
 
-  <!-- Download Quoted Price Products CSV File -->
-  {% comment %} <script>
-    function DownloadQuotedPriceProductsInCSV(id, fileName) {
-      var table = document.getElementById(id);
-
-      // Extract headers from the table
-      var headers = [];
-      var headerRows = table.querySelectorAll("thead tr");
-      headerRows.forEach(function (row) {
-        var headerCols = row.querySelectorAll("th, td");
-        var rowData = [];
-        headerCols.forEach(function (col) {
-          // Check if the cell has colspan
-          var colspan = parseInt(col.getAttribute("colspan")) || 1;
-          var cellText = col.innerText.trim();
-          for (var i = 0; i < colspan; i++) {
-            rowData.push('"' + cellText.replace(/"/g, '""') + '"');
-          }
-        });
-        headers.push(rowData.join(","));
-      });
-      var csvContent = headers.join("\n");
-
-      // Add data rows to CSV content
-      var rows = table.querySelectorAll("tbody tr");
-      rows.forEach(function (row) {
-        var rowData = [];
-        var cols = row.querySelectorAll("td");
-        cols.forEach(function (col) {
-          rowData.push('"' + col.innerText.replace(/"/g, '""') + '"');
-        });
-        csvContent += "\n" + rowData.join(",");
-      });
-
-      // Create Blob object
-      var blob = new Blob([csvContent], { type: "text/csv" });
-
-      // Create temporary URL
-      var url = window.URL.createObjectURL(blob);
-
-      // Create a link element
-      var link = document.createElement("a");
-      link.setAttribute("href", url);
-      link.setAttribute("download", fileName + ".csv");
-
-      // Simulate a click on the link
-      link.click();
-
-      // Remove the temporary URL
-      window.URL.revokeObjectURL(url);
-    }
-  </script> {% endcomment %}
-
   <!-- printContent function -->
   <script>
-    // function to print the proposal based on provided ID attribute of tag
     function printContent(id) {
-      var content = document.getElementById(id).innerHTML;
-      var originalDocument = document.body.innerHTML;
-      document.body.innerHTML = content;
-      window.print();
-      document.body.innerHTML = originalDocument;
+        // Get the content to print
+        var content = document.getElementById(id).innerHTML;
+        var originalDocument = document.body.innerHTML;
+
+        // Temporarily replace the document's body content
+        document.body.innerHTML = content;
+
+        // Hide icons and any other elements that shouldn't appear in print
+        var printStyles = `
+            <style>
+                /* Hide all icons */
+                .icon {
+                    display: none !important;
+                }
+            </style>
+        `;
+        document.body.insertAdjacentHTML('afterbegin', printStyles);
+        document.querySelectorAll('.d-icon').forEach(icon => {
+            icon.outerHTML = "*";
+        });
+
+        // Function to handle after printing
+        function afterPrint() {
+            // Restore the original document content
+            document.body.innerHTML = originalDocument;
+            // Reload the window
+            window.location.reload();
+        }
+
+        // Create a MutationObserver to wait for content changes
+        const observer = new MutationObserver(() => {
+            // Call print and then disconnect the observer
+            window.print();
+            observer.disconnect();
+        });
+
+        // Start observing the body for changes
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+
+        // Listen for the after print event
+        window.onafterprint = afterPrint;
+
+        // If there's a known delay for loading content, you can use setTimeout here
+        setTimeout(() => {
+            // Trigger the observer manually if needed
+            document.body.innerHTML = document.body.innerHTML; // This can help trigger the observer
+        }, 1000); // Adjust this delay based on your loading time
     }
   </script>
 {% endblock script %}

@@ -18,6 +18,11 @@ urlpatterns = [
         views.OpportunityDetail.as_view(),
         name="opportunity-detail",
     ),
+    path(
+        "update-opportunity/ajax",
+        views.UpdateOpportunityView.as_view(),
+        name="update-opportunity-ajax",
+    ),
     path("update-stages", views.UpdateStages.as_view(), name="update-stages"),
     path(
         "import-opportunity",
@@ -115,9 +120,29 @@ urlpatterns = [
         name="add-items-ajax",
     ),
     path(
+        "add-description/ajax",
+        views.AddDescriptionView.as_view(),
+        name="add-description-ajax",
+    ),
+    path(
         "include-items/ajax",
         views.UpdateItemIncludeView.as_view(),
         name="include-items-ajax",
+    ),
+    path(
+        "update-task-mapping/ajax",
+        views.UpdateTaskMappingView.as_view(),
+        name="update-task-mapping-ajax",
+    ),
+    path(
+        "update-proposal-item/ajax",
+        views.UpdateProposalItemsView.as_view(),
+        name="update-proposal-item-ajax",
+    ),
+    path(
+        "update-invoice/ajax",
+        views.UpdateInvoiceView.as_view(),
+        name="update-invoice-ajax",
     ),
     # --KPI path
     path(
@@ -144,8 +169,10 @@ urlpatterns = [
     path("item-code-search", views.ItemCodeSearchView.as_view(), name="item-code-search"),
     path("item-description-search", views.ItemDescriptionSearchView.as_view(), name="item-description-search"),
     path("vendor-search", views.VendorSearchView.as_view(), name="vendor-search"),
+    path("customer-search", views.CustomerSearchView.as_view(), name="customer-search"),
     path("task-search", views.TaskSearchView.as_view(), name="task-search"),
     path("labor-task-search", views.LaborTaskSearchView.as_view(), name="labor-task-search"),
     path("labor-task-name-search", views.LaborTaskNameView.as_view(), name="labor-task-name-search"),
     path("labor-description-search", views.LaborDescriptionView.as_view(), name="labor-task-description-search"),
+    path("task-item-search/<int:task_id>", views.TaskItemView.as_view(), name="task-item-search"),
 ]

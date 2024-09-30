@@ -91,7 +91,6 @@
 <script>
   $(document).ready(function() {
     $("a[href='#next']").on("click", function(e) {
-      console.log("Next Clicked");
       var foundElements = $(".steps li").find(".current");
       if (foundElements){
         value = $(".current a span.step").text();

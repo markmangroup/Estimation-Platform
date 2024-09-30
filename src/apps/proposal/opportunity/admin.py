@@ -4,6 +4,7 @@ from .models import (
     AssignedProduct,
     Document,
     GlueAndAdditionalMaterial,
+    Invoice,
     MaterialList,
     Opportunity,
     PreliminaryMaterialList,
@@ -24,3 +25,4 @@ admin.site.register(PreliminaryMaterialList)
 admin.site.register(TaskMapping)
 admin.site.register(AssignedProduct)
 admin.site.register(ProposalCreation)
+admin.site.register(Invoice)
