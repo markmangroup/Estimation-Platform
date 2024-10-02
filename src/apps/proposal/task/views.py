@@ -1,24 +1,28 @@
 from django.db.models import Q
 from django.http import JsonResponse
 from django.urls import reverse
-from django.views.generic import FormView, View
-from django_datatables_too.mixins import DataTableMixin
 
 from apps.proposal.task.forms import ImportTaskForm
 from apps.proposal.task.models import Task
 from apps.proposal.task.tasks import import_task_from_file
-from apps.rental.mixin import ProposalViewMixin
+from apps.rental.mixin import (
+    CustomDataTableMixin,
+    ProposalFormViewMixin,
+    ProposalViewMixin,
+)
 
 
 class TaskListView(ProposalViewMixin):
     """
-    View class for rendering the list of proposal task.
+    View for displaying the task list in proposals.
     """
 
     render_template_name = "proposal/task/task_list.html"
 
 
-class TaskListAjaxView(DataTableMixin, View):
+class TaskListAjaxView(CustomDataTableMixin):
+    """AJAX view for retrieving task data in a DataTable format."""
+
     model = Task
     queryset = Task.objects.all()
 
@@ -51,31 +55,38 @@ class TaskListAjaxView(DataTableMixin, View):
         return JsonResponse(context_data)
 
 
-class TaskImportView(FormView):
+class TaskImportView(ProposalFormViewMixin):
     """
-    Import data from CSV or Excel files.
+    View for importing tasks from CSV or Excel files.
     """
 
     template_name = "proposal/task/import_task.html"
     form_class = ImportTaskForm
 
     def form_valid(self, form):
+        """
+        Process valid form submission and import tasks.
+        """
         csv_file = form.cleaned_data["csv_file"]
-        file = csv_file
-        print(f"file Size {file.size}")
-        _response = import_task_from_file(file)
-        if _response.get("error"):
-            form.add_error("csv_file", _response["error"])
+        # To check file size
+        # file_size = csv_file.size
+
+        response = import_task_from_file(csv_file)
+        if response.get("error"):
+            form.add_error("csv_file", response["error"])
             return self.render_to_response(self.get_context_data(form=form), status=201)
-        else:
-            return JsonResponse(
-                {
-                    "redirect": reverse("proposal_app:task:task-list"),
-                    "message": "Task Import Successfully!!",
-                    "status": "success",
-                    "code": 200,
-                }
-            )
+
+        return JsonResponse(
+            {
+                "redirect": reverse("proposal_app:task:task-list"),
+                "message": "Task imported successfully!",
+                "status": "success",
+                "code": 200,
+            }
+        )
 
     def form_invalid(self, form):
+        """
+        Handle invalid form submission.
+        """
         return self.render_to_response(self.get_context_data(form=form), status=201)

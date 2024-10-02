@@ -619,8 +619,8 @@ class OpportunityDetail(ProposalDetailViewMixin):
         document_number = self.kwargs.get("document_number")
         opportunity = Opportunity.objects.get(document_number=document_number)
         invoice = Invoice.objects.get(opportunity=opportunity)
-        
-        context["invoice"] = invoice        
+
+        context["invoice"] = invoice
         context["stage"] = opportunity.estimation_stage
         context["task_mapping_list"] = self._get_tasks(document_number)
         context["task_mapping_labor_list"] = self._get_labour_tasks(document_number)
@@ -744,7 +744,7 @@ class TaskManagementView(View):
     Handle both rendering of the task selection form and task creation.
     """
 
-    template_name = "proposal/opportunity/select_task_code_model.html"
+    template_name = "proposal/opportunity/stage/select_task_code/select_task_code_model.html"
 
     def get(self, request, *args, **kwargs):
         """
@@ -808,6 +808,9 @@ class TaskManagementView(View):
         return render(self.request, self.template_name, context, **response_kwargs)
 
 
+# ====================================          ===============================
+# ==================================== Document ===============================
+# ====================================          ===============================
 class DocumentListAjaxView(DataTableMixin, View):
 
     model = Document
@@ -961,6 +964,11 @@ class OpportunityFilterView(View):
         options = list(choices)
         print("options: ", options)
         return JsonResponse({"options": options})
+
+
+# ====================================                 ===============================
+# ==================================== UPload CAD File ===============================
+# ====================================                 ===============================
 
 
 class UploadCADFile(View):
@@ -1691,6 +1699,9 @@ class PreliminaryMaterialListAjaxView(DataTableMixin, View):
         return JsonResponse(context_data)
 
 
+# ====================================              ===============================
+# ==================================== Task Mapping ===============================
+# ====================================              ===============================
 class AssignProdLabor(TemplateView):
     """
     Import data from CSV or Excel files.
@@ -2081,6 +2092,9 @@ class AddTaskView(CreateView):
         return context
 
 
+# ==================================                     ===============================
+# ================================== Generate Estimation ===============================
+# ==================================                     ===============================
 class GenerateEstimateTable(ProposalViewMixin):
     """
     View class for rendering the estimate generation.
@@ -2219,12 +2233,15 @@ class UpdateEstimationTable(View):
             return JsonResponse({"status": "error", "message": "Something went wrong please try again"}, status=400)
 
 
+# ==================================                   ===============================
+# ================================== Proposal Creation ===============================
+# ==================================                   ===============================
 class CreateProposalView(View):
     """
     Create proposal view.
     """
 
-    template_name = "proposal/opportunity/create_proposal_form.html"
+    template_name = "proposal/opportunity/stage/proposal_creation/create_proposal_form.html"
 
     def get(self, request, *args, **kwargs):
         document_number = self.kwargs["document_number"]
@@ -2325,6 +2342,9 @@ class UpdateGroupName(View):
             )
 
 
+# ==================================                   ===============================
+# ================================== Proposal Preview  ===============================
+# ==================================                   ===============================
 class AddItemsView(View):
     """
     Add dynamic generated items into assigned product
@@ -2624,6 +2644,9 @@ class UpdateInvoiceView(View):
             return JsonResponse({"status": "error", "message": "Something went wrong please try again"}, status=400)
 
 
+# ==================================                     ===============================
+# ================================== Generate Estimation ===============================
+# ==================================                     ===============================
 # --Breakdown Estimation
 class TotalCostBreakdown(TemplateView):
     """
@@ -2745,6 +2768,9 @@ class TotalGPPerBreakdown(TemplateView):
         return context
 
 
+# ==================================              ===============================
+# ================================== Search Views ===============================
+# ==================================              ===============================
 # --Search Views
 class ItemCodeSearchView(View):
     def get(self, request, *args, **kwargs):

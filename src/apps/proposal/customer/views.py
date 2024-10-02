@@ -1,10 +1,12 @@
 from django.db.models import Q
 from django.http import JsonResponse
 from django.urls import reverse
-from django.views.generic import FormView, View
-from django_datatables_too.mixins import DataTableMixin
 
-from apps.rental.mixin import ProposalViewMixin
+from apps.rental.mixin import (
+    CustomDataTableMixin,
+    ProposalFormViewMixin,
+    ProposalViewMixin,
+)
 
 from .forms import ImportCustomerCSVForm
 from .models import Customer
@@ -13,13 +15,15 @@ from .tasks import import_customer_from_xlsx
 
 class CustomerList(ProposalViewMixin):
     """
-    View class for rendering the list of proposal customer.
+    View to displaying the customer list.
     """
 
     render_template_name = "proposal/customer/customer_list.html"
 
 
-class CustomerListAjaxView(DataTableMixin, View):
+class CustomerListAjaxView(CustomDataTableMixin):
+    """AJAX view for listing customers in a data table format."""
+
     model = Customer
     queryset = Customer.objects.all()
 
@@ -66,27 +70,32 @@ class CustomerListAjaxView(DataTableMixin, View):
         return JsonResponse(context_data)
 
 
-class CustomerCreateFromCSVFormView(FormView):
+class CustomerCreateFromCSVFormView(ProposalFormViewMixin):
+    """
+    View for importing customers from a CSV file.
+    Handles file upload and returns a JSON response.
+    """
+
     template_name = "proposal/customer/import_customer.html"
     form_class = ImportCustomerCSVForm
 
     def form_valid(self, form):
         csv_file = form.cleaned_data["csv_file"]
-        file = csv_file
-        _response = import_customer_from_xlsx(file)
-        if _response:
-            if _response.get("error"):
-                form.add_error("csv_file", _response["error"])
-                return self.render_to_response(self.get_context_data(form=form), status=201)
-        else:
-            return JsonResponse(
-                {
-                    "redirect": reverse("proposal_app:customer:customer-list"),
-                    "message": "Customer Imported successfully!!",
-                    "status": "success",
-                    "code": 200,
-                }
-            )
+        response = import_customer_from_xlsx(csv_file)
+
+        if response and response.get("error"):
+            form.add_error("csv_file", response["error"])
+            return self.render_to_response(self.get_context_data(form=form), status=201)
+
+        return JsonResponse(
+            {
+                "redirect": reverse("proposal_app:customer:customer-list"),
+                "message": "Customers imported successfully!",
+                "status": "success",
+                "code": 200,
+            }
+        )
 
     def form_invalid(self, form):
+        """Handle invalid form submissions."""
         return self.render_to_response(self.get_context_data(form=form), status=201)

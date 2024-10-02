@@ -62,29 +62,42 @@ class LabourCostListAjaxView(DataTableMixin, View):
 
 class LabourCostCreateFromCSVFormView(FormView):
     """
-    Import data from CSV or Excel files.
+    View to import data from CSV or Excel files.
     """
 
     template_name = "proposal/labour_cost/import_labour_cost.html"
     form_class = ImportLabourCostCSVForm
 
     def form_valid(self, form):
+        """
+        Handle a valid form submission.
+
+        :param form: The submitted form instance with validated data.
+        :return: JsonResponse indicating success or an error.
+        """
         csv_file = form.cleaned_data["csv_file"]
-        file = csv_file
-        print("file size: ", file.size)
-        _response = import_labour_cost_from_xlsx(file)
-        if _response.get("error"):
-            form.add_error("csv_file", _response["error"])
+        print("File size:", csv_file.size)  # Log the size of the uploaded file for debugging
+
+        response = import_labour_cost_from_xlsx(csv_file)
+
+        if "error" in response:
+            form.add_error("csv_file", response["error"])
             return self.render_to_response(self.get_context_data(form=form), status=201)
-        else:
-            return JsonResponse(
-                {
-                    "redirect": reverse("proposal_app:labour_cost:labour-cost-list"),
-                    "message": "Labour Cost Imported successfully!!",
-                    "status": "success",
-                    "code": 200,
-                }
-            )
+
+        return JsonResponse(
+            {
+                "redirect": reverse("proposal_app:labour_cost:labour-cost-list"),
+                "message": "Labour Cost imported successfully!",
+                "status": "success",
+                "code": 200,
+            }
+        )
 
     def form_invalid(self, form):
+        """
+        Handle an invalid form submission.
+
+        :param form: The submitted form instance with errors.
+        :return: Response with the rendered form and a status code.
+        """
         return self.render_to_response(self.get_context_data(form=form), status=201)

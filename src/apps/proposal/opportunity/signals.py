@@ -1,15 +1,15 @@
 import random
 
+from django.db.models import Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.db.models import Q
 
 from apps.proposal.opportunity.models import (
+    Document,
     Invoice,
     Opportunity,
     SelectTaskCode,
     TaskMapping,
-    Document
 )
 
 
@@ -67,8 +67,7 @@ def remove_document(sender, instance, created, **kwargs):
     """
     if created:
         document_obj = Document.objects.filter(
-            Q(document__isnull=True) | Q(document=''),
-            Q(comment__isnull=True) | Q(comment='')
+            Q(document__isnull=True) | Q(document=""), Q(comment__isnull=True) | Q(comment="")
         )
         # print("document_obj", document_obj)
         document_obj.delete()

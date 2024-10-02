@@ -1,96 +1,80 @@
 import os
 
 import pandas as pd
+from django.core.exceptions import ValidationError
 
 from apps.proposal.vendor.models import Vendor
 
 
 def import_vendor_from_file(file):
     """
-    Imports vendor data from an uploaded Excel or CSV file.
+    Import vendor data from an uploaded CSV or Excel file.
 
-    Args:
-        file (UploadedFile): The uploaded .csv, .xlsx, or .xls file.
-
-    Returns:
-        dict: Contains 'messages' if successful or 'error' if the file format is incorrect.
-
-    The function:
-        - Reads and validates the file.
-        - Ensures required columns ("Internal ID", "Name") are present.
-        - Creates or updates Vendor records in the database.
-        - Skips records with missing data or errors.
+    :param file: The uploaded .csv, .xlsx, or .xls file.
+    :return: A dict containing 'messages' if successful or 'error' if there's an issue.
     """
-
-    file_extension = os.path.splitext(file.name)[1]
     context = {"messages": []}
     skip_vendor = []
 
+    # Validate file size
     if file.size == 0:
-        return {"error": "You are trying to upload an empty file therefore it won't be processed."}
+        return {"error": "You are trying to upload an empty file; it won't be processed."}
 
-    columns_list = ["Internal ID", "Name"]
+    # Required columns
+    required_columns = ["Internal ID", "Name"]
 
+    # Determine file extension and read the file
+    file_extension = os.path.splitext(file.name)[1].lower()
     try:
         if file_extension == ".csv":
             df = pd.read_csv(file)
-        elif file_extension == ".xlsx" or file_extension == ".xls":
+        elif file_extension in {".xlsx", ".xls"}:
             excel_file = pd.ExcelFile(file)
             if len(excel_file.sheet_names) > 1:
-                return {"error": "The file with multiple sheets won't be processed"}
-
+                return {"error": "The file with multiple sheets won't be processed."}
             df = pd.read_excel(excel_file, sheet_name=0)
         else:
             return {"error": "Unsupported file format."}
-    except ImportError as e:
-        return {"error": f"Failed to process the file: {e}. Please ensure all dependencies are installed."}
-    except pd.errors.EmptyDataError:
-        return {"error": "You are trying to upload an empty file therefore it won't be processed."}
+    except (ImportError, pd.errors.EmptyDataError, ValidationError) as e:
+        return {"error": f"Failed to process the file: {str(e)}."}
 
+    # Check if DataFrame is empty
     if df.empty:
-        return {"error": "You are trying to upload an empty file therefore it won't be processed."}
+        return {"error": "You are trying to upload an empty file; it won't be processed."}
 
-    df = df.fillna("")
+    df.fillna("", inplace=True)
     vendor_list = df.to_dict(orient="records")
-    print("vendor_list", vendor_list)
-    keys = vendor_list[0].keys()
 
-    keys_list = sorted(keys)
-    columns_list_sorted = sorted(columns_list)
+    # Check for required columns
+    actual_columns = sorted(vendor_list[0].keys())
+    if sorted(required_columns) != actual_columns:
+        return {"error": "The columns do not match the required format."}
 
-    if keys_list == columns_list_sorted:
-        for record in vendor_list:
-            print("record: ", record)
-            try:
-                internal_id = record["Internal ID"]
-                name = record["Name"]
+    for record in vendor_list:
+        try:
+            internal_id = record["Internal ID"]
+            name = record["Name"]
 
-                if not internal_id:
-                    context["messages"].append(f"Missing 'Vendor' in record: {record}")
-                    skip_vendor.append(record)
-                    continue
-
-                vendor, created = Vendor.objects.update_or_create(
-                    internal_id=internal_id,
-                    defaults={
-                        "name": name,
-                    },
-                )
-
-                if created:
-                    context["messages"].append(f"Created new Vendor: {name}")
-                else:
-                    context["messages"].append(f"Updated existing Vendor: {name}")
-
-            except Exception as e:
-                print("Error processing record:", e)
+            if not internal_id:
+                context["messages"].append(f"Missing 'Internal ID' in record: {record}")
                 skip_vendor.append(record)
                 continue
 
-            if skip_vendor:
-                print("Skipped records:", skip_vendor)
-        # print(context)
-        return context
+            vendor, created = Vendor.objects.update_or_create(
+                internal_id=internal_id,
+                defaults={"name": name},
+            )
 
-    else:
-        return {"error": "The columns do not match."}
+            if created:
+                context["messages"].append(f"Created new Vendor: {name}")
+            else:
+                context["messages"].append(f"Updated existing Vendor: {name}")
+
+        except Exception as e:
+            context["messages"].append(f"Error processing record: {record}. Error: {str(e)}")
+            skip_vendor.append(record)
+
+    if skip_vendor:
+        context["messages"].append(f"Skipped records: {len(skip_vendor)} due to errors.")
+
+    return context

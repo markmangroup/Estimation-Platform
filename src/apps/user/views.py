@@ -28,7 +28,7 @@ class LoginView(TemplateView):
     render the login page.
     """
 
-    template_name = "proposal/login.html"
+    template_name = "user/login.html"
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         if request.user.is_authenticated:

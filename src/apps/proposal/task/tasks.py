@@ -1,68 +1,55 @@
 import os
 
 import pandas as pd
+from django.db import IntegrityError
 
 from apps.proposal.task.models import Task
 
 
 def import_task_from_file(file):
     """
-    Imports tasks from a CSV or Excel file, updating or creating Task records.
+    Import tasks from a CSV or Excel file, creating or updating Task records.
 
-    Args:
-        file (File): The file containing task data, in .csv, .xlsx, or .xls format.
-
-    Returns:
-        dict: A context dictionary containing messages about the import process or an error message if the file columns don't match the expected format.
+    :param file: Task data file (.csv, .xlsx, or .xls).
+    :return: Messages about the import process or error details.
     """
-    file_extension = os.path.splitext(file.name)[1]
     context = {"messages": []}
     skip_labour_cost = []
+    file_extension = os.path.splitext(file.name)[1]
 
     if file.size == 0:
-        return {"error": "You are trying to upload an empty file therefore it won't be processed."}
+        return {"error": "You are trying to upload an empty file."}
 
-    columns_list = ["Internal ID", "Name", "Task Code Description"]
+    expected_columns = ["Internal ID", "Name", "Task Code Description"]
 
     try:
         if file_extension == ".csv":
             df = pd.read_csv(file)
-        elif file_extension == ".xlsx" or file_extension == ".xls":
-            excel_file = pd.ExcelFile(file)
-            if len(excel_file.sheet_names) > 1:
-                return {"error": "The file with multiple sheets won't be processed"}
-
-            df = pd.read_excel(excel_file, sheet_name=0)
+        elif file_extension in [".xlsx", ".xls"]:
+            df = pd.read_excel(file, sheet_name=0)
+            if len(pd.ExcelFile(file).sheet_names) > 1:
+                return {"error": "The file contains multiple sheets and won't be processed."}
         else:
             return {"error": "Unsupported file format."}
-    except ImportError as e:
-        return {"error": f"Failed to process the file: {e}. Please ensure all dependencies are installed."}
-    except pd.errors.EmptyDataError:
-        return {"error": "You are trying to upload an empty file therefore it won't be processed."}
 
-    if df.empty:
-        if set(df.columns) != set(columns_list):
-            return {"error": "The columns do not match."}
-        return {"error": "You are trying to upload an empty file therefore it won't be processed."}
+        if df.empty:
+            return {"error": "The file is empty."}
 
-    df = df.fillna("")
-    task_list = df.to_dict(orient="records")
-    keys = task_list[0].keys()
+        df = df.fillna("")  # Fill NaNs with empty strings
+        task_list = df.to_dict(orient="records")
 
-    keys_list = sorted(keys)
-    columns_list_sorted = sorted(columns_list)
-
-    if keys_list == columns_list_sorted:
+        # Validate column names
+        if sorted(df.columns) != sorted(expected_columns):
+            return {"error": "The columns do not match the expected format."}
 
         for record in task_list:
             try:
-                internal_id = record["Internal ID"]
-                name = record["Name"]
-                description = record["Task Code Description"]
+                internal_id = record.get("Internal ID")
+                name = record.get("Name")
+                description = record.get("Task Code Description")
 
-                # Check if all required fields are present
                 if not internal_id:
-                    context["messages"].append(f"Missing 'Task' in record: {internal_id}")
+                    context["messages"].append("Missing 'Internal ID' in record.")
                     skip_labour_cost.append(record)
                     continue
 
@@ -71,20 +58,24 @@ def import_task_from_file(file):
                     defaults={"name": name, "description": description},
                 )
 
-                if created:
-                    context["messages"].append(f"Created new task: {internal_id}")
-                else:
-                    context["messages"].append(f"Updated existing task: {internal_id}")
+                action = "Created" if created else "Updated"
+                context["messages"].append(f"{action} task: {internal_id}")
 
-            except Exception as e:
-                print("Error processing record:", e)
+            except IntegrityError:
+                context["messages"].append(
+                    f"Failed to save task with Internal ID {internal_id} due to integrity error."
+                )
                 skip_labour_cost.append(record)
-                continue
+            except Exception as e:
+                context["messages"].append(f"Error processing record {internal_id}: {e}")
+                skip_labour_cost.append(record)
 
-            if skip_labour_cost:
-                print("Skipped records:", skip_labour_cost)
-        print(context)
-        return context
+        if skip_labour_cost:
+            context["messages"].append(f"Skipped records: {skip_labour_cost}")
 
-    else:
-        return {"error": "The columns do not match."}
+    except pd.errors.EmptyDataError:
+        return {"error": "The file is empty."}
+    except Exception as e:
+        return {"error": f"An error occurred: {e}"}
+
+    return context
