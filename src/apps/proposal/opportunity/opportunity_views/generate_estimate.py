@@ -202,7 +202,7 @@ class UpdateEstimationTable(ViewMixin):
             response = self._update_data(data)
             return JsonResponse(response)
         except Exception as e:
-            print("ERROR FROM [UpdateEstimationTable] =>", e)
+            print("Error: [UpdateEstimationTable]", e)
             return JsonResponse(ERROR_RESPONSE, status=400)
 
 

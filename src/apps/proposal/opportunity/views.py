@@ -183,7 +183,7 @@ class OpportunityListAjaxView(DataTableMixin, View):
             # print("column_name: ", column_name)
             if column_name:
                 if values:
-                    print("values: ", values)
+                    # print("values: ", values)
                     qs = qs.filter(**{f"{column_name}__in": values})
 
                 if column_name == "updated_at" and date_range:
@@ -563,11 +563,8 @@ class OpportunityDetail(ProposalDetailViewMixin):
 
         # Calculate grand total price correctly
         total_price_sum = sum(v["total_price"] for v in tasks_with_products.values())
-        print(f"total_price_sum {type(total_price_sum)}: {total_price_sum}")
         total_local_cost_sum = sum(v["total_local_cost"] for v in tasks_with_products.values())
-        print(f"total_local_cost_sum {type(total_local_cost_sum)}: {total_local_cost_sum}")
         grand_total_price = total_price_sum + total_local_cost_sum
-        print("grand_total_price", grand_total_price)
 
         # final price with taxes
         final_total_price = grand_total_price + invoice.sales_tax + invoice.other_tax + (invoice.tax_rate / 100)
@@ -694,7 +691,7 @@ class UpdateOpportunityView(View):
         try:
             body_unicode = request.body.decode("utf-8")
             data = urllib.parse.parse_qs(body_unicode)
-            print(f"data ==>>: {data}")
+            # print(f"data ==>>: {data}")
             response = self.update_date(data)
             return JsonResponse(response)
         except Exception as e:
@@ -891,12 +888,11 @@ class UploadDocument(CreateView):
 
     def form_invalid(self, form):
         for error in form.errors:
-            print("Error ==>> :", error)
+            print("Form Error ==>> :", error)
         return super().form_invalid(form)
 
     def get_success_url(self):
         document_number = self.request.POST.get("document_number")
-        print(f"document_number {type(document_number)}: {document_number}")
         return reverse("proposal_app:opportunity:opportunity-detail", args=(document_number,))
 
 
@@ -962,7 +958,6 @@ class OpportunityFilterView(View):
 
         choices = queryset.values_list(field, flat=True).distinct()
         options = list(choices)
-        print("options: ", options)
         return JsonResponse({"options": options})
 
 
@@ -1711,7 +1706,7 @@ class AssignProdLabor(TemplateView):
 
     def _get_products_data(self, task_mapping_id, document_number):
         all_products = PreliminaryMaterialList.objects.filter(opportunity__document_number=document_number)
-        print("All Products =>>", all_products)
+        # print("All Products =>>", all_products)
 
         assigned_item_codes = AssignedProduct.objects.filter(task_mapping__id=task_mapping_id).values_list(
             "item_code", flat=True
@@ -1869,7 +1864,7 @@ class UpdateAssignProdView(View):
                     rows[row_index][field_name] = value[0].strip()  # Clean whitespace
 
             for index, row in rows.items():
-                print(f"Row {index}:")
+                # print(f"Row {index}:")
                 for field, value in row.items():
                     if field == "assign_prod_id":
                         assigned_prod_obj = AssignedProduct.objects.get(id=value)
@@ -1914,7 +1909,6 @@ class AddProdRowView(View):
     """
 
     def format_data(self, input_data):
-        print("input_data", input_data)
         result = {}
 
         for key, value in input_data.items():
@@ -1998,11 +1992,9 @@ class AddProdRowView(View):
                         return {"status": "warning", "message": "Please add local cost"}
 
                     try:
-                        print("IN tryyyyyyyyyy")
                         labor_obj = LabourCost.objects.get(id=task_name)
                         task_name_value = labor_obj.labour_task
                     except Exception:
-                        print("IN Exceprion")
                         task_name_value = labor_task
 
                     try:
@@ -2140,7 +2132,6 @@ class GenerateEstimateTable(ProposalViewMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         document_number = self.kwargs["document_number"]
-        print(f"document_number ==>>: {document_number}")
 
         task_mapping_object = TaskMapping.objects.filter(opportunity__document_number=document_number).exclude(
             task__description__icontains="labor"
@@ -2285,10 +2276,10 @@ class CreateProposalView(View):
                 )
 
             except Opportunity.DoesNotExist:
-                print(" ==> Opportunity NOT Found <==")
+                print("Error: Opportunity NOT Found")
                 return JsonResponse({"error": "Something went wrong please try again!!"}, status=404)
             except TaskMapping.DoesNotExist:
-                print(" ==> Task Mapping ID NOT Found <==")
+                print("Error: Task Mapping ID NOT Found")
                 return JsonResponse({"error": "Something went wrong please try again!!"}, status=404)
 
         return JsonResponse({"error": "Tasks and Grp name are required."}, status=400)
@@ -2375,7 +2366,6 @@ class AddItemsView(View):
         try:
             body_unicode = request.body.decode("utf-8")
             data = json.loads(body_unicode)
-            print("data -=-=-=-=", data)
             response = self.add_items(data)
             return JsonResponse(response)
         except json.JSONDecodeError:
@@ -2389,7 +2379,6 @@ class AddDescriptionView(View):
 
     def add_description(self, data):
         try:
-            print("data:", data)
             saved = False
 
             for task_id in data:
@@ -2784,8 +2773,6 @@ class ItemCodeSearchView(View):
         data = urllib.parse.parse_qs(body_unicode)
         id = data["value"][0]
         product_object = Product.objects.get(id=id)
-        print("description", product_object.description)
-        print("STD cost", product_object.std_cost)
 
         return JsonResponse(
             {
@@ -2840,7 +2827,7 @@ class CustomerSearchView(View):
                 messages.success(request, "Customer Added successfully")
                 return JsonResponse({"code": 200, "status": "success", "message": "Customer Added successfully"})
             except Exception as e:
-                print("Error:[2293]", e)
+                print("Error", e)
                 messages.error(request, "Something went wrong while adding customer, please try again!!")
                 return JsonResponse(
                     {
@@ -2911,9 +2898,6 @@ class LaborTaskNameView(View):
         id = data["value"][0]
 
         labor_obj = LabourCost.objects.get(id=id)
-        print("description", labor_obj.description)
-        print("Local Cost", labor_obj.local_labour_rates)
-        print("Out of town Cost", labor_obj.out_of_town_labour_rates)
 
         return JsonResponse(
             {

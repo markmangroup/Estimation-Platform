@@ -277,11 +277,8 @@ class ProposalCreationData:
 
         # Calculate grand total price correctly
         total_price_sum = sum(v["total_price"] for v in tasks_with_products.values())
-        print(f"total_price_sum {type(total_price_sum)}: {total_price_sum}")
         total_local_cost_sum = sum(v["total_local_cost"] for v in tasks_with_products.values())
-        print(f"total_local_cost_sum {type(total_local_cost_sum)}: {total_local_cost_sum}")
         grand_total_price = total_price_sum + total_local_cost_sum
-        print("grand_total_price", grand_total_price)
 
         # final price with taxes
         final_total_price = grand_total_price + invoice.sales_tax + invoice.other_tax + (invoice.tax_rate / 100)

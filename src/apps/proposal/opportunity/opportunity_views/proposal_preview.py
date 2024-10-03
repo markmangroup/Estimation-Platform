@@ -200,7 +200,7 @@ class UpdateTaskMappingView(ViewMixin):
                 task_mapping_obj.save()
                 return JsonResponse({"status": "success", "message": message}, status=200)
 
-            print("Invalid update type")
+            print("Invalid Update Type")
             return JsonResponse(ERROR_RESPONSE, status=400)
 
         except TaskMapping.DoesNotExist:
@@ -273,7 +273,6 @@ class UpdateProposalItemsView(ViewMixin):
         :param value: The cost value as a string, potentially including a currency symbol.
         :return: The parsed cost as a float.
         """
-        print(float(value.replace("$", "").strip()))
         return float(value.replace("$", "").strip())
 
     def parse_quantity(self, value):
@@ -283,7 +282,6 @@ class UpdateProposalItemsView(ViewMixin):
         :param value: The quantity value as a string.
         :return: The parsed quantity as an integer.
         """
-        print("value", value)
         return float(value.strip())
 
     def post(self, request, *args, **kwargs) -> JsonResponse:

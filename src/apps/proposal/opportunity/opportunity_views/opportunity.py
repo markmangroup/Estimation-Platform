@@ -178,7 +178,6 @@ class OpportunityListAjaxView(CustomDataTableMixin):
             # print("column_name: ", column_name)
             if column_name:
                 if values:
-                    print("values: ", values)
                     qs = qs.filter(**{f"{column_name}__in": values})
 
                 if column_name == "updated_at" and date_range:

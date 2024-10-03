@@ -160,7 +160,6 @@ class Document(BaseModel):
             expiry=datetime.utcnow() + timedelta(hours=1),
         )
         file_url = f"https://{blob_service_client.account_name}.blob.core.windows.net/{container_name}/{self.document.name}?{sas_token}"
-        print("file_url", file_url)
         return file_url
 
     def __str__(self):

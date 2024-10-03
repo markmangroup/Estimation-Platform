@@ -214,7 +214,6 @@ class AddProdRowView(ViewMixin):
         :param input_data: Dictionary containing the product data.
         :return: Response data indicating the result of the operation.
         """
-        print("data -=-=-===-=-", input_data)
         result = {}
 
         for key, value in input_data.items():

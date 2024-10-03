@@ -76,7 +76,7 @@ class LabourCostCreateFromCSVFormView(FormView):
         :return: JsonResponse indicating success or an error.
         """
         csv_file = form.cleaned_data["csv_file"]
-        print("File size:", csv_file.size)  # Log the size of the uploaded file for debugging
+        # print("File size:", csv_file.size)  # Log the size of the uploaded file for debugging
 
         response = import_labour_cost_from_xlsx(csv_file)
 

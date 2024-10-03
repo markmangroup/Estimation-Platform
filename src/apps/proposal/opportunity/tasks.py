@@ -7,7 +7,6 @@ from .models import Opportunity
 
 
 def import_opportunity_from_xlsx(file):
-    print("called -=-=-====-=-=-")
     file_extension = os.path.splitext(file.name)[1]
     context = {"messages": []}
     skip_opportunity = []
@@ -58,7 +57,6 @@ def import_opportunity_from_xlsx(file):
 
     df = df.fillna("")
     opportunity_list = df.to_dict(orient="records")
-    print(f"opportunity_list {len(opportunity_list)}:")
     keys = opportunity_list[0].keys()
 
     keys_list = sorted(keys)
@@ -86,6 +84,8 @@ def import_opportunity_from_xlsx(file):
                         expected_close = datetime.strptime(expected_close, "%Y-%m-%d").strftime("%Y-%m-%d")
                     except ValueError:
                         expected_close = ""
+                        return {"error": "Please ensure all dates are in the format YYYY-MM-DD."}
+
                 opportunity_notes = record["Opportunity Notes"]
                 scope = record["Scope"]
                 designer = record["Designer"]
@@ -99,8 +99,6 @@ def import_opportunity_from_xlsx(file):
                     skip_opportunity.append(record)
                     continue
 
-                print("Document Number", document_number)
-                print("Document Number", type(document_number))
                 opportunity, created = Opportunity.objects.update_or_create(
                     document_number=document_number,
                     defaults={
@@ -139,7 +137,7 @@ def import_opportunity_from_xlsx(file):
 
             if skip_opportunity:
                 print("Skipped records:", skip_opportunity)
-        print(context)
+
         return context
 
     else:
