@@ -25,9 +25,9 @@ class SelectedTaskListAjaxView(CustomDataTableMixin):
         """Return the list of items for this view."""
         if self.search:
             return qs.filter(
-                Q(task__internal_id_icontains=self.search)
-                | Q(task__name_icontains=self.search)
-                | Q(task__description_icontains=self.search)
+                Q(task__internal_id__icontains=self.search)
+                | Q(task__name__icontains=self.search)
+                | Q(task__description__icontains=self.search)
             )
         return qs
 
