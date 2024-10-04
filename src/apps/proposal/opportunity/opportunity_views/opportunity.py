@@ -529,17 +529,17 @@ class OpportunityFilterView(ViewMixin):
         search_query = request.GET.get("search", "").strip()
 
         # Map column name to model field
-        field = self.column_mapping.get(column)
-        if field is None:
+        field = self.column_mapping.get(column, column)
+        if field not in self.column_mapping.values():
             return JsonResponse({"error": "Invalid column name"}, status=400)
 
         # Base queryset for distinct values
         queryset = Opportunity.objects.all()
 
         # Add search functionality if at least 2 characters are entered
-        if len(search_query) >= 2:
+        if search_query and len(search_query) >= 2:
             queryset = queryset.filter(Q(**{f"{field}__icontains": search_query}))
 
-        options = list(queryset.values_list(field, flat=True).distinct())
-
+        choices = queryset.values_list(field, flat=True).distinct()
+        options = list(choices)
         return JsonResponse({"options": options})
