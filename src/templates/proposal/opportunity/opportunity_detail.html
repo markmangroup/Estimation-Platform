@@ -20,14 +20,14 @@
             <form class="icons-tab-steps">
               <h6>Select Task Code</h6>
               <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
-                {% include "proposal/select_task_code.html" %}
-                {% include "proposal/stage_1_file_upload.html"%}
+                {% include "proposal/opportunity/stage/select_task_code/select_task_code.html" %}
+                {% include "proposal/opportunity/document/stage_1_file_upload.html"%}
               </fieldset>
 
               <h6>Upload CAD File</h6>
               <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
-                  {% include "proposal/upload_file.html" %}
-                  {% include "proposal/stage_2_file_upload.html"%}
+                  {% include "proposal/opportunity/stage/upload_cad_file/upload_file.html" %}
+                  {% include "proposal/opportunity/document/stage_2_file_upload.html"%}
               </fieldset>
 
               <h6>Material List</h6>
@@ -54,7 +54,7 @@
                         data-parent="#accordionExample1"
                       >
                         <div class="card-body">
-                          {% include "proposal/material_list.html" %}
+                          {% include "proposal/opportunity/stage/material_list/material_list.html" %}
                         </div>
                       </div>
                     </div>
@@ -79,7 +79,7 @@
                         data-parent="#accordionExample1"
                       >
                         <div class="card-body">
-                          {% include "proposal/glue_material.html" %}
+                          {% include "proposal/opportunity/stage/material_list/glue_material.html" %}
                         </div>
                       </div>
                     </div>
@@ -101,42 +101,42 @@
                         data-parent="#accordionExample1"
                       >
                         <div class="card-body pb-0">
-                          {% include "proposal/final_material.html" %}
+                          {% include "proposal/opportunity/stage/material_list/final_material.html" %}
                         </div>
                       </div>
                     </div>
                   </div>
-                  {% include "proposal/stage_3_file_upload.html"%}
+                  {% include "proposal/opportunity/document/stage_3_file_upload.html"%}
               </fieldset>
 
               <h6>Task Mapping</h6>
               <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
-                  {% include "proposal/tasks.html" %}
-                  {% include "proposal/stage_4_file_upload.html"%}
+                  {% include "proposal/opportunity/stage/task_mapping/tasks.html" %}
+                  {% include "proposal/opportunity/document/stage_4_file_upload.html"%}
               </fieldset>
 
               <h6>Generate Estimate</h6>
               <fieldset class="mt-0" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
-                {% include "proposal/estimate.html" %}
-                {% include "proposal/stage_5_file_upload.html"%}
+                {% include "proposal/opportunity/stage/generate_estimation/estimate.html" %}
+                {% include "proposal/opportunity/document/stage_5_file_upload.html"%}
               </fieldset>
 
               <h6>Proposal Creation</h6>
               <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
-                {% include 'proposal/based_on_task.html' %}
-                {% include "proposal/stage_6_file_upload.html"%}
+                {% include 'proposal/opportunity/stage/proposal_creation/based_on_task.html' %}
+                {% include "proposal/opportunity/document/stage_6_file_upload.html"%}
               </fieldset>
 
               <h6>Proposal Preview</h6>
               <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
-                {% include "proposal/proposal.html" %}
-                {% include "proposal/stage_7_file_upload.html"%}
+                {% include "proposal/opportunity/stage/proposal_preview/proposal.html" %}
+                {% include "proposal/opportunity/document/stage_7_file_upload.html"%}
               </fieldset>
 
               <h6>Final Documents</h6>
               <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
-                {% include "proposal/proposal_final_documents.html" %}
-                {% include "proposal/stage_8_file_upload.html"%}
+                {% include "proposal/opportunity/stage/final_document/proposal_final_documents.html" %}
+                {% include "proposal/opportunity/document/stage_8_file_upload.html"%}
               </fieldset>
               <form>
           </div>

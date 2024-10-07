@@ -4,36 +4,40 @@ from django.core.exceptions import ValidationError
 
 class ImportProductForm(forms.Form):
     """
-    Form for uploading and validating product data files in .xlsx or .xls formats.
-
-    Fields:
-        csv_file (FileField): A file input field that accepts .xlsx and .xls files.
-
-    Methods:
-        clean_csv_file(): Validates the uploaded file, ensuring it is of the correct format.
+    Form for uploading product data files (.xlsx, .xls, .csv).
     """
 
-    csv_file = forms.FileField(widget=forms.FileInput(attrs={"accept": ".xlsx, .xls, .csv"}))
+    VALID_EXTENSIONS = {".xlsx", ".xls", ".csv"}
+    REQUIRED_COLUMNS = [
+        "Internal ID",
+        "Family",
+        "Parent",
+        "Description",
+        "Primary Units Type",
+        "Primary Stock Unit",
+        "Std Cost",
+        "Preferred Vendor",
+    ]
+
+    csv_file = forms.FileField(widget=forms.FileInput(attrs={"accept": ", ".join(VALID_EXTENSIONS)}))
 
     def __init__(self, *args, **kwargs):
-        super(ImportProductForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields["csv_file"].help_text = (
-            """.xlsx ,.xls and .csv file must contain following columns with same sequence:
-            ["Internal ID", "Family", "Parent", "Description", "Primary Units Type",
-            "Primary Stock Unit", "Std Cost", "Preferred Vendor"]
-            """
+            f"{', '.join(self.VALID_EXTENSIONS)} files must contain the following columns in the same sequence: "
+            f"{', '.join(self.REQUIRED_COLUMNS)}."
         )
         for visible in self.visible_fields():
-            visible.field.widget.attrs["class"] = "custom-file-input"
-            visible.field.widget.attrs["id"] = "inputGroupFile01"
+            visible.field.widget.attrs.update({"class": "custom-file-input", "id": "inputGroupFile01"})
 
     def clean_csv_file(self):
-        csv_file = self.cleaned_data.get("csv_file", None)
+        """Validates the uploaded file format."""
+        csv_file = self.cleaned_data.get("csv_file")
         if not csv_file:
             raise ValidationError("This field is required.")
-        valid_extensions = [".xlsx", ".xls", ".csv"]
-        extension = csv_file.name.split(".")[-1].lower()
-        if f".{extension}" not in valid_extensions:
-            raise ValidationError("Only .csv,.xlsx and .xls files are accepted.")
+
+        extension = csv_file.name.rsplit(".", 1)[-1].lower()
+        if f".{extension}" not in self.VALID_EXTENSIONS:
+            raise ValidationError("Only .csv, .xlsx, and .xls files are accepted.")
 
         return csv_file

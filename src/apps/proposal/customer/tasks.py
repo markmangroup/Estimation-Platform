@@ -6,11 +6,14 @@ from .models import Customer
 
 
 def import_customer_from_xlsx(file):
-    file_extension = os.path.splitext(file.name)[1]
+    """Imports customer data from an Excel or CSV file."""
+
+    file_extension = os.path.splitext(file.name)[1].lower()
     context = {"messages": []}
     skip_customers = []
 
-    columns_list = [
+    # Define the expected columns
+    expected_columns = [
         "Internal ID",
         "ID",
         "Name",
@@ -23,77 +26,62 @@ def import_customer_from_xlsx(file):
         "Billing Country",
     ]
 
+    # Load the data from the file
     try:
         if file_extension == ".csv":
             df = pd.read_csv(file)
-        elif file_extension == ".xlsx" or file_extension == ".xls":
-            excel_file = pd.ExcelFile(file)
-            if len(excel_file.sheet_names) > 1:
-                return {"error": "The file with multiple sheets won't be processed"}
-
-            df = pd.read_excel(excel_file, sheet_name=0)
+        elif file_extension in [".xlsx", ".xls"]:
+            df = pd.read_excel(file, sheet_name=0)
+            if len(pd.ExcelFile(file).sheet_names) > 1:
+                return {"error": "The file with multiple sheets won't be processed."}
         else:
             return {"error": "Unsupported file format."}
-    except ImportError as e:
-        return {"error": f"Failed to process the file: {e}. Please ensure all dependencies are installed."}
+    except ImportError:
+        return {"error": "Failed to process the file: Ensure all dependencies are installed."}
     except pd.errors.EmptyDataError:
-        return {"error": "You are trying to upload an empty file therefore it won't be processed."}
+        return {"error": "You are trying to upload an empty file."}
 
+    # Check for empty DataFrame and validate columns
     if df.empty:
-        if set(df.columns) != set(columns_list):
-            return {"error": "The columns do not match."}
-        return {"error": "You are trying to upload an empty file therefore it won't be processed."}
+        return {"error": "You are trying to upload an empty file."}
 
-    df = df.fillna("")
-    customer_list = df.to_dict(orient="records")
+    df.columns = df.columns.str.strip()  # Clean up any whitespace in column names
+    if set(df.columns) != set(expected_columns):
+        return {"error": "The columns do not match the expected format."}
 
-    keys = customer_list[0].keys()
-    keys_list = sorted(keys)
-    columns_list_sorted = sorted(columns_list)
+    # Convert DataFrame to a list of dictionaries
+    customer_list = df.fillna("").to_dict(orient="records")
 
-    if keys_list == columns_list_sorted:
-        for record in customer_list:
-            try:
-                print("record[ID]: ", record["ID"])
-                internal_id = record["Internal ID"]
-                customer_id = record["ID"]
-                name = record["Name"]
-                sales_rep = record["Sales Rep"]
-                billing_address_1 = record["Billing Address 1"]
-                billing_address_2 = record.get("Billing Address 2", "")
-                city = record["Billing City"]
-                state = record["Billing State/Province"]
-                zip_code = record["Billing Zip"]
-                country = record["Billing Country"]
+    # Process each customer record
+    for record in customer_list:
+        try:
+            customer_id = record["ID"]
+            customer_data = {
+                "internal_id": record["Internal ID"],
+                "name": record["Name"],
+                "sales_rep": record["Sales Rep"],
+                "billing_address_1": record["Billing Address 1"],
+                "billing_address_2": record.get("Billing Address 2", ""),
+                "city": record["Billing City"],
+                "state": record["Billing State/Province"],
+                "zip": record["Billing Zip"],
+                "country": record["Billing Country"],
+            }
 
-                customer, created = Customer.objects.update_or_create(
-                    customer_id=customer_id,
-                    defaults={
-                        "internal_id": internal_id,
-                        "name": name,
-                        "sales_rep": sales_rep,
-                        "billing_address_1": billing_address_1,
-                        "billing_address_2": billing_address_2,
-                        "city": city,
-                        "state": state,
-                        "zip": zip_code,
-                        "country": country,
-                    },
-                )
+            customer, created = Customer.objects.update_or_create(
+                customer_id=customer_id,
+                defaults=customer_data,
+            )
 
-                if created:
-                    context["messages"].append(f"Created new customer: {name}")
-                else:
-                    context["messages"].append(f"Updated existing customer: {name}")
+            message = f"{'Created' if created else 'Updated'} customer: {customer_data['name']}"
+            context["messages"].append(message)
 
-            except Exception as e:
-                print("Error processing record:", e)
-                skip_customers.append(record)
-                continue
+        except Exception as e:
+            print(f"Error processing record {record['ID']}: {e}")
+            skip_customers.append(record)
 
-        if skip_customers:
-            print("Skipped customers:", skip_customers)
-        print(context)
+    # Log skipped customers if any
+    if skip_customers:
+        print("Skipped customers:", skip_customers)
 
-    else:
-        return {"error": "There is a mismatch in the columns."}
+    return context

@@ -1,9 +1,18 @@
+import os
+import random
+from datetime import datetime, timedelta
+
+from azure.storage.blob import BlobSasPermissions, BlobServiceClient, generate_blob_sas
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from dotenv import load_dotenv
 
 from apps.proposal.customer.models import Customer
 from apps.proposal.task.models import Task
 from laurel.models import BaseModel
+
+dotenv_path = os.path.join(os.path.dirname(__file__), ".env")
+load_dotenv(dotenv_path)
 
 
 class Opportunity(BaseModel):
@@ -72,6 +81,12 @@ class Opportunity(BaseModel):
         default=STAGE_1,
     )
 
+    job = models.CharField(_("Job"), max_length=255, blank=True, null=True)
+    job_name = models.CharField(_("Job Name"), max_length=255, blank=True, null=True)
+    ranch_name = models.CharField(_("Ranch Name"), max_length=255, blank=True, null=True)
+    project = models.CharField(_("Project"), max_length=255, blank=True, null=True)
+    term_and_condition = models.JSONField(_("Term & Condition"), blank=True, null=True)
+
     def __str__(self):
         return f"{self.document_number} - {self.customer}"
 
@@ -89,7 +104,7 @@ class Opportunity(BaseModel):
         return stage_mapping.get(self.estimation_stage, "Unknown Stage")
 
     class Meta:
-        verbose_name = "Proposal Opportunitie"
+        verbose_name = "Proposal Opportunities"
 
 
 class SelectTaskCode(BaseModel):
@@ -130,6 +145,22 @@ class Document(BaseModel):
     document = models.FileField(_("Document"), upload_to="documents/")
     stage = models.CharField(_("Stage"), max_length=50, choices=ESTIMATION_STAGE_CHOICES, default=STAGE_1)
     comment = models.TextField(_("Comment"), blank=True, null=True)
+
+    @property
+    def file_path(self):
+        connection_string = os.getenv("AZURE_CONNECTION_STRING")
+        blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+        container_name = os.getenv("AZURE_CONTAINER")
+        sas_token = generate_blob_sas(
+            account_name=blob_service_client.account_name,
+            account_key=os.getenv("AZURE_ACCOUNT_KEY"),
+            container_name=container_name,
+            blob_name=self.document.name,
+            permission=BlobSasPermissions(read=True),
+            expiry=datetime.utcnow() + timedelta(hours=1),
+        )
+        file_url = f"https://{blob_service_client.account_name}.blob.core.windows.net/{container_name}/{self.document.name}?{sas_token}"
+        return file_url
 
     def __str__(self):
         return f"{self.stage} - {self.document.name}"
@@ -219,6 +250,8 @@ class TaskMapping(BaseModel):
     s_and_h = models.FloatField(_("S & H"), max_length=255, default=10.0, blank=True, null=True)
 
     include = models.BooleanField(_("Include Items"), default=True)
+    extra_description = models.JSONField(_("Extra Description"), blank=True, null=True)
+    approve = models.CharField(_("Approve & Initial"), max_length=255, blank=True, null=True)
 
     def __str__(self):
         if self.code:
@@ -230,7 +263,7 @@ class TaskMapping(BaseModel):
         """
         Return fixed labor cost. Modify this if you have a real calculation.
         """
-        return 1000  # Example fixed value; replace with actual logic
+        return 1000
 
     @property
     def labor_sell(self):
@@ -264,7 +297,7 @@ class TaskMapping(BaseModel):
         """
         Return fixed MAT cost. Modify this if you have a real calculation.
         """
-        return 12  # Example fixed value; replace with actual logic
+        return 12
 
     @property
     def mat_plus_mu(self):
@@ -274,7 +307,7 @@ class TaskMapping(BaseModel):
         if self.mat_gp_percent is not None:
             try:
                 mat_cost = float(self.mat_cost)
-                mat_gp_percent = float(self.mat_gp_percent) / 100  # Convert percentage to decimal
+                mat_gp_percent = float(self.mat_gp_percent) / 100
                 if (1 - mat_gp_percent) != 0:
                     return round(mat_cost / (1 - mat_gp_percent), 2)
             except (ValueError, ZeroDivisionError):
@@ -353,6 +386,7 @@ class AssignedProduct(BaseModel):
 
     task_mapping = models.ForeignKey(TaskMapping, on_delete=models.CASCADE, related_name="assigned_products")
     is_assign = models.BooleanField(_("Is Assigned Product/Labour"), default=False)
+    is_select = models.BooleanField(_("Is Selected"), default=False)
 
     # Task-Product
     quantity = models.FloatField(_("Quantity"), blank=True, null=True)
@@ -367,6 +401,27 @@ class AssignedProduct(BaseModel):
     labor_task = models.CharField(_("Labor Task"), max_length=255, blank=True, null=True)
     local_cost = models.FloatField(_("Labor Local Cost"), blank=True, null=True)
     out_of_town_cost = models.FloatField(_("Out Of Town Cost"), blank=True, null=True)
+
+    @property
+    def sell(self):
+        if self.vendor_quoted_cost:
+            sell_sum = 0.25 + self.vendor_quoted_cost
+        else:
+            sell_sum = 0.25 + self.standard_cost
+        return round(sell_sum, 2)
+
+    @property
+    def gross_profit(self):
+        if self.vendor_quoted_cost:
+            gross_profit_sum = self.sell - self.vendor_quoted_cost
+        else:
+            gross_profit_sum = self.sell - self.standard_cost
+        return round(gross_profit_sum, 2)
+
+    @property
+    def gross_profit_percentage(self):
+        gross_profit_percentage_sum = (self.gross_profit / self.sell) * 100
+        return round(gross_profit_percentage_sum, 2)
 
     def __str__(self):
         return f"{self.id} - {self.task_mapping.id}"
@@ -386,3 +441,43 @@ class ProposalCreation(BaseModel):
 
     class Meta:
         verbose_name = "Proposal Creation"
+
+
+class Invoice(BaseModel):
+
+    opportunity = models.ForeignKey(Opportunity, on_delete=models.CASCADE, related_name="invoice_opportunity")
+    invoice_number = models.CharField(_("Invoice Number"), max_length=255, null=True, blank=True)
+    invoice_data = models.DateTimeField("Invoice Data", null=True, blank=True)
+    total_amount = models.FloatField(_("Total Amount"), default=0.0)
+    deposit_amount = models.FloatField(_("Deposit Amount"), default=0.0)
+    deu_amount = models.FloatField(_("Deu Amount"), default=0.0)
+    tax_rate = models.FloatField(_("Tax Rate"), default=0.0)
+    sales_tax = models.FloatField(_("Sales Tax"), default=0.0)
+    other_tax = models.FloatField(_("Other Tax"), default=0.0)
+    deposit_address = models.TextField(_("Deposit Address"), null=True, blank=True)
+    billing_address = models.TextField(_("Remit To"), null=True, blank=True)
+
+    # --buyer details
+    buyer = models.CharField(_("Buyer"), max_length=255, null=True, blank=True)
+    buyer_date = models.DateTimeField(_("Buyer Date"), null=True, blank=True)
+    buyer_name = models.CharField(_("Buyer Name"), max_length=255, null=True, blank=True)
+    buyer_position = models.CharField(_("Buyer Position"), max_length=255, null=True, blank=True)
+
+    # --seller details
+    seller = models.CharField(_("Seller"), max_length=255, null=True, blank=True)
+    seller_date = models.DateTimeField(_("Seller Date"), null=True, blank=True)
+    seller_name = models.CharField(_("Seller Name"), max_length=255, null=True, blank=True)
+    seller_position = models.CharField(_("Seller Position"), max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.id} - {self.opportunity.document_number} - {self.invoice_number}"
+
+    def save(self, *args, **kwargs):
+        if not self.invoice_number:
+            invoice_number = random.randint(1, 999999)
+            self.invoice_number = f"INV-{self.id}{invoice_number}"
+
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "Proposal Invoice"

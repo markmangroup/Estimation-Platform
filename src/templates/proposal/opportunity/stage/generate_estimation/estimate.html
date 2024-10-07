@@ -1,0 +1,843 @@
+<!-- override datatable css -->
+<style>
+  .dataTables_filter label input[type="search"] {
+    margin-right: 75px;
+  }
+
+  tr.selected-estimate-row td{
+    background: #d6e1f3;
+  }
+
+</style>
+<!-- override datatable css -->
+
+<div class="form-group">
+  <div class="card">
+    <div class="accordion" id="accordionExample1">
+      <div
+        id="headingEstimateDetailsAccordion"
+        class="card-header pt-0 mt-0 mb-0 pb-0"
+      >
+        <a
+          data-toggle="collapse"
+          href="#estimateDetailsAccordion"
+          aria-expanded="false"
+          aria-controls="estimateDetailsAccordion"
+          class="card-title text-info"
+          >Estimate Details</a
+        >
+      </div>
+      <div
+        id="estimateDetailsAccordion"
+        class="collapse"
+        aria-labelledby="headingEstimateDetailsAccordion"
+        data-parent="#accordionExample1"
+      >
+        <div class="row">
+          <div class="col-12 col-xl-6">
+            <table class="table table-borderless mb-0">
+              <tbody>
+                <tr>
+                  <td><b>Job:</b></td>
+                  <td>
+                    {% if opportunity.job %}
+                      <input type="text" class="form-control job" data-document={{opportunity.document_number}} value="{{opportunity.job}}" placeholder="Enter job"></td>
+                    {% else %}
+                      <input type="text" class="form-control job" data-document={{opportunity.document_number}} value="" placeholder="Enter job"></td>
+                    {% endif %}
+                </tr>
+                <tr>
+                  <td><b>Customer:</b></td>
+                  <td class="users-view-latest-activity">
+                    <select data-document={{opportunity.document_number}} class="customer-select">
+                      <option selected disabled>{{ opportunity.customer.name }}</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td><b>Project:</b></td>
+                  <td class="users-view-verified">
+                    {% if opportunity.project %}
+                      <input type="text" class="form-control project" data-document={{opportunity.document_number}} value="{{ opportunity.project }}" placeholder="Enter job"></td>
+                    {% else %}
+                      <input type="text" class="form-control project" data-document={{opportunity.document_number}} value="" placeholder="Enter Project name"></td>
+                    {% endif %}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-12 col-xl-3 users-module border-left">
+            <div class="table-responsive">
+              <table class="table table-borderless mb-0">
+                <tbody>
+                  <tr>
+                    <td><b>Acres:</b></td>
+                    <td class="users-view-role"></td>
+                  </tr>
+                  <tr>
+                    <td><b>Tax:</b></td>
+                    <td>
+                      <span class="badge bg-success users-view-status"
+                        >2.250%</span
+                      >
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-12 col-xl-3 users-module border-left">
+            <div class="table-responsive">
+              <table class="table table-borderless mb-0">
+                <tbody>
+                  <tr>
+                    <td><b>NetSuite Costs:</b></td>
+                    <td>
+                      <span class="badge bg-success users-view-status"
+                        > - </span
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><b>GP Calc Costs:</b></td>
+                    <td>
+                      <span class="badge bg-success users-view-status total_gp"
+                        >${{total.total_gp}}</span
+                      >
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 col-xl-12 users-module px-0">
+
+      <!-- Detail -->
+      <div class="sticky-wrapper">
+        <div class="row justify-content-center align-items-center bg-white">
+
+          <!-- Total Cost -->
+          <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+            <a
+              class="card htmx-trigger-breakdown-total-cost"
+              data-url="{% url 'proposal_app:opportunity:total-cost-breakdown-ajax' opportunity.document_number %}"
+              hx-get="{% url 'proposal_app:opportunity:total-cost-breakdown-ajax' opportunity.document_number %}"
+              hx-target="#total-sale-content"
+              hx-trigger="click"
+              data-backdrop="false"
+              data-toggle="modal"
+              data-target="#total-cost-breakdown"
+              style="background: #ace0fc">
+              <div class="card-content">
+                <div class="card-body py-0">
+                  <div class="media">
+                    <div class="media-body info text-left">
+                      <h3 id="total_cost" class="font-large-1 info mb-0">
+                        ${{total.total_cost}}
+                      </h3>
+                      <span>Total Cost</span>
+                    </div>
+                    <div class="media-right info text-right">
+                      <i class="ft-percent font-large-1"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <!-- Total Sale -->
+          <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+            <a class="card htmx-trigger-breakdown-total-sale" data-url="{% url 'proposal_app:opportunity:total-sale-breakdown-ajax' opportunity.document_number %}" hx-get="{% url 'proposal_app:opportunity:total-sale-breakdown-ajax' opportunity.document_number %}" hx-target="#total-sale-content" hx-trigger="click" data-backdrop="false" data-toggle="modal" data-target="#total-sale-breakdown" style="background: #fedba1">
+              <div class="card-content">
+                <div class="card-body py-0">
+                  <div class="media">
+                    <div class="media-body warning text-left">
+                      <h3 id="total_sale" class="font-large-1 warning mb-0">
+                        ${{total.total_sale}}
+                      </h3>
+                      <span>Total Sale</span>
+                    </div>
+                    <div class="media-right warning text-right">
+                      <i class="ft-activity font-large-1"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <!-- Total GP -->
+          <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+            <a class="card htmx-trigger-breakdown-total-gp" data-url="{% url 'proposal_app:opportunity:total-gp-breakdown-ajax' opportunity.document_number %}" hx-get="{% url 'proposal_app:opportunity:total-gp-breakdown-ajax' opportunity.document_number %}" hx-target="#total-gp-content" hx-trigger="click" data-backdrop="false" data-toggle="modal" data-target="#total-gp-breakdown" style="background: #bdf8b6">
+              <div class="card-content">
+                <div class="card-body py-0">
+                  <div class="media">
+                    <div class="media-body success text-left">
+                      <h3 class="font-large-1 success mb-0 total_gp">
+                        ${{total.total_gp}}
+                      </h3>
+                      <span>Total GP</span>
+                    </div>
+                    <div class="media-right success text-right">
+                      <i class="ft-credit-card font-large-1"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <!-- Total GP% -->
+          <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+            <a class="card htmx-trigger-breakdown-total-gp-per" data-url="{% url 'proposal_app:opportunity:total-gp-per-breakdown-ajax' opportunity.document_number %}" hx-get="{% url 'proposal_app:opportunity:total-gp-per-breakdown-ajax' opportunity.document_number %}" hx-target="#total-gp-per-content" hx-trigger="click" data-backdrop="false" data-toggle="modal" data-target="#total-gp-per-breakdown" style="background: #d6e1f3">
+              <div class="card-content">
+                <div class="card-body py-0">
+                  <div class="media">
+                    <div class="media-body secondary text-left">
+                      <h3 id="total_gp_percent" class="font-large-1 secondary mb-0">
+                        {{total.total_gp_percent}}%
+                      </h3>
+                      <span>GP% Indirects</span>
+                    </div>
+                    <div class="media-right secondary text-right">
+                      <i class="ft-corner-right-up font-large-1"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+
+      <div class="card">
+        <div class="card-content">
+
+          <!-- View full table -->
+          <div class="card-header">
+            <a href="{% url 'proposal_app:opportunity:generate-estimate-table' opportunity.document_number %}">
+              <button type="button" class="btn btn-primary">
+                View Full Table
+              </button>
+            </a>
+          </div>
+
+          <!-- Table start -->
+          <div class="card-body">
+            <div style="max-height: 550px; overflow-y: auto">
+              <div class="table-responsive">
+                <table class="table table-bordered custom-configuration" id="enstimate-table" style="width: 100% !important;">
+                  <thead>
+                      <tr style="border: 1px solid red">
+                        <th colspan="2"></th>
+                        <th colspan="5" class="align-top">Labor</th>
+                        <th colspan="6" class="align-top">Materials</th>
+                        <th colspan="2" class="align-top">Summary Info</th>
+                      </tr>
+                      <tr class="bg-white" style="z-index: 10">
+                          <th> Task Code </th>
+                          <th> Bid Item Description </th>
+                          <th>LABOR COST	</th>
+                          <th>LABOR GP%	</th>
+                          <th>LABOR GP $	</th>
+                          <th>LABOR SELL	</th>
+                          <th>MAT. COST	</th>
+                          <th>MAT.GP%	</th>
+                          <th>MAT. GP $	</th>
+                          <th>MAT. + MU	</th>
+                          <th>SALES TAX	</th>
+                          <th>S & H	</th>
+                          <th>MAT. SELL	</th>
+                          <th>MAT, TAX, LABOR	</th>
+                          <th>COMB GP% </th>
+                      </tr>
+                  </thead>
+                  <tbody class="align-center">
+
+                    {% for et in task_product_list %}
+                      <tr>
+                        {% if et.code %}
+                          <td class="text-nowrap labor">
+                            <a hx-get="{% url 'proposal_app:opportunity:update-estimation-products-ajax' et.id %}"
+                            data-url="{% url 'proposal_app:opportunity:update-estimation-products-ajax' et.id %}"
+                            class="htmx-trigger-btn-task-prod" hx-target="#task-content" hx-trigger="click" data-toggle="modal" data-target="#showProduct" data-backdrop="false">
+                              <ins> {{ et.code }} </ins>
+                            </a>
+                          </td>
+                          <td class="text-nowrap">
+                            <a hx-get="{% url 'proposal_app:opportunity:update-estimation-products-ajax' et.id %}"
+                            data-url="{% url 'proposal_app:opportunity:update-estimation-products-ajax' et.id %}"
+                            class="htmx-trigger-btn-task-prod" hx-target="#task-content" hx-trigger="click" data-toggle="modal" data-target="#showProduct" data-backdrop="false">
+                              <ins> {{ et.code }} : {{ et.description }} </ins>
+                            </a>
+                          </td>
+                        {% else %}
+                          <td class="text-nowrap labor">
+                            <a hx-get="{% url 'proposal_app:opportunity:update-estimation-products-ajax' et.id %}"
+                            data-url="{% url 'proposal_app:opportunity:update-estimation-products-ajax' et.id %}"
+                            class="htmx-trigger-btn-task-prod" hx-target="#task-content" hx-trigger="click" data-toggle="modal" data-target="#showProduct" data-backdrop="false">
+                              <ins> {{ et.task.name }} </ins>
+                            </a>
+                          </td>
+                          <td class="text-nowrap">
+                            <a hx-get="{% url 'proposal_app:opportunity:update-estimation-products-ajax' et.id %}"
+                            data-url="{% url 'proposal_app:opportunity:update-estimation-products-ajax' et.id %}"
+                            class="htmx-trigger-btn-task-prod" hx-target="#task-content" hx-trigger="click" data-toggle="modal" data-target="#showProduct" data-backdrop="false">
+                              <ins> {{ et.task.name }} : {{ et.task.description }} </ins>
+                            </a>
+                          </td>
+                        {% endif %}
+                        <input type="hidden" class="task_mapping" value={{ et.id }}>
+                        <td class="labor_cost">{{ et.labor_cost }}</td>
+                        <td>
+                          <input type="text" class="form-control btn-outline-warning labor_gp_percent" value="{{ et.labor_gp_percent }}">
+                        </td>
+                        <td class="labor_gp">{{ et.labor_gp }}</td>
+                        <td class="labor_sell">{{ et.labor_sell }}</td>
+                        <td class="mat_cost">{{ et.mat_cost }}</td>
+                        <td>
+                          <input type="text" class="form-control btn-outline-warning mat_gp_percent" value="{{ et.mat_gp_percent }}">
+                        </td>
+                        <td class="mat_gp">{{ et.mat_gp }}</td>
+                        <td class="mat_plus_mu">{{ et.mat_plus_mu }}</td>
+                        <td class="sales_tax">{{ et.sales_tax }}</td>
+                        <td>
+                          <input type="text" class="form-control btn-outline-warning s_and_h" value="{{ et.s_and_h }}">
+                        </td>
+                        <td class="mat_sell">{{ et.mat_sell }}</td>
+                        <td class="mat_tax_labor">{{ et.mat_tax_labor }}</td>
+                        <td class="comb_gp">{{ et.comb_gp }}</td>
+
+                      </tr>
+                    {% endfor %}
+
+                    {% for et_labor in task_labor_list %}
+                      <!-- Labor -->
+                      <tr class="selected-estimate-row">
+                        <input type="hidden" class="task_mapping" value={{ et_labor.id }}>
+                        <td class="text-nowrap">
+                          <a hx-get="{% url 'proposal_app:opportunity:update-estimation-labor-ajax' et_labor.id %}"
+                          data-url="{% url 'proposal_app:opportunity:update-estimation-labor-ajax' et_labor.id %}"
+                          hx-target="#task-labor-content" class="htmx-trigger-btn-task-labor" hx-trigger="click" data-toggle="modal" data-target="#showLabor" data-backdrop="false">
+                            <ins> {{ et_labor.task.name }} </ins>
+                          </a>
+                        </td>
+                        <td class="text-nowrap">
+                          <a hx-get="{% url 'proposal_app:opportunity:update-estimation-labor-ajax' et_labor.id %}"
+                          data-url="{% url 'proposal_app:opportunity:update-estimation-labor-ajax' et_labor.id %}"  hx-target="#task-labor-content" class="htmx-trigger-btn-task-labor" hx-trigger="click" data-toggle="modal" data-target="#showLabor" data-backdrop="false">
+                            <ins> {{ et_labor.task.name }}:{{ et_labor.task.description }} </ins>
+                          </a>
+                        </td>
+                        <td class="labor_cost">{{ et_labor.labor_cost }}</td>
+                        <td>
+                          <input type="text" class="form-control btn-outline-warning labor_gp_percent" value="{{ et_labor.labor_gp_percent }}">
+                        </td>
+                        <td class="labor_gp">{{ et_labor.labor_gp }}</td>
+                        <td class="labor_sell">{{ et_labor.labor_sell }}</td>
+                        <td class="mat_cost">{{ et_labor.mat_cost }}</td>
+                        <td>
+                          <input type="text" class="form-control btn-outline-warning mat_gp_percent" value="{{ et_labor.mat_gp_percent }}">
+                        </td>
+                        <td class="mat_gp">{{ et_labor.mat_gp }}</td>
+                        <td class="mat_plus_mu">{{ et_labor.mat_plus_mu }}</td>
+                        <td class="sales_tax">{{ et_labor.sales_tax }}</td>
+                        <td>
+                          <input type="text" class="form-control btn-outline-warning s_and_h" value="{{ et_labor.s_and_h }}">
+                        </td>
+                        <td class="mat_sell">{{ et_labor.mat_sell }}</td>
+                        <td class="mat_tax_labor">{{ et_labor.mat_tax_labor }}</td>
+                        <td class="comb_gp">{{ et_labor.comb_gp }}</td>
+
+                      </tr>
+                    {% endfor %}
+                    <tr>
+                      <td class="text-nowrap">FRT</td>
+                      <td class="text-nowrap">FRT: Freight</td>
+                      <td></td>
+                      <td></td>
+
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>500.00</td>
+                      <td></td>
+
+                      <td></td>
+                      <td></td>
+
+                    </tr>
+                  </tbody>
+
+                  <!-- Overall Calculation -->
+                  <tfoot>
+                    <tr>
+                      <th></th>
+                      <th></th>
+                      <th id="total_labor_cost">${{ total.total_labor_cost }}</th>
+                      <th id="total_labor_gp_percent">{{ total.total_labor_gp_percent }}%</th>
+                      <th id="total_labor_gp">${{ total.total_labor_gp }}</th>
+                      <th id="total_labor_sell">${{ total.total_labor_sell }}</th>
+                      <th id="total_mat_cost">${{ total.total_mat_cost }}</th>
+                      <th id="total_mat_gp_percent">{{ total.total_mat_gp_percent }}%</th>
+                      <th id="total_mat_gp">${{ total.total_mat_gp }}</th>
+                      <th id="total_mat_mu">${{ total.total_mat_mu }}</th>
+                      <th id="total_sales_tax">${{ total.total_sales_tax }}</th>
+                      <th id="total_s_and_h">${{ total.total_s_and_h }}</th>
+                      <th id="total_mat_sell">${{ total.total_mat_sell }}</th>
+                      <th id="total_mat_tax_labor">${{ total.total_mat_tax_labor }}</th>
+                      <th></th>
+                    </tr>
+                  </tfoot>
+
+                </table>
+              </div>
+
+            </div>
+            <br />
+          </div>
+        </div>
+      </div>
+
+      <div></div>
+    </div>
+  </div>
+
+<!-- Associated Products Modal -->
+<div class="modal fade text-left" id="showProduct" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" aria-hidden="true">
+  <div  class="modal-dialog modal-lg modal-dialog-centered" role="document"  style="max-width: 1200px">
+    <div class="modal-content">
+      <div id="task-content">
+        <!-- Contant will apper here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Associated labor Modal -->
+<div class="modal fade text-left" id="showLabor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" aria-hidden="true">
+  <div  class="modal-dialog modal-lg modal-dialog-centered" role="document"  style="max-width: 1200px">
+    <div class="modal-content">
+      <div id="task-labor-content">
+        <!-- Contant will apper here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Breakdown Modal [Total Cost]-->
+<div class="modal fade text-left" id="total-cost-breakdown" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div id="total-cost-content">
+          <!-- Data will apperhere -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Breakdown Modal [Total sale]-->
+<div class="modal fade text-left" id="total-sale-breakdown" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div id="total-sale-content">
+          <!-- Data will apperhere -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Breakdown Modal [Total GP]-->
+<div class="modal fade text-left" id="total-gp-breakdown" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div id="total-gp-content">
+        <!-- Data will apperhere -->
+      </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Breakdown Modal [Total GP %]-->
+<div class="modal fade text-left" id="total-gp-per-breakdown" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div id="total-gp-per-content">
+        <!-- Data will apperhere -->
+      </div>
+      </div>
+    </div>
+  </div>
+
+{% block script %}
+
+<script>
+  $(document).on('click', '.htmx-trigger-btn-task-prod' , function (e) {
+
+    var url = $(this).data('url');
+    htmx.ajax('GET',
+        url,
+        {
+          target:'#task-content',
+          swap:'innerHTML',
+    }).then(() => {
+        $('#showProduct').toggleClass('hidden');
+    })
+  });
+
+  $(document).on('click', '.htmx-trigger-btn-task-labor' , function (e) {
+
+    var url = $(this).data('url');
+    htmx.ajax('GET',
+        url,
+        {
+          target:'#task-labor-content',
+          swap:'innerHTML',
+    }).then(() => {
+        $('#showLabor').toggleClass('hidden');
+    })
+  });
+
+  $(document).on('click', '.htmx-trigger-breakdown-total-cost' , function (e) {
+
+    console.log("Clicked.............................")
+    var url = $(this).data('url');
+    htmx.ajax('GET',
+        url,
+        {
+          target:'#total-cost-content',
+          swap:'innerHTML',
+    }).then(() => {
+        $('#total-cost-breakdown').toggleClass('hidden');
+    })
+  });
+
+  $(document).on('click', '.htmx-trigger-breakdown-total-sale' , function (e) {
+
+    var url = $(this).data('url');
+    htmx.ajax('GET',
+        url,
+        {
+          target:'#total-sale-content',
+          swap:'innerHTML',
+    }).then(() => {
+        $('#total-sale-breakdown').toggleClass('hidden');
+    })
+  });
+
+  $(document).on('click', '.htmx-trigger-breakdown-total-gp' , function (e) {
+
+    var url = $(this).data('url');
+    htmx.ajax('GET',
+        url,
+        {
+          target:'#total-gp-content',
+          swap:'innerHTML',
+    }).then(() => {
+        $('#total-gp-breakdown').toggleClass('hidden');
+    })
+  });
+
+  $(document).on('click', '.htmx-trigger-breakdown-total-gp-per' , function (e) {
+
+    var url = $(this).data('url');
+    htmx.ajax('GET',
+        url,
+        {
+          target:'#total-gp-per-content',
+          swap:'innerHTML',
+    }).then(() => {
+        $('#total-gp-per-breakdown').toggleClass('hidden');
+    })
+  });
+
+</script>
+
+<script>
+  $(".labor_gp_percent, .mat_gp_percent, .s_and_h").on("input", function(e){
+    console.log("Chnaged...........");
+    var $row = $(this).closest("tr");
+
+    var laborGpPercent = parseFloat($row.find(".labor_gp_percent").val()) / 100;
+    console.log("Labour GP %", laborGpPercent);
+
+    var matGpPercent = parseFloat($row.find(".mat_gp_percent").val()) / 100;
+    console.log("MAT GP %", matGpPercent);
+
+    var s_and_h = parseFloat($row.find(".s_and_h").val()) / 100;
+    console.log("S & H", s_and_h);
+
+    // Calculate Labor Cost
+    var laborCost = parseFloat($row.find(".labor_cost").text());
+    console.log("Labor Cost", laborCost);
+
+    // parseFloat($row.find(".labor_sell").text());
+    var laborSell = laborCost / (1 - laborGpPercent);
+    $row.find(".labor_sell").text(laborSell.toFixed(2));
+    console.log("Labor Sell", laborSell);
+
+    var matCost = parseFloat($row.find(".mat_cost").text());
+    console.log("MAT Cost", matCost);
+
+    // Calculate Labor GP $
+    var laborGp = laborSell - laborCost;
+    $row.find(".labor_gp").text(laborGp.toFixed(2));
+
+    var matPlusMu = matCost / (1 - matGpPercent);
+    $row.find(".mat_plus_mu").text(matPlusMu.toFixed(2));
+
+    // Calculate MAT GP $
+    var matGp = matPlusMu - matCost;
+    $row.find(".mat_gp").text(matGp.toFixed(2));
+
+    // Calculate Sales Tax
+    var salesTax = matPlusMu * 0.25;
+    $row.find(".sales_tax").text(salesTax.toFixed(2));
+
+    // Calculate MAT Sell
+    var matSell = matPlusMu + salesTax;
+    $row.find(".mat_sell").text(matSell.toFixed(2));
+
+    // Calculate MAT Tax Labor
+    var matTaxLabor = matSell + laborSell;
+    $row.find(".mat_tax_labor").text(matTaxLabor.toFixed(2));
+
+    console.log("laborGpPercent", laborGpPercent);
+    console.log("matGpPercent", matGpPercent);
+    console.log("laborSell", laborSell);
+    console.log("matPlusMu", matPlusMu);
+
+    var combGp = (( laborGpPercent * 100 ) + (matGpPercent * 100)) / (laborSell + matPlusMu);
+    console.log("combGp", combGp)
+    $row.find(".comb_gp").text(combGp.toFixed(3));
+
+    // Calculate $/Acre
+    var acre = matTaxLabor / matGpPercent;
+    $row.find(".acre").text((isNaN(acre) ? 0 : acre).toFixed(2));
+
+    updateOverallTotals();
+  });
+
+  function updateOverallTotals() {
+
+    console.log("=-=-=-= Innnn -===---=-=");
+    // Initialize totals
+    var totalLaborCost = 0;
+    var totalLaborGp = 0;
+    var totalLaborSell = 0;
+    var totalMatCost = 0;
+    var totalMatGp = 0;
+    var totalMatPlusMu = 0;
+    var totalSalesTax = 0;
+    var totalMatSell = 0;
+    var totalMatTaxLabor = 0;
+    var totalCombGp = 0;
+    var totalAcre = 0;
+    var totalSAndH = 0;
+    var totalLaborGpPercent = 0;
+    var totalMatGpPercent = 0;
+
+    // Iterate over each row and accumulate totals
+    $("table tbody tr").each(function() {
+        var $row = $(this);
+
+        var laborCost = parseFloat($row.find(".labor_cost").text()) || 0;
+        var laborGp = parseFloat($row.find(".labor_gp").text()) || 0;
+        var laborGpPercent = parseFloat($row.find(".labor_gp_percent").val()) || 0;
+        var laborSell = parseFloat($row.find(".labor_sell").text()) || 0;
+        var matCost = parseFloat($row.find(".mat_cost").text()) || 0;
+        var matGp = parseFloat($row.find(".mat_gp").text()) || 0;
+        var matGpPercent = parseFloat($row.find(".mat_gp_percent").val()) || 0;
+        var matPlusMu = parseFloat($row.find(".mat_plus_mu").text()) || 0;
+        var salesTax = parseFloat($row.find(".sales_tax").text()) || 0;
+        var matSell = parseFloat($row.find(".mat_sell").text()) || 0;
+        var matTaxLabor = parseFloat($row.find(".mat_tax_labor").text()) || 0;
+        var combGp = parseFloat($row.find(".comb_gp").text()) || 0;
+        var acre = parseFloat($row.find(".acre").text()) || 0;
+        var s_and_h = parseFloat($row.find(".s_and_h").val()) || 0;
+
+        totalLaborCost += laborCost;
+        totalLaborGp += laborGp;
+        totalLaborGpPercent += laborGpPercent;
+        totalLaborSell += laborSell;
+        totalMatCost += matCost;
+        totalMatGp += matGp;
+        totalMatGpPercent += matGpPercent;
+        totalMatPlusMu += matPlusMu;
+        totalSalesTax += salesTax;
+        totalMatSell += matSell;
+        totalMatTaxLabor += matTaxLabor;
+        totalCombGp += combGp;
+        totalAcre += acre;
+        totalSAndH += s_and_h;
+    });
+
+    var total_cost = totalLaborCost + totalMatCost;
+    var total_sale = totalLaborSell + totalMatSell;
+    var total_gp = totalLaborGp + totalMatGp
+    var total_gp_percent = totalLaborGpPercent + totalMatGpPercent + totalCombGp
+
+    // Update totals in <tfoot>
+    $("#total_labor_cost").text(`$${totalLaborCost.toFixed(2)}`);
+    $("#total_labor_gp_percent").text(`${totalLaborGpPercent.toFixed(2)}%`);
+    $("#total_labor_gp").text(`$${totalLaborGp.toFixed(2)}`);
+    $("#total_labor_sell").text(`$${totalLaborSell.toFixed(2)}`);
+    $("#total_mat_cost").text(`$${totalMatCost.toFixed(2)}`);
+    $("#total_mat_gp_percent").text(`${totalMatGpPercent.toFixed(2)}%`);
+    $("#total_mat_gp").text(`$${totalMatGp.toFixed(2)}`);
+    $("#total_mat_mu").text(`$${totalMatPlusMu.toFixed(2)}`);
+    $("#total_sales_tax").text(`$${totalSalesTax.toFixed(2)}`);
+    $("#total_s_and_h").text(`$${totalSAndH.toFixed(2)}`);
+    $("#total_mat_sell").text(`$${totalMatSell.toFixed(2)}`);
+    $("#total_mat_tax_labor").text(`$${totalMatTaxLabor.toFixed(2)}`);
+    $("#total_comb_gp").text(`${totalCombGp.toFixed(2)}%`);
+    $("#total_acre").text(`${(isNaN(totalAcre) ? 0 : totalAcre).toFixed(2)}`);
+
+    $("#total_cost").text(`${total_cost.toFixed(2)}`);
+    $("#total_sale").text(`${total_sale.toFixed(2)}`);
+    $(".total_gp").text(`${total_gp.toFixed(2)}`);
+    $("#total_gp_percent").text(`${total_gp_percent.toFixed(2)}`);
+
+  }
+
+  $(".labor_gp_percent, .mat_gp_percent, .s_and_h").on("change", function(e){
+      console.log("=-=-=-=- Chnaged =-=-=-=-");
+      var $row = $(this).closest("tr");
+      var $input = $(e.target);
+
+      var taskMappingId = $row.find(".task_mapping").val();
+      console.log("Task Mapping ID", taskMappingId);
+
+      var laborGpPercent = $row.find(".labor_gp_percent").val();
+      console.log("Labour GP %", laborGpPercent);
+
+      var matGpPercent = $row.find(".mat_gp_percent").val();
+      console.log("MAT GP %", matGpPercent);
+
+      var s_and_h = $row.find(".s_and_h").val();
+      console.log("S & H", s_and_h);
+
+      if ($input.hasClass("labor_gp_percent")){
+          data = {
+            task_mapping_id: taskMappingId,
+            labor_gp_percent: laborGpPercent,
+          }
+      } else if ($input.hasClass("mat_gp_percent")){
+          data = {
+            task_mapping_id: taskMappingId,
+            mat_gp_percent: matGpPercent,
+          }
+      } else if ($input.hasClass("s_and_h")){
+          data = {
+            task_mapping_id: taskMappingId,
+            s_and_h: s_and_h,
+          }
+      }
+
+      // Call Ajax
+      $.ajax({
+        url: '{% url "proposal_app:opportunity:update-estimation-table-ajax" %}',
+        type: 'POST',
+        data: data,
+        headers: {
+          'X-CSRFToken': "{{ csrf_token }}",
+        },
+        success: function(response) {
+          console.log('API call success:', response);
+          toastr.success(response.message, 'Success', {
+            closeButton: true,
+            progressBar: true,
+            positionClass: 'toast-bottom-right',
+            timeOut: 6000
+          });
+        },
+        error: function(xhr, status, error) {
+          console.error('API call error:', status, error);
+          toastr.error(xhr.responseJSON.message, 'Error', {
+            closeButton: true,
+            progressBar: true,
+            positionClass: 'toast-bottom-right',
+            timeOut: 6000
+          });
+        }
+      });
+
+  });
+
+  $(".job_name, .job, .project, .ranch").on("change", function(e){
+    var document_number = $(this).data("document");
+    var $input = $(e.target);
+    var value = "";
+    var type = "";
+
+    if ($input.hasClass("job_name")){
+      value = $(this).val();
+      type = "job_name";
+      $(".job_name").val(value);
+    }else if ($input.hasClass("job")){
+      value = $(this).val();
+      type = "job";
+      $(".job").val(value);
+    }else if ($input.hasClass("project")){
+      value = $(this).val();
+      type = "project";
+      $(".project").val(value);
+    }else if ($input.hasClass("ranch")){
+      value = $(this).val();
+      type = "ranch";
+      $(".ranch").val(value);
+    }
+
+    // Payload data
+    data = {
+      "type": type,
+      "value": value,
+      "document_number": document_number,
+    }
+
+    console.log("data", data);
+
+    $.ajax({
+      url: '{% url "proposal_app:opportunity:update-opportunity-ajax" %}',
+      type: 'POST',
+      data: data,
+      headers: {
+        'X-CSRFToken': "{{ csrf_token }}",
+      },
+      success: function(response) {
+        console.log('API call success:', response);
+        toastr.success(response.message, 'Success', {
+          closeButton: true,
+          progressBar: true,
+          positionClass: 'toast-bottom-right',
+          timeOut: 6000
+        });
+      },
+      error: function(xhr, status, error) {
+        console.error('API call error:', status, error);
+        toastr.error(xhr.responseJSON.message, 'Error', {
+          closeButton: true,
+          progressBar: true,
+          positionClass: 'toast-bottom-right',
+          timeOut: 6000
+        });
+      }
+
+    });
+  });
+</script>
+
+{% endblock script %}

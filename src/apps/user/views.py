@@ -28,7 +28,7 @@ class LoginView(TemplateView):
     render the login page.
     """
 
-    template_name = "proposal/login.html"
+    template_name = "user/login.html"
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         if request.user.is_authenticated:
@@ -67,7 +67,7 @@ class AuthorizationView(ProposalCreateViewMixin, AdminMixin):
 
     def form_invalid(self, form):
         for error in form.errors:
-            print("=-=-=-==- FORM ERRORS", error)
+            print("Form Error:", error)
         messages.error(
             self.request,
             "There was an error creating the user. Please check the form and try again.",
@@ -170,7 +170,6 @@ class UserAjaxListView(AdminMixin, DataTableMixin, View):
     def get(self, request, *args, **kwargs):
         """Handle GET request."""
         context_data = self.get_context_data(request)
-        print("context_data =====>>>>", context_data)
         return JsonResponse(context_data)
 
 

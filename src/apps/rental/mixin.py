@@ -4,10 +4,13 @@ from django.views.generic import (
     CreateView,
     DeleteView,
     DetailView,
+    FormView,
     ListView,
     TemplateView,
     UpdateView,
+    View,
 )
+from django_datatables_too.mixins import DataTableMixin
 
 
 class LoginBaseMixin(LoginRequiredMixin):
@@ -118,3 +121,27 @@ class WarehouseViewMixin(TemplateView):
         context = super().get_context_data(**kwargs)
         context["template_name"] = self.render_template_name
         return context
+
+
+class CustomDataTableMixin(LoginRequiredMixin, DataTableMixin, View):
+    """
+    Mixin for a login-required DataTable view.
+    """
+
+    ...
+
+
+class ProposalFormViewMixin(LoginRequiredMixin, FormView):
+    """
+    Mixin for a login-required Form view.
+    """
+
+    ...
+
+
+class ViewMixin(LoginRequiredMixin, View):
+    """
+    Mixin for a login-required View.
+    """
+
+    ...

@@ -1,27 +1,29 @@
 from django.db.models import Q
 from django.http import JsonResponse
 from django.urls import reverse
-from django.views.generic import FormView, View
-from django_datatables_too.mixins import DataTableMixin
 
 from apps.proposal.product.forms import ImportProductForm
 from apps.proposal.product.models import Product
 from apps.proposal.product.tasks import import_product_from_file
-from apps.rental.mixin import ProposalViewMixin
+from apps.rental.mixin import (
+    CustomDataTableMixin,
+    ProposalFormViewMixin,
+    ProposalViewMixin,
+)
 
 
 # Create your views here.
 class ProductListView(ProposalViewMixin):
     """
-    View class for rendering the list of proposal product.
+    View for displaying a list of products.
     """
 
     render_template_name = "proposal/product/product_list.html"
 
 
-class ProductListAjaxView(DataTableMixin, View):
+class ProductListAjaxView(CustomDataTableMixin):
     """
-    DataTable for Product master data.
+    AJAX view for displaying product master data in a DataTable.
     """
 
     model = Product
@@ -66,7 +68,7 @@ class ProductListAjaxView(DataTableMixin, View):
         return JsonResponse(context_data)
 
 
-class ProductImportView(FormView):
+class ProductImportView(ProposalFormViewMixin):
     """
     Import data from CSV or Excel files.
     """
@@ -75,22 +77,23 @@ class ProductImportView(FormView):
     form_class = ImportProductForm
 
     def form_valid(self, form):
+        """Handle valid form submission and import products."""
         csv_file = form.cleaned_data["csv_file"]
-        file = csv_file
-        _response = import_product_from_file(file)
-        if _response.get("error"):
-            # messages.error(self.request, _response["error"])
-            form.add_error("csv_file", _response["error"])
+        response = import_product_from_file(csv_file)
+
+        if "error" in response:
+            form.add_error("csv_file", response["error"])
             return self.render_to_response(self.get_context_data(form=form), status=201)
-        else:
-            return JsonResponse(
-                {
-                    "redirect": reverse("proposal_app:product:product-list"),
-                    "message": "Product Imported successfully!!",
-                    "status": "success",
-                    "code": 200,
-                }
-            )
+
+        return JsonResponse(
+            {
+                "redirect": reverse("proposal_app:product:product-list"),
+                "message": "Product imported successfully!",
+                "status": "success",
+                "code": 200,
+            }
+        )
 
     def form_invalid(self, form):
+        """Handle invalid form submission."""
         return self.render_to_response(self.get_context_data(form=form), status=201)

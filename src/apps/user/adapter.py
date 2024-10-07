@@ -36,7 +36,7 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
             ImmediateHttpResponse: If the user is not authorized, redirects to the login page.
         """
         user = sociallogin.user
-        print(f"user : {user}")
+        # print(f"user : {user}")
         User = get_user_model()
         user_obj = User.objects.filter(email=user.email)
 

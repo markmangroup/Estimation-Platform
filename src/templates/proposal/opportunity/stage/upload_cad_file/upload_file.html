@@ -1,0 +1,93 @@
+<div class="form-group">
+  <div class="row">
+    <div class="col-12">
+      <div action="#" class="dropzone dropzone-area" style="min-height: 300px;border: 2px dashed #975aff;background: #f7f7f8;" id="dpz-single-file"></div>
+    </div>
+  </div>
+
+  <div class="col-12 my-2">
+    <button class="btn btn-primary" id="upload-btn">Upload</button>
+    </label>
+  </div>
+</div>
+
+
+{% block script %}
+<script>
+
+  Dropzone.autoDiscover = false;
+
+  var myDropzone = new Dropzone("#dpz-single-file", {
+    url: "{% url 'proposal_app:opportunity:upload-cad-file' %}",
+    paramName: "file",
+    maxFiles: 1,
+    acceptedFiles: ".Tmp, .tmp",
+    autoProcessQueue: false,
+    addRemoveLinks: true,
+    dictDefaultMessage: "Drag an .Tmp file here to upload",
+    headers: {
+      'X-CSRFToken': "{{ csrf_token }}"
+    },
+    // Custom error message handling
+    init: function() {
+      this.on("error", function(file, response) {
+        var errorMessage = response || "An error occurred while uploading the file.";
+        toastr.error(errorMessage, 'Error', {
+          closeButton: true,
+          progressBar: true,
+          positionClass: 'toast-bottom-right',
+          timeOut: 6000
+        });
+        this.removeFile(file);
+      });
+    }
+  });
+
+  $('#upload-btn').click(function(e) {
+    e.preventDefault();
+
+    if (myDropzone.getQueuedFiles().length === 0) {
+        toastr.error("Please select a file to upload", 'Error', {
+          closeButton: true,
+          progressBar: true,
+          positionClass: 'toast-bottom-right',
+          timeOut: 6000
+        })
+      return;
+    }
+
+    myDropzone.processQueue();
+  });
+
+  myDropzone.on("sending", function(file, xhr, formData) {
+    var documentNumber = "{{ opportunity.document_number }}"
+    formData.append("document_number", documentNumber);
+  });
+
+  myDropzone.on("success", function(file, response) {
+    // Reload DataTable
+    $("#material-list").DataTable().ajax.reload(null, false);
+    $("#glue-and-additional-list").DataTable().ajax.reload(null, false);
+    $("#preliminary-material-list").DataTable().ajax.reload(null, false);
+
+    // Success Message
+    toastr.success(response.message, 'Success', {
+      closeButton: true,
+      progressBar: true,
+      positionClass: 'toast-bottom-right',
+      timeOut: 6000
+    });
+  });
+
+  myDropzone.on("error", function(file, response) {
+    // Error Message
+    //alert(response.error);
+    toastr.error(response.error, 'Error', {
+      closeButton: true,
+      progressBar: true,
+      positionClass: 'toast-bottom-right',
+      timeOut: 6000
+    });
+  });
+</script>
+{% endblock script %}
