@@ -2,7 +2,7 @@
 export DEBUG="False"
 
 # install any required dependencies
-pip install -r requirements.txt
+pip install -r requirements.txt --no-cache-dir
 
 # perform Django database migrations
 python src/manage.py migrate
