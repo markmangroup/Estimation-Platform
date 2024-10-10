@@ -141,8 +141,10 @@ document.body.addEventListener('htmx:beforeSwap', function(evt) {
 					},
 					success: function (data) {
 						$("#user-table").DataTable().ajax.reload(null, false);
-            console.log($("#user-table"));
-						if (data["message"]) {
+
+            if (data["code"] == "111"){
+              window.location.reload();
+            } else if (data["code"] == "200") {
               toastr.info(data.message, 'Deleted', {
                 closeButton: true,
                 progressBar: true,

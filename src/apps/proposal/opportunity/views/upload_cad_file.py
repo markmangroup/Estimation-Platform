@@ -3,9 +3,11 @@ from collections import defaultdict
 from io import StringIO
 
 import pandas as pd
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import JsonResponse
 
-from apps.rental.mixin import ViewMixin
+from apps.constants import LOGGER
+from apps.mixin import ViewMixin
 
 from ..models import (
     GlueAndAdditionalMaterial,
@@ -18,7 +20,7 @@ from ..models import (
 class UploadCADFile(ViewMixin):
     """View for handling the upload of CAD files and processing material lists."""
 
-    def generate_material_list(self, uploaded_file, document_number):
+    def generate_material_list(self, uploaded_file: InMemoryUploadedFile, document_number: str) -> dict:
         """
         Generates material list from an uploaded file.
 
@@ -27,7 +29,6 @@ class UploadCADFile(ViewMixin):
         :return: Dictionary containing the material list data.
         """
         material_list_obj = MaterialList.objects.filter(opportunity__document_number=document_number)
-        # print("Len :::::::::", len(material_list_obj))
 
         if len(material_list_obj) != 0:
             MaterialList.objects.filter(opportunity__document_number=document_number).delete()
@@ -40,7 +41,7 @@ class UploadCADFile(ViewMixin):
         try:
             opportunity = Opportunity.objects.get(document_number=document_number)
         except Opportunity.DoesNotExist:
-            print(f"Opportunity with document number {document_number} not found.")
+            LOGGER.error(f"Opportunity with document number {document_number} not found.")
             return data
 
         # Read the file content
@@ -65,9 +66,8 @@ class UploadCADFile(ViewMixin):
             )
         return data
 
-    def apply_transformations(self, row):
+    def apply_transformations(self, row: pd.Series) -> pd.Series:
         """Helper function to generate rows with calculations for Material List."""
-
         description = row["Description"]
 
         # Formula for form1
@@ -96,7 +96,7 @@ class UploadCADFile(ViewMixin):
 
         return pd.Series([form1, form2, form3, form4], index=["form1", "form2", "form3", "form4"])
 
-    def calculate_additional_columns(self, row):
+    def calculate_additional_columns(self, row: pd.Series) -> pd.Series:
         """Helper function to generate rows with calculations for Material List."""
 
         description = row["Description"]
@@ -142,7 +142,7 @@ class UploadCADFile(ViewMixin):
             [tee_value, red_bush_value, cross_value, hose_value], index=["Tee's", "RED BUSH & COUPS", "CROSS", "Hose"]
         )
 
-    def calculate_mains_manifold(self, df, pipe_size, joints_per_pint):
+    def calculate_mains_manifold(self, df: pd.DataFrame, pipe_size: float, joints_per_pint: float) -> dict:
         """Helper function to generate rows with calculations for Glue & Additional Material List."""
 
         # Filters based on pipe size and type
@@ -196,7 +196,7 @@ class UploadCADFile(ViewMixin):
             "Thrust Block # Conc. Bags": thrust_block_conc_bags,
         }
 
-    def calculate_flex_riser_quantities(self, df, values):
+    def calculate_flex_riser_quantities(self, df: pd.DataFrame, values: list) -> pd.DataFrame:
         """Helper function to generate rows with calculations for Glue & Additional Material List."""
 
         results = []
@@ -278,7 +278,7 @@ class UploadCADFile(ViewMixin):
 
         return flex_riser_summary
 
-    def generate_glue_and_additional_material_list(self, document_number):
+    def generate_glue_and_additional_material_list(self, document_number: str) -> dict:
         """
         Generate Glue and Additional Material List.
 
@@ -407,7 +407,7 @@ class UploadCADFile(ViewMixin):
         try:
             opportunity = Opportunity.objects.get(document_number=document_number)
         except Opportunity.DoesNotExist:
-            print(f"Opportunity with document number {document_number} not found.")
+            LOGGER.error(f"Opportunity with document number {document_number} not found.")
             return glue_and_additional_data
 
         for i in range(len(glue_and_additional_data["Item"])):
@@ -421,7 +421,7 @@ class UploadCADFile(ViewMixin):
 
         return glue_and_additional_data
 
-    def add_to_merged_data(self, data, key_field, merged_data):
+    def add_to_merged_data(self, data: dict, key_field: str, merged_data: defaultdict):
         """Helper function to generate rows with calculations for Glue & Additional Material List."""
 
         for quantity, description, item_number in zip(data["Quantity"], data["Description"], data[key_field]):
@@ -434,7 +434,9 @@ class UploadCADFile(ViewMixin):
                 merged_data[item_number]["Item Number"] = item_number
                 merged_data[item_number]["Quantity"] = [quantity]
 
-    def generate_preliminary_material_list(self, material_list, glue_and_additional_data, document_number):
+    def generate_preliminary_material_list(
+        self, material_list: dict, glue_and_additional_data: dict, document_number: str
+    ) -> dict:
         """
         Generate and save preliminary material list into database.
 
@@ -446,7 +448,7 @@ class UploadCADFile(ViewMixin):
         try:
             opportunity = Opportunity.objects.get(document_number=document_number)
         except Opportunity.DoesNotExist:
-            print(f"Opportunity with document number {document_number} not found.")
+            LOGGER.error(f"Opportunity with document number {document_number} not found.")
             return glue_and_additional_data
 
         # Initialize data structures
@@ -534,7 +536,6 @@ class UploadCADFile(ViewMixin):
             # NOTE: Converted Macro code into python ("Split List")
             material_list = self.generate_material_list(uploaded_file, document_number)
             material_list_df = pd.DataFrame(material_list)
-            # print("Material List Df",material_list_df)
 
             # Helper function to calculate ['form1', 'form2', 'form3', 'form4'] for material list
             material_list_df[["form1", "form2", "form3", "form4"]] = material_list_df.apply(

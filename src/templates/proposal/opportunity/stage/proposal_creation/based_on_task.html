@@ -39,7 +39,7 @@
     <button
       type="button"
       class="btn bg-light-primary mb-3 mt-2 htmx-trigger-crate-proposal-btn"
-      hx-get="{% url 'proposal_app:opportunity:create-proposal-ajax' opportunity.document_number %}"
+      {% comment %} hx-get="{% url 'proposal_app:opportunity:create-proposal-ajax' opportunity.document_number %}" {% endcomment %}
       data-url="{% url 'proposal_app:opportunity:create-proposal-ajax' opportunity.document_number %}"
       hx-target="#ProposalContent"
       hx-trigger="click"
@@ -105,10 +105,10 @@
                                   {% for task, products in data.assigned_products.items %}
                                   <tr>
                                       <td>
-                                          {% if task.task.name %}
-                                              <span class="font-weight-bold task_name">{{ task.task.name }}</span>
+                                          {% if task.code %}
+                                            <span class="font-weight-bold task_name">{{ task.code }}</span>
                                           {% else %}
-                                              <span class="font-weight-bold task_name">{{ task.code }}</span>
+                                            <span class="font-weight-bold task_name">{{ task.task.name }}</span>
                                           {% endif %}
                                       </td>
                                       <td>

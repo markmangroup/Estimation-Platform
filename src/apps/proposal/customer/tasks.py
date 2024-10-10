@@ -1,12 +1,21 @@
 import os
 
 import pandas as pd
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
+from apps.constants import LOGGER
 
 from .models import Customer
 
 
-def import_customer_from_xlsx(file):
-    """Imports customer data from an Excel or CSV file."""
+def import_customer_from_xlsx(file: InMemoryUploadedFile) -> dict:
+    """
+    Imports customer data from an Excel or CSV file.
+
+    :prams file (File): The uploaded file containing product data.
+    :return: A context dictionary with messages about created/updated products
+            or errors if the columns do not match or records are skipped.
+    """
 
     file_extension = os.path.splitext(file.name)[1].lower()
     context = {"messages": []}
@@ -36,8 +45,6 @@ def import_customer_from_xlsx(file):
                 return {"error": "The file with multiple sheets won't be processed."}
         else:
             return {"error": "Unsupported file format."}
-    except ImportError:
-        return {"error": "Failed to process the file: Ensure all dependencies are installed."}
     except pd.errors.EmptyDataError:
         return {"error": "You are trying to upload an empty file."}
 
@@ -77,11 +84,11 @@ def import_customer_from_xlsx(file):
             context["messages"].append(message)
 
         except Exception as e:
-            print(f"Error processing record {record['ID']}: {e}")
+            LOGGER.error(f"Error processing record {record['ID']}: {e}")
             skip_customers.append(record)
 
     # Log skipped customers if any
     if skip_customers:
-        print("Skipped customers:", skip_customers)
+        LOGGER.info(f"Skipped customers: {skip_customers}")
 
     return context

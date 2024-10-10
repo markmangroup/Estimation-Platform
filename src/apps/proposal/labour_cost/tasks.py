@@ -1,11 +1,22 @@
 import os
 
 import pandas as pd
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
+from apps.constants import LOGGER
 
 from .models import LabourCost
 
 
-def import_labour_cost_from_xlsx(file):
+def import_labour_cost_from_xlsx(file: InMemoryUploadedFile) -> dict:
+    """
+    Imports labor cost data from an Excel or CSV file.
+
+    :prams file (File): The uploaded file containing product data.
+    :return: A context dictionary with messages about created/updated products
+            or errors if the columns do not match or records are skipped.
+    """
+
     file_extension = os.path.splitext(file.name)[1]
     context = {"messages": []}
     skip_labour_cost = []
@@ -36,9 +47,6 @@ def import_labour_cost_from_xlsx(file):
 
         else:
             return {"error": "Unsupported file format."}
-
-    except ImportError as e:
-        return {"error": f"Failed to process the file: {e}. Please ensure all dependencies are installed."}
     except pd.errors.EmptyDataError:
         return {"error": "You are trying to upload an empty file; it won't be processed."}
 
@@ -69,10 +77,10 @@ def import_labour_cost_from_xlsx(file):
             context["messages"].append(f"{action} labour cost: {labour_task}")
 
         except Exception as e:
-            print("Error processing record:", e)
+            LOGGER.error(f"Error processing record: {e}")
             skip_labour_cost.append(record)
 
     if skip_labour_cost:
-        print("Skipped records:", skip_labour_cost)
+        LOGGER.error(f"Skipped records:: {skip_labour_cost}")
 
     return context

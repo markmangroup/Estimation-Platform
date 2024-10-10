@@ -92,6 +92,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    "django_auto_logout.middleware.auto_logout",
 ]
 
 ROOT_URLCONF = "laurel.urls"
@@ -110,6 +111,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "django_auto_logout.context_processors.auto_logout_client",
             ],
         },
     },
@@ -179,6 +181,38 @@ MEDIA_URL = "/media/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "propagate": True,
+        },
+    },
+}
+
 SOCIALACCOUNT_ADAPTER = "apps.user.adapter.CustomSocialAccountAdapter"
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -212,3 +246,11 @@ AZURE_CONTAINER = os.getenv("AZURE_CONTAINER")
 AZURE_CUSTOM_DOMAIN = f"{AZURE_ACCOUNT_NAME}.blob.core.windows.net"
 
 DEFAULT_FILE_STORAGE = "storages.backends.azure_storage.AzureStorage"
+
+
+# Auto logged out
+AUTO_LOGOUT = {
+    "IDLE_TIME": 3600,
+    "REDIRECT_TO_LOGIN_IMMEDIATELY": True,
+    "MESSAGE": "The session has expired. Please login again to continue.",
+}

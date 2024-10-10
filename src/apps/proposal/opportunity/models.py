@@ -241,6 +241,9 @@ class TaskMapping(BaseModel):
     opportunity = models.ForeignKey(Opportunity, on_delete=models.CASCADE, related_name="task_mapping_opportunity")
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="task_mapping_tasks", blank=True, null=True)
 
+    is_assign_task = models.BooleanField(_("Is Assign Task"), default=False)
+    assign_to = models.CharField(_("Assign to"), max_length=255, null=True, blank=True)
+
     # Manually added tasks
     code = models.CharField(_("Task Code"), max_length=255, blank=True, null=True)
     description = models.CharField(_("Task Description"), max_length=255, blank=True, null=True)
@@ -261,9 +264,30 @@ class TaskMapping(BaseModel):
     @property
     def labor_cost(self):
         """
-        Return fixed labor cost. Modify this if you have a real calculation.
+        Calculate the labor cost based on assigned products for tasks related to this TaskMapping instance.
         """
-        return 1000
+        if self.is_assign_task:
+            task_mappings = TaskMapping.objects.filter(
+                opportunity=self.opportunity, task__description__icontains="labor"
+            )
+
+            # Initialize total calculations
+            total_quantity = 0
+            total_price = 0.0
+            total_percent = 0.0
+
+            for task in task_mappings:
+                if task.assign_to == self.code:
+                    assigned_products = AssignedProduct.objects.filter(task_mapping_id=task.id)
+                    total_quantity += sum(product.quantity for product in assigned_products)
+                    total_price += sum(
+                        product.vendor_quoted_cost if product.vendor_quoted_cost else product.standard_cost
+                        for product in assigned_products
+                    )
+                    total_percent += sum(product.gross_profit_percentage for product in assigned_products)
+            return round(total_price, 2)
+
+        return 0
 
     @property
     def labor_sell(self):
@@ -295,9 +319,28 @@ class TaskMapping(BaseModel):
     @property
     def mat_cost(self):
         """
-        Return fixed MAT cost. Modify this if you have a real calculation.
+        Calculate the mat cost based on assigned products for tasks related to this TaskMapping instance.
         """
-        return 12
+        task_mappings = TaskMapping.objects.filter(opportunity=self.opportunity)
+        filtered_task_mappings = task_mappings.exclude(task__description__icontains="labor")
+
+        assigned_products = AssignedProduct.objects.filter(task_mapping_id=self.id)
+
+        total_quantity = 0
+        total_price = 0.0
+        total_percent = 0.0
+
+        for task in filtered_task_mappings:
+            task_assigned_products = assigned_products.filter(task_mapping_id=task.id)
+
+            total_quantity += sum(product.quantity for product in task_assigned_products)
+            total_price += sum(
+                product.vendor_quoted_cost if product.vendor_quoted_cost else product.standard_cost
+                for product in task_assigned_products
+            )
+            total_percent += sum(product.gross_profit_percentage for product in task_assigned_products)
+
+        return round(total_price, 2)
 
     @property
     def mat_plus_mu(self):

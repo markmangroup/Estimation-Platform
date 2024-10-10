@@ -2,11 +2,12 @@ import os
 
 import pandas as pd
 from django.core.exceptions import ValidationError
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from apps.proposal.vendor.models import Vendor
 
 
-def import_vendor_from_file(file):
+def import_vendor_from_file(file: InMemoryUploadedFile) -> dict:
     """
     Import vendor data from an uploaded CSV or Excel file.
 

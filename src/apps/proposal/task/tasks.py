@@ -1,12 +1,13 @@
 import os
 
 import pandas as pd
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import IntegrityError
 
 from apps.proposal.task.models import Task
 
 
-def import_task_from_file(file):
+def import_task_from_file(file: InMemoryUploadedFile) -> dict:
     """
     Import tasks from a CSV or Excel file, creating or updating Task records.
 

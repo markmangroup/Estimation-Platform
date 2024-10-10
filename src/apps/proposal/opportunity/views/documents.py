@@ -2,9 +2,9 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from django.views.generic import CreateView
 
-from apps.rental.mixin import CustomDataTableMixin, LoginRequiredMixin
+from apps.constants import LOGGER
+from apps.mixin import CreateViewMixin, CustomDataTableMixin
 
 from ..forms import UploadDocumentForm
 from ..models import Document, Opportunity
@@ -25,9 +25,9 @@ class DocumentListAjaxView(CustomDataTableMixin):
         """Return the list of items for this view."""
         if self.search:
             return qs.filter(
-                Q(document_icontains=self.search)
-                | Q(comment_icontains=self.search)
-                | Q(created_at_icontains=self.search)
+                Q(document__icontains=self.search)
+                | Q(comment__icontains=self.search)
+                | Q(created_at__icontains=self.search)
             )
         return qs
 
@@ -68,7 +68,7 @@ class DocumentListAjaxView(CustomDataTableMixin):
         return JsonResponse(context_data)
 
 
-class UploadDocument(LoginRequiredMixin, CreateView):
+class UploadDocument(CreateViewMixin):
     """
     View to handle document uploads associated with an opportunity.
     """
@@ -110,7 +110,7 @@ class UploadDocument(LoginRequiredMixin, CreateView):
         """
         for field, errors in form.errors.items():
             for error in errors:
-                print(f"Error in {field}: {error}")
+                LOGGER.error(f"Error in {field}: {error}")
         return super().form_invalid(form)
 
     def get_success_url(self):

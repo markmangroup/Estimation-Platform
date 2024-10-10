@@ -1,15 +1,13 @@
-from django.views.generic import TemplateView
-
-from apps.rental.mixin import LoginBaseMixin, WarehouseViewMixin
+from apps.mixin import TemplateViewMixin, WarehouseViewMixin
 
 # Create your views here.
 
 
-class ChooseScreens(LoginBaseMixin, TemplateView):
+class ChooseScreens(TemplateViewMixin):
     template_name = "proposal/choose_screens.html"
 
 
-class ComingSoon(LoginBaseMixin, TemplateView):
+class ComingSoon(TemplateViewMixin):
     template_name = "proposal/coming_soon.html"
 
 

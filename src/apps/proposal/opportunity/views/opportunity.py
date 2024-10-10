@@ -1,22 +1,22 @@
 import datetime
 import json
 import urllib.parse
+from typing import Any, Dict
 
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import get_template
 from django.urls import reverse
 from django.utils.dateparse import parse_date
-from django.views.generic import TemplateView
 
-from apps.constants import ERROR_RESPONSE
-from apps.rental.mixin import (
+from apps.constants import ERROR_RESPONSE, LOGGER
+from apps.mixin import (
     CustomDataTableMixin,
-    LoginRequiredMixin,
+    FormViewMixin,
     ProposalDetailViewMixin,
-    ProposalFormViewMixin,
     ProposalViewMixin,
+    TemplateViewMixin,
     ViewMixin,
 )
 
@@ -63,14 +63,14 @@ class OpportunityList(ProposalViewMixin):
     render_template_name = "proposal/opportunity/opportunity_list.html"
 
 
-class OpportunityDocumentView(LoginRequiredMixin, TemplateView):
+class OpportunityDocumentView(TemplateViewMixin):
     """
     View for displaying an opportunity document.
     """
 
     template_name = "proposal/opportunity/opportunity_document.html"
 
-    def _get_opportunity_document(self, document_number):
+    def _get_opportunity_document(self, document_number: str) -> QuerySet:
         """
         Retrieve documents associated with the given opportunity document number.
 
@@ -79,12 +79,20 @@ class OpportunityDocumentView(LoginRequiredMixin, TemplateView):
         """
         return Document.objects.filter(opportunity__document_number=document_number)
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         """Add document number and opportunity documents to the context."""
+
         context = super().get_context_data(**kwargs)
         document_number = self.kwargs.get("document_number")
-        context["document_number"] = document_number
+        opportunity_obj = Opportunity.objects.filter(document_number=document_number).first()
+        context["opportunity"] = opportunity_obj
         context["opportunity_document"] = self._get_opportunity_document(document_number)
+
+        # Final Document
+        context["new_material_master_data"] = FinalDocument._get_new_material_master_data(document_number)
+        context["cost_variances_data"] = FinalDocument._get_cost_variances_data(document_number)
+        context["netsuite_extract_data"] = FinalDocument._get_netsuite_extract_data(document_number)
+
         return context
 
 
@@ -175,7 +183,7 @@ class OpportunityListAjaxView(CustomDataTableMixin):
             }
 
             column_name = column_filters.get(column)
-            # print("column_name: ", column_name)
+
             if column_name:
                 if values:
                     qs = qs.filter(**{f"{column_name}__in": values})
@@ -268,7 +276,7 @@ class OpportunityListAjaxView(CustomDataTableMixin):
         return JsonResponse(context_data)
 
 
-class OpportunityCreateFromCSVFormView(ProposalFormViewMixin):
+class OpportunityCreateFromCSVFormView(FormViewMixin):
     """
     View for importing Opportunities from a CSV or Excel file.
     """
@@ -325,7 +333,7 @@ class OpportunityDetail(ProposalDetailViewMixin):
         document_number = self.kwargs.get("document_number")
         return get_object_or_404(Opportunity, document_number=document_number)
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         """
         Returns a dictionary od the context object.
         """
@@ -367,7 +375,7 @@ class UpdateOpportunityView(ViewMixin):
     View to update opportunity fields.
     """
 
-    def _update_field(self, opportunity_obj, field_name, value):
+    def _update_field(self, opportunity_obj: Opportunity, field_name: str, value: str) -> dict:
         """
         Update a specified field of the opportunity.
 
@@ -383,7 +391,7 @@ class UpdateOpportunityView(ViewMixin):
             "message": f"{field_name.replace('_', ' ').capitalize()} updated successfully",
         }
 
-    def _update_data(self, data):
+    def _update_data(self, data: dict) -> dict:
         """
         Update opportunity fields based on incoming data.
 
@@ -417,10 +425,10 @@ class UpdateOpportunityView(ViewMixin):
             return ERROR_RESPONSE
 
         except Opportunity.DoesNotExist:
-            print("Error: Opportunity Not Found")
+            LOGGER.error("Error: Opportunity Not Found")
             return ERROR_RESPONSE
         except Exception as e:
-            print("Error [UpdateOpportunity][update_date]", e)
+            LOGGER.error(f"Error [UpdateOpportunity][update_date] {e}")
             return ERROR_RESPONSE
 
     def post(self, request, *args, **kwargs) -> JsonResponse:
@@ -433,12 +441,11 @@ class UpdateOpportunityView(ViewMixin):
         try:
             body_unicode = request.body.decode("utf-8")
             data = urllib.parse.parse_qs(body_unicode)
-            # print(f"data ==>>: {data}")
             response = self._update_data(data)
             return JsonResponse(response)
 
         except Exception as e:
-            print("Error [UpdateOpportunity]", e)
+            LOGGER.error(f"Error [UpdateOpportunity] {e}")
             return JsonResponse(ERROR_RESPONSE, status=400)
 
 
@@ -447,7 +454,7 @@ class UpdateStages(ViewMixin):
     Update Opportunity Stages.
     """
 
-    def post(self, request):
+    def post(self, request) -> JsonResponse:
         """
         Handle POST requests to update the opportunity stage.
 
@@ -477,10 +484,10 @@ class UpdateStages(ViewMixin):
         try:
             return json.loads(request.body)
         except json.JSONDecodeError:
-            print("Error: Invalid JSON")
+            LOGGER.error("Error: Invalid JSON")
             return JsonResponse(ERROR_RESPONSE, status=400)
 
-    def _update_stage(self, opportunity, updated_stage) -> JsonResponse:
+    def _update_stage(self, opportunity: Opportunity, updated_stage: str) -> JsonResponse:
         """
         Update the opportunity stage if the new stage is valid.
 
@@ -518,7 +525,7 @@ class OpportunityFilterView(ViewMixin):
         "Updated At": "updated_at",
     }
 
-    def get(self, request, column):
+    def get(self, request, column: str) -> JsonResponse:
         """
         Handle GET requests to filter opportunities by the specified column.
 

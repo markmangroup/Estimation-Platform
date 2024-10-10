@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.views.generic import FormView, View
 from django_datatables_too.mixins import DataTableMixin
 
-from apps.rental.mixin import ProposalViewMixin
+from apps.mixin import ProposalViewMixin
 
 from .forms import ImportLabourCostCSVForm
 from .models import LabourCost

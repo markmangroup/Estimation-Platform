@@ -320,7 +320,8 @@
                       </tr>
                     {% endfor %}
 
-                    {% for et_labor in task_labor_list %}
+                    <!-- Labor Removed -->
+                    {% comment %} {% for et_labor in task_labor_list %}
                       <!-- Labor -->
                       <tr class="selected-estimate-row">
                         <input type="hidden" class="task_mapping" value={{ et_labor.id }}>
@@ -358,7 +359,7 @@
                         <td class="comb_gp">{{ et_labor.comb_gp }}</td>
 
                       </tr>
-                    {% endfor %}
+                    {% endfor %} {% endcomment %}
                     <tr>
                       <td class="text-nowrap">FRT</td>
                       <td class="text-nowrap">FRT: Freight</td>

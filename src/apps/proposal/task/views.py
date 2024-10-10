@@ -2,14 +2,10 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.urls import reverse
 
+from apps.mixin import CustomDataTableMixin, FormViewMixin, ProposalViewMixin
 from apps.proposal.task.forms import ImportTaskForm
 from apps.proposal.task.models import Task
 from apps.proposal.task.tasks import import_task_from_file
-from apps.rental.mixin import (
-    CustomDataTableMixin,
-    ProposalFormViewMixin,
-    ProposalViewMixin,
-)
 
 
 class TaskListView(ProposalViewMixin):
@@ -55,7 +51,7 @@ class TaskListAjaxView(CustomDataTableMixin):
         return JsonResponse(context_data)
 
 
-class TaskImportView(ProposalFormViewMixin):
+class TaskImportView(FormViewMixin):
     """
     View for importing tasks from CSV or Excel files.
     """

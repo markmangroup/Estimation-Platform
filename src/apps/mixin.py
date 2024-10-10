@@ -13,14 +13,6 @@ from django.views.generic import (
 from django_datatables_too.mixins import DataTableMixin
 
 
-class LoginBaseMixin(LoginRequiredMixin):
-    """
-    Base mixin for requiring login before accessing views.
-    """
-
-    ...
-
-
 class AdminMixin(LoginRequiredMixin):
     """
     Base mixin for requiring admin login before accessing views.
@@ -32,7 +24,7 @@ class AdminMixin(LoginRequiredMixin):
         return super().dispatch(request, *args, **kwargs)
 
 
-class ProposalViewMixin(LoginBaseMixin, TemplateView):
+class ProposalViewMixin(LoginRequiredMixin, TemplateView):
     """
     Mixin for rendering proposal-related views.
     """
@@ -45,7 +37,7 @@ class ProposalViewMixin(LoginBaseMixin, TemplateView):
         return context
 
 
-class ProposalCreateViewMixin(LoginBaseMixin, CreateView):
+class ProposalCreateViewMixin(LoginRequiredMixin, CreateView):
     """
     Mixin for rendering proposal-related views.
     """
@@ -58,7 +50,7 @@ class ProposalCreateViewMixin(LoginBaseMixin, CreateView):
         return context
 
 
-class ProposalListViewMixin(LoginBaseMixin, ListView):
+class ProposalListViewMixin(LoginRequiredMixin, ListView):
     """
     Mixin for rendering proposal-related views.
     """
@@ -71,7 +63,7 @@ class ProposalListViewMixin(LoginBaseMixin, ListView):
         return context
 
 
-class ProposalUpdateViewMixin(LoginBaseMixin, UpdateView):
+class ProposalUpdateViewMixin(LoginRequiredMixin, UpdateView):
     """
     Mixin for rendering proposal-related views.
     """
@@ -84,7 +76,7 @@ class ProposalUpdateViewMixin(LoginBaseMixin, UpdateView):
         return context
 
 
-class ProposalDeleteViewMixin(LoginBaseMixin, DeleteView):
+class ProposalDeleteViewMixin(LoginRequiredMixin, DeleteView):
     """
     Mixin for rendering proposal-related views.
     """
@@ -97,7 +89,7 @@ class ProposalDeleteViewMixin(LoginBaseMixin, DeleteView):
         return context
 
 
-class ProposalDetailViewMixin(LoginBaseMixin, DetailView):
+class ProposalDetailViewMixin(LoginRequiredMixin, DetailView):
     """
     Mixin For Rendering Detail Proposal Views.
     """
@@ -131,7 +123,55 @@ class CustomDataTableMixin(LoginRequiredMixin, DataTableMixin, View):
     ...
 
 
-class ProposalFormViewMixin(LoginRequiredMixin, FormView):
+class TemplateViewMixin(LoginRequiredMixin, TemplateView):
+    """
+    Mixin for a login-required Template View.
+    """
+
+    ...
+
+
+class ListViewMixin(LoginRequiredMixin, ListView):
+    """
+    Mixin for a login-required List View.
+    """
+
+    ...
+
+
+class DetailsViewMixin(LoginRequiredMixin, DetailView):
+    """
+    Mixin for a login-required List View.
+    """
+
+    ...
+
+
+class CreateViewMixin(LoginRequiredMixin, CreateView):
+    """
+    Mixin for a login-required Create View.
+    """
+
+    ...
+
+
+class UpdateViewMixin(LoginRequiredMixin, UpdateView):
+    """
+    Mixin for a login-required Update View.
+    """
+
+    ...
+
+
+class DeleteViewMixin(LoginRequiredMixin, DeleteView):
+    """
+    Mixin for a login-required Delete View.
+    """
+
+    ...
+
+
+class FormViewMixin(LoginRequiredMixin, FormView):
     """
     Mixin for a login-required Form view.
     """

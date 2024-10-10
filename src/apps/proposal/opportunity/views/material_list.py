@@ -1,7 +1,7 @@
 from django.db.models import Q
 from django.http import JsonResponse
 
-from apps.rental.mixin import CustomDataTableMixin
+from apps.mixin import CustomDataTableMixin
 
 from ..models import GlueAndAdditionalMaterial, MaterialList, PreliminaryMaterialList
 

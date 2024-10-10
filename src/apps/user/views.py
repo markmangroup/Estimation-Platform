@@ -13,7 +13,8 @@ from django.views.generic.base import View
 from django.views.generic.edit import CreateView, UpdateView
 from django_datatables_too.mixins import DataTableMixin
 
-from apps.rental.mixin import AdminMixin, ProposalCreateViewMixin
+from apps.constants import LOGGER
+from apps.mixin import AdminMixin, ProposalCreateViewMixin
 from apps.user.models import User
 
 from .forms import UserForm, UserUpdateForm
@@ -67,7 +68,7 @@ class AuthorizationView(ProposalCreateViewMixin, AdminMixin):
 
     def form_invalid(self, form):
         for error in form.errors:
-            print("Form Error:", error)
+            LOGGER.error(f"Form Error: {error}")
         messages.error(
             self.request,
             "There was an error creating the user. Please check the form and try again.",
@@ -97,7 +98,9 @@ class AddUserView(AdminMixin, CreateView):
         Handle valid form submission by showing a success message and returning a success response.
         """
         messages.success(self.request, "The user has been successfully added.")
-        self.object = form.save(commit=True)
+        user = form.save(commit=False)
+        user.application_type = User.PROPOSAL
+        user.save()
         return HttpResponse("success")
 
     def form_invalid(self, form):
@@ -199,8 +202,24 @@ class DeleteUserView(AdminMixin, View):
 
     def post(self, request):
         user_id = request.POST.get("id")
-        User.objects.filter(id=user_id).delete()
-        return JsonResponse({"message": "User Deleted Successfully."})
+        current_user = request.user
+        user = User.objects.filter(id=user_id).first()
+
+        if current_user == user:
+            messages.info(
+                request,
+                "Access Denied: You do not have the necessary permissions to access this application. Please contact your provider for assistance",
+            )
+            user.delete()
+            return JsonResponse(
+                {
+                    "code": "111",
+                    "message": "Access Denied: You do not have the necessary permissions to access this application. Please contact your provider for assistance",
+                }
+            )
+
+        user.delete()
+        return JsonResponse({"code": "200", "message": "User Deleted Successfully."})
 
 
 class CheckUserAccountTypeView(View):
