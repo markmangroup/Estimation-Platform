@@ -3,8 +3,8 @@ import urllib.parse
 
 from django.http import JsonResponse
 
-from apps.constants import ERROR_RESPONSE
-from apps.rental.mixin import ViewMixin
+from apps.constants import ERROR_RESPONSE, LOGGER
+from apps.mixin import ViewMixin
 
 from ..models import AssignedProduct, Invoice, TaskMapping
 
@@ -14,7 +14,7 @@ class AddItemsView(ViewMixin):
     View for adding dynamically generated items to assigned products.
     """
 
-    def add_items(self, data):
+    def add_items(self, data: list) -> dict:
         """
         Add items to the assigned products based on the provided data.
 
@@ -34,10 +34,10 @@ class AddItemsView(ViewMixin):
             else:
                 return {"status": "warning", "message": "No item to add"}
         except AssignedProduct.DoesNotExist:
-            print("Error: Assigned product not found")
+            LOGGER.error("Assigned product not found")
             return ERROR_RESPONSE
         except Exception as e:
-            print(f"ERROR: [AddItemsView][2035] {e}")
+            LOGGER.error(f"[AddItemsView] {e}")
             return ERROR_RESPONSE
 
     def post(self, request, *args, **kwargs) -> JsonResponse:
@@ -55,7 +55,7 @@ class AddItemsView(ViewMixin):
             response = self.add_items(data)
             return JsonResponse(response)
         except json.JSONDecodeError:
-            print("Invalid JSON")
+            LOGGER.error("Invalid JSON")
             return JsonResponse(ERROR_RESPONSE, status=400)
 
 
@@ -64,7 +64,7 @@ class AddDescriptionView(ViewMixin):
     View for adding dynamically generated descriptions to task mappings.
     """
 
-    def add_description(self, data):
+    def add_description(self, data: dict) -> dict:
         """
         Add descriptions to task mappings based on the provided data.
 
@@ -97,10 +97,10 @@ class AddDescriptionView(ViewMixin):
                 return {"status": "empty", "message": "No updates made."}
 
         except TaskMapping.DoesNotExist:
-            print("Error: Task mapping not found")
+            LOGGER.error("Task mapping not found")
             return ERROR_RESPONSE
         except Exception as e:
-            print("Error [AddDescriptionView][add_description]", e)
+            LOGGER.error(f"[AddDescriptionView][add_description] {e}")
             return ERROR_RESPONSE
 
     def post(self, request, *args, **kwargs) -> JsonResponse:
@@ -117,7 +117,7 @@ class AddDescriptionView(ViewMixin):
             response = self.add_description(data)
             return JsonResponse(response)
         except Exception as e:
-            print("Error [AddDescriptionView]", e)
+            LOGGER.error(f"[AddDescriptionView] {e}")
             return JsonResponse(ERROR_RESPONSE, status=400)
 
 
@@ -150,10 +150,10 @@ class UpdateItemIncludeView(ViewMixin):
             return JsonResponse({"status": "success", "message": status_message})
 
         except TaskMapping.DoesNotExist:
-            print("Error: Task Mapping does not exist")
+            LOGGER.error("Task Mapping does not exist")
             return JsonResponse(ERROR_RESPONSE, status=404)
         except Exception as e:
-            print(f"ERROR: [UpdateItemIncludeView][2071] {e}")
+            LOGGER.error(f"[UpdateItemIncludeView][2071] {e}")
             return JsonResponse(ERROR_RESPONSE, status=500)
 
 
@@ -197,16 +197,19 @@ class UpdateTaskMappingView(ViewMixin):
             if update_type in update_map:
                 attr, message = update_map[update_type]
                 setattr(task_mapping_obj, attr, new_value)
+                if update_type == "task_code":
+                    task_mapping_obj.is_assign_task = False
+                    task_mapping_obj.assign_to = ""
                 task_mapping_obj.save()
                 return JsonResponse({"status": "success", "message": message}, status=200)
 
-            print("Invalid Update Type")
+            LOGGER.info("Invalid Update Type")
             return JsonResponse(ERROR_RESPONSE, status=400)
 
         except TaskMapping.DoesNotExist:
             return JsonResponse(ERROR_RESPONSE, status=404)
         except Exception as e:
-            print(f"Error: {e}")  # Logging error for debugging
+            LOGGER.info(f"Error: {e}")  # Logging error for debugging
             return JsonResponse(ERROR_RESPONSE, status=500)
 
 
@@ -224,7 +227,7 @@ class UpdateProposalItemsView(ViewMixin):
         "prod_cost": "Price Updated successfully",
     }
 
-    def update_data(self, data):
+    def update_data(self, data: dict) -> dict:
         """
         Update the attributes of an assigned product based on provided input data.
 
@@ -237,7 +240,7 @@ class UpdateProposalItemsView(ViewMixin):
             value = data.get("value")[0]
 
             if input_type not in self.SUCCESS_MESSAGES:
-                print("Error: Invalid input type")
+                LOGGER.error("Invalid input type")
                 return ERROR_RESPONSE
 
             # Map input types to the corresponding attribute and parsing method
@@ -257,16 +260,16 @@ class UpdateProposalItemsView(ViewMixin):
             return {"status": "success", "message": self.SUCCESS_MESSAGES[input_type]}
 
         except AssignedProduct.DoesNotExist:
-            print("Error: Assigned product does not exist")
+            LOGGER.error("Assigned product does not exist")
             return ERROR_RESPONSE
         except (ValueError, TypeError) as e:
-            print(f"Value Error: {e}")
+            LOGGER.error(f"Value Error: {e}")
             return ERROR_RESPONSE
         except Exception as e:
-            print(f"Error [UpdateProposalItemsView][update_data]: {e}")
+            LOGGER.error(f"[UpdateProposalItemsView][update_data]: {e}")
             return ERROR_RESPONSE
 
-    def parse_cost(self, value):
+    def parse_cost(self, value: str) -> float:
         """
         Parse a cost value from a string to a float.
 
@@ -275,7 +278,7 @@ class UpdateProposalItemsView(ViewMixin):
         """
         return float(value.replace("$", "").strip())
 
-    def parse_quantity(self, value):
+    def parse_quantity(self, value: str) -> float:
         """
         Parse a quantity value from a string to an integer.
 
@@ -299,7 +302,7 @@ class UpdateProposalItemsView(ViewMixin):
             response = self.update_data(data)
             return JsonResponse(response)
         except Exception as e:
-            print(f"Error: [UpdateProposalItemsView][post]: {e}")
+            LOGGER.error(f"[UpdateProposalItemsView][post]: {e}")
             return JsonResponse(ERROR_RESPONSE, status=400)
 
 
@@ -327,7 +330,7 @@ class UpdateInvoiceView(ViewMixin):
         "seller_position": "Seller Position Updated successfully",
     }
 
-    def update_data(self, data):
+    def update_data(self, data: dict) -> dict:
         """
         Update the attributes of an invoice based on the provided input data.
 
@@ -344,14 +347,14 @@ class UpdateInvoiceView(ViewMixin):
                 invoice_obj.save()
                 return {"status": "success", "message": self.SUCCESS_MESSAGES[update_type]}
             else:
-                print("Error: Invalid update type")
+                LOGGER.error("Invalid update type")
                 return ERROR_RESPONSE
 
         except Invoice.DoesNotExist:
-            print("Error: Invoice Not Found")
+            LOGGER.error("Invoice Not Found")
             return ERROR_RESPONSE
         except Exception as e:
-            print(f"Error [UpdateInvoiceView][update_data]: {e}")
+            LOGGER.error(f"[UpdateInvoiceView][update_data]: {e}")
             return ERROR_RESPONSE
 
     def post(self, request, *args, **kwargs) -> JsonResponse:
@@ -369,5 +372,5 @@ class UpdateInvoiceView(ViewMixin):
             response = self.update_data(data)
             return JsonResponse(response)
         except Exception as e:
-            print(f"Error [UpdateInvoiceView][post]: {e}")
+            LOGGER.error(f"[UpdateInvoiceView][post]: {e}")
             return JsonResponse(ERROR_RESPONSE, status=400)

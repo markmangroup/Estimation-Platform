@@ -15,7 +15,7 @@
         <table id="sample" class="table table-bordered table-striped assign_prod">
             <thead>
                 <tr>
-                    <th><input name="checkbox" type="checkbox" class="row-checkbox" /></th>
+                    <th class="select-checkbox"><input name="checkbox" type="checkbox" class="select-checkbox" checked/></th>
                     <th>Combined Quantities</th>
                     <th>Description</th>
                     <th>Item Number</th>
@@ -23,7 +23,7 @@
             </thead>
             <tbody>
             {% for p in products %}
-                <tr>
+                <tr class="checkbox-tr">
                     <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
                     <td>{{p.combined_quantities_from_both_import}}</td>
                     <td>{{p.description}}</td>
@@ -83,16 +83,23 @@
 <script>
     $(document).ready(function() {
 
+
         $('.assign_prod').DataTable({
             "lengthChange": false,
             "paging": false,
             "info": false,
-
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "orderable": false,
+                }
+            ]
         });
+
 
         function getSelectedCheckboxes() {
             var selectedItems = [];
-            $("#sample input:checkbox:checked").each(function() {
+            $(".checkbox-tr input:checkbox:checked").each(function() {
                 var row = $(this).closest("tr");
                 var item = {
                     internal_id: row.find("td").eq(3).text()
@@ -101,6 +108,22 @@
             });
             return selectedItems;
         }
+
+        $(".select-checkbox").click(function(){
+            var isChecked = $(this).is(':checked');
+
+            console.log(isChecked);
+
+            if (isChecked){
+                $(".row-checkbox").prop('checked', false);
+                $(".select-checkbox").prop('checked', false);
+            }else{
+                $(".row-checkbox").prop('checked', true);
+                $(".select-checkbox").prop('checked', true);
+            }
+
+        });
+
 
         $("#save-button").click(function() {
             var selectedItems = getSelectedCheckboxes();

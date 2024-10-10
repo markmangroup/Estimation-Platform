@@ -4,6 +4,7 @@ from django.db.models import Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from apps.constants import LOGGER
 from apps.proposal.opportunity.models import (
     Document,
     Invoice,
@@ -31,7 +32,7 @@ def generate_invoice_details(sender, instance, created, **kwargs):
     # Check if invoice is already created but invoice number is not assigned
     try:
         invoice_object = Invoice.objects.get(opportunity=instance)
-        print("Invoice ==>>", invoice_object)
+        LOGGER.info(f"Invoice ==>> {invoice_object}")
     except Invoice.DoesNotExist:
         Invoice.objects.create(opportunity=instance, invoice_number=invoice_number)
 
@@ -39,10 +40,10 @@ def generate_invoice_details(sender, instance, created, **kwargs):
 @receiver(post_save, sender=SelectTaskCode)
 def save_task_mapping_tasks(sender, instance, created, **kwargs):
     """
-    Save multiple TaskMapping objects when a SelectTaskCode instance is created.
+    Save multiple TaskMapping objects when a Task Mapping instance is created.
 
-    :Arg sender: The model class that sent the signal (SelectTaskCode).
-    :Arg instance: The actual instance of SelectTaskCode that was saved.
+    :Arg sender: The model class that sent the signal (Task Mapping).
+    :Arg instance: The actual instance of Task Mapping that was saved.
     :Arg created: Boolean indicating if a new record was created.
     :Arg **kwargs: Additional keyword arguments..
     """
@@ -61,7 +62,7 @@ def remove_document(sender, instance, created, **kwargs):
     Remove documents.
 
     :Arg sender: The model class that sent the signal (Document).
-    :Arg instance: The actual instance of SelectTaskCode that was saved.
+    :Arg instance: The actual instance of Document that was saved.
     :Arg created: Boolean indicating if a new record was created.
     :Arg **kwargs: Additional keyword arguments..
     """
@@ -69,5 +70,4 @@ def remove_document(sender, instance, created, **kwargs):
         document_obj = Document.objects.filter(
             Q(document__isnull=True) | Q(document=""), Q(comment__isnull=True) | Q(comment="")
         )
-        # print("document_obj", document_obj)
         document_obj.delete()

@@ -97,7 +97,11 @@
           <!-- Row 1 -->
           {% for q in cost_variances_data %}
             <tr>
-              <td>{{ q.item_code }}</td>
+              {% if q.item_code %}
+                <td>{{ q.item_code }}</td>
+              {% else %}
+                <td> - </td>
+              {% endif %}
               <td>${{ q.standard_cost }}</td>
               {% if q.vendor_quoted_cost %}
                 <td>${{ q.vendor_quoted_cost }}</td>

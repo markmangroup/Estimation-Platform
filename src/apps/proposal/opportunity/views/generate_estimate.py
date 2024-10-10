@@ -1,12 +1,13 @@
 import urllib.parse
 from decimal import Decimal
+from typing import Any, Dict
 
+from django.db.models import QuerySet
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from django.views.generic import TemplateView
 
-from apps.constants import ERROR_RESPONSE
-from apps.rental.mixin import LoginRequiredMixin, ProposalViewMixin, ViewMixin
+from apps.constants import ERROR_RESPONSE, LOGGER
+from apps.mixin import ProposalViewMixin, TemplateViewMixin, ViewMixin
 
 from ..models import AssignedProduct, TaskMapping
 
@@ -18,54 +19,7 @@ class GenerateEstimateTable(ProposalViewMixin):
 
     render_template_name = "proposal/opportunity/stage/generate_estimation/generate_estimate_table.html"
 
-    def get_total(self, document_number):
-        """
-        Calculate totals for various cost categories based on task mappings.
-
-        :param document_number: The document number to filter opportunities.
-        :return: Dictionary containing total costs and profits.
-        """
-        task_mapping_qs = TaskMapping.objects.filter(opportunity__document_number=document_number)
-
-        # Initialize totals with Decimal objects for precision
-        totals = {
-            key: Decimal("0.00")
-            for key in [
-                "total_labor_cost",
-                "total_labor_gp_percent",
-                "total_labor_gp",
-                "total_labor_sell",
-                "total_mat_cost",
-                "total_mat_gp_percent",
-                "total_mat_gp",
-                "total_mat_mu",
-                "total_sales_tax",
-                "total_s_and_h",
-                "total_mat_sell",
-                "total_mat_tax_labor",
-                "total_comb_gp",
-            ]
-        }
-
-        # Aggregate totals using Django's annotate for performance
-        for task in task_mapping_qs:
-            totals["total_labor_cost"] += Decimal(task.labor_cost or "0.0")
-            totals["total_labor_gp_percent"] += Decimal(task.labor_gp_percent or "0.0")
-            totals["total_labor_gp"] += Decimal(task.labor_gp or "0.0")
-            totals["total_labor_sell"] += Decimal(task.labor_sell or "0.0")
-            totals["total_mat_cost"] += Decimal(task.mat_cost or "0.0")
-            totals["total_mat_gp_percent"] += Decimal(task.mat_gp_percent or "0.0")
-            totals["total_mat_gp"] += Decimal(task.mat_gp or "0.0")
-            totals["total_mat_mu"] += Decimal(task.mat_plus_mu or "0.0")
-            totals["total_sales_tax"] += Decimal(task.sales_tax or "0.0")
-            totals["total_s_and_h"] += Decimal(task.s_and_h or "0.0")
-            totals["total_mat_sell"] += Decimal(task.mat_sell or "0.0")
-            totals["total_mat_tax_labor"] += Decimal(task.mat_tax_labor or "0.0")
-            totals["total_comb_gp"] += Decimal(task.comb_gp or "0.0")
-
-        return totals
-
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         """
         Populate context with necessary data for rendering the estimate table.
 
@@ -85,18 +39,18 @@ class GenerateEstimateTable(ProposalViewMixin):
         ).filter(task__description__icontains="labor")
 
         # Calculate totals and add to context
-        context["total"] = self.get_total(document_number)
+        context["total"] = GenerateEstimate._get_total(document_number)
         return context
 
 
-class UpdateEstimationProduct(LoginRequiredMixin, TemplateView):
+class UpdateEstimationProduct(TemplateViewMixin):
     """
     View for updating product information in the estimation table.
     """
 
     template_name = "proposal/opportunity/stage/generate_estimation/estimation_product_update.html"
 
-    def get_tasks_products_data(self, task_id):
+    def get_tasks_products_data(self, task_id: int) -> QuerySet:
         """
         Retrieve assigned products for a specific task.
 
@@ -105,7 +59,7 @@ class UpdateEstimationProduct(LoginRequiredMixin, TemplateView):
         """
         return AssignedProduct.objects.filter(task_mapping__id=task_id)
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         """
         Populate context with task mapping and associated products.
 
@@ -123,14 +77,14 @@ class UpdateEstimationProduct(LoginRequiredMixin, TemplateView):
         return context
 
 
-class UpdateEstimationLabor(LoginRequiredMixin, TemplateView):
+class UpdateEstimationLabor(TemplateViewMixin):
     """
     View for updating labor information in the estimation table.
     """
 
     template_name = "proposal/opportunity/stage/generate_estimation/estimation_labor_update.html"
 
-    def get_tasks_labor_data(self, task_id):
+    def get_tasks_labor_data(self, task_id: int) -> QuerySet:
         """
         Retrieve assigned labor products for a specific task.
 
@@ -139,7 +93,7 @@ class UpdateEstimationLabor(LoginRequiredMixin, TemplateView):
         """
         return AssignedProduct.objects.filter(task_mapping__id=task_id)
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         """
         Populate context with associated labor data for a specific task.
 
@@ -162,13 +116,14 @@ class UpdateEstimationTable(ViewMixin):
     View for updating various fields in the estimation table.
     """
 
-    def _update_data(self, data):
+    def _update_data(self, data: dict) -> dict:
         """
         Update task mapping based on provided data.
 
         :param data: Parsed request data containing update information.
         :return: Response dictionary with status and message.
         """
+
         task_mapping_id = data.get("task_mapping_id", [None])[0]
         task_mapping_obj = get_object_or_404(TaskMapping, id=task_mapping_id)
 
@@ -202,14 +157,20 @@ class UpdateEstimationTable(ViewMixin):
             response = self._update_data(data)
             return JsonResponse(response)
         except Exception as e:
-            print("Error: [UpdateEstimationTable]", e)
+            LOGGER.error(f"Error: [UpdateEstimationTable] {e}")
             return JsonResponse(ERROR_RESPONSE, status=400)
 
 
 class GenerateEstimate:
 
     @staticmethod
-    def _get_task_products(document_number):
+    def _get_task_products(document_number: str) -> QuerySet:
+        """
+        Retrieve task mappings for products associated with the given document number.
+
+        :param document_number: The unique identifier for the opportunity.
+        :return: A queryset of task mappings excluding those with 'labor' in the description.
+        """
         qs = TaskMapping.objects.filter(opportunity__document_number=document_number).exclude(
             task__description__icontains="labor"
         )
@@ -217,15 +178,30 @@ class GenerateEstimate:
         return qs
 
     @staticmethod
-    def _get_task_labor(document_number):
+    def _get_task_labor(document_number: str) -> QuerySet:
+        """
+        Retrieve task mappings for labor associated with the given document number.
+
+        :param document_number: The unique identifier for the opportunity.
+        :return: A queryset of task mappings that include 'labor' in the description.
+        """
         qs = TaskMapping.objects.filter(opportunity__document_number=document_number).filter(
             task__description__icontains="labor"
         )
         return qs
 
     @staticmethod
-    def _get_total(document_number):
-        task_mapping_qs = TaskMapping.objects.filter(opportunity__document_number=document_number)
+    def _get_total(document_number: str) -> dict:
+        """
+        Calculate the total costs associated with the given document number.
+
+        :param document_number: The unique identifier for the opportunity.
+        :return: A dictionary with total labor and material costs, and total cost.
+        """
+        task_mapping_qs = TaskMapping.objects.filter(opportunity__document_number=document_number).exclude(
+            description__icontains="labor"
+        )
+
         totals = {
             "total_labor_cost": Decimal("0.00"),
             "total_labor_gp_percent": Decimal("0.00"),
@@ -268,14 +244,14 @@ class GenerateEstimate:
 
 
 # KPI
-class TotalCostBreakdown(LoginRequiredMixin, TemplateView):
+class TotalCostBreakdown(TemplateViewMixin):
     """
     View to display the total cost breakdown for a given opportunity.
     """
 
     template_name = "proposal/opportunity/stage/generate_estimation/total_cost_breakdown.html"
 
-    def get_total(self, document_number):
+    def get_total(self, document_number: str) -> dict:
         """
         Calculate the total costs associated with the given document number.
 
@@ -296,7 +272,7 @@ class TotalCostBreakdown(LoginRequiredMixin, TemplateView):
 
         return totals
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         """
         Get the context data for rendering the template.
 
@@ -309,14 +285,14 @@ class TotalCostBreakdown(LoginRequiredMixin, TemplateView):
         return context
 
 
-class TotalSaleBreakdown(LoginRequiredMixin, TemplateView):
+class TotalSaleBreakdown(TemplateViewMixin):
     """
     View to display the total sales breakdown for a given opportunity.
     """
 
     template_name = "proposal/opportunity/stage/generate_estimation/total_sale_breakdown.html"
 
-    def get_total(self, document_number):
+    def get_total(self, document_number: str) -> dict:
         """
         Calculate the total sales associated with the given document number.
 
@@ -336,7 +312,7 @@ class TotalSaleBreakdown(LoginRequiredMixin, TemplateView):
         totals["total_sale"] = totals["total_labor_sale"] + totals["total_mat_sale"]
         return totals
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         """
         Get the context data for rendering the template.
 
@@ -349,14 +325,14 @@ class TotalSaleBreakdown(LoginRequiredMixin, TemplateView):
         return context
 
 
-class TotalGPBreakdown(LoginRequiredMixin, TemplateView):
+class TotalGPBreakdown(TemplateViewMixin):
     """
     View to display the total Gross Profit (GP) breakdown for a given opportunity.
     """
 
     template_name = "proposal/opportunity/stage/generate_estimation/total_gp_breakdown.html"
 
-    def get_total(self, document_number):
+    def get_total(self, document_number: str) -> dict:
         """
         Calculate the total GP associated with the given document number.
 
@@ -376,7 +352,7 @@ class TotalGPBreakdown(LoginRequiredMixin, TemplateView):
         totals["total_gp"] = totals["total_labor_gp"] + totals["total_mat_gp"]
         return totals
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         """
         Get the context data for rendering the template.
 
@@ -389,14 +365,14 @@ class TotalGPBreakdown(LoginRequiredMixin, TemplateView):
         return context
 
 
-class TotalGPPerBreakdown(TemplateView):
+class TotalGPPerBreakdown(TemplateViewMixin):
     """
     View to display the total Gross Profit Percentage (GP%) breakdown for a given opportunity.
     """
 
     template_name = "proposal/opportunity/stage/generate_estimation/total_gp_per_breakdown.html"
 
-    def get_total(self, document_number):
+    def get_total(self, document_number: str) -> dict:
         """
         Calculate the total GP% associated with the given document number.
 
@@ -420,7 +396,7 @@ class TotalGPPerBreakdown(TemplateView):
         )
         return totals
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         """
         Get the context data for rendering the template.
 

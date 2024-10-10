@@ -2,14 +2,10 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.urls import reverse
 
+from apps.mixin import CustomDataTableMixin, FormViewMixin, ProposalViewMixin
 from apps.proposal.vendor.forms import ImportVendorForm
 from apps.proposal.vendor.models import Vendor
 from apps.proposal.vendor.tasks import import_vendor_from_file
-from apps.rental.mixin import (
-    CustomDataTableMixin,
-    ProposalFormViewMixin,
-    ProposalViewMixin,
-)
 
 
 # Create your views here.
@@ -53,7 +49,7 @@ class VendorListAjaxView(CustomDataTableMixin):
         return JsonResponse(context_data)
 
 
-class VendorImportView(ProposalFormViewMixin):
+class VendorImportView(FormViewMixin):
     """
     Handles the upload and import of vendor data from a CSV or Excel file.
     Validates the file format and data before importing.

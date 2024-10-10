@@ -1,29 +1,30 @@
 import json
 import urllib.parse
+from typing import Any, Dict
 
 from django.contrib import messages
+from django.db.models import QuerySet
 from django.http import JsonResponse
-from django.views.generic import CreateView, TemplateView
 
-from apps.constants import ERROR_RESPONSE
+from apps.constants import ERROR_RESPONSE, LOGGER
+from apps.mixin import CreateViewMixin, TemplateViewMixin, ViewMixin
 from apps.proposal.labour_cost.models import LabourCost
 from apps.proposal.product.models import Product
 from apps.proposal.task.models import Task
 from apps.proposal.vendor.models import Vendor
-from apps.rental.mixin import LoginRequiredMixin, ViewMixin
 
 from ..forms import AddTaskForm
 from ..models import AssignedProduct, Opportunity, PreliminaryMaterialList, TaskMapping
 
 
-class AssignProdLabor(LoginRequiredMixin, TemplateView):
+class AssignProdLabor(TemplateViewMixin):
     """
     Import data from CSV or Excel files.
     """
 
     template_name = "proposal/opportunity/stage/task_mapping/assign_prod_labor.html"
 
-    def _get_products_data(self, task_mapping_id, document_number):
+    def _get_products_data(self, task_mapping_id: int, document_number: str) -> QuerySet:
         """
         Retrieve available products for a specific task mapping and document number.
 
@@ -37,12 +38,14 @@ class AssignProdLabor(LoginRequiredMixin, TemplateView):
             "item_code", flat=True
         )
 
-        assigned_product_ids = list(map(int, assigned_item_codes)) if assigned_item_codes else []
+        assigned_product_ids = list(map(str, assigned_item_codes)) if assigned_item_codes else []
 
         available_products = all_products.exclude(item_number__in=assigned_product_ids)
+
         return available_products
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs) -> JsonResponse:
+
         data = json.loads(request.POST.get("items", "[]"))
         document_number = self.kwargs["document_number"]
         task_id = self.kwargs.get("task_id")
@@ -50,7 +53,7 @@ class AssignProdLabor(LoginRequiredMixin, TemplateView):
         try:
             task_mapping_obj = TaskMapping.objects.get(id=task_id)
         except TaskMapping.DoesNotExist:
-            print("Error: Task Mapping does not exist")
+            LOGGER.error("Task Mapping does not exist")
             return JsonResponse(ERROR_RESPONSE, status=404)
 
         created_products = []
@@ -77,7 +80,7 @@ class AssignProdLabor(LoginRequiredMixin, TemplateView):
             except PreliminaryMaterialList.DoesNotExist:
                 errors.append({"internal_id": internal_id, "error": "Product not found"})
             except Exception as e:
-                print(f"Error: {str(e)}")
+                LOGGER.error(f"{str(e)}")
                 errors.append({"internal_id": internal_id, "error": ERROR_RESPONSE["message"]})
 
         if errors:
@@ -88,7 +91,7 @@ class AssignProdLabor(LoginRequiredMixin, TemplateView):
 
         return JsonResponse({"status": "success", "created_products": created_products})
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
         document_number = self.kwargs["document_number"]
         task_mapping_id = self.kwargs["task_id"]
@@ -104,7 +107,7 @@ class UpdateAssignProdView(ViewMixin):
     View to update assigned product and task mapping data.
     """
 
-    def update_fields(self, data):
+    def update_fields(self, data: dict) -> dict:
         """
         Update fields in the database based on input.
 
@@ -117,7 +120,11 @@ class UpdateAssignProdView(ViewMixin):
 
         if input_type == "task":
             task_mapping = TaskMapping.objects.get(id=id)
-            task_mapping.task = Task.objects.get(id=value)
+            task_obj = Task.objects.get(id=value)
+            task_mapping.task = task_obj
+            task_mapping.code = task_obj.name
+            task_mapping.is_assign_task = False
+            task_mapping.assign_to = ""
             task_mapping.save()
             return {"status": "success", "message": "Task updated successfully"}
 
@@ -148,7 +155,7 @@ class UpdateAssignProdView(ViewMixin):
         assigned_prod.save()
         return {"status": "success", "message": msg}
 
-    def bulk_update(self, data):
+    def bulk_update(self, data: dict) -> dict:
         """
         Perform bulk updates on assigned products based on input data.
 
@@ -170,7 +177,6 @@ class UpdateAssignProdView(ViewMixin):
             for index, row in rows.items():
                 assigned_prod_obj = AssignedProduct.objects.get(id=row.get("assign_prod_id"))
                 for field, value in row.items():
-                    print(f"filed {field}, value: {value}")
                     if field in ["quantity", "vendor_quoted_cost", "standard_cost"]:
                         setattr(assigned_prod_obj, field, value)
                         assigned_prod_obj.save()
@@ -179,7 +185,7 @@ class UpdateAssignProdView(ViewMixin):
             return {"status": "success", "type": "bulk_update", "message": "Product updated successfully"}
 
         except Exception as e:
-            print(f"Error: [UpdateAssignProdView][bulk_update] {e}")
+            LOGGER.error(f"[UpdateAssignProdView][bulk_update] {e}")
             return ERROR_RESPONSE
 
     def post(self, request, *args, **kwargs) -> JsonResponse:
@@ -198,7 +204,7 @@ class UpdateAssignProdView(ViewMixin):
             return JsonResponse(response)
 
         except json.JSONDecodeError:
-            print("Error: Invalid JSON")
+            LOGGER.error("Invalid JSON")
             return JsonResponse(ERROR_RESPONSE, status=400)
 
 
@@ -207,7 +213,7 @@ class AddProdRowView(ViewMixin):
     View to add product data rows based on input.
     """
 
-    def format_data(self, input_data):
+    def format_data(self, input_data: dict) -> dict:
         """
         Format and save product data from the input.
 
@@ -262,7 +268,7 @@ class AddProdRowView(ViewMixin):
             else {"status": "empty", "message": ""}
         )
 
-    def _save_product(self, task_mapping, product):
+    def _save_product(self, task_mapping: TaskMapping, product: dict):
         """
         Save a product entry.
 
@@ -302,7 +308,7 @@ class AddProdRowView(ViewMixin):
         )
         return None
 
-    def _save_labor(self, task_mapping, product):
+    def _save_labor(self, task_mapping: TaskMapping, product: dict):
         """
         Save a labor entry.
 
@@ -311,7 +317,6 @@ class AddProdRowView(ViewMixin):
         :return: Warning message if a required field is missing, else None.
         """
         quoted_cost = product.get("quotedCost")
-        print("quoted_cost", quoted_cost)
 
         if not quoted_cost:
             return {"status": "warning", "message": "Please add quoted cost"}
@@ -357,8 +362,58 @@ class AddProdRowView(ViewMixin):
             return JsonResponse(response)
 
         except json.JSONDecodeError:
-            print("Error: Invalid JSON response")
+            LOGGER.error("Invalid JSON response")
             messages.error(self.request, ERROR_RESPONSE["message"])
+            return JsonResponse(ERROR_RESPONSE, status=400)
+
+
+class AssignTaskLaborView(ViewMixin):
+    """
+    View to link labor with task.
+    """
+
+    def get(self, request, *args, **kwargs) -> JsonResponse:
+        """Retrieve available tasks for the specified opportunity."""
+        document_number = kwargs.get("document_number")
+
+        opportunity_obj = Opportunity.objects.filter(document_number=document_number).first()
+        qs = TaskMapping.objects.filter(opportunity=opportunity_obj, is_assign_task=False).exclude(
+            description__icontains="labor"
+        )
+        task_item_list = [{"id": t.id, "text": t.code} for t in qs]
+        return JsonResponse({"results": task_item_list})
+
+    def post(self, request, *args, **kwargs) -> JsonResponse:
+        """Assign a labor task to a current task."""
+        try:
+            body_unicode = request.body.decode("utf-8")
+            data = urllib.parse.parse_qs(body_unicode)
+
+            current_task_id = data["id"][0]
+            value = data["value"][0]
+
+            current_task = TaskMapping.objects.get(id=current_task_id)
+            assign_labor_task = TaskMapping.objects.get(id=value)
+
+            current_task.assign_to = assign_labor_task.code
+            current_task.save()
+            assign_labor_task.is_assign_task = True
+            assign_labor_task.assign_to = current_task.code
+            assign_labor_task.save()
+
+            messages.success(request, f"Labor Assigned to task {assign_labor_task.code}")
+            return JsonResponse(
+                {
+                    "code": 200,
+                    "message": "success",
+                }
+            )
+
+        except TaskMapping.DoesNotExist:
+            LOGGER.error("Task Mapping does not exist")
+            return JsonResponse(ERROR_RESPONSE, status=404)
+        except Exception as e:
+            LOGGER.error(f"AssignTaskLaborView: {e}")
             return JsonResponse(ERROR_RESPONSE, status=400)
 
 
@@ -379,7 +434,7 @@ class DeleteAssignProdLabor(ViewMixin):
         return JsonResponse({"message": "Deleted Successfully.", "code": 200, "status": "success"})
 
 
-class AddTaskView(LoginRequiredMixin, CreateView):
+class AddTaskView(CreateViewMixin):
     """
     View to add a manual task to task mapping.
     """
@@ -399,7 +454,7 @@ class AddTaskView(LoginRequiredMixin, CreateView):
         try:
             opportunity = Opportunity.objects.get(document_number=document_number)
         except Opportunity.DoesNotExist:
-            print("Opportunity does not exist")
+            LOGGER.error("Opportunity does not exist")
             return JsonResponse(ERROR_RESPONSE, status=404)
 
         # Get form data
@@ -422,7 +477,7 @@ class AddTaskView(LoginRequiredMixin, CreateView):
         """
         return self.render_to_response(self.get_context_data(form=form), status=400)
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         """
         Add additional context to the template.
 
@@ -437,7 +492,13 @@ class AddTaskView(LoginRequiredMixin, CreateView):
 class TaskMappingData:
 
     @staticmethod
-    def _get_tasks(document_number):
+    def _get_tasks(document_number: str) -> dict:
+        """
+        Retrieve tasks and their assigned products for a given document number.
+
+        :param document_number: The document number to filter task mappings.
+        :return: A dictionary with task details, including total quantities, prices, and profit percentages.
+        """
         task_mappings = TaskMapping.objects.filter(opportunity__document_number=document_number)
         filtered_task_mappings = task_mappings.exclude(task__description__icontains="labor")
         task_mapping_ids = filtered_task_mappings.values_list("id", flat=True)
@@ -451,7 +512,7 @@ class TaskMappingData:
 
             total_quantity = sum(product.quantity for product in task_assigned_products)
             total_price = sum(
-                product.standard_cost if product.standard_cost else product.vendor_quoted_cost
+                product.vendor_quoted_cost if product.vendor_quoted_cost else product.standard_cost
                 for product in task_assigned_products
             )
 
@@ -468,7 +529,13 @@ class TaskMappingData:
         return tasks_with_products
 
     @staticmethod
-    def _get_task_total(document_number):
+    def _get_task_total(document_number: str) -> dict:
+        """
+        Calculate total quantities and prices for tasks associated with a document number.
+
+        :param document_number: The document number to filter task mappings.
+        :return: A dictionary with grand total quantity and price.
+        """
         task_mappings = TaskMapping.objects.filter(opportunity__document_number=document_number)
         filtered_task_mappings = task_mappings.exclude(task__description__icontains="labor")
         task_mapping_ids = filtered_task_mappings.values_list("id", flat=True)
@@ -482,7 +549,7 @@ class TaskMappingData:
 
             total_quantity = sum(product.quantity for product in task_assigned_products)
             total_price = sum(
-                product.standard_cost if product.standard_cost else product.vendor_quoted_cost
+                product.vendor_quoted_cost if product.vendor_quoted_cost else product.standard_cost
                 for product in task_assigned_products
             )
 
@@ -503,7 +570,13 @@ class TaskMappingData:
         return total_data
 
     @staticmethod
-    def _get_labour_tasks(document_number):
+    def _get_labour_tasks(document_number: str) -> dict:
+        """
+        Retrieve labor tasks and their assigned products for a given document number.
+
+        :param document_number: The document number to filter task mappings.
+        :return: A dictionary containing labor task details, including total quantities, prices, and profit percentages.
+        """
         task_mappings = TaskMapping.objects.filter(opportunity__document_number=document_number)
         filtered_task_mappings = task_mappings.filter(task__description__icontains="labor")
         task_mapping_ids = filtered_task_mappings.values_list("id", flat=True)
@@ -517,7 +590,7 @@ class TaskMappingData:
 
             total_quantity = sum(product.quantity for product in task_assigned_products)
             total_price = sum(
-                product.standard_cost if product.standard_cost else product.vendor_quoted_cost
+                product.vendor_quoted_cost if product.vendor_quoted_cost else product.standard_cost
                 for product in task_assigned_products
             )
 
@@ -534,7 +607,13 @@ class TaskMappingData:
         return tasks_with_products
 
     @staticmethod
-    def _get_labor_task_total(document_number):
+    def _get_labor_task_total(document_number: str) -> dict:
+        """
+        Calculate total quantities and prices for labor tasks associated with a document number.
+
+        :param document_number: The document number to filter task mappings.
+        :return: A dictionary with grand total quantity and price for labor tasks.
+        """
         task_mappings = TaskMapping.objects.filter(opportunity__document_number=document_number)
         filtered_task_mappings = task_mappings.filter(task__description__icontains="labor")
         task_mapping_ids = filtered_task_mappings.values_list("id", flat=True)
@@ -548,7 +627,7 @@ class TaskMappingData:
 
             total_quantity = sum(product.quantity for product in task_assigned_products)
             total_price = sum(
-                product.standard_cost if product.standard_cost else product.vendor_quoted_cost
+                product.vendor_quoted_cost if product.vendor_quoted_cost else product.standard_cost
                 for product in task_assigned_products
             )
 

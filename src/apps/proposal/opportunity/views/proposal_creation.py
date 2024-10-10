@@ -2,12 +2,12 @@ from collections import defaultdict
 
 from django.contrib import messages
 from django.db.models import Count, Prefetch
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 
-from apps.constants import ERROR_RESPONSE
-from apps.rental.mixin import ViewMixin
+from apps.constants import ERROR_RESPONSE, LOGGER
+from apps.mixin import ViewMixin
 
 from ..models import (
     AssignedProduct,
@@ -25,7 +25,7 @@ class CreateProposalView(ViewMixin):
 
     template_name = "proposal/opportunity/stage/proposal_creation/create_proposal_form.html"
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs) -> HttpResponse:
         """
         Handle GET requests to render the proposal creation form.
 
@@ -37,7 +37,9 @@ class CreateProposalView(ViewMixin):
         document_number = self.kwargs["document_number"]
 
         # Fetch task mappings for the given document number
-        task_mappings = TaskMapping.objects.filter(opportunity__document_number=document_number)
+        task_mappings = TaskMapping.objects.filter(opportunity__document_number=document_number).exclude(
+            description="Labor"
+        )
 
         # Get the IDs of task mappings that are already in the ProposalCreation for the current opportunity
         existing_task_mapping_ids = ProposalCreation.objects.filter(
@@ -92,7 +94,7 @@ class CreateProposalView(ViewMixin):
         except Opportunity.DoesNotExist:
             return JsonResponse({"error": "Opportunity not found."}, status=404)
         except Exception as e:
-            print(f"Error: {e}")  # Log error for debugging
+            LOGGER.error(f"Error: {e}")  # Log error for debugging
             return JsonResponse(ERROR_RESPONSE, status=500)
 
 
@@ -152,7 +154,7 @@ class UpdateGroupName(ViewMixin):
             updated_count = proposal_creation_obj.update(group_name=group_name)
 
             if updated_count == 0:
-                print("Error: No proposals were found for the given IDs.")
+                LOGGER.error("No proposals were found for the given IDs.")
                 return JsonResponse(ERROR_RESPONSE, status=404)
 
             return JsonResponse(
@@ -163,18 +165,25 @@ class UpdateGroupName(ViewMixin):
                 status=200,
             )
         except Exception as e:
-            print(f"ERROR: [UpdateGroupName][2003] {e}")
+            LOGGER.error(f"ERROR: [UpdateGroupName] {e}")
             return JsonResponse(ERROR_RESPONSE, status=500)
 
 
 class ProposalCreationData:
 
     @staticmethod
-    def _get_proposal_creation(document_number):
+    def _get_proposal_creation(document_number: str) -> dict:
+        """
+        Retrieves proposals by document number and organizes them by group.
+
+        :param document_number: The document number to filter proposals.
+        :return: A dictionary with grouped proposals, task totals, and assigned products.
+        """
         qs = ProposalCreation.objects.filter(opportunity__document_number=document_number).prefetch_related(
             Prefetch("task_mapping__assigned_products")
         )
 
+        # Group proposals by their group name and count them
         grouped_proposals = qs.values("group_name").annotate(count=Count("id"))
         result = {
             group["group_name"]: {
@@ -189,37 +198,19 @@ class ProposalCreationData:
 
         for proposal in qs:
             group_name = proposal.group_name
-            result[group_name]["proposals"].append(
-                {
-                    "proposal": proposal,
-                }
-            )
-
-            # Add the ProposalCreation ID to the list
+            result[group_name]["proposals"].append({"proposal": proposal})
             result[group_name]["proposal_ids"].append(proposal.id)
 
-            # Fetch all assigned products for the task
-            assigned_products = proposal.task_mapping.assigned_products.all()  # Get all assigned products
+            # Fetch assigned products for the task
+            assigned_products = proposal.task_mapping.assigned_products.all()
             task_object = proposal.task_mapping
 
-            # Initialize an empty list for filtered assigned products
             filtered_assigned_products = []
 
             for product in assigned_products:
                 if product.is_select:  # Only include selected products
                     filtered_assigned_products.append(product)
-
-                    # Calculate value based on available costs
-                    quantity = product.quantity or 0
-                    standard_cost = product.standard_cost or 0
-                    local_cost = product.local_cost or 0
-
-                    if quantity and standard_cost:
-                        value = quantity * standard_cost
-                    elif quantity and local_cost:
-                        value = quantity * local_cost
-                    else:
-                        value = 0
+                    value = ProposalCreationData._calculate_product_value(product)
 
                     result[group_name]["task_totals"][task_object] += value
                     result[group_name]["main_total"] += value
@@ -227,6 +218,7 @@ class ProposalCreationData:
             # Store the filtered assigned products
             result[group_name]["assigned_products"][task_object] = filtered_assigned_products
 
+        # Convert defaultdicts to regular dicts for final output
         for group_data in result.values():
             group_data["assigned_products"] = dict(group_data["assigned_products"])
             group_data["task_totals"] = dict(group_data["task_totals"])
@@ -234,26 +226,43 @@ class ProposalCreationData:
         return result
 
     @staticmethod
-    def _get_proposal_totals(document_number):
+    def _calculate_product_value(product: AssignedProduct) -> float:
+        """
+        Calculate the value of a product based on its costs.
 
+        :param product: The product to calculate the value for.
+        :return: The calculated value.
+        """
+        quantity = product.quantity or 0
+        standard_cost = product.standard_cost or 0
+        local_cost = product.local_cost or 0
+
+        if quantity and standard_cost:
+            return quantity * standard_cost
+        elif quantity and local_cost:
+            return quantity * local_cost
+        else:
+            return 0.0
+
+    @staticmethod
+    def _get_proposal_totals(document_number: str) -> dict:
+        """
+        Calculates total quantities, prices, and costs for proposals linked to a document number.
+
+        :param document_number: The document number used to filter proposals and invoices.
+        :return: A dictionary with the grand total price and final total price (including taxes).
+        """
         invoice = Invoice.objects.get(opportunity__document_number=document_number)
-
         proposal_creations = ProposalCreation.objects.filter(opportunity__document_number=document_number)
 
-        # Get the related TaskMapping objects
         task_mappings = TaskMapping.objects.filter(id__in=proposal_creations.values_list("task_mapping_id", flat=True))
 
-        # Include all task mappings
-        filtered_task_mappings = task_mappings
-
-        # Get task mapping IDs for the assigned products
-        task_mapping_ids = filtered_task_mappings.values_list("id", flat=True)
-
-        # Retrieve assigned products linked to these task mappings
+        task_mapping_ids = task_mappings.values_list("id", flat=True)
         assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids)
 
         tasks_with_products = {}
-        for task in filtered_task_mappings:
+
+        for task in task_mappings:
             task_assigned_products = assigned_products.filter(task_mapping_id=task.id)
 
             total_quantity = sum(product.quantity for product in task_assigned_products)
@@ -275,12 +284,10 @@ class ProposalCreationData:
                 "total_local_cost": total_local_cost,
             }
 
-        # Calculate grand total price correctly
         total_price_sum = sum(v["total_price"] for v in tasks_with_products.values())
         total_local_cost_sum = sum(v["total_local_cost"] for v in tasks_with_products.values())
         grand_total_price = total_price_sum + total_local_cost_sum
 
-        # final price with taxes
         final_total_price = grand_total_price + invoice.sales_tax + invoice.other_tax + (invoice.tax_rate / 100)
 
         total_data = {

@@ -2,11 +2,7 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.urls import reverse
 
-from apps.rental.mixin import (
-    CustomDataTableMixin,
-    ProposalFormViewMixin,
-    ProposalViewMixin,
-)
+from apps.mixin import CustomDataTableMixin, FormViewMixin, ProposalViewMixin
 
 from .forms import ImportCustomerCSVForm
 from .models import Customer
@@ -70,7 +66,7 @@ class CustomerListAjaxView(CustomDataTableMixin):
         return JsonResponse(context_data)
 
 
-class CustomerCreateFromCSVFormView(ProposalFormViewMixin):
+class CustomerCreateFromCSVFormView(FormViewMixin):
     """
     View for importing customers from a CSV file.
     Handles file upload and returns a JSON response.

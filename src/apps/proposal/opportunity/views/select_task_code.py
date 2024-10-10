@@ -4,8 +4,8 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
+from apps.mixin import CustomDataTableMixin, ViewMixin
 from apps.proposal.task.models import Task
-from apps.rental.mixin import CustomDataTableMixin, ViewMixin
 
 from ..models import Opportunity, SelectTaskCode
 
@@ -99,7 +99,7 @@ class TaskManagementView(ViewMixin):
             status=201,
         )
 
-    def _get_context_data(self, document_number):
+    def _get_context_data(self, document_number: str) -> dict:
         """
         Returns context data with available tasks.
 
@@ -108,7 +108,11 @@ class TaskManagementView(ViewMixin):
         """
         opportunity = get_object_or_404(Opportunity, document_number=document_number)
 
-        selected_task_ids = SelectTaskCode.objects.filter(opportunity=opportunity).values_list("task_id", flat=True)
+        selected_task_ids = (
+            SelectTaskCode.objects.filter(opportunity=opportunity)
+            .exclude(task__description__icontains="labor")
+            .values_list("task_id", flat=True)
+        )
         available_tasks = Task.objects.exclude(id__in=selected_task_ids)
 
         return {

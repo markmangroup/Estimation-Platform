@@ -44,11 +44,31 @@
       <!-- datatable -->
       {% comment %} <link rel="stylesheet" href="{% static 'app/css/data-tables/datatables.min.css' %}"> {% endcomment %}
       <link href="{% static 'app/js/toster/toastr.min.css' %}" rel="stylesheet"/>
-      {% comment %} <link rel="stylesheet" type="text/css" href="{% static 'vendors/css/select2.min.css' %}" /> {% endcomment %}
-      {% comment %} <link rel="stylesheet" href="{% static '/app/css/pages/app-email.min.css' %}" /> {% endcomment %}
+      <link rel="stylesheet" type="text/css" href="{% static 'vendors/css/select2.min.css' %}" />
+      <link rel="stylesheet" href="{% static '/app/css/pages/app-email.min.css' %}" />
       <link rel="stylesheet" type="text/css" href="{% static 'vendors/css/dropzone.min.css' %}" />
       <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-      <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+      <style>
+         hr.style-seven {
+           overflow: visible; /* For IE */
+            height: 30px;
+            border-style: solid;
+            border-color: black;
+            border-width: 1px 0 0 0;
+            border-radius: 20px;
+            }
+            hr.style-seven:before { /* Not really supposed to work, but does */
+               display: block;
+               content: "";
+               height: 30px;
+               margin-top: -31px;
+               border-style: solid;
+               border-color: black;
+               border-width: 0 0 1px 0;
+               border-radius: 20px;
+            }
+         </style>
    </head>
    <!-- END : Head-->
    <!-- BEGIN : Body-->
@@ -89,8 +109,7 @@
       <!-- BEGIN PAGE LEVEL JS-->
       <script src="{% static 'app/js/form-wizard.min.js' %}"></script>
       <!-- END PAGE LEVEL JS-->
-      {% comment %} <script src="{% static 'app/js/select2.min.js' %}"></script> {% endcomment %}
-      <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+      <script src="{% static 'vendors/js/select2.full.min.js' %}"></script>
       <!-- BEGIN: Custom CSS-->
       <script src="{% static 'app/js/ex-component-sweet-alerts.min.js' %}"></script>
       <script src="{% static 'vendors/js/toastr.min.js' %}"></script>
@@ -123,14 +142,14 @@
          const readMoreLinks = document.querySelectorAll('.read-more');
 
          readMoreLinks.forEach((link, index) => {
-           const modalId = `inlineComment${index + 1}`;
-           link.setAttribute('data-toggle', 'modal');
-           link.setAttribute('data-target', `#${modalId}`);
+            const modalId = `inlineComment${index + 1}`;
+            link.setAttribute('data-toggle', 'modal');
+            link.setAttribute('data-target', `#${modalId}`);
 
-           const modalTemplate = document.querySelector('.modal');
-           const modalClone = modalTemplate.cloneNode(true);
-           modalClone.setAttribute('id', modalId);
-           document.body.appendChild(modalClone);
+            const modalTemplate = document.querySelector('.modal');
+            const modalClone = modalTemplate.cloneNode(true);
+            modalClone.setAttribute('id', modalId);
+            document.body.appendChild(modalClone);
          });
       </script>
 
@@ -169,3 +188,7 @@
 });
 </script>
 <!-- Popover Js -->
+
+<!-- Logged out -->
+   {{ redirect_to_login_immediately }}
+<!-- Logged out -->

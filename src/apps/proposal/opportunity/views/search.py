@@ -3,13 +3,13 @@ import urllib.parse
 from django.contrib import messages
 from django.http import JsonResponse
 
-from apps.constants import ERROR_RESPONSE
+from apps.constants import ERROR_RESPONSE, LOGGER
+from apps.mixin import ViewMixin
 from apps.proposal.customer.models import Customer
 from apps.proposal.labour_cost.models import LabourCost
 from apps.proposal.product.models import Product
 from apps.proposal.task.models import Task
 from apps.proposal.vendor.models import Vendor
-from apps.rental.mixin import ViewMixin
 
 from ..models import AssignedProduct, Opportunity, TaskMapping
 
@@ -19,7 +19,7 @@ class ItemCodeSearchView(ViewMixin):
     View for searching item codes and retrieving product details.
     """
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs) -> JsonResponse:
         """
         Handles GET requests for searching item codes.
 
@@ -59,7 +59,7 @@ class ItemDescriptionSearchView(ViewMixin):
     View for searching item descriptions.
     """
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs) -> JsonResponse:
         """
         Handles GET requests for searching item descriptions.
 
@@ -73,6 +73,33 @@ class ItemDescriptionSearchView(ViewMixin):
         ]
         return JsonResponse({"results": item_description_list})
 
+    def post(self, request, *args, **kwargs) -> JsonResponse:
+        """
+        Handles POST requests to retrieve product details by ID.
+
+        :param request: The HTTP request object containing the product ID.
+        :return: JsonResponse containing the product's item code and standard cost.
+        :raises Product.DoesNotExist: If no product is found with the given ID.
+        """
+        try:
+            body_unicode = request.body.decode("utf-8")
+            data = urllib.parse.parse_qs(body_unicode)
+
+            id = data["value"][0]
+            product_object = Product.objects.get(id=id)
+
+            return JsonResponse(
+                {
+                    "code": 200,
+                    "message": "success",
+                    "item_code": product_object.internal_id,
+                    "std_cost": product_object.std_cost,
+                }
+            )
+        except Exception as e:
+            LOGGER.error(f"{e}")
+            return {}
+
 
 class VendorSearchView(ViewMixin):
     """
@@ -80,7 +107,7 @@ class VendorSearchView(ViewMixin):
     returning a limited list of matching vendors.
     """
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs) -> JsonResponse:
         """
         Handles GET requests for searching vendors.
 
@@ -101,7 +128,7 @@ class CustomerSearchView(ViewMixin):
     View handles searching for customers by name and adding a customer to an opportunity.
     """
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs) -> JsonResponse:
         """
         Handles GET requests for searching customers.
 
@@ -137,7 +164,7 @@ class CustomerSearchView(ViewMixin):
             return JsonResponse({"code": 200, "status": "success", "message": "Customer added successfully."})
 
         except Exception as e:
-            print(f"Error in CustomerSearchView: {e}")
+            LOGGER.error(f"CustomerSearchView: {e}")
             messages.error(request, ERROR_RESPONSE["message"])
             return JsonResponse(ERROR_RESPONSE)
 
@@ -148,7 +175,7 @@ class TaskSearchView(ViewMixin):
     returning tasks that are not already mapped to the given opportunity.
     """
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs) -> JsonResponse:
         """
         Handles GET requests for searching tasks.
 
@@ -181,7 +208,7 @@ class LaborTaskSearchView(ViewMixin):
     returning a limited list of matching tasks.
     """
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs) -> JsonResponse:
         """
         Handles GET requests for searching labor tasks.
 
@@ -204,7 +231,7 @@ class LaborDescriptionView(ViewMixin):
     returning a limited list of matching descriptions.
     """
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs) -> JsonResponse:
         """
         Handles GET requests for searching labor cost descriptions.
 
@@ -219,6 +246,37 @@ class LaborDescriptionView(ViewMixin):
         description_list = [{"id": description.id, "text": description.description} for description in descriptions]
         return JsonResponse({"results": description_list})
 
+    def post(self, request, *args, **kwargs) -> JsonResponse:
+        """
+        Handles POST requests to retrieve details of a specific labor task.
+
+        :param request: The HTTP request object containing the labor task ID.
+        :return: JsonResponse containing details of the requested labor task.
+        :raises LabourCost.DoesNotExist: If no labor task is found with the given ID.
+        """
+        try:
+            body_unicode = request.body.decode("utf-8")
+            data = urllib.parse.parse_qs(body_unicode)
+            id = data["value"][0]
+
+            labor_obj = LabourCost.objects.get(id=id)
+
+            # Prepare the response data
+            response_data = {
+                "code": 200,
+                "message": "success",
+                "task_name": labor_obj.labour_task,
+            }
+
+            return JsonResponse(response_data)
+
+        except LabourCost.DoesNotExist:
+            LOGGER.error("Labor Cost not exists")
+            return JsonResponse(ERROR_RESPONSE, status=404)
+        except Exception as e:
+            LOGGER.error(f"LaborDescriptionView: {e}")
+            return JsonResponse(ERROR_RESPONSE, status=400)
+
 
 class LaborTaskNameView(ViewMixin):
     """
@@ -226,7 +284,7 @@ class LaborTaskNameView(ViewMixin):
     for a specific labor task based on its ID.
     """
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs) -> JsonResponse:
         """
         Handles GET requests for searching labor tasks.
 
@@ -261,17 +319,15 @@ class LaborTaskNameView(ViewMixin):
                 "code": 200,
                 "message": "success",
                 "description": labor_obj.description,
-                "local_labor_rates": labor_obj.local_labour_rates,
-                "out_of_town_labour_rates": labor_obj.out_of_town_labour_rates,
             }
 
             return JsonResponse(response_data)
 
         except LabourCost.DoesNotExist:
-            print("Error: Labor Cost not exists.")
+            LOGGER.error("Labor Cost not exists")
             return JsonResponse(ERROR_RESPONSE, status=404)
         except Exception as e:
-            print(f"Error in LaborTaskNameView: {e}")
+            LOGGER.error(f"LaborTaskNameView: {e}")
             return JsonResponse(ERROR_RESPONSE, status=400)
 
 
@@ -281,7 +337,7 @@ class TaskItemView(ViewMixin):
     and retrieving details for a specific assigned product.
     """
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs) -> JsonResponse:
         """
         Handles GET requests for searching task item codes.
 
@@ -330,8 +386,8 @@ class TaskItemView(ViewMixin):
             )
 
         except AssignedProduct.DoesNotExist:
-            print("Assigned product does not exist")
+            LOGGER.error("Assigned product does not exist")
             return JsonResponse(ERROR_RESPONSE, status=404)
         except Exception as e:
-            print(f"Error in TaskItemView: {e}")
+            LOGGER.error(f"TaskItemView: {e}")
             return JsonResponse(ERROR_RESPONSE, status=400)

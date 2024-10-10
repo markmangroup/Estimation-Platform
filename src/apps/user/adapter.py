@@ -36,11 +36,16 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
             ImmediateHttpResponse: If the user is not authorized, redirects to the login page.
         """
         user = sociallogin.user
-        # print(f"user : {user}")
         User = get_user_model()
         user_obj = User.objects.filter(email=user.email)
 
         if not user_obj.exists():
+            messages.error(
+                request,
+                "Access Denied: You do not have the necessary permissions to access this application. Please contact your provider for assistance",
+            )
+            raise ImmediateHttpResponse(HttpResponseRedirect(reverse("user:login")))
+        elif not user_obj.first().is_active:
             messages.error(
                 request,
                 "Access Denied: You do not have the necessary permissions to access this application. Please contact your provider for assistance",

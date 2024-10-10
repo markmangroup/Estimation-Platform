@@ -2,14 +2,10 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.urls import reverse
 
+from apps.mixin import CustomDataTableMixin, FormViewMixin, ProposalViewMixin
 from apps.proposal.product.forms import ImportProductForm
 from apps.proposal.product.models import Product
 from apps.proposal.product.tasks import import_product_from_file
-from apps.rental.mixin import (
-    CustomDataTableMixin,
-    ProposalFormViewMixin,
-    ProposalViewMixin,
-)
 
 
 # Create your views here.
@@ -68,7 +64,7 @@ class ProductListAjaxView(CustomDataTableMixin):
         return JsonResponse(context_data)
 
 
-class ProductImportView(ProposalFormViewMixin):
+class ProductImportView(FormViewMixin):
     """
     Import data from CSV or Excel files.
     """

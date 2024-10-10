@@ -1,11 +1,13 @@
 import os
 
 import pandas as pd
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
+from apps.constants import LOGGER
 from apps.proposal.product.models import Product
 
 
-def import_product_from_file(file):
+def import_product_from_file(file: InMemoryUploadedFile) -> dict:
     """
     Imports product data from an uploaded Excel or CSV file.
 
@@ -91,6 +93,6 @@ def import_product_from_file(file):
             context["messages"].append(f"Error processing record: {record}. Error: {str(e)}")
 
     if skipped_records:
-        print("Skipped records:", skipped_records)
+        LOGGER.info(f"Skipped Records: {skipped_records}")
 
     return context

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .opportunity_views import (
+from .views import (
     documents,
     generate_estimate,
     material_list,
@@ -123,6 +123,9 @@ urlpatterns = [
     ),
     path("add-task/<str:document_number>", task_mapping.AddTaskView.as_view(), name="add-task"),
     path("add-prod-row-ajax", task_mapping.AddProdRowView.as_view(), name="add-prod-row-ajax"),
+    path(
+        "assign-task-labor/<str:document_number>", task_mapping.AssignTaskLaborView.as_view(), name="assign-task-labor"
+    ),
     # Proposal Creation
     path(
         "<str:document_number>/create-proposal/ajax",

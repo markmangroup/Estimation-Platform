@@ -2,17 +2,29 @@ import os
 from datetime import datetime
 
 import pandas as pd
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
+from apps.constants import LOGGER
 
 from .models import Opportunity
 
 
-def import_opportunity_from_xlsx(file):
+def import_opportunity_from_xlsx(file: InMemoryUploadedFile) -> dict:
+    """
+    Imports opportunity data from an Excel or CSV file.
+
+    :prams file (File): The uploaded file containing product data.
+    :return: A context dictionary with messages about created/updated products
+            or errors if the columns do not match or records are skipped.
+    """
+
     file_extension = os.path.splitext(file.name)[1]
     context = {"messages": []}
     skip_opportunity = []
 
     if file.size == 0:
         return {"error": "You are trying to upload an empty file therefore it won't be processed."}
+
     columns_list = [
         "Internal Id",
         "Sales Rep",
@@ -124,19 +136,19 @@ def import_opportunity_from_xlsx(file):
                 )
 
                 if created:
-                    print(f"Created new Opportunity: {document_number}")
+                    LOGGER.info(f"Created new Opportunity: {document_number}")
                     context["messages"].append(f"Created new Opportunity: {document_number}")
                 else:
-                    print(f"Updated existing Opportunity: {document_number}")
+                    LOGGER.info(f"Updated existing Opportunity: {document_number}")
                     context["messages"].append(f"Updated existing Opportunity: {document_number}")
 
             except Exception as e:
-                print("Error processing record:", e)
+                LOGGER.error(f"Error processing record: {e}")
                 skip_opportunity.append(record)
                 return {"error": e}
 
             if skip_opportunity:
-                print("Skipped records:", skip_opportunity)
+                LOGGER.info(f"Skipped records: {skip_opportunity}")
 
         return context
 

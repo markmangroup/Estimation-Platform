@@ -1,6 +1,127 @@
+<div class="form-group">
+  <!-- Mismatched Products starts -->
+  <div class="row">
+    <div id="MismatchedProducts" class="table-responsive">
+      <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>Material Description</th>
+            <th>Cost</th>
+            <th>Vendor Quoted Cost</th>
+            <th>Vendor Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for n in new_material_master_data %}
+              <tr>
+                <td>{{ n.description }}</td>
+
+                {% if n.standard_cost %}
+                  <td>${{ n.standard_cost }}</td>
+                {% elif n.local_cost %}
+                  <td>${{ n.local_cost }}</td>
+                {% else %}
+                  <td> - </td>
+                {% endif %}
+
+                {% if n.vendor_quoted_cost %}
+                  <td>${{ n.vendor_quoted_cost }}</td>
+                {% else %}
+                  <td> - </td>
+                {% endif %}
+
+                {% if n.vendor %}
+                  <td>{{ n.vendor }}</td>
+                {% else %}
+                  <td> - </td>
+                {% endif %}
+
+              </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Netsuite Compatible Products starts -->
+  <div class="row">
+    <div id="NetSuiteProducts" class="table-responsive">
+      <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>InternalID</th>
+            <th>Task</th>
+            <th>Quantity</th>
+            <th>Description</th>
+            <th>PartNumber</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for netsuite_data in netsuite_extract_data  %}
+            <tr>
+              {% if netsuite_data.task_mapping.task.internal_id %}
+              <td>{{ netsuite_data.task_mapping.task.internal_id }}</td>
+              {% else %}
+              <td> - </td>
+              {% endif %}
+              <td>{{ netsuite_data.task_mapping.code }}</td>
+              <td>{{ netsuite_data.quantity }}</td>
+              <td>{{ netsuite_data.description }}</td>
+              {% if  netsuite_data.item_code %}
+                <td>{{ netsuite_data.item_code }}</td>
+              {% else %}
+                <td> - </td>
+              {% endif %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Quoted Price Products starts -->
+  <div class="row">
+    <div id="QuotedPriceProducts" class="table-responsive">
+      <table class="table table-striped table-bordered">
+        <thead class="text-center">
+          <tr>
+            <th>Item Code</th>
+            <th>Standard Cost</th>
+            <th>Vendor Quoted Cost</th>
+            <th>Vendor Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Row 1 -->
+          {% for q in cost_variances_data %}
+            <tr>
+              {% if q.item_code %}
+                <td>{{ q.item_code }}</td>
+              {% else %}
+                <td> - </td>
+              {% endif %}
+              <td>${{ q.standard_cost }}</td>
+              {% if q.vendor_quoted_cost %}
+                <td>${{ q.vendor_quoted_cost }}</td>
+              {% else %}
+                <td> - </td>
+              {% endif %}
+              {% if q.vendor %}
+                <td>{{ q.vendor }}</td>
+              {% else %}
+                <td> - </td>
+              {% endif %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <div class="modal-header">
     <h4 class="modal-title" id="myModalLabel5">
-      Opportunity Documents - {{ document_number }}
+      Opportunity Documents - {{ opportunity.document_number }}
     </h4>
     <button
       type="button"
@@ -28,83 +149,130 @@
           <tbody>
             {% for opp_doc in opportunity_document %}
                 <tr>
-                <td>
-                    <a href="{{opp_doc.file_path}}" class="d-flex" target="_blank" style="font-size: 16px; justify-content: center">
-                    <span class="wrap">{{opp_doc.document}}</span>
-                    {% if opp_doc.document %}
-                      <div style="margin-top: 2px; margin-left: 5px">
-                        <i class="icon-cloud-download"></i>
-                      </div>
+                  <td>
+                      <a href="{{opp_doc.file_path}}" class="d-flex" target="_blank" style="font-size: 16px; justify-content: center">
+                      <span class="wrap">{{opp_doc.document}}</span>
+                      {% if opp_doc.document %}
+                        <div style="margin-top: 2px; margin-left: 5px">
+                          <i class="icon-cloud-download"></i>
+                        </div>
+                      {% else %}
+                        <span> - </span>
+                      {% endif %}
+                      </a>
+                  </td>
+                  <td>
+                    {% if opp_doc.stage == "Select Task Code" %}
+                        <span class="badge bg-light-secondary">
+                            Select Task Code
+                        </span>
+                    {% elif opp_doc.stage == "Upload CAD File" %}
+                        <span class="badge bg-light-success">
+                            Upload CAD File
+                        </span>
+                    {% elif opp_doc.stage == "Material List" %}
+                        <span class="badge bg-light-danger">
+                            Material List
+                        </span>
+                    {% elif opp_doc.stage == "Task Mapping" %}
+                        <span class="badge bg-light-info">
+                            Task Mapping
+                        </span>
+                    {% elif opp_doc.stage == "Generate Estimate" %}
+                        <span class="badge bg-light-secondary">
+                            Generate Estimate
+                        </span>
+                    {% elif opp_doc.stage == "Proposal Creation" %}
+                        <span class="badge bg-grey">
+                            Proposal Creation
+                        </span>
+                    {% elif opp_doc.stage == "Proposal Preview" %}
+                        <span class="badge bg-light-primary">
+                            Proposal Preview
+                        </span>
                     {% else %}
-                      <span> - </span>
+                        <span class="badge bg-light-info">
+                            Final Document
+                        </span>
                     {% endif %}
-                    </a>
-                </td>
-                <td>
-                  {% if opp_doc.stage == "Select Task Code" %}
-                      <span class="badge bg-light-secondary">
-                          Select Task Code
-                      </span>
-                  {% elif opp_doc.stage == "Upload CAD File" %}
-                      <span class="badge bg-light-success">
-                          Upload CAD File
-                      </span>
-                  {% elif opp_doc.stage == "Material List" %}
-                      <span class="badge bg-light-danger">
-                          Material List
-                      </span>
-                  {% elif opp_doc.stage == "Task Mapping" %}
-                      <span class="badge bg-light-info">
-                          Task Mapping
-                      </span>
-                  {% elif opp_doc.stage == "Generate Estimate" %}
-                      <span class="badge bg-light-secondary">
-                          Generate Estimate
-                      </span>
-                  {% elif opp_doc.stage == "Proposal Creation" %}
-                      <span class="badge bg-grey">
-                          Proposal Creation
-                      </span>
-                  {% elif opp_doc.stage == "Proposal Preview" %}
-                      <span class="badge bg-light-primary">
-                          Proposal Preview
-                      </span>
-                  {% else %}
-                      <span class="badge bg-light-info">
-                          Final Document
-                      </span>
-                  {% endif %}
-                </td>
-                <td>
-                    <div class="d-flex" style="font-size: 16px; justify-content: center">
-                      <span>{{opp_doc.created_at|date:"m-d-Y"}}</span>
-                    </div>
-                </td>
-                <td>
-                  {% if opp_doc.comment|length > 10 %}
-                      <span>{{ opp_doc.comment|slice:":10" }}...</span>
-                      <span
-                        class="primary"
-                        data-toggle="popover"
-                        data-content="{{ opp_doc.comment|escapejs }}"
-                        data-placement="top"
-                        data-original-title="Document Comment"
-                        data-trigger="click"
-                        style="border:none; background:none;">
-                        Read More
-                      </span>
-                  {% else %}
-                      <span>{{ opp_doc.comment }}</span>
-                  {% endif %}
-              </td>
+                  </td>
+                  <td>
+                      <div class="d-flex" style="font-size: 16px; justify-content: center">
+                        <span>{{opp_doc.created_at|date:"m-d-Y"}}</span>
+                      </div>
+                  </td>
+                  <td>
+                    {% if opp_doc.comment|length > 10 %}
+                        <span>{{ opp_doc.comment|slice:":10" }}...</span>
+                        <span
+                          class="primary"
+                          data-toggle="popover"
+                          data-content="{{ opp_doc.comment|escapejs }}"
+                          data-placement="top"
+                          data-original-title="Document Comment"
+                          data-trigger="click"
+                          style="border:none; background:none;">
+                          Read More
+                        </span>
+                    {% else %}
+                        <span>{{ opp_doc.comment }}</span>
+                    {% endif %}
+                  </td>
                 </tr>
             {% empty %}
                 <td colspan="4" class="text-center">
                     No Document Upload Yet....
                 </td>
             {% endfor %}
+
+            <!-- Display final document -->
+            {% if opportunity.estimation_stage == "Proposal Preview" or opportunity.estimation_stage == "Final Document" %}
+              <tr>
+                <td>
+                  <button
+                  type="button"
+                  class="btn bg-light-info"
+                  onclick="DownloadProductsInCSV('MismatchedProducts', 'new_material_master_data')"
+                  >
+                    <em class="ft-download"></em> New Material Master Data
+                  </button>
+                </td>
+                <td><span class="badge bg-light-info">Final Document</span></td>
+                <td> - </td>
+                <td> - </td>
+              </tr>
+              <tr>
+                <td>
+                  <button
+                    type="button"
+                    class="btn bg-light-secondary"
+                    onclick="DownloadProductsInCSV('QuotedPriceProducts', 'costs_variances')"
+                  >
+                    <em class="ft-download"></em>Costs Variances
+                  </button>
+                </td>
+                <td><span class="badge bg-light-info">Final Document</span></td>
+                <td> - </td>
+                <td> - </td>
+              </tr>
+              <tr>
+                <td>
+                  <button
+                    type="button"
+                    class="btn bg-light-success"
+                    onclick="DownloadProductsInCSV('NetSuiteProducts', 'netsuite_extract')"
+                  >
+                    <em class="ft-download"></em>Netsuite Extract
+                  </button>
+                </td>
+                <td><span class="badge bg-light-info">Final Document</span></td>
+                <td> - </td>
+                <td> - </td>
+              </tr>
+            {% endif %}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -131,4 +299,42 @@
             }
         });
     });
+</script>
+
+<!-- Download CSV File -->
+<script>
+  function DownloadProductsInCSV(id, fileName) {
+    var table = document.getElementById(id);
+
+    // Extract headers from the table
+    var headers = [];
+    var headerRow = table.querySelector("tr");
+    var headerCols = headerRow.querySelectorAll("th, td");
+    headerCols.forEach(function(col) {
+      headers.push('"' + col.innerText.replace(/"/g, '""') + '"');
+    });
+    var csvContent = headers.join(",") + "\n";
+
+    var rows = table.querySelectorAll("tr");
+    for (var i = 1; i < rows.length; i++) {
+      var rowData = [];
+      var cols = rows[i].querySelectorAll("td");
+      cols.forEach(function(col) {
+        rowData.push('"' + col.innerText.replace(/"/g, '""') + '"');
+      });
+      csvContent += rowData.join(",") + "\n";
+    }
+
+    var blob = new Blob([csvContent], { type: "text/csv" });
+
+    var url = window.URL.createObjectURL(blob);
+
+    var link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", fileName + ".csv");
+
+    link.click();
+
+    window.URL.revokeObjectURL(url);
+  }
 </script>
