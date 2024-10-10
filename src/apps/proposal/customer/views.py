@@ -21,7 +21,12 @@ class CustomerListAjaxView(CustomDataTableMixin):
     """AJAX view for listing customers in a data table format."""
 
     model = Customer
-    queryset = Customer.objects.all()
+    
+    def get_queryset(self):
+        """
+        Returns a list of customers
+        """
+        return Customer.objects.all()
 
     def filter_queryset(self, qs):
         """Return the list of items for this view."""

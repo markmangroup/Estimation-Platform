@@ -102,7 +102,12 @@ class OpportunityListAjaxView(CustomDataTableMixin):
     """
 
     model = Opportunity
-    queryset = Opportunity.objects.all()
+    
+    def get_queryset(self):
+        """
+        Return list of opportunities.
+        """
+        return Opportunity.objects.all()
 
     def _get_document_number(self, obj):
         """

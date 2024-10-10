@@ -25,7 +25,12 @@ class LabourCostListAjaxView(DataTableMixin, View):
     """
 
     model = LabourCost
-    queryset = LabourCost.objects.all()
+    
+    def get_queryset(self):
+        """
+        Returns a list of labor cost.
+        """
+        return LabourCost.objects.all()
 
     def filter_queryset(self, qs):
         """Return the list of items for this view."""
