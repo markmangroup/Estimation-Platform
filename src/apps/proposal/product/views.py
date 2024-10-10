@@ -23,7 +23,12 @@ class ProductListAjaxView(CustomDataTableMixin):
     """
 
     model = Product
-    queryset = Product.objects.all()
+    
+    def get_queryset(self):
+        """
+        Returns a list of product.
+        """
+        return Product.objects.all()
 
     def filter_queryset(self, qs):
         """Return the list of items for this view."""

@@ -23,7 +23,12 @@ class VendorListAjaxView(CustomDataTableMixin):
     """
 
     model = Vendor
-    queryset = Vendor.objects.all()
+    
+    def get_queryset(self):
+        """
+        Returns a list of vendor.
+        """
+        return Vendor.objects.all()
 
     def filter_queryset(self, qs):
         """Filters queryset based on search criteria."""
