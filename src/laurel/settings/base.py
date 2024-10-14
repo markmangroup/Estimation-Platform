@@ -232,7 +232,7 @@ OPENCENSUS = {
     'TRACE': {
         'SAMPLER': ProbabilitySampler(1.0),  # 1.0 means 100% of the requests will be sampled
         'EXPORTER': AzureExporter(
-            connection_string=f'InstrumentationKey={0o38f579f-5141-4db8-a289-1b410d22ec61}'
+            connection_string=f'InstrumentationKey={38f579f-5141-4db8-a289-1b410d22ec61}'
         ),
     }
 }
