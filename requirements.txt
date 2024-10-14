@@ -3,6 +3,8 @@ certifi==2021.10.8
 charset-normalizer==2.0.10
 Django==4.2
 djangorestframework==3.15.2
+opencensus-ext-azure==1.0.15
+opencensus==0.7.13
 
 
 gunicorn==20.1.0
