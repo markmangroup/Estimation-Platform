@@ -15,14 +15,13 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+dotenv_path = os.path.join(os.path.dirname(__file__), ".env")
+load_dotenv(dotenv_path)
+
 # Changes for Application Insights
 from opencensus.ext.azure.log_exporter import AzureLogHandler
 from opencensus.ext.azure.trace_exporter import AzureExporter
 from opencensus.trace.samplers import ProbabilitySampler
-
-dotenv_path = os.path.join(os.path.dirname(__file__), ".env")
-load_dotenv(dotenv_path)
-
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 
