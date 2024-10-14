@@ -71,37 +71,3 @@ jobs:
           app-name: 'laurelag-dev-eastus-webapp'
           slot-name: 'Production'
           startup-command: './startup.sh'
-
-  # Prod deployment job that triggers after the dev deployment, with manual approval
-  deploy_prod:
-    runs-on: ubuntu-latest
-    needs: deploy_dev # Prod deployment happens after dev deployment is successful
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write # Required for requesting the JWT
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: python-app
-
-      - name: Unzip artifact for deployment
-        run: unzip release.zip
-
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: '63d8c1a5-9944-4003-b6c7-24ce70956a9b'
-          tenant-id: '11855f13-2464-464a-8e0a-b51873160cd3'
-          subscription-id: 'cffda582-a060-4e87-994f-9cff463aa651'
-
-      - name: 'Deploy to Azure Web App - Production'
-        uses: azure/webapps-deploy@v3
-        id: deploy-to-webapp
-        with:
-          app-name: 'test-dev-eastus-webapp'
-          slot-name: 'Production'
-          startup-command: './startup.sh'
