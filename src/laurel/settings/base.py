@@ -234,7 +234,7 @@ OPENCENSUS = {
     'TRACE': {
         'SAMPLER': ProbabilitySampler(1.0),  # 1.0 means 100% of the requests will be sampled
         'EXPORTER': AzureExporter(
-            connection_string=f'os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING")'
+            connection_string = os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING")
         ),
     }
 }
