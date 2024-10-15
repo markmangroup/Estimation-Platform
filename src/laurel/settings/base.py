@@ -202,7 +202,7 @@ LOGGING = {
         "azure": {
             "level": "INFO",
             "class": "opencensus.ext.azure.log_exporter.AzureLogHandler",
-            "instrumentation_key": INSTRUMENTATION_KEY,
+            "instrumentation_key": "038f579f-5141-4db8-a289-1b410d22ec61",
         },
     },
     "root": {
