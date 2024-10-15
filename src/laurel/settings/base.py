@@ -187,7 +187,7 @@ MEDIA_URL = "/media/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Logging Configuration for Azure Application Insights
-INSTRUMENTATION_KEY = os.getenv("APPINSIGHTS_INSTRUMENTATIONKEY", "038f579f-5141-4db8-a289-1b410d22ec61")
+INSTRUMENTATION_KEY = os.getenv("APPINSIGHTS_INSTRUMENTATIONKEY")
 
 LOGGING = {
     "version": 1,
@@ -211,7 +211,7 @@ LOGGING = {
         "azure": {
             "level": "INFO",
             "class": "opencensus.ext.azure.log_exporter.AzureLogHandler",
-            "instrumentation_key": "038f579f-5141-4db8-a289-1b410d22ec61",
+            "instrumentation_key": os.getenv("APPINSIGHTS_INSTRUMENTATIONKEY"),
         },
     },
     "root": {
@@ -234,7 +234,7 @@ OPENCENSUS = {
     'TRACE': {
         'SAMPLER': ProbabilitySampler(1.0),  # 1.0 means 100% of the requests will be sampled
         'EXPORTER': AzureExporter(
-            connection_string=f'InstrumentationKey=038f579f-5141-4db8-a289-1b410d22ec61'
+            connection_string=f'os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING")'
         ),
     }
 }
