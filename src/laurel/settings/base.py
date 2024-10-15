@@ -15,6 +15,11 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+# Changes for Application Insights
+from opencensus.ext.azure.log_exporter import AzureLogHandler
+from opencensus.ext.azure.trace_exporter import AzureExporter
+from opencensus.trace.samplers import ProbabilitySampler
+
 dotenv_path = os.path.join(os.path.dirname(__file__), ".env")
 load_dotenv(dotenv_path)
 
@@ -92,6 +97,7 @@ MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "allauth.account.middleware.AccountMiddleware",
     "django_auto_logout.middleware.auto_logout",
+    "opencensus.ext.django.middleware.OpencensusMiddleware",
 ]
 
 ROOT_URLCONF = "laurel.urls"
@@ -180,6 +186,9 @@ MEDIA_URL = "/media/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Logging Configuration for Azure Application Insights
+INSTRUMENTATION_KEY = os.getenv("APPINSIGHTS_INSTRUMENTATIONKEY", "038f579f-5141-4db8-a289-1b410d22ec61")
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -219,6 +228,16 @@ LOGGING = {
 }
 
 SOCIALACCOUNT_ADAPTER = "apps.user.adapter.CustomSocialAccountAdapter"
+
+# Tracing Configuration for Azure Application Insights
+OPENCENSUS = {
+    'TRACE': {
+        'SAMPLER': ProbabilitySampler(1.0),  # 1.0 means 100% of the requests will be sampled
+        'EXPORTER': AzureExporter(
+            connection_string=f'InstrumentationKey=038f579f-5141-4db8-a289-1b410d22ec61'
+        ),
+    }
+}
 
 SOCIALACCOUNT_PROVIDERS = {
     "microsoft": {
