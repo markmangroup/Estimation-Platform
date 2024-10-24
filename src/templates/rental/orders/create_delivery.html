@@ -33,9 +33,9 @@
       <tr>
         <th style="max-width:100px">Delivery ID</th>
         <th style="max-width:100px">Total Quantity</th>
-        <th style="max-width:100px">Contract Start Date</th> 
-        <th style="max-width:100px">Delivery Date</th> 
-        <th style="max-width:100px">Action</th> 
+        <th style="max-width:100px">Contract Start Date</th>
+        <th style="max-width:100px">Delivery Date</th>
+        <th style="max-width:100px">Action</th>
       </tr>
     </thead>
     <tbody>
@@ -53,10 +53,10 @@
             <i class="fa fa-times font-medium-3 mr-2"></i>
           </a>
         </td>
-        
+
       </tr>
       <tr id="collapse11" role="tabpanel" aria-labelledby="headingCollapse11">
-        
+
         <td>
         </td>
 
@@ -91,13 +91,13 @@
                     <td class="text-nowrap">14</td>
                   </tr>
               </tbody>
-              
+
             </table>
           </div>
-          
+
         </td>
         <!-- Inner table End -->
-      </tr> 
+      </tr>
 
       <!--Main Row 2 -->
       <tr>
@@ -113,10 +113,10 @@
             <i class="fa fa-times font-medium-3 mr-2"></i>
           </a>
         </td>
-        
+
       </tr>
       <tr id="collapse111" role="tabpanel" aria-labelledby="headingCollapse111">
-        
+
         <td>
         </td>
 
@@ -153,10 +153,10 @@
               </tr>
             </table>
           </div>
-          
+
         </td>
         <!-- Inner table End -->
-        
+
       </tr>
     </tbody>
   </table>
@@ -203,7 +203,7 @@
                 <td>2 Apr, 2024</td>
                 <td>3 Apr, 2024</td>
             </tr>
-            
+
         </tbody>
     </table>
 </div> -->
@@ -266,8 +266,8 @@
                             </td>
                           </tr>
                         </tbody>
-                        
-                      </table>  
+
+                      </table>
                     </div>
                   </div>
               </div>
@@ -311,22 +311,22 @@
 <!-- Copy Table Js Start -->
 <script>
   function CopyTableRow() {
-    
+
     var tableBody = document.getElementById("tableBody");
-    console.log("Table Body:", tableBody);
-    
+    // console.log("Table Body:", tableBody);
+
     var rowToCopy = document.getElementById("newProduct");
-    console.log("Row to Copy:", rowToCopy);
-    
+    // console.log("Row to Copy:", rowToCopy);
+
     totalRows = 1;
-    
+
     for (var i = 0; i < totalRows; i++) {
-      console.log("Copying row", i + 1);
+      // console.log("Copying row", i + 1);
       // Clone the row
       var clonedRow = rowToCopy.cloneNode(true);
-      console.log("Cloned Row:", clonedRow);
+      // console.log("Cloned Row:", clonedRow);
       tableBody.appendChild(clonedRow);
-      console.log("Row appended to table body");
+      // console.log("Row appended to table body");
     }
   }
 </script>

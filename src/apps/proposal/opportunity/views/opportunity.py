@@ -102,7 +102,7 @@ class OpportunityListAjaxView(CustomDataTableMixin):
     """
 
     model = Opportunity
-    
+
     def get_queryset(self):
         """
         Return list of opportunities.

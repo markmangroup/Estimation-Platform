@@ -107,9 +107,9 @@
           },
           success: function(response) {
               if (response.error) {
-                console.log("Error!!",response.error);
+                // console.log("Error!!",response.error);
               } else {
-                  console.log("");
+                  // console.log("");
               }
           },
           error: function(xhr, status, error) {
@@ -118,18 +118,18 @@
         });
       }
       else{
-        console.log("Not found elements:");
+        // console.log("Not found elements:");
       }
     });
 
     $("a[href='#previous']").on("click", function(e) {
-      console.log("Previous Clicked");
+      // console.log("Previous Clicked");
       var foundElements = $(".steps li").find(".current");
       if (foundElements){
         value = $(".current a span.step").text();
       }
       else{
-        console.log("Not found elements:");
+        // console.log("Not found elements:");
       }
     });
   });

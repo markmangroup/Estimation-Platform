@@ -86,7 +86,7 @@
             'X-CSRFToken': "{{ csrf_token }}",
           },
           success: function(response) {
-            console.log('Success:', response);
+            // console.log('Success:', response);
             stage_6_initializeDataTable();
             $('#stage_6_file-upload').val('');
             $('#stage_6_file-name').text('');
@@ -121,7 +121,7 @@
     });
       function stage_6_initializeDataTable() {
         var currentStage = "Proposal Creation"
-        console.log('currentStage: ', currentStage);
+        // console.log('currentStage: ', currentStage);
 
         // Destroy any existing DataTable instance to avoid conflicts
         if ($.fn.DataTable.isDataTable('#stage_6_document')) {
@@ -148,7 +148,7 @@
 
       $("a[href='#next'], a[href='#previous']").on("click", function(e) {
         e.preventDefault(); // Prevent default link behavior
-        console.log('Navigation link clicked');
+        // console.log('Navigation link clicked');
         setTimeout(function() {
           stage_6_initializeDataTable();
         }, 500);

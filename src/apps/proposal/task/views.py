@@ -20,7 +20,7 @@ class TaskListAjaxView(CustomDataTableMixin):
     """AJAX view for retrieving task data in a DataTable format."""
 
     model = Task
-    
+
     def get_queryset(self):
         """
         Returns a list of tasks.

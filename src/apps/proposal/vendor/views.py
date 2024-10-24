@@ -23,7 +23,7 @@ class VendorListAjaxView(CustomDataTableMixin):
     """
 
     model = Vendor
-    
+
     def get_queryset(self):
         """
         Returns a list of vendor.

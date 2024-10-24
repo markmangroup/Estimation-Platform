@@ -23,7 +23,7 @@ class ProductListAjaxView(CustomDataTableMixin):
     """
 
     model = Product
-    
+
     def get_queryset(self):
         """
         Returns a list of product.

@@ -76,8 +76,8 @@
 
       const selectedValues = $('#SelectDescription').val();
       const documentNumber = "{{ document_number }}";
-      console.log(selectedValues);
-      console.log(documentNumber);
+      // console.log(selectedValues);
+      // console.log(documentNumber);
 
       if (selectedValues.length > 0) {
           $.ajax({
@@ -90,7 +90,7 @@
               },
               traditional: true,
               success: function(response) {
-                  console.log('Success:', response);
+                  // console.log('Success:', response);
                   window.location.reload();
                   // $("#selected-task-table").DataTable().ajax.reload(null, false);
                   // $("#selectTaskModal").modal('hide');
@@ -108,7 +108,7 @@
 
     $('#SelectDescription').on('change', function() {
         const selectedValues = $(this).val();
-        console.log('Selected tasks:', selectedValues);
+        // console.log('Selected tasks:', selectedValues);
     });
   });
 </script>

@@ -321,10 +321,17 @@ class AddProdRowView(ViewMixin):
         if not quoted_cost:
             return {"status": "warning", "message": "Please add quoted cost"}
 
-        labor_task = LabourCost.objects.filter(id=product.get("task_name")).first()
-        task_name_value = labor_task.labour_task if labor_task else product.get("task_name")
-        task_description = LabourCost.objects.filter(id=product.get("labor_description")).first()
-        task_desc_value = task_description.description if task_description else product.get("labor_description")
+        try:
+            labor_task = LabourCost.objects.filter(id=product.get("task_name")).first()
+            task_name_value = labor_task.labour_task
+            task_desc_value = labor_task.description if labor_task else product.get("labor_description")
+        except Exception:  # Handle custom item code data
+            task_name_value = product.get("task_name")
+            try:
+                labor_task = LabourCost.objects.filter(id=product.get("task_name")).first()
+                task_desc_value = labor_task.description
+            except Exception:
+                task_desc_value = product.get("labor_description")
 
         AssignedProduct.objects.create(
             task_mapping=task_mapping,
@@ -512,6 +519,14 @@ class TaskMappingData:
 
             total_quantity = sum(product.quantity for product in task_assigned_products)
             total_price = sum(
+                (
+                    product.vendor_quoted_cost * product.quantity
+                    if product.vendor_quoted_cost
+                    else product.standard_cost * product.quantity
+                )
+                for product in task_assigned_products
+            )
+            total_unit_price = sum(
                 product.vendor_quoted_cost if product.vendor_quoted_cost else product.standard_cost
                 for product in task_assigned_products
             )
@@ -523,6 +538,7 @@ class TaskMappingData:
                 "assigned_products": task_assigned_products,
                 "total_quantity": round(total_quantity, 2),
                 "total_price": round(total_price, 2),
+                "total_unit_price": round(total_unit_price, 2),
                 "total_percent": round(total_percent, 2),
             }
 
@@ -590,6 +606,14 @@ class TaskMappingData:
 
             total_quantity = sum(product.quantity for product in task_assigned_products)
             total_price = sum(
+                (
+                    product.vendor_quoted_cost * product.quantity
+                    if product.vendor_quoted_cost
+                    else product.standard_cost * product.quantity
+                )
+                for product in task_assigned_products
+            )
+            total_unit_price = sum(
                 product.vendor_quoted_cost if product.vendor_quoted_cost else product.standard_cost
                 for product in task_assigned_products
             )
@@ -601,6 +625,7 @@ class TaskMappingData:
                 "assigned_products": task_assigned_products,
                 "total_quantity": round(total_quantity, 2),
                 "total_price": round(total_price, 2),
+                "total_unit_price": round(total_unit_price, 2),
                 "total_percent": round(total_percent, 2),
             }
 

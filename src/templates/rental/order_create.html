@@ -16,7 +16,7 @@
           <form action="#">
             <div class="modal-body">
               <div class="row">
-                
+
                 <div class="col-6">
                   <label>Customer </label>
                   <div class="form-group">
@@ -262,7 +262,7 @@
                   <div class="form-group">
                     <select class="select2 form-control">
                       <option selected disabled value="Select Account Manager">
-                        Select Account Manager  
+                        Select Account Manager
                       </option>
                       <option value="Flint General Enginieering">
                         Flint General Enginieering
@@ -595,8 +595,8 @@
                           <button type="button" class="btn btn-primary" onclick="copyTableRow()"><i class="fa fa-plus"></i></button>
                         </td>
                       </tr>
-                    </tbody>                    
-                    
+                    </tbody>
+
                   </table>
                 </div>
 
@@ -611,7 +611,7 @@
                     />
                   </div>
                 </div>
-                
+
                 <div class="col">
                   <label for="" class="form-label font-weight-bold">Rental Period</label>
                   <div class="reportrange form-control" id="daterangepicker">
@@ -619,7 +619,7 @@
                     <span id="rentalPeriod">Select Date Range</span> <i class="fa fa-caret-down"></i>
                   </div>
                 </div>
-                
+
                 <div class="col-6">
                   <div class="container">
                     <label>Rent Per Month</label>
@@ -628,7 +628,7 @@
                     </div>
                   </div>
                 </div>
-                
+
 
                 <div class="col-12">
                   <div class="form-group">
@@ -753,22 +753,22 @@
 <!-- Date picker Start -->
 <script type="text/javascript">
   $(document).ready(function() {
-  
+
       var start = moment().subtract(29, 'days');
       var end = moment();
-  
+
       function cb(start, end) {
           $('.reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
       }
-  
+
       $('.reportrange').daterangepicker({
           startDate: start,
           endDate: end,
           ranges: {}
       }, cb);
-  
+
       cb(start, end);
-  
+
   });
 </script>
 
@@ -806,15 +806,15 @@
   function copyTableRow() {
     const tableBody = document.querySelector('#tableBody tbody');
     const newRow = tableBody.querySelector('tr').cloneNode(true);
-    
+
     // Clear input values in the new row
     newRow.querySelectorAll('input').forEach(input => input.value = '');
-    
+
     tableBody.appendChild(newRow);
-    
+
     // Add event listeners for new row inputs
     newRow.querySelectorAll('input').forEach(input => input.addEventListener('input', updateRentAmount));
-    
+
     updateRentAmount();
   }
 </script>
@@ -826,22 +826,22 @@
 <!-- Copy Row JS Start -->
 <script>
   function CopyTableRow() {
-    
+
     var tableBody = document.getElementById("tableBody");
-    console.log("Table Body:", tableBody);
-    
+    // console.log("Table Body:", tableBody);
+
     var rowToCopy = document.getElementById("newProduct");
-    console.log("Row to Copy:", rowToCopy);
-    
+    // console.log("Row to Copy:", rowToCopy);
+
     totalRows = 1;
-    
+
     for (var i = 0; i < totalRows; i++) {
-      console.log("Copying row", i + 1);
+      // console.log("Copying row", i + 1);
       // Clone the row
       var clonedRow = rowToCopy.cloneNode(true);
-      console.log("Cloned Row:", clonedRow);
+      // console.log("Cloned Row:", clonedRow);
       tableBody.appendChild(clonedRow);
-      console.log("Row appended to table body");
+      // console.log("Row appended to table body");
     }
   }
 </script>
@@ -853,11 +853,11 @@
     // Get the modal
     // var modal = $('#recurring_modal');
     var fildset = $(".recurring")
-    
+
     // Get the checkbox
     var checkbox = $('#recurring-checkbox');
     var clsbtn = $('.recurring-close');
-    
+
     // Default hidden
     fildset.hide();
 
@@ -940,7 +940,7 @@
     // Get the modal and elements
     var rentalPeriod = $('.reportrange'); // Adjust this if needed
     var recurringCheckbox = $('#recurring-checkbox');
-    
+
     // Initially hide the rental period if the checkbox is checked
     toggleRentalPeriod(recurringCheckbox.is(':checked'));
 

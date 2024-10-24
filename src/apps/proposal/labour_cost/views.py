@@ -25,7 +25,7 @@ class LabourCostListAjaxView(DataTableMixin, View):
     """
 
     model = LabourCost
-    
+
     def get_queryset(self):
         """
         Returns a list of labor cost.

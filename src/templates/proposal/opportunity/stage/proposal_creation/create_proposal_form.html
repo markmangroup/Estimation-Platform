@@ -66,8 +66,8 @@
 
             const selectedValues = $('#SelectDescription').val();
             const GrpName = $('.grp_name').val();
-            console.log(selectedValues);
-            console.log(GrpName);
+            // console.log(selectedValues);
+            // console.log(GrpName);
 
             if (selectedValues.length > 0) {
                 $.ajax({
@@ -80,11 +80,11 @@
                     },
                     traditional: true,
                     success: function(response) {
-                        console.log('Success:', response);
+                        // console.log('Success:', response);
                         window.location.reload();
                     },
                     error: function(response) {
-                        console.log("response", response.responseJSON.message);
+                        // console.log("response", response.responseJSON.message);
                         // Display message
                         toastr.error(response.responseJSON.message, 'Error', {
                             closeButton: true,
@@ -101,7 +101,7 @@
 
         $('#SelectDescription').on('change', function() {
             const selectedValues = $(this).val();
-            console.log('Selected tasks:', selectedValues);
+            // console.log('Selected tasks:', selectedValues);
         });
     });
 </script>

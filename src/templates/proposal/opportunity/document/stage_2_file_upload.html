@@ -88,7 +88,7 @@
             'X-CSRFToken': "{{ csrf_token }}",
           },
           success: function(response) {
-            console.log('Success:', response);
+            // console.log('Success:', response);
             stage_2_initializeDataTable();
             $('#stage_2_file-upload').val('');
             $('#stage_2_file-name').text('');
@@ -124,7 +124,7 @@
 
       function stage_2_initializeDataTable() {
         var currentStage = "Upload CAD File"
-        console.log('currentStage: ', currentStage);
+        // console.log('currentStage: ', currentStage);
 
         // Destroy any existing DataTable instance to avoid conflicts
         if ($.fn.DataTable.isDataTable('#stage_2_document')) {
@@ -153,7 +153,7 @@
 
       $("a[href='#next'], a[href='#previous']").on("click", function(e) {
         e.preventDefault(); // Prevent default link behavior
-        console.log('Navigation link clicked');
+        // console.log('Navigation link clicked');
         setTimeout(function() {
           stage_2_initializeDataTable();
         }, 500);

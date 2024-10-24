@@ -514,7 +514,7 @@
 
   $(document).on('click', '.htmx-trigger-breakdown-total-cost' , function (e) {
 
-    console.log("Clicked.............................")
+    // console.log("Clicked.............................")
     var url = $(this).data('url');
     htmx.ajax('GET',
         url,
@@ -569,29 +569,29 @@
 
 <script>
   $(".labor_gp_percent, .mat_gp_percent, .s_and_h").on("input", function(e){
-    console.log("Chnaged...........");
+    // console.log("Chnaged...........");
     var $row = $(this).closest("tr");
 
     var laborGpPercent = parseFloat($row.find(".labor_gp_percent").val()) / 100;
-    console.log("Labour GP %", laborGpPercent);
+    // console.log("Labour GP %", laborGpPercent);
 
     var matGpPercent = parseFloat($row.find(".mat_gp_percent").val()) / 100;
-    console.log("MAT GP %", matGpPercent);
+    // console.log("MAT GP %", matGpPercent);
 
     var s_and_h = parseFloat($row.find(".s_and_h").val()) / 100;
-    console.log("S & H", s_and_h);
+    // console.log("S & H", s_and_h);
 
     // Calculate Labor Cost
     var laborCost = parseFloat($row.find(".labor_cost").text());
-    console.log("Labor Cost", laborCost);
+    // console.log("Labor Cost", laborCost);
 
     // parseFloat($row.find(".labor_sell").text());
     var laborSell = laborCost / (1 - laborGpPercent);
     $row.find(".labor_sell").text(laborSell.toFixed(2));
-    console.log("Labor Sell", laborSell);
+    // console.log("Labor Sell", laborSell);
 
     var matCost = parseFloat($row.find(".mat_cost").text());
-    console.log("MAT Cost", matCost);
+    // console.log("MAT Cost", matCost);
 
     // Calculate Labor GP $
     var laborGp = laborSell - laborCost;
@@ -616,13 +616,13 @@
     var matTaxLabor = matSell + laborSell;
     $row.find(".mat_tax_labor").text(matTaxLabor.toFixed(2));
 
-    console.log("laborGpPercent", laborGpPercent);
-    console.log("matGpPercent", matGpPercent);
-    console.log("laborSell", laborSell);
-    console.log("matPlusMu", matPlusMu);
+    // console.log("laborGpPercent", laborGpPercent);
+    // console.log("matGpPercent", matGpPercent);
+    // console.log("laborSell", laborSell);
+    // console.log("matPlusMu", matPlusMu);
 
     var combGp = (( laborGpPercent * 100 ) + (matGpPercent * 100)) / (laborSell + matPlusMu);
-    console.log("combGp", combGp)
+    // console.log("combGp", combGp)
     $row.find(".comb_gp").text(combGp.toFixed(3));
 
     // Calculate $/Acre
@@ -634,7 +634,7 @@
 
   function updateOverallTotals() {
 
-    console.log("=-=-=-= Innnn -===---=-=");
+    // console.log("=-=-=-= Innnn -===---=-=");
     // Initialize totals
     var totalLaborCost = 0;
     var totalLaborGp = 0;
@@ -715,21 +715,21 @@
   }
 
   $(".labor_gp_percent, .mat_gp_percent, .s_and_h").on("change", function(e){
-      console.log("=-=-=-=- Chnaged =-=-=-=-");
+      // console.log("=-=-=-=- Chnaged =-=-=-=-");
       var $row = $(this).closest("tr");
       var $input = $(e.target);
 
       var taskMappingId = $row.find(".task_mapping").val();
-      console.log("Task Mapping ID", taskMappingId);
+      // console.log("Task Mapping ID", taskMappingId);
 
       var laborGpPercent = $row.find(".labor_gp_percent").val();
-      console.log("Labour GP %", laborGpPercent);
+      // console.log("Labour GP %", laborGpPercent);
 
       var matGpPercent = $row.find(".mat_gp_percent").val();
-      console.log("MAT GP %", matGpPercent);
+      // console.log("MAT GP %", matGpPercent);
 
       var s_and_h = $row.find(".s_and_h").val();
-      console.log("S & H", s_and_h);
+      // console.log("S & H", s_and_h);
 
       if ($input.hasClass("labor_gp_percent")){
           data = {
@@ -757,7 +757,7 @@
           'X-CSRFToken': "{{ csrf_token }}",
         },
         success: function(response) {
-          console.log('API call success:', response);
+          // console.log('API call success:', response);
           toastr.success(response.message, 'Success', {
             closeButton: true,
             progressBar: true,
@@ -809,7 +809,7 @@
       "document_number": document_number,
     }
 
-    console.log("data", data);
+    // console.log("data", data);
 
     $.ajax({
       url: '{% url "proposal_app:opportunity:update-opportunity-ajax" %}',
@@ -819,7 +819,7 @@
         'X-CSRFToken': "{{ csrf_token }}",
       },
       success: function(response) {
-        console.log('API call success:', response);
+        // console.log('API call success:', response);
         toastr.success(response.message, 'Success', {
           closeButton: true,
           progressBar: true,
