@@ -575,7 +575,7 @@ class TaskMappingData:
 
             total_quantity = sum(product.quantity for product in task_assigned_products)
             total_price = sum(
-                product.vendor_quoted_cost if product.vendor_quoted_cost else product.standard_cost
+                product.vendor_quoted_cost * product.quantity if product.vendor_quoted_cost * product.quantity else product.standard_cost
                 for product in task_assigned_products
             )
 
@@ -668,7 +668,7 @@ class TaskMappingData:
 
             total_quantity = sum(product.quantity for product in task_assigned_products)
             total_price = sum(
-                product.vendor_quoted_cost if product.vendor_quoted_cost else product.standard_cost
+                product.vendor_quoted_cost * product.quantity if product.vendor_quoted_cost * product.quantity else product.standard_cost
                 for product in task_assigned_products
             )
 
