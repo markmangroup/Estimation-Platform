@@ -61,7 +61,6 @@ class GlueAndAdditionalMaterialAjaxView(CustomDataTableMixin):
                 Q(quantity__icontains=self.search)
                 | Q(description__icontains=self.search)
                 | Q(item_number__icontains=self.search)
-                | Q(category__icontains=self.search)
             )
         return qs
 
@@ -74,7 +73,6 @@ class GlueAndAdditionalMaterialAjaxView(CustomDataTableMixin):
                     "quantity": o.quantity,
                     "description": o.description,
                     "item_number": o.item_number,
-                    "category": o.category,
                 }
             )
         return data
@@ -103,8 +101,6 @@ class PreliminaryMaterialListAjaxView(CustomDataTableMixin):
                 | Q(combined_quantities_from_both_import__icontains=self.search)
                 | Q(description__icontains=self.search)
                 | Q(item_number__icontains=self.search)
-                | Q(category__icontains=self.search)
-                | Q(bag_bundle_quantity__icontains=self.search)
             )
         return qs
 
@@ -119,8 +115,6 @@ class PreliminaryMaterialListAjaxView(CustomDataTableMixin):
                     "combined_quantities_from_both_import": o.combined_quantities_from_both_import,
                     "description": o.description,
                     "item_number": o.item_number,
-                    "category": o.category,
-                    "bag_bundle_quantity": o.bag_bundle_quantity,
                 }
             )
         return data

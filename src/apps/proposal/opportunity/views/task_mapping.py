@@ -510,7 +510,17 @@ class TaskMappingData:
         filtered_task_mappings = task_mappings.exclude(task__description__icontains="labor")
         task_mapping_ids = filtered_task_mappings.values_list("id", flat=True)
 
-        assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids)
+        try:
+            print("assigned_products try")
+            assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids).order_by(
+                "sequence"
+            )
+            print("assigned_products", assigned_products)
+
+        except Exception as e:
+            print("assigned_products Exception", e)
+            assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids)
+            print("assigned_products", assigned_products)
 
         tasks_with_products = {}
 
@@ -597,7 +607,13 @@ class TaskMappingData:
         filtered_task_mappings = task_mappings.filter(task__description__icontains="labor")
         task_mapping_ids = filtered_task_mappings.values_list("id", flat=True)
 
-        assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids)
+        try:
+            assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids).order_by(
+                "sequence"
+            )
+        except Exception as e:
+            LOGGER.error(f"error: {e}")
+            assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids)
 
         tasks_with_products = {}
 
@@ -670,3 +686,31 @@ class TaskMappingData:
             "grand_total_quantity": round(grand_total_quantity, 2),
         }
         return total_data
+
+
+class UpdateSequenceView(ViewMixin):
+    """Update sequence of rows."""
+
+    def __update_sequence(self, body: bytes) -> None:
+        """
+        Updates the sequence field for each row in the provided data.
+        :prams:body (bytes): The JSON-encoded request body containing sequence data.
+        """
+        data = json.loads(body)
+        sequence_data = data.get("sequence", [])
+
+        for item in sequence_data:
+            row_id = item.get("id")
+            new_sequence = item.get("sequence")
+
+            if row_id:
+                AssignedProduct.objects.filter(id=row_id).update(sequence=new_sequence)
+
+    def post(self, request, *args, **kwargs):
+        """POST request to update sequence"""
+        try:
+            self.__update_sequence(request.body)
+            return JsonResponse({"status": "success", "message": "Sequence updated successfully"})
+
+        except Exception:
+            return JsonResponse({"status": "error", "message": ERROR_RESPONSE}, status=400)

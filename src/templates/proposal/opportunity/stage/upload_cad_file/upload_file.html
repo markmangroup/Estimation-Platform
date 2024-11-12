@@ -32,7 +32,7 @@
     init: function() {
       this.on("error", function(file, response) {
         var errorMessage = response || "An error occurred while uploading the file.";
-        toastr.error(errorMessage, 'Error', {
+        toastr.error("Something Went Wrong :(", 'Error', {
           closeButton: true,
           progressBar: true,
           positionClass: 'toast-bottom-right',

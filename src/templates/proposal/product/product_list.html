@@ -1,528 +1,210 @@
 {% load static %}
 
-<div class="row">
-  <div class="col-12">
-    <div class="content-header">Product List</div>
-  </div>
-</div>
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/datatables/dataTables.bootstrap4.min.css' %}" />
 
-<!-- Wizard Starts -->
-<section id="icon-tabs">
+<!-- Wizard Starts For Order List-->
+<section id="icon-tabs" class="tab-1">
   <div class="row">
     <div class="col-12">
       <div class="card">
-        <div class="card-header d-flex justify-content-between">
-          <h4 class="card-title"></h4>
-          <div class="float-right">
-            <button
-              type="button"
-              class="btn bg-light-secondary"
-              hx-get="{% url 'proposal_app:product:import-products' %}"
-              hx-target="#modalContent"
-              hx-trigger="click"
-              data-toggle="modal"
-              data-target="#inlineForm"
-            >
-              <i class="fa ft-briefcase mr-1"></i>Import Products
-          </button>
-
-            <!-- Modal -->
-            <div
-              class="modal fade text-left"
-              id="inlineForm"
-              tabindex="-1"
-              role="dialog"
-              aria-labelledby="myModalLabel33"
-              aria-hidden="true"
-              data-backdrop="false"
+        <div class="card-header">
+          <ul class="nav nav-tabs mb-2">
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                id="base-tab11"
+                data-toggle="tab"
+                aria-controls="tab1"
+                href="#tab1"
+                aria-expanded="true"
+                >Prouct List</a
               >
-              <div class="modal-dialog modal-dialog-centered" role="document">
-                  <div class="modal-content">
-                      <div id="modalContent">
-                          <!-- Form content will be dynamically inserted here by HTMX -->
-                      </div>
-                  </div>
-              </div>
-            </div>
-          </div>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                id="base-tab13"
+                data-toggle="tab"
+                aria-controls="tab2"
+                href="#tab2"
+                aria-expanded="false"
+                >Additional Material</a
+              >
+            </li>
+          </ul>
         </div>
-        <div class="card">
-          <div class="card-content">
-            <div class="card-body">
-              <div class="table-responsive">
-                <table
-                  class="table table-striped table-bordered" id="product-table"
-                >
-                  <thead>
-                    <tr>
-                      <th>Internal ID</th>
-                      <th>Family</th>
-                      <th>Parent</th>
-                      <th>Description</th>
-                      <th>Primary Units Type</th>
-                      <th>Primary Stock Unit</th>
-                      <th>Std Cost</th>
-                      <th>Preferred Vendor</th>
-                    </tr>
-                  </thead>
+        <div class="tab-content">
 
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+          <!-- Product Tab -->
+          <div class="tab-pane active" id="tab1" aria-labelledby="base-tab11">
+            <div class="card">
 
-    <!-- Change Price Modal -->
-    <div
-      class="modal fade text-left"
-      id="change_price"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="myModalLabel33"
-      aria-hidden="true"
-      data-backdrop="false"
-    >
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title" id="myModalLabel5">Change Price</h4>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true"
-                ><i class="ft-x font-medium-2 text-bold-700"></i
-              ></span>
-            </button>
-          </div>
-          <form action="#">
-            <div class="modal-body">
-              <label>Quoted Price</label>
-              <div class="form-group">
-                <div class="custom-file">
-                  <input
-                    type="text"
-                    placeholder="Quoted Price"
-                    class="form-control"
-                  />
+              <div class="card-header d-flex justify-content-between">
+
+                <!-- Product List Tab -->
+                <div class="float-left">
+                    <h4>Prouct List</h4>
                 </div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-danger"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                class="btn btn-primary"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                Change Price
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-    <!-- Change Price Ends -->
 
-    <!-- Quoted Cost is grater then 5 % Modal -->
-    <div
-      class="modal fade text-left"
-      id="large_quoted_cost"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="myModalLabel33"
-      aria-hidden="true"
-      data-backdrop="false"
-    >
-      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title">Quoted Cost Grater then 5 %</h4>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true"
-                ><i class="ft-x font-medium-2 text-bold-700"></i
-              ></span>
-            </button>
-          </div>
-          <form action="#">
-            <div class="modal-body">
-              <div class="table-responsive">
-                <table
-                  id="quotedCostTable"
-                  class="table table-striped table-bordered "
-                >
-                  <thead>
-                    <tr>
-                      <th>Item Number</th>
-                      <th>Description</th>
-                      <th>Category</th>
-                      <th>Units</th>
-                      <th>Available QTY</th>
-                      <th>Average Cost</th>
-                      <th>Last Purchase Price</th>
-                      <th>Estimated Code</th>
-                      <th>Customer Price</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <!-- Row 1 -->
-                    <tr>
-                      <td class="text-nowrap">4200-001600</td>
-                      <td class="text-nowrap">
-                        Cement -711 Heavy Gray, Gallon
-                      </td>
-                      <td>#N/A</td>
-                      <td>Each</td>
-                      <td>1</td>
-                      <td>$10.00</td>
-                      <td>$9.50</td>
-                      <td>GLU123</td>
-                      <td>$20.00</td>
-                      <td class="text-truncate">
-                        <button
-                          type="button"
-                          class="success p-0"
-                          data-toggle="modal"
-                          data-target="#change_price"
-                          style="all: unset"
-                        >
-                          <i class="ft-edit font-medium-3 mr-2"></i>
-                        </button>
-                        <a href="javascript:;" class="danger p-0">
-                          <i class="ft-trash-2 font-medium-3"></i>
-                        </a>
-                      </td>
-                    </tr>
-                    <!-- Row 2 -->
-                    <tr>
-                      <td class="text-nowrap">4200-007500</td>
-                      <td class="text-nowrap">
-                        Cement - Primer Purple P70 Gal
-                      </td>
-                      <td>GLU020</td>
-                      <td>Each</td>
-                      <td>1</td>
-                      <td>$8.00</td>
-                      <td>$7.50</td>
-                      <td>ABC456</td>
-                      <td>$16.00</td>
-                      <td class="text-truncate">
-                        <button
-                          type="button"
-                          class="success p-0"
-                          data-toggle="modal"
-                          data-target="#change_price"
-                          style="all: unset"
-                        >
-                          <i class="ft-edit font-medium-3 mr-2"></i>
-                        </button>
-                        <a href="javascript:;" class="danger p-0">
-                          <i class="ft-trash-2 font-medium-3"></i>
-                        </a>
-                      </td>
-                    </tr>
-                    <!-- Row 3 -->
-                    <tr>
-                      <td class="text-nowrap">3600-004500</td>
-                      <td class="text-nowrap">SURVEY FLAGS GLO ORA 21" WIRE</td>
-                      <td>FSO020</td>
-                      <td>Each</td>
-                      <td>1</td>
-                      <td>$6.00</td>
-                      <td>$5.50</td>
-                      <td>DEF789</td>
-                      <td>$12.00</td>
-                      <td class="text-truncate">
-                        <button
-                          type="button"
-                          class="success p-0"
-                          data-toggle="modal"
-                          data-target="#change_price"
-                          style="all: unset"
-                        >
-                          <i class="ft-edit font-medium-3 mr-2"></i>
-                        </button>
-                        <a href="javascript:;" class="danger p-0">
-                          <i class="ft-trash-2 font-medium-3"></i>
-                        </a>
-                      </td>
-                    </tr>
-                    <!-- Row 4 -->
-                    <tr>
-                      <td class="text-nowrap">4200-002500</td>
-                      <td class="text-nowrap">
-                        Cement -719 Extra Heavy Gray, Quart
-                      </td>
-                      <td>GLU010</td>
-                      <td>Each</td>
-                      <td>2</td>
-                      <td>$7.00</td>
-                      <td>$6.50</td>
-                      <td>GHI012</td>
-                      <td>$14.00</td>
-                      <td class="text-truncate">
-                        <button
-                          type="button"
-                          class="success p-0"
-                          data-toggle="modal"
-                          data-target="#change_price"
-                          style="all: unset"
-                        >
-                          <i class="ft-edit font-medium-3 mr-2"></i>
-                        </button>
-                        <a href="javascript:;" class="danger p-0">
-                          <i class="ft-trash-2 font-medium-3"></i>
-                        </a>
-                      </td>
-                    </tr>
-                    <!-- Row 5 -->
-                    <tr>
-                      <td class="text-nowrap">2800-001000</td>
-                      <td class="text-nowrap">PERMA-LOC COUPLING 062</td>
-                      <td>FHO005</td>
-                      <td>Each</td>
-                      <td>25</td>
-                      <td>$10.00</td>
-                      <td>$9.50</td>
-                      <td>BCD890</td>
-                      <td>$20.00</td>
-                      <td class="text-truncate">
-                        <button
-                          type="button"
-                          class="success p-0"
-                          data-toggle="modal"
-                          data-target="#change_price"
-                          style="all: unset"
-                        >
-                          <i class="ft-edit font-medium-3 mr-2"></i>
-                        </button>
-                        <a href="javascript:;" class="danger p-0">
-                          <i class="ft-trash-2 font-medium-3"></i>
-                        </a>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <input
-                type="reset"
-                class="btn bg-light-secondary"
-                data-dismiss="modal"
-                value="Close"
-              />
-              <input
-                type="button"
-                class="btn btn-primary"
-                value="Print"
-                onclick="printContent('quotedCostTable')"
-              />
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-    <!-- Quoted Cost is grater then 5 % Ends -->
+                <!-- Import Product Strat -->
+                <div class="float-right">
+                  <button
+                    type="button"
+                    class="btn bg-light-secondary"
+                    hx-get="{% url 'proposal_app:product:import-products' %}"
+                    hx-target="#modalContent"
+                    hx-trigger="click"
+                    data-toggle="modal"
+                    data-target="#inlineForm"
+                  >
+                    <i class="fa ft-briefcase mr-1"></i>Import Products
+                  </button>
 
-    <!-- No standard cost available Modal -->
-    <div
-      class="modal fade text-left"
-      id="no_standard_cost"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="myModalLabel33"
-      aria-hidden="true"
-      data-backdrop="false"
-    >
-      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title">Products without Standard Cost</h4>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true"
-                ><i class="ft-x font-medium-2 text-bold-700"></i
-              ></span>
-            </button>
-          </div>
-          <form action="#">
-            <div class="modal-body">
-              <div class="table-responsive">
-                <table
-                  id="standardCostTable"
-                  class="table table-striped table-bordered "
-                >
-                  <thead>
-                    <tr>
-                      <th>Item Number</th>
-                      <th>Description</th>
-                      <th>Category</th>
-                      <th>Units</th>
-                      <th>Available QTY</th>
-                      <th>Average Cost</th>
-                      <th>Last Purchase Price</th>
-                      <th>Estimated Code</th>
-                      <th>Customer Price</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <!-- Row 1 -->
-                    <tr>
-                      <td class="text-nowrap">4200-005000</td>
-                      <td class="text-nowrap">
-                        CEMENT - RED HOT CLEAR, PINT (HOSE FITTINGS)
-                      </td>
-                      <td>FHO</td>
-                      <td>Each</td>
-                      <td>2</td>
-                      <td>$5.00</td>
-                      <td>$4.50</td>
-                      <td>MNO678</td>
-                      <td>$10.00</td>
-                      <td class="text-truncate">
-                        <button
-                          type="button"
-                          class="success p-0"
-                          data-toggle="modal"
-                          data-target="#change_price"
-                          style="all: unset"
-                        >
-                          <i class="ft-edit font-medium-3 mr-2"></i>
-                        </button>
-                        <a href="javascript:;" class="danger p-0">
-                          <i class="ft-trash-2 font-medium-3"></i>
-                        </a>
-                      </td>
-                    </tr>
-                    <!-- Row 7 -->
-                    <tr>
-                      <td class="text-nowrap">4200-015000</td>
-                      <td class="text-nowrap">
-                        Cement - Dauber for Pint Can (HOSE FITTINGS)
-                      </td>
-                      <td>FHO</td>
-                      <td>Each</td>
-                      <td>2</td>
-                      <td>$8.00</td>
-                      <td>$7.50</td>
-                      <td>PQR901</td>
-                      <td>$16.00</td>
-                      <td class="text-truncate">
-                        <button
-                          type="button"
-                          class="success p-0"
-                          data-toggle="modal"
-                          data-target="#change_price"
-                          style="all: unset"
-                        >
-                          <i class="ft-edit font-medium-3 mr-2"></i>
-                        </button>
-                        <a href="javascript:;" class="danger p-0">
-                          <i class="ft-trash-2 font-medium-3"></i>
-                        </a>
-                      </td>
-                    </tr>
-                    <!-- Row 8 -->
-                    <tr>
-                      <td class="text-nowrap">429020</td>
-                      <td class="text-nowrap">COUPLER S40 2"</td>
-                      <td>FMP429</td>
-                      <td>Each</td>
-                      <td>2</td>
-                      <td>$10.00</td>
-                      <td>$9.50</td>
-                      <td>STU234</td>
-                      <td>$20.00</td>
-                      <td class="text-truncate">
-                        <button
-                          type="button"
-                          class="success p-0"
-                          data-toggle="modal"
-                          data-target="#change_price"
-                          style="all: unset"
-                        >
-                          <i class="ft-edit font-medium-3 mr-2"></i>
-                        </button>
-                        <a href="javascript:;" class="danger p-0">
-                          <i class="ft-trash-2 font-medium-3"></i>
-                        </a>
-                      </td>
-                    </tr>
-                    <!-- Row 9 -->
-                    <tr>
-                      <td class="text-nowrap">5400-031120</td>
-                      <td class="text-nowrap">CUT PIPE PVC S40 2" x 48"</td>
-                      <td>PIP010</td>
-                      <td>Each</td>
-                      <td>3</td>
-                      <td>$15.00</td>
-                      <td>$14.50</td>
-                      <td>VWX567</td>
-                      <td>$30.00</td>
-                      <td class="text-truncate">
-                        <button
-                          type="button"
-                          class="success p-0"
-                          data-toggle="modal"
-                          data-target="#change_price"
-                          style="all: unset"
-                        >
-                          <i class="ft-edit font-medium-3 mr-2"></i>
-                        </button>
-                        <a href="javascript:;" class="danger p-0">
-                          <i class="ft-trash-2 font-medium-3"></i>
-                        </a>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                  <!-- Modal -->
+                  <div
+                    class="modal fade text-left"
+                    id="inlineForm"
+                    tabindex="-1"
+                    role="dialog"
+                    aria-labelledby="myModalLabel33"
+                    aria-hidden="true"
+                    data-backdrop="false"
+                    >
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div id="modalContent">
+                                <!-- Form content will be dynamically inserted here by HTMX -->
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Import Product End -->
+
+              </div>
+
+              <div class="card-content">
+
+                <!-- Product List Table Start -->
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table
+                      class="table table-striped table-bordered" id="product-table"
+                    >
+                      <thead>
+                        <tr>
+                          <th>Internal ID</th>
+                          <th>Description</th>
+                          <th>Std Cost</th>
+                          <th>Primary Units Type</th>
+                          <th>Primary Stock Unit</th>
+                          <th>Preferred Vendor</th>
+                          <th>Family </th>
+                          <th>Type</th>
+                          <th>Name</th>
+                          <th>Parent</th>
+                          <th>Display Name</th>
+                          <th>Tax Schedule</th>
+                        </tr>
+                      </thead>
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <!-- Product List Table End -->
+
               </div>
             </div>
-            <div class="modal-footer">
-              <input
-                type="reset"
-                class="btn bg-light-secondary"
-                data-dismiss="modal"
-                value="Close"
-              />
-              <input
-                type="button"
-                class="btn btn-primary"
-                value="Print"
-                onclick="printContent('standardCostTable')"
-              />
+          </div>
+
+          <!-- Glue Tab -->
+          <div class="tab-pane" id="tab2" aria-labelledby="base-tab11">
+            <div class="card">
+
+              <div class="card-header d-flex justify-content-between">
+
+                <!-- Glue Tab -->
+                <div class="float-left">
+                    <h4>Additional Material</h4>
+                </div>
+
+                <!-- Import Glue Strat -->
+                <div class="float-right">
+                  <button
+                    type="button"
+                    class="btn bg-light-secondary"
+                    hx-get="{% url 'proposal_app:product:import-additional-material' %}"
+                    hx-target="#glueModalContent"
+                    hx-trigger="click"
+                    data-toggle="modal"
+                    data-target="#GlueData"
+                  >
+                    <i class="fa ft-briefcase mr-1"></i>Import Additional Material
+                  </button>
+
+                  <!-- Modal -->
+                  <div
+                    class="modal fade text-left"
+                    id="GlueData"
+                    tabindex="-1"
+                    role="dialog"
+                    aria-labelledby="myModalLabel33"
+                    aria-hidden="true"
+                    data-backdrop="false"
+                    >
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div id="glueModalContent">
+                                <!-- Form content will be dynamically inserted here by HTMX -->
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Import Glue End -->
+
+              </div>
+
+              <div class="card-content">
+
+                <!-- Glue Table Start -->
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table
+                      class="table table-striped table-bordered" id="glue-data"
+                      style="width: 100%;"
+                    >
+                      <thead>
+                        <tr>
+                          <th>Material ID</th>
+                          <th>Material Name</th>
+                          <th>Material Type</th>
+                          <th>Product Code</th>
+                          <th>Material Factor</th>
+                          <th>Additional Material Factor</th>
+                        </tr>
+                      </thead>
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <!-- Glue Table End -->
+
+              </div>
             </div>
-          </form>
+          </div>
+
         </div>
       </div>
     </div>
   </div>
 </section>
+<!-- Wizard End For Order List -->
+
+
+<!-- Product Data Table -->
 <script>
 
   targets = [];
@@ -530,13 +212,73 @@
   url = "{% url 'proposal_app:product:products-list-ajax' %}";
   columns = [
       { data: 'internal_id', name: 'internal_id' },
-      { data: 'family', name: 'family' },
-      { data: 'parent', name: 'parent' },
       { data: 'description', name: 'description' },
+      { data: 'std_cost', name: 'std_cost' },
       { data: 'primary_units_type', name: 'primary_units_type' },
       { data: 'primary_stock_unit', name: 'primary_stock_unit' },
-      { data: 'std_cost', name: 'std_cost' },
       { data: 'preferred_vendor', name: 'preferred_vendor' },
+      { data: 'family', name: 'family' },
+      { data: 'type', name: 'type' },
+      { data: 'name', name: 'name' },
+      { data: 'parent', name: 'parent' },
+      { data: 'display_name', name: 'display_name' },
+      { data: 'tax_schedule', name: 'tax_schedule' }
   ];
 
+</script>
+
+
+<script src="{% static 'app/js/jquery.min.js' %}"></script>
+<script src="{% static 'vendors/js/datatable/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'vendors/js/datatable/dataTables.bootstrap4.min.js' %}"></script>
+
+<script>
+  var table_task = initializeDataTable();
+
+  function initializeDataTable() {
+      return $('#glue-data').DataTable({
+          processing: true,
+          serverSide: true,
+          destroy: true,
+          ajax: {
+              url: "{% url 'proposal_app:product:additional-material-ajax' %}",
+              type: 'GET',
+          },
+          columns: [
+            { data: 'material_id', name: 'material_id' },
+            { data: 'material_name', name: 'material_name' },
+            { data: 'material_type', name: 'material_type' },
+            { data: 'product_item_number', name: 'product_item_number' },
+            { data: 'material_factor', name: 'material_factor' },
+            { data: 'additional_material_factor', name: 'additional_material_factor' },
+          ],
+
+      });
+  }
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tab = urlParams.get('tab');
+
+    if (tab === 'additional_material') {
+      $('#base-tab13').tab('show');
+    } else {
+      $('#base-tab11').tab('show');
+    }
+
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+      const tabId = e.target.getAttribute('aria-controls');
+      const newUrl = new URL(window.location.href);
+
+      if (tabId === 'tab2') {
+        newUrl.searchParams.set('tab', 'additional_material');
+      } else {
+        newUrl.searchParams.set('tab', 'product_list');
+      }
+
+      window.history.pushState({}, '', newUrl);
+    });
+  });
 </script>

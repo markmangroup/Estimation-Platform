@@ -1,6 +1,8 @@
 import csv
+import math
 from collections import defaultdict
 from io import StringIO
+from typing import Optional
 
 import pandas as pd
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -8,6 +10,7 @@ from django.http import JsonResponse
 
 from apps.constants import LOGGER
 from apps.mixin import ViewMixin
+from apps.proposal.product.models import AdditionalMaterials, Product
 
 from ..models import (
     GlueAndAdditionalMaterial,
@@ -278,130 +281,70 @@ class UploadCADFile(ViewMixin):
 
         return flex_riser_summary
 
-    def generate_glue_and_additional_material_list(self, document_number: str) -> dict:
+    def __custom_round(self, value: float) -> float:
+        """Round the given total to the nearest whole number (upward)."""
+        return math.ceil(value)
+
+    def __custom_sum(self, *args) -> float:
         """
-        Generate Glue and Additional Material List.
+        Sum the given numbers.
+
+        NOTE: Currently, we are not using this function.
+        """
+        return sum(args)
+
+    def __evaluate_formula(self, qty: str, amf: str, formula: str) -> Optional[float]:
+        """
+        Evaluate the given formula string after substituting 'qty' and 'amf'.
+
+        NOTE: Fetch `amf` and `qty` value after `Material List` generated.
+        TODO: Fetch `qty``from CAD file Data and `amf` from Table `Glue and Additional Materials Master Table` filed Additional Material Factor
+        """
+        formula = formula.replace("$qty", str(qty)).replace("$amf", str(amf))
+        formula_content = formula.replace("(", "").replace(")", "").replace("round", "").strip()
+
+        if formula_content.startswith("sum"):
+            values = formula_content.replace("sum", "").strip()
+            args = [float(num.strip()) for num in values.split(",")]
+            total_value = self.__custom_round(*args)
+            return self.__custom_round(total_value)
+
+        elif formula_content.startswith("round"):
+            try:
+                result = eval(formula_content)
+                print(f"result {type(result)}: {result}")
+                return self.__custom_round(result)
+
+            except Exception as e:
+                print(f"Error evaluating formula '{formula_content}': {e}")
+                return None
+
+        else:
+            formula = formula.replace("$qty", str(qty)).replace("$amf", str(amf))
+            value = eval(formula)
+            return round(value, 2)
+
+    def get_final_unit(self, qty: str, item_number: str) -> Optional[float]:
+        """Get final unit based on a single formula."""
+        _formula = Product.objects.get(internal_id=item_number)
+        _amf = AdditionalMaterials.objects.get(material_id=item_number)
+        return self.__evaluate_formula(qty, _amf.additional_material_factor, _formula.formula)
+
+    def generate_glue_and_additional_material_list(self, material_list: dict, document_number: str) -> dict:
+        """
+        Generate Glu and Additional Material List.
 
         :param document_number: Document number for the associated opportunity.
         """
-        glue_and_additional_data = {
-            "Quantity": [1, 2, 1, 2, 2, 7, 7, 14, 4, 2, 25, 2, 11, 25, 11, 11, 22, 36, 12, 3, 1],
-            "Form1": [
-                ",1",
-                ",2",
-                ",1",
-                ",2",
-                ",2",
-                ",7",
-                ",7",
-                ",14",
-                ",4",
-                ",2",
-                ",25",
-                ",2",
-                ",11",
-                ",25",
-                ",11",
-                ",11",
-                ",22",
-                ",36",
-                ",12",
-                ",3",
-                ",1",
-            ],
-            "Form2": [
-                ",1",
-                ",2",
-                ",1",
-                ",2",
-                ",2",
-                ",7",
-                ",7",
-                ",14",
-                ",4",
-                ",2",
-                ",25",
-                ",2",
-                ",11",
-                ",25",
-                ",11",
-                ",11",
-                ",22",
-                ",36",
-                ",12",
-                ",3",
-                ",1",
-            ],
-            "Description": [
-                "Cement -711 Heavy Gray, Gallon",
-                "Cement -719 Extra Heavy Gray, Quart",
-                "Cement - Primer Purple P70 Gal",
-                "CEMENT - RED HOT CLEAR, PINT",
-                "CEMENT - RED HOT CLEAR, PINT (HOSE FITTINGS)",
-                'Cement - Empty Can, Quart 1.75" Neck',
-                'Cement - Empty Can, Pint 1.75" Neck',
-                "Cement - Dauber for Quart Can",
-                "Cement - Dauber for Pint Can",
-                "Cement - Dauber for Pint Can (HOSE FITTINGS)",
-                'COUPLER BLACK 1/2"',
-                'COUPLER S40 2"',
-                "PERMA-LOC X SWIVEL-W TEE 062",
-                "PERMA-LOC COUPLING 062",
-                'Ball Valve, Riser 3/4" FHTxMHT',
-                'MALE HOSE ADAP X 1/2"S(3/4"SP)',
-                "FIGURE 8 062",
-                'FLEX RISER 1/2" X 48"',
-                'SADDLE 1/2" X 2"',
-                'CUT PIPE PVC S40 2" x 48"',
-                'SURVEY FLAGS GLO ORA 21" WIRE ',
-            ],
-            "Item": [
-                "4200-001600",
-                "4200-002500",
-                "4200-007500",
-                "4200-005000",
-                "4200-005000",
-                "4200-013000",
-                "4200-013500",
-                "4200-014500",
-                "4200-015000",
-                "4200-015000",
-                "2800-116500",
-                "429020",
-                "2800-006000",
-                "2800-001000",
-                "2800-117500",
-                "2800-114000",
-                "2800-118500",
-                "6200-008000",
-                "2800-105000",
-                "5400-031120",
-                "3600-004500",
-            ],
-            "Category": [
-                "#N/A",
-                "GLU010",
-                "GLU020",
-                "GLU010",
-                "FHO",
-                "GLU040",
-                "GLU040",
-                "GLU040",
-                "GLU040",
-                "FHO",
-                "FHO910",
-                "FMP429",
-                "FHO010",
-                "FHO005",
-                "FHO915",
-                "FHO905",
-                "FHO920",
-                "TUB030",
-                "FHO900",
-                "PIP010",
-                "FSO020",
-            ],
-        }
+        glue_and_additional_data = {"Quantity": [], "Description": [], "Item": []}
+
+        for qty, item in zip(material_list["Quantity"], material_list["Item Number"]):
+            # print(f"Quantity: {qty}, Item Number: {item.strip()}")
+            glue_qty = self.get_final_unit(qty, item)
+            material = AdditionalMaterials.objects.get(material_id=item)
+            glue_and_additional_data["Quantity"].append(glue_qty)
+            glue_and_additional_data["Description"].append(material.material_name)
+            glue_and_additional_data["Item"].append(item.strip())
 
         # Get the opportunity instance to save the Glue and Additional material list data
         try:
@@ -416,7 +359,6 @@ class UploadCADFile(ViewMixin):
                 quantity=glue_and_additional_data["Quantity"][i],
                 description=glue_and_additional_data["Description"][i],
                 item_number=glue_and_additional_data["Item"][i],
-                category=glue_and_additional_data["Category"][i],
             )
 
         return glue_and_additional_data
@@ -438,7 +380,7 @@ class UploadCADFile(ViewMixin):
         self, material_list: dict, glue_and_additional_data: dict, document_number: str
     ) -> dict:
         """
-        Generate and save preliminary material list into database.
+        Generate and save preliminary material list into the database.
 
         :param material_list : Material List data.
         :param glue_and_additional_data : Glue & Additional Material List data.
@@ -457,32 +399,36 @@ class UploadCADFile(ViewMixin):
 
         # Create dictionaries for mapping item numbers to quantities
         irricad_quantities = {
-            item: quantity for item, quantity in zip(irricad_data["Item Number"], irricad_data["Quantity"])
+            item.strip(): quantity for item, quantity in zip(irricad_data["Item Number"], irricad_data["Quantity"])
         }
-        glue_quantities = {item: quantity for item, quantity in zip(glue_data["Item"], glue_data["Quantity"])}
+        glue_quantities = {item.strip(): quantity for item, quantity in zip(glue_data["Item"], glue_data["Quantity"])}
 
-        # Create a dictionary to hold the combined results
-        combined_data = defaultdict(lambda: {"Irricad Imported Quantities": 0, "Glue & Additional Mat'l Quantities": 0})
-        # Populate combined data with quantities from Irricad
+        # Combine quantities for the same item_number
+        combined_quantities = defaultdict(
+            lambda: {"Irricad Imported Quantities": 0, "Glue & Additional Mat'l Quantities": 0}
+        )
+
+        # Add quantities from Irricad data
         for item_number, quantity in irricad_quantities.items():
-            combined_data[item_number]["Irricad Imported Quantities"] += quantity
+            combined_quantities[item_number]["Irricad Imported Quantities"] += quantity
 
-        # Populate combined data with quantities from Glue & Additional Mat'l
+        # Add quantities from Glue & Additional Material data
         for item_number, quantity in glue_quantities.items():
-            combined_data[item_number]["Glue & Additional Mat'l Quantities"] += quantity
+            combined_quantities[item_number]["Glue & Additional Mat'l Quantities"] += quantity
 
-        # Calculate Combined Quantities from both Imports
-        for item_number in combined_data:
-            combined_data[item_number]["Combined Quantities from both Imports"] = (
-                combined_data[item_number]["Irricad Imported Quantities"]
-                + combined_data[item_number]["Glue & Additional Mat'l Quantities"]
+        # Calculate Combined Quantities from both imports
+        for item_number in combined_quantities:
+            combined_quantities[item_number]["Combined Quantities from both Imports"] = (
+                combined_quantities[item_number]["Irricad Imported Quantities"]
+                + combined_quantities[item_number]["Glue & Additional Mat'l Quantities"]
             )
 
         # Map descriptions from both data sources
         description_dict = {}
-        # Populate descriptions from glue_data
+        # Add descriptions from glue_data
         for item, description in zip(glue_data["Item"], glue_data["Description"]):
             description_dict[item] = description
+
         # Add descriptions from irricad_data if not already present
         for item, description in zip(
             irricad_data["Item Number"], irricad_data["Description"] * len(irricad_data["Item Number"])
@@ -490,7 +436,7 @@ class UploadCADFile(ViewMixin):
             if item not in description_dict:
                 description_dict[item] = description
 
-        # Populate the final combined dictionary
+        # Prepare final data for output
         final_data = {
             "Irricad Imported Quantities": [],
             "Glue & Additional Mat'l Quantities": [],
@@ -499,15 +445,16 @@ class UploadCADFile(ViewMixin):
             "Item Number": [],
         }
 
-        for item_number, values in combined_data.items():
+        # Fill final data with combined values
+        for item_number, values in combined_quantities.items():
             final_data["Item Number"].append(item_number)
             final_data["Description"].append(description_dict.get(item_number, "Description not available"))
             final_data["Irricad Imported Quantities"].append(values["Irricad Imported Quantities"])
             final_data["Glue & Additional Mat'l Quantities"].append(values["Glue & Additional Mat'l Quantities"])
             final_data["Combined Quantities from both Imports"].append(values["Combined Quantities from both Imports"])
 
-        # TODO: Need to Create category and bag_bundle_quantity dynamically.
-        for item_number, values in combined_data.items():
+        # Save each unique combination to the database
+        for item_number, values in combined_quantities.items():
             PreliminaryMaterialList.objects.create(
                 opportunity=opportunity,
                 irricad_imported_quantities=values["Irricad Imported Quantities"],
@@ -515,8 +462,7 @@ class UploadCADFile(ViewMixin):
                 combined_quantities_from_both_import=values["Combined Quantities from both Imports"],
                 description=description_dict.get(item_number, "Description not available"),
                 item_number=item_number,
-                category="",
-                bag_bundle_quantity="",
+                # Add any additional fields if necessary
             )
 
         return final_data
@@ -584,7 +530,7 @@ class UploadCADFile(ViewMixin):
             # Generate and save Glue & Additional Material List
             # NOTE: Converted Macro code into python ("Run Miscellaneous Material")
             # _glue_and_additional_data_df
-            glue_and_additional_data = self.generate_glue_and_additional_material_list(document_number)
+            glue_and_additional_data = self.generate_glue_and_additional_material_list(material_list, document_number)
             # glue_and_additional_data_df = pd.DataFrame(glue_and_additional_data)
 
             # Generate and save Preliminary Material List

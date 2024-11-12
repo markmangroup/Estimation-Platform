@@ -126,6 +126,7 @@ urlpatterns = [
     path(
         "assign-task-labor/<str:document_number>", task_mapping.AssignTaskLaborView.as_view(), name="assign-task-labor"
     ),
+    path("update-sequence", task_mapping.UpdateSequenceView.as_view(), name="update-sequence"),
     # Proposal Creation
     path(
         "<str:document_number>/create-proposal/ajax",
