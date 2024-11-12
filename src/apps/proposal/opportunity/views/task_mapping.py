@@ -575,7 +575,10 @@ class TaskMappingData:
 
             total_quantity = sum(product.quantity for product in task_assigned_products)
             total_price = sum(
-                product.vendor_quoted_cost * product.quantity if product.vendor_quoted_cost * product.quantity else product.standard_cost
+                (
+                    (product.vendor_quoted_cost if product.vendor_quoted_cost is not None else product.standard_cost) 
+                    * product.quantity
+                )
                 for product in task_assigned_products
             )
 
@@ -584,9 +587,8 @@ class TaskMappingData:
                 "total_price": total_price,
             }
 
-        # Calculate grand total price correctly
+        # Calculate grand total price and quantity
         grand_total_price = sum(v["total_price"] for v in tasks_with_products.values())
-
         grand_total_quantity = sum(v["total_quantity"] for v in tasks_with_products.values())
 
         total_data = {
