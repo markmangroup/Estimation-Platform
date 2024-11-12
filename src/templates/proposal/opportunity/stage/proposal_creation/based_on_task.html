@@ -406,7 +406,7 @@
           }
         },
         error: function(xhr, status, error) {
-          console.log("Error:", error);
+          // console.log("Error:", error);
         }
       });
 
@@ -469,7 +469,7 @@
           var $input = $(e.target);
           var id = $input.data("id");
           var $row = $(this).closest('tr');
-          console.log("$row", $row);
+          // console.log("$row", $row);
           var value = $input.val();
 
           // Payload data
@@ -498,7 +498,7 @@
               }
             },
             error: function(xhr, status, error) {
-              console.log("Error:", error);
+              // console.log("Error:", error);
             }
           });
 
@@ -512,7 +512,7 @@
     $(document).ready(function() {
       $('.save-btn').click(function() {
           const taskId = $(this).data('id');
-          console.log("taskId", taskId)
+          // console.log("taskId", taskId)
 
           const $tbody = $('#item-body-' + taskId);
           const itemsToSave = [];
@@ -527,7 +527,7 @@
                   });
               }
           });
-          console.log(itemsToSave);
+          // console.log(itemsToSave);
           $.ajax({
               type: "POST",
               url: "{% url 'proposal_app:opportunity:add-items-ajax' %}",
@@ -643,7 +643,7 @@
                   // Remove the row from the DOM
                   if (row.length) {
                       row.remove();
-                      console.log("Row removed successfully.");
+                      // console.log("Row removed successfully.");
                   } else {
                       console.error("Row not found!");
                   }
@@ -678,7 +678,7 @@
           });
 
           // Check description data
-          console.log(description_jaon);
+          // console.log(description_jaon);
           return description_jaon;
       }
 
@@ -699,7 +699,7 @@
                   },
                   contentType: "application/json",
                   success: function(response) {
-                      console.log("Success!!");
+                      // console.log("Success!!");
                       if (response.status == "success") {
                         window.location.reload();
                       }
@@ -725,14 +725,14 @@
           // Remove the row from the DOM
           if (row.length) {
               row.remove();
-              console.log("Row removed successfully.");
+              // console.log("Row removed successfully.");
           } else {
               console.error("Row not found!");
           }
 
           // Update the description object after removal
           var description_jaon = updateDescriptionObject();
-          console.log("Updated description after deletion:", description_jaon);
+          // console.log("Updated description after deletion:", description_jaon);
       });
 
       // Optional: Function to handle save action after deletion
@@ -793,7 +793,7 @@
           // Remove the row from the DOM
           if (row.length) {
               row.remove();
-              console.log("Row removed successfully.");
+              // console.log("Row removed successfully.");
           } else {
               console.error("Row not found!");
           }

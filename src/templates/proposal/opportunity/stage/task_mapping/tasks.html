@@ -1,4 +1,6 @@
 {% load static %}
+{% load custom_filters %}
+<!-- Custom Css -->
 <style>
   .select2-container--default .select2-selection--single {
       height: 38px;
@@ -9,7 +11,10 @@
   .select2-task {
     width: 50% !important;
   }
+  .dragging { opacity: 0.5; }
+  .dragging-over { background-color: #f0f0f0; }
 </style>
+
 
 <div class="form-group">
 
@@ -39,495 +44,12 @@
       </thead>
       <tbody>
 
-        <!-- Task Start-->
-        {% for t_id, t_info in task_mapping_list.items %}
-            {% if  t_info.task.code %}
-                <tr class="task-tr">
-                  <td>
-                      <select data-id="{{t_id}}" class="select2-task form-control">
-                          <option selected disabled>{{ t_info.task.code }}</option>
-                      </select>
-                  </td>
-                  <td>
-                      <input type="text" class="form-control" value="{{ t_info.task.description }}" disabled />
-                  </td>
-                  <td class="mapping-total-price-{{t_id}} t-price">${{ t_info.total_price }}</td>
-                  <td class="mapping-total-percent-{{t_id}} t-percent">{{ t_info.total_percent }}%</td>
-                  <td class="mapping-total-qauntiy-{{t_id}} t-quantity">{{ t_info.total_quantity }}</td>
-                  <td>EA</td>
-                  <td class="mapping-total-price-{{t_id}}">${{ t_info.total_price }}</td>
-                  <td>
-                      <a data-toggle="collapse" href="#collapse{{ t_id }}" aria-expanded="true" aria-controls="collapse{{ t_id }}" class="card-title">
-                          <em class="ft-chevron-down font-medium-5"></em>
-                      </a>
-                  </td>
-                </tr>
-            {% else %}
-                <tr class="task-tr">
-                  <td>
-                      <select data-id="{{t_id}}" class="select2-task form-control">
-                          <option selected disabled>{{ t_info.task.task.name }}</option>
-                      </select>
-                  </td>
-                  <td>
-                      <input type="text" class="form-control" value="{{ t_info.task.task.description }}" disabled />
-                  </td>
-                  <td class="mapping-total-price-{{t_id}} t-price">${{ t_info.total_price }}</td>
-                  <td class="mapping-total-percent-{{t_id}} t-percent">{{ t_info.total_percent }}%</td>
-                  <td class="mapping-total-qauntiy-{{t_id}} t-quantity">{{ t_info.total_quantity }}</td>
-                  <td>EA</td>
-                  <td class="mapping-total-price-{{t_id}}">${{ t_info.total_price }}</td>
-                  <td>
-                      <a data-toggle="collapse" href="#collapse{{ t_id }}" aria-expanded="true" aria-controls="collapse{{ t_id }}" class="card-title">
-                          <em class="ft-chevron-down font-medium-5"></em>
-                      </a>
-                  </td>
-                </tr>
-            {% endif %}
-
-            <tr id="collapse{{ t_id }}" role="tabpanel" aria-labelledby="headingCollapse{{ t_id }}" class="collapse">
-                <td></td>
-                <td colspan="100">
-                    <div class="text-right my-2">
-
-                        <button type="button" class="btn bg-light-primary" data-backdrop="false" data-toggle="modal" data-target="#addProduct{{t_id}}">
-                            <em class="ft-plus font-medium-5"></em> Add Product
-                        </button>
-
-                        <!-- Add Product Modal -->
-                        <div class="modal fade text-left" id="addProduct{{t_id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" aria-hidden="true">
-                          <div class="modal-dialog modal-md modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h4 class="modal-title" id="myModalLabel5">Add Product</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                  <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
-                                </button>
-                              </div>
-                              <div class="modal-body">
-                                <section id="multiple-select2">
-                                  <div class="card">
-                                    <div class="card-content">
-                                      <div class="card-body">
-                                        <div class="form-group">
-                                            <label>Enter the number of fields</label>
-                                            <input id="totalRows{{t_id}}" type="text" class="form-control mb-1" placeholder="Enter the number of fields">
-                                          </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </section>
-                              </div>
-                              <div class="modal-footer">
-                                <button type="button" class="btn bg-light-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" data-id="{{t_id}}" class="btn btn-primary add-multi-row-btn" data-dismiss="modal"><em class="ft-plus font-medium-5"></em> Add Product</button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <button type="button" class="btn bg-light-primary htmx-trigger-btn-assign-prod"
-                                data-url="{% url 'proposal_app:opportunity:assign-prod-labor' t_info.task.opportunity.document_number t_id %}"
-                                hx-get="{% url 'proposal_app:opportunity:assign-prod-labor' t_info.task.opportunity.document_number t_id %}"
-                                hx-target="#model-assign" hx-trigger="click" data-toggle="modal" data-target="#assign-prod">
-                            <i class="fa ft-briefcase mr-1"></i>Assign Products
-                        </button>
-                    </div>
-                    <div class="table-responsive">
-                        <table id="tableBody-{{ t_id }}" class="table table-striped table-bordered">
-                            <thead>
-                                <tr class="text-center">
-                                    <th colspan="1"></th>
-                                    <th colspan="7" class="align-top">Project Product Information</th>
-                                    <th colspan="1" class="align-top">Cost</th>
-                                    <th colspan="2" class="align-top">Sell</th>
-                                    <th colspan="2" class="align-top">Gross Profit</th>
-                                    <th colspan="1" class="align-top"></th>
-                                </tr>
-                                <tr>
-                                    <th>Sr No</th>
-                                    <th class="text-nowrap">Quantity</th>
-                                    <th class="text-nowrap">Item Code</th>
-                                    <th>Description</th>
-                                    <th>Standard Cost</th>
-                                    <th>Vendor Quoted cost</th>
-                                    <th>Vendor</th>
-                                    <th>Comment</th>
-                                    <th>Total</th>
-                                    <th>Sell</th>
-                                    <th>Total</th>
-                                    <th>$</th>
-                                    <th>%</th>
-                                    <td></td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for ap in t_info.assigned_products %}
-                                <tr class="tr-{{t_id}}">
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>
-                                      {% if ap.quantity == None %}
-                                        <input type="text" data-id="{{ap.id}}" class="form-control quantity" value="" data-task-id="{{t_id}}" placeholder="Enter Quantity"></td>
-                                      {% else %}
-                                        <input type="text" data-id="{{ap.id}}" class="form-control quantity" data-task-id="{{t_id}}" value="{{ap.quantity}}" placeholder="Enter Quantity"></td>
-                                      {% endif %}
-
-                                    <td class="text-nowrap">{{ ap.item_code }}</td>
-                                    {% if ap.description %}
-                                      <td>{{ ap.description }}</td>
-                                    {% else %}
-                                      <td> - </td>
-                                    {% endif %}
-                                    {% comment %} <td id="standardCost{{ ap.id }}" class="text-nowrap">{{ ap.standard_cost }}</td> {% endcomment %}
-                                    <td>
-                                      {% if ap.standard_cost == None %}
-                                        <input type="text" id="standardCost{{ ap.id }}" class="text-nowrap form-control standard-cost" data-id="{{ap.id}}" data-task-id="{{t_id}}" value="">
-                                      {% else %}
-                                        <input type="text" id="standardCost{{ ap.id }}" class="text-nowrap form-control standard-cost" data-id="{{ap.id}}" data-task-id="{{t_id}}" value="{{ ap.standard_cost }}">
-                                      {% endif %}
-                                    </td>
-                                    {% if ap.vendor_quoted_cost == None %}
-                                      <td>
-                                        <input id="productCost{{ ap.id }}"
-                                              data-id="{{ ap.id }}"
-                                              data-task-id="{{t_id}}"
-                                              data-standard-cost="standardCost{{ ap.id }}"
-                                              type="text"
-                                              class="form-control vendor-quoted-cost"
-                                              value=""
-                                              onchange="checkCostEquality('standardCost{{ ap.id }}', 'productCost{{ ap.id }}')"
-                                              onkeyup="checkCostEquality('standardCost{{ ap.id }}', 'productCost{{ ap.id }}')">
-                                      </td>
-                                    {% else %}
-                                      <td>
-                                        <input id="productCost{{ ap.id }}"
-                                              data-id="{{ ap.id }}"
-                                              data-task-id="{{t_id}}"
-                                              data-standard-cost="standardCost{{ ap.id }}"
-                                              type="text"
-                                              class="form-control vendor-quoted-cost"
-                                              value="{{ap.vendor_quoted_cost}}"
-                                              onchange="checkCostEquality('standardCost{{ ap.id }}', 'productCost{{ ap.id }}')"
-                                              onkeyup="checkCostEquality('standardCost{{ ap.id }}', 'productCost{{ ap.id }}')">
-                                      </td>
-                                    {% endif %}
-
-                                    <td>
-                                        <select data-id="{{ap.id}}" class="select2-vendor form-control">
-                                          {% if ap.vendor == None %}
-                                            <option selected disabled>Select Vendor Name</option>
-                                          {% else %}
-                                            <option selected disabled>{{ap.vendor}}</option>
-                                          {% endif %}
-                                        </select>
-                                    </td>
-                                    <td>
-                                      {% if ap.comment == None %}
-                                        <input type="text" id="comment-{{ap.id}}" data-id="{{ ap.id }}" class="form-control comment" placeholder="Enter comment" value=""></td>
-                                      {% else %}
-                                        <input type="text" id="comment-{{ap.id}}" data-id="{{ ap.id }}" class="form-control comment" placeholder="Enter comment" value="{{ ap.comment }}"></td>
-                                      {% endif %}
-
-                                    <td>
-                                      {% if ap.vendor_quoted_cost %}
-                                        <span class="cost-total">{{ ap.vendor_quoted_cost }}</span>
-                                      {% else %}
-                                        <span class="cost-total">{{ ap.standard_cost }}</span>
-                                      {% endif %}
-                                    </td>
-                                    <td class="mapping-prod-sell">{{ ap.sell }}</td>
-                                    <td class="mapping-prod-sell">{{ ap.sell }}</td>
-                                    <td class="mapping-prod-gross-profit">{{ ap.gross_profit }}</td>
-                                    <td class="mapping-prod-gross-percentage">{{ ap.gross_profit_percentage }}</td>
-                                    <td>
-                                      {% if t_info.task.code %}
-                                        <button type="button" class="btn btn-danger assign-prod-delete-btn" data-id="{{ap.id}}" data-title="{{ap.description}} - {{ t_info.task.code }}" data-url="{% url   'proposal_app:opportunity:assign-prod-delete-ajax' %}"><em class="fa fa-trash"></em></button>
-                                      {% else %}
-                                        <button type="button" class="btn btn-danger assign-prod-delete-btn" data-id="{{ap.id}}" data-title="{{ap.description}} - {{ t_info.task.task.name }}" data-url="{% url   'proposal_app:opportunity:assign-prod-delete-ajax' %}"><em class="fa fa-trash"></em></button>
-                                      {% endif %}
-
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="13" class="text-center">No products assigned</td>
-                                </tr>
-                                {% endfor %}
-                                <!-- Genarate dynamic rows -->
-                                <tr id="row-template-{{ t_id }}" class="new_prod">
-                                    <td><input type="hidden" class="task_id" value="{{ t_id }}"></td>
-                                    <td class="text-nowrap"><input type="text" class="form-control quantity" data-id="quantity-{{t_id}}" placeholder="Enter Quantity"></td>
-                                    <td class="text-nowrap">
-                                        <select data-id="{{ t_id }}" class="select2-item-code js-example-programmatic form-control">
-                                            <!-- Data will apper here -->
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select data-id="{{ t_id }}" class="select2-item-description js-example-programmatic form-control" >
-                                            <!-- Data will apper here -->
-                                        </select>
-                                    </td>
-                                    <td><input type="text" class="form-control standard-cost" data-id="{{ t_id }}" id="std_cost" placeholder="Enter Standard Cost"></td>
-                                    <td><input type="text" class="form-control quoted-cost" placeholder="Enter Quoted Cost"></td>
-                                    <td>
-                                        <select data-id="{{ t_id }}" class="select2-vendor vendor form-control">
-                                          <option selected disabled>Select Vendor Name</option>
-                                        </select>
-                                    </td>
-                                    <td><input type="text" class="form-control comment" placeholder="Enter comment"></td>
-                                    <td class="total" data-id="{{t_id}}"></td>
-                                    <td class="sell" data-id="{{t_id}}"></td>
-                                    <td class="sell-total" data-id="{{t_id}}"></td>
-                                    <td class="gross" data-id="{{t_id}}"></td>
-                                    <td class="gross-p" data-id="{{t_id}}"></td>
-                                    <td class="d-flex">
-                                        <button type="button" class="btn btn-danger mr-2 remove-row-btn"><i class="fa fa-trash"></i></button>
-                                        <button type="button" data-id="{{t_id}}" class="btn btn-primary add-row-btn"><i class="fa fa-plus"></i></button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </td>
-            </tr>
-        {% endfor %}
-        <!-- Task End-->
-
-        <!--Task Total -->
-        {% if task_mapping_list %}
-            <tr>
-                <th></th>
-                <th>Total</th>
-                <th class="mapping-grand-total">${{grand_total.grand_total_price}}</th>
-                <th></th>
-                <th class="mapping-grand-total-quantity">{{grand_total.grand_total_quantity}}</th>
-                <th></th>
-                <th></th>
-                <th></th>
-            </tr>
-        {% endif %}
-        <!--Task Total -->
-
+        <!-- Task Start -->
+          {% include "proposal/opportunity/stage/task_mapping/task_list.html" %}
+        <!-- Task Start -->
 
         <!-- Labor start -->
-        {% for t_id, t_info in task_mapping_labor_list.items %}
-          <tr class="labor-task-tr">
-            <td >
-              <select data-id="{{t_id}}" class="select2-labor-task form-control">
-                <option selected disabled>{{t_info.task.code}}</option>
-              </select>
-            </td>
-            <td><input type="text" class="form-control" id="" value="{{t_info.task.description}}" disabled/></td>
-            <td class="mapping-total-price-{{t_id}} t-price">${{ t_info.total_price }}</td>
-            <td class="mapping-total-percent-{{t_id}} t-percent">{{ t_info.total_percent }}%</td>
-            <td class="mapping-total-qauntiy-{{t_id}} t-quantity">{{ t_info.total_quantity }}</td>
-            <td>EA</td>
-            <td class="mapping-total-price-{{t_id}}">${{ t_info.total_price }}</td>
-            <td>
-              <a data-toggle="collapse" href="#collapse{{t_id}}" aria-expanded="true" aria-controls="collapse{{t_id}}" class="card-title">
-                <em class="ft-chevron-down font-medium-5"></em>
-              </a>
-            </td>
-          </tr>
-          <tr id="collapse{{t_id}}" role="tabpanel" aria-labelledby="headingCollapse{{t_id}}" class="collapse">
-            <td>
-            </td>
-
-            <td colspan="100">
-
-              <div class="float-left my-2">
-                <label>Assign labor to task:</label>
-                {% if t_info.task.assign_to %}
-                  <select class="select-labor-task" name="" data-url="{% url "proposal_app:opportunity:assign-task-labor" opportunity.document_number %}" data-id={{t_id}} data-document={{ opportunity.document_number }}>
-                    <option value="{{t_info.task.assign_to}}">{{t_info.task.assign_to}}</option>
-                  </select>
-                {% else %}
-                  <select class="select-labor-task" name="" data-url="{% url "proposal_app:opportunity:assign-task-labor" opportunity.document_number %}" data-id={{t_id}} data-document={{ opportunity.document_number }}>
-                    <option selected disabled>Select task</option>
-                  </select>
-                {% endif %}
-
-              </div>
-
-              <div class="float-right my-2">
-                <button  type="button" class="btn bg-light-primary" data-backdrop="false"
-                  data-toggle="modal" data-target="#addlabor{{t_id}}">
-                    <em class="ft-plus font-medium-5"></em> Add labor
-                </button>
-
-                <!-- Add Labor Modal -->
-                <div class="modal fade text-left" id="addlabor{{t_id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" aria-hidden="true">
-                  <div class="modal-dialog modal-md modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h4 class="modal-title" id="myModalLabel5">Add labor</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
-                        </button>
-                      </div>
-                      <div class="modal-body">
-                        <section id="multiple-select2">
-                          <div class="card">
-                            <div class="card-content">
-                              <div class="card-body">
-                                <div class="form-group">
-                                    <label>Enter the number of fields</label>
-                                    <input id="totalRows{{t_id}}" type="text" class="form-control mb-1" placeholder="Enter the number of fields">
-                                  </div>
-                              </div>
-                            </div>
-                          </div>
-                        </section>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn bg-light-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" data-id="{{t_id}}" class="btn btn-primary add-multi-labor-row-btn" data-dismiss="modal"><em class="ft-plus font-medium-5"></em> Add Labor</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-
-              <div class="table-responsive">
-                <table
-                  class="table table-striped table-bordered"
-                  >
-                  <thead>
-                    <tr class="text-center">
-                      <th colspan="1"></th>
-                      <th colspan="6" class="align-top">Project Labor Information</th>
-                      <th colspan="1" class="align-top">Cost</th>
-                      <th colspan="2" class="align-top">Sell</th>
-                      <th colspan="2" class="align-top">Gross Profit</th>
-                      <th colspan="2" class="align-top"></th>
-                    </tr>
-                    <tr>
-                      <th>Sr No</th>
-
-                      <th class="text-nowrap">Labor task</th>
-                      <th >Description</th>
-                      <th class="text-nowrap">Quantity</th>
-                      <th>Standard Cost</th>
-                      <th>Vendor Quoted cost</th>
-                      <th>Comment</th>
-
-                      <th>Total</th>
-
-                      <th>Sell</th>
-                      <th>Total</th>
-
-                      <th>$</th>
-                      <th>%</th>
-
-
-                      <td></td>
-
-                    </tr>
-                  </thead>
-
-                  <tbody id="labor-{{t_id}}">
-
-                    {% for ap in t_info.assigned_products %}
-                      <tr class="tr-{{t_id}}">
-                        <td>{{foorloop.counter}}</td>
-
-                        <td class="text-nowrap">{{ap.labor_task}}</td>
-                        <td>{{ap.description}}</td>
-                        <td class="text-nowrap">
-                          <input type="text" class="form-control quantity" data-id="{{ap.id}}" data-task-id="{{t_id}}" value="{{ap.quantity}}"/>
-                        </td>
-                        <td class="text-nowrap">
-                          {% if ap.standard_cost %}
-                            <input type="text" data-id="{{ap.id}}" class="form-control standard-cost" data-task-id="{{t_id}}" value="{{ap.standard_cost}}">
-                          {% else %}
-                            <input type="text" data-id="{{ap.id}}" class="form-control standard-cost" data-task-id="{{t_id}}" value="{{ap.standard_cost}}">
-                          {% endif %}
-                        </td>
-                        <td class="text-nowrap">
-                          {% if ap.vendor_quoted_cost %}
-                            <input type="text" data-id="{{ ap.id }}" class="form-control vendor-quoted-cost" data-task-id="{{t_id}}" value="{{ap.vendor_quoted_cost}}">
-                          {% else %}
-                            <input type="text" data-id="{{ ap.id }}" class="form-control vendor-quoted-cost" data-task-id="{{t_id}}" value="{{ap.vendor_quoted_cost}}">
-                          {% endif %}
-                        </td>
-                        <td><input  type="text" id="comment-{{ap.id}}" data-id="{{ ap.id }}" class="form-control comment" value="{{ap.comment}}" placeholder="Enter comment"></td>
-                        <td>
-                          {% if ap.vendor_quoted_cost %}
-                            <span class="cost-total">{{ ap.vendor_quoted_cost }}</span>
-                          {% else %}
-                            <span class="cost-total">{{ ap.standard_cost }}</span>
-                          {% endif %}
-                        </td>
-                        <td class="mapping-prod-sell">{{ ap.sell }}</td>
-                        <td class="mapping-prod-sell">{{ ap.sell }}</td>
-                        <td class="mapping-prod-gross-profit">{{ ap.gross_profit }}</td>
-                        <td class="mapping-prod-gross-percentage">{{ ap.gross_profit_percentage }}</td>
-
-                        <td><button type="button" class="btn btn-danger assign-prod-delete-btn" data-id="{{ap.id}}" data-title="{{ap.description}} - {{ t_info.task.task.name }}" data-url="{% url   'proposal_app:opportunity:assign-prod-delete-ajax' %}"><em class="fa fa-trash"></em></button></td>
-                      </tr>
-                    {% endfor %}
-
-                      <tr id="row-{{t_id}}" class="new_prod">
-
-                        <td> <input type="hidden" class="task_id" value="{{t_id}}"> </td>
-                        <td>
-                          <select data-id="{{t_id}}" class="labour-task-name form-control">
-                              <!-- Data will apper here -->
-                          </select>
-                        </td>
-                        <td class="text-nowrap">
-                          <select data-id="{{t_id}}" class="labour-description form-control">
-                            <!-- Data will apper here -->
-                          </select>
-                        </td>
-                        <td>
-                          <input type="text" class="form-control quantity" placeholder="Enter Quantity">
-                        </td>
-                        <td class="text-nowrap">
-                          <input type="text" class="form-control standard-cost" data-id="{{t_id}}" value="" placeholder="Enter standard cost">
-                        </td>
-                        <td class="text-nowrap">
-                          <input type="text" class="quoted-cost form-control" data-id="{{t_id}}" value="" placeholder="Enter vendor quoted cost">
-                        </td>
-                        <td>
-                          <input type="text" class="form-control comment"placeholder="Enter comment">
-                        </td>
-                        <td class="total" data-id="{{t_id}}"></td>
-                        <td class="sell" data-id="{{t_id}}"></td>
-                        <td class="sell-total" data-id="{{t_id}}"></td>
-                        <td class="gross" data-id="{{t_id}}"></td>
-                        <td class="gross-p" data-id="{{t_id}}"></td>
-
-                        <td class="d-flex">
-                          <button class="btn btn-danger mr-2"><i class="fa fa-trash"></i></button>
-                          <button type="button" data-id="{{t_id}}" class="btn btn-primary add-labor-row"><i class="fa fa-plus"></i></button>
-                        </td>
-                      </tr>
-
-                  </tbody>
-
-                </table>
-              </div>
-
-            </td>
-          </tr>
-        {% endfor %}
-        <!-- Labor End -->
-
-        <!--Labor Total -->
-        {% if task_mapping_labor_list %}
-          <tr>
-            <th></th>
-            <th>Total</th>
-            <th class="mapping-grand-total-labor">${{labor_task_total.grand_total_price}}</th>
-            <th></th>
-            <th class="mapping-grand-total-labor-quantity">{{labor_task_total.grand_total_quantity}}</th>
-            <th></th>
-            <th></th>
-            <th></th>
-          </tr>
-        {% endif %}
+          {% include "proposal/opportunity/stage/task_mapping/labor_task_list.html" %}
         <!--Labor Total -->
 
       </tbody>
@@ -575,7 +97,7 @@
 
         // Handle 'Add Row' button click
         $('.add-row-btn, .add-multi-row-btn').on('click', function(e) {
-          console.log("Clicked.........")
+          // console.log("Clicked.........")
           var unique_id;
           var html;
           var $input = $(e.target);
@@ -586,17 +108,18 @@
           if ($input.hasClass("add-multi-row-btn")) {
               var total_rows = $(`#totalRows${task_id}`).val();
               numRows = parseInt(total_rows, 10) || 1;
-              console.log("numRows", numRows)
+              // console.log("numRows", numRows)
               multi_row = true;
           }
 
-          console.log("multi", multi_row)
+          // console.log("multi", multi_row)
 
           // Function to generate a new row with a unique ID
-          function generateRow(unique_id) {
+          function generateRow(unique_id, srNo) {
               return `
               <tr id="row-template-${unique_id}" class="new_prod">
-                  <td> <input type="hidden" class="task_id" value="${task_id}"> </td>
+                  <td class="d-none"><input type="hidden" class="task_id" value="${task_id}"></td>
+                  <td class="sr-no">${srNo}</td>
                   <td class="text-nowrap"><input type="text" class="form-control quantity" data-id="quantity-${unique_id}" placeholder="Enter Quantity"></td>
                   <td class="text-nowrap">
                       <select data-id="${unique_id}" class="select2-item-code js-example-programmatic form-control">
@@ -613,107 +136,224 @@
                         <option selected disabled>Select Vendor Name</option>
                       </select>
                   </td>
-                  <td><input type="text" class="form-control comment" placeholder="Enter comment"></td>
+                  <td><input type="text" class="form-control comment" placeholder="Enter Item Note"></td>
                   <td data-id="${unique_id}" class="total"></td>
                   <td data-id="${unique_id}" class="sell"></td>
                   <td data-id="${unique_id}" class="sell-total"></td>
                   <td data-id="${unique_id}" class="gross"></td>
                   <td data-id="${unique_id}" class="gross-p"></td>
                   <td class="d-flex">
-                      <button type="button" class="btn btn-danger mr-2 remove-row-btn"><i class="fa fa-trash"></i></button>
+                      <button type="button" data-task-id="${task_id}" class="btn btn-danger mr-2 remove-row-btn"><i class="fa fa-trash"></i></button>
                   </td>
               </tr>
               `;
           }
 
-          for (var i = 0; i < numRows; i++) {
-              unique_id = generateUniqueId();
-              html = generateRow(unique_id);
+          if (multi_row){
 
-              task_id = $(this).data('id');
+            var currentRowCount = $(this).closest('tr').find(".sr-no").length;
+            var curent_value = $(this).closest('tr').find(".sr-no");
+            var tr_id = $(this).closest('tr').find("#sr-no")
 
-              if (multi_row) {
-                var currentRow = $(this).closest('tr').find(`#row-template-${task_id}`);
-              } else {
-                var currentRow = $(this).closest('tr');
-              }
+            for (var i = 0; i < numRows; i++) {
 
-              // Find the ID of the table body to append the row
-              var data_id = $(this).data('id');
-              var tableBody = $(`#tableBody-${data_id}`);
+                unique_id = generateUniqueId();
 
-              // Insert the new row before the current row
-              tableBody.append(html);
-              $(`#row-template-${unique_id}`).insertBefore(currentRow);
+                var srNo = currentRowCount + i + 1;
 
-              // Initialize select2 for the new selects
-              $('.select2-vendor').select2({
-                placeholder: 'Select Vendor Name',
-                tags: true, // Enable the tagging feature
-                ajax: {
-                    url: '{% url "proposal_app:opportunity:vendor-search" %}',
-                    dataType: 'json',
-                    delay: 250,  // Add a delay for better UX
-                    data: function (params) {
-                        return {
-                            q: params.term
-                        };
-                    },
-                    processResults: function (data) {
-                        return {
-                            results: data.results
-                        };
-                    },
-                    cache: true
+                html = generateRow(unique_id, srNo - 1);
+
+                task_id = $(this).data('id');
+
+                if (multi_row) {
+                    var currentRow = $(this).closest('tr').find(`#row-template-${task_id}`);
+                } else {
+                    var currentRow = $(this).closest('tr');
                 }
-              });
 
-              // Item code start
-              $('.select2-item-code').select2({
-                placeholder: 'Select Item Code',
-                tags: true, // Enable the tagging feature
-                ajax: {
-                    url: '{% url "proposal_app:opportunity:item-code-search" %}',
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            q: params.term
-                        };
-                    },
-                    processResults: function (data) {
-                        return {
-                            results: data.results
-                        };
-                    },
-                    cache: true
+                // Find the ID of the table body to append the row
+                var data_id = $(this).data('id');
+                var tableBody = $(`#tableBody-${data_id}`);
+
+                // Insert the new row before the current row
+                tableBody.append(html);
+                $(`#row-template-${unique_id}`).insertBefore(currentRow);
+
+                // Initialize select2 for the new selects
+                $('.select2-vendor').select2({
+                  placeholder: 'Select Vendor Name',
+                  tags: true, // Enable the tagging feature
+                  ajax: {
+                      url: '{% url "proposal_app:opportunity:vendor-search" %}',
+                      dataType: 'json',
+                      delay: 250,  // Add a delay for better UX
+                      data: function (params) {
+                          return {
+                              q: params.term
+                          };
+                      },
+                      processResults: function (data) {
+                          return {
+                              results: data.results
+                          };
+                      },
+                      cache: true
+                  }
+                });
+
+                // Item code start
+                $('.select2-item-code').select2({
+                  placeholder: 'Select Item Code',
+                  width: '200px',
+                  tags: true, // Enable the tagging feature
+                  ajax: {
+                      url: '{% url "proposal_app:opportunity:item-code-search" %}',
+                      dataType: 'json',
+                      delay: 250,
+                      data: function (params) {
+                          return {
+                              q: params.term
+                          };
+                      },
+                      processResults: function (data) {
+                          return {
+                              results: data.results
+                          };
+                      },
+                      cache: true
+                  }
+                });
+
+                // Set Select 2 for new generated rows
+                $(`.select2-item-description`).select2({
+                  placeholder: 'Select Item description',
+                  width: '250px',
+                  tags: true, // Enable the tagging feature
+                  ajax: {
+                      url: '{% url "proposal_app:opportunity:item-description-search" %}',
+                      dataType: 'json',
+                      delay: 250,
+                      data: function (params) {
+                          return {
+                              q: params.term
+                          };
+                      },
+                      processResults: function (data) {
+                          return {
+                              results: data.results
+                          };
+                      },
+                      cache: true
+                  }
+                });
+
+            tr_id.text(srNo);
+
+            }
+
+          }else{
+
+            var currentRowCount = $(this).closest('tr').find(".sr-no");
+            var curent_value = parseInt(currentRowCount.text(), 10);
+
+            for (var i = 0; i < numRows; i++) {
+
+                unique_id = generateUniqueId();
+
+                curent_value += 1;
+
+                var srNo = curent_value - 1;
+
+                currentRowCount.text(curent_value)
+
+                html = generateRow(unique_id, srNo);
+
+                task_id = $(this).data('id');
+
+                if (multi_row) {
+                    var currentRow = $(this).closest('tr').find(`#row-template-${task_id}`);
+                } else {
+                    var currentRow = $(this).closest('tr');
                 }
-              });
 
-              // Set Select 2 for new generated rows
-              $(`.select2-item-description`).select2({
-                placeholder: 'Select Item description',
-                tags: true, // Enable the tagging feature
-                ajax: {
-                    url: '{% url "proposal_app:opportunity:item-description-search" %}',
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            q: params.term
-                        };
-                    },
-                    processResults: function (data) {
-                        return {
-                            results: data.results
-                        };
-                    },
-                    cache: true
-                }
-              });
+                // Find the ID of the table body to append the row
+                var data_id = $(this).data('id');
+                var tableBody = $(`#tableBody-${data_id}`);
 
+                // Insert the new row before the current row
+                tableBody.append(html);
+                $(`#row-template-${unique_id}`).insertBefore(currentRow);
+
+                // Initialize select2 for the new selects
+                $('.select2-vendor').select2({
+                  placeholder: 'Select Vendor Name',
+                  tags: true, // Enable the tagging feature
+                  ajax: {
+                      url: '{% url "proposal_app:opportunity:vendor-search" %}',
+                      dataType: 'json',
+                      delay: 250,  // Add a delay for better UX
+                      data: function (params) {
+                          return {
+                              q: params.term
+                          };
+                      },
+                      processResults: function (data) {
+                          return {
+                              results: data.results
+                          };
+                      },
+                      cache: true
+                  }
+                });
+
+                // Item code start
+                $('.select2-item-code').select2({
+                  placeholder: 'Select Item Code',
+                  width: '200px',
+                  tags: true, // Enable the tagging feature
+                  ajax: {
+                      url: '{% url "proposal_app:opportunity:item-code-search" %}',
+                      dataType: 'json',
+                      delay: 250,
+                      data: function (params) {
+                          return {
+                              q: params.term
+                          };
+                      },
+                      processResults: function (data) {
+                          return {
+                              results: data.results
+                          };
+                      },
+                      cache: true
+                  }
+                });
+
+                // Set Select 2 for new generated rows
+                $(`.select2-item-description`).select2({
+                  placeholder: 'Select Item description',
+                  width: '250px',
+                  tags: true, // Enable the tagging feature
+                  ajax: {
+                      url: '{% url "proposal_app:opportunity:item-description-search" %}',
+                      dataType: 'json',
+                      delay: 250,
+                      data: function (params) {
+                          return {
+                              q: params.term
+                          };
+                      },
+                      processResults: function (data) {
+                          return {
+                              results: data.results
+                          };
+                      },
+                      cache: true
+                  }
+                });
+
+            }
           }
-
         });
 
         var item_code_changed = false;
@@ -833,7 +473,7 @@
               }
             },
             error: function(xhr, status, error) {
-              console.log("Error:", error);
+              // console.log("Error:", error);
               $(".quoted-cost").on("input", function(e) {
 
                 var row = $(this).closest("tr");
@@ -973,7 +613,7 @@
               }
             },
             error: function(xhr, status, error) {
-              console.log("Error:", error);
+              // console.log("Error:", error);
               $(".quoted-cost").on("input", function(e) {
 
                 var row = $(this).closest("tr");
@@ -999,9 +639,16 @@
           });
         });
 
-
         $(document).on('click', '.remove-row-btn', function() {
-            $(this).closest('tr').remove();
+          var current_row = $(this).closest('tr');
+          var task_id = $(this).data('task-id');
+
+          current_row.remove();
+
+          $(`#tableBody-${task_id} tbody tr`).each(function(index) {
+              // console.log("Loppppppppppppppppp");
+              $(this).find('.sr-no').text(index + 1);
+          });
         });
 
         // Handle Save All data on next click
@@ -1010,7 +657,7 @@
           var foundElements = $(".steps li").find(".current");
           current_stage_value = $(".current a span.step").text();
 
-          console.log("", current_stage_value)
+          // console.log("", current_stage_value)
           var rowsData = [];
 
           if (current_stage_value == "5"){
@@ -1042,7 +689,7 @@
                 rowsData.push(rowData);
             });
 
-            console.log("rowData", rowsData);
+            // console.log("rowData", rowsData);
 
             $.ajax({
                 url: '{% url "proposal_app:opportunity:add-prod-row-ajax" %}',
@@ -1054,7 +701,7 @@
                     'X-CSRFToken': "{{ csrf_token }}",
                 },
                 success: function(response) {
-                    console.log('API call success:', response);
+                    // console.log('API call success:', response);
                     if (response.status == "success"){
                       window.location.reload();
                     }else if( response.status == "warning"){
@@ -1089,7 +736,7 @@
 
         // Handle 'Add Row' button click
         $('.add-labor-row, .add-multi-labor-row-btn').on('click', function(e) {
-          console.log("Clicked.........")
+          // console.log("Clicked.........")
           var unique_id;
           var html;
           var $input = $(e.target);
@@ -1100,18 +747,19 @@
           if ($input.hasClass("add-multi-labor-row-btn")) {
               var total_rows = $(`#totalRows${task_id}`).val();
               numRows = parseInt(total_rows, 10) || 1;
-              console.log("numRows", numRows)
+              // console.log("numRows", numRows)
               multi_row = true;
           }
 
           // console.log("multi", multi_row)
 
           // Function to generate a new row with a unique ID
-          function generateRow(unique_id) {
+          function generateRow(unique_id, srNo) {
               return `
                 <tr id="row-${unique_id}" class="new_prod">
 
-                  <td> <input type="hidden" class="task_id" value="${task_id}"> </td>
+                  <td class="d-none"><input type="hidden" class="task_id" value="${task_id}"></td>
+                  <td class="sr-no">${srNo}</td>
                   <td>
                     <select data-id="${unique_id}" class="labour-task-name form-control">
                     </select>
@@ -1130,7 +778,7 @@
                     <input type="text" data-id="${unique_id}" class="quoted-cost form-control" placeholder="Enter out of town cost">
                   </td>
                   <td>
-                    <input type="text" class="form-control comment"placeholder="Enter comment">
+                    <input type="text" class="form-control comment"placeholder="Enter Item Note">
                   </td>
                   <td class="total" data-id="${unique_id}"></td>
                   <td class="sell" data-id="${unique_id}"></td>
@@ -1139,79 +787,177 @@
                   <td class="gross-p" data-id="${unique_id}"></td>
 
                   <td class="d-flex">
-                    <button type="button" class="btn btn-danger mr-2 remove-row-btn"><i class="fa fa-trash"></i></button>
+                    <button type="button" data-task-id="${task_id}" data-id="${unique_id}" class="btn btn-danger mr-2 remove-labor-row-btn"><i class="fa fa-trash"></i></button>
                   </td>
                 </tr>
               `;
           }
 
-          for (var i = 0; i < numRows; i++) {
-              unique_id = generateUniqueId();
-              html = generateRow(unique_id);
+          if (multi_row){
 
-              task_id = $(this).data('id');
+            var currentRowCount = $(this).closest('tr').find(".sr-no").length;
+            var curent_value = $(this).closest('tr').find(".sr-no");
+            var tr_id = $(this).closest('tr').find("#sr-labor-no")
 
-              if (multi_row) {
-                var currentRow = $(this).closest('tr').find(`#row-${task_id}`);
-              } else {
-                var currentRow = $(this).closest('tr');
-              }
+            for (var i = 0; i < numRows; i++) {
 
-              // Find the ID of the table body to append the row
-              var data_id = $(this).data('id');
-              var tableBody = $(`#labor-${data_id}`);
+                unique_id = generateUniqueId();
+                var srNo = currentRowCount + i + 1;
 
-              // Insert the new row before the current row
-              tableBody.append(html);
-              $(`#row-${unique_id}`).insertBefore(currentRow);
+                html = generateRow(unique_id, srNo - 1);
 
-              $('.labour-task-name').select2({
-                placeholder: 'Select task Name',
-                tags: true, // Enable the tagging feature
-                ajax: {
-                    url: '{% url "proposal_app:opportunity:labor-task-name-search" %}',
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            q: params.term
-                        };
-                    },
-                    processResults: function (data) {
-                        return {
-                            results: data.results
-                        };
-                    },
-                    cache: true
-                  }
-              });
+                task_id = $(this).data('id');
 
-              $('.labour-description').select2({
-                placeholder: 'Select task description',
-                tags: true, // Enable the tagging feature
-                ajax: {
-                    url: '{% url "proposal_app:opportunity:labor-task-description-search" %}',
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            q: params.term
-                        };
-                    },
-                    processResults: function (data) {
-                        return {
-                            results: data.results
-                        };
-                    },
-                    cache: true
-                  }
-              });
+                if (multi_row) {
+                  var currentRow = $(this).closest('tr').find(`#row-${task_id}`);
+                } else {
+                  var currentRow = $(this).closest('tr');
+                }
+
+                // Find the ID of the table body to append the row
+                var data_id = $(this).data('id');
+                var tableBody = $(`#labor-${data_id}`);
+
+                // Insert the new row before the current row
+                tableBody.append(html);
+                $(`#row-${unique_id}`).insertBefore(currentRow);
+
+                $('.labour-task-name').select2({
+                  placeholder: 'Select task Name',
+                  width: '250px',
+                  tags: true, // Enable the tagging feature
+                  ajax: {
+                      url: '{% url "proposal_app:opportunity:labor-task-name-search" %}',
+                      dataType: 'json',
+                      delay: 250,
+                      data: function (params) {
+                          return {
+                              q: params.term
+                          };
+                      },
+                      processResults: function (data) {
+                          return {
+                              results: data.results
+                          };
+                      },
+                      cache: true
+                    }
+                });
+
+                $('.labour-description').select2({
+                  placeholder: 'Select task description',
+                  width: '250px',
+                  tags: true, // Enable the tagging feature
+                  ajax: {
+                      url: '{% url "proposal_app:opportunity:labor-task-description-search" %}',
+                      dataType: 'json',
+                      delay: 250,
+                      data: function (params) {
+                          return {
+                              q: params.term
+                          };
+                      },
+                      processResults: function (data) {
+                          return {
+                              results: data.results
+                          };
+                      },
+                      cache: true
+                    }
+                });
+
+            tr_id.text(srNo);
+
+            }
+
+          }else{
+
+            var currentLaborRowCount = $(this).closest('tr').find(".sr-no")
+            var curent_labor_value = parseInt(currentLaborRowCount.text(), 10);
+
+            for (var i = 0; i < numRows; i++) {
+
+                unique_id = generateUniqueId();
+
+                curent_labor_value += 1;
+                var srNo = curent_labor_value - 1;
+                currentLaborRowCount.text(curent_labor_value);
+
+                html = generateRow(unique_id, srNo);
+
+                task_id = $(this).data('id');
+
+                if (multi_row) {
+                  var currentRow = $(this).closest('tr').find(`#row-${task_id}`);
+                } else {
+                  var currentRow = $(this).closest('tr');
+                }
+
+                // Find the ID of the table body to append the row
+                var data_id = $(this).data('id');
+                var tableBody = $(`#labor-${data_id}`);
+
+                // Insert the new row before the current row
+                tableBody.append(html);
+                $(`#row-${unique_id}`).insertBefore(currentRow);
+
+                $('.labour-task-name').select2({
+                  placeholder: 'Select task Name',
+                  width: '250px',
+                  tags: true, // Enable the tagging feature
+                  ajax: {
+                      url: '{% url "proposal_app:opportunity:labor-task-name-search" %}',
+                      dataType: 'json',
+                      delay: 250,
+                      data: function (params) {
+                          return {
+                              q: params.term
+                          };
+                      },
+                      processResults: function (data) {
+                          return {
+                              results: data.results
+                          };
+                      },
+                      cache: true
+                    }
+                });
+
+                $('.labour-description').select2({
+                  placeholder: 'Select task description',
+                  width: '250px',
+                  tags: true, // Enable the tagging feature
+                  ajax: {
+                      url: '{% url "proposal_app:opportunity:labor-task-description-search" %}',
+                      dataType: 'json',
+                      delay: 250,
+                      data: function (params) {
+                          return {
+                              q: params.term
+                          };
+                      },
+                      processResults: function (data) {
+                          return {
+                              results: data.results
+                          };
+                      },
+                      cache: true
+                    }
+                });
+            }
           }
 
         });
 
-        $(document).on('click', '.remove-row-btn', function() {
-            $(this).closest('tr').remove();
+        $(document).on('click', '.remove-labor-row-btn', function() {
+          var current_row = $(this).closest('tr');
+          var task_id = $(this).data('task-id');
+
+          current_row.remove();
+
+            $(`#labor-${task_id} tr`).each(function(index) {
+                $(this).find('.sr-no').text(index + 1);
+            });
         });
 
         function updateDescription(value, id) {
@@ -1286,13 +1032,13 @@
               }
             },
             error: function(xhr, status, error) {
-              console.log("Error:", error);
+              // console.log("Error:", error);
             }
           });
 
           $(".quoted-cost").on("input", function(e) {
 
-            console.log("Inputed.....");
+            // console.log("Inputed.....");
 
             var row = $(this).closest("tr");
             var value = $(this).val();
@@ -1389,7 +1135,7 @@
               }
             },
             error: function(xhr, status, error) {
-              console.log("Error:", error);
+              // console.log("Error:", error);
             }
           });
 
@@ -1421,23 +1167,23 @@
   <!-- BEGIN Copy Product Row based on model value-->
   <script>
     function copyTableRow(rowId) {
-        console.log("Copying table rows...");
+        // console.log("Copying table rows...");
 
         // Log the rowId to check if it's correct
-        console.log("Row ID Passed:", rowId);
+        // console.log("Row ID Passed:", rowId);
 
         var totalRows = parseInt(document.getElementById("totalRows").value, 10);
-        console.log("Total Rows:", totalRows);
+        // console.log("Total Rows:", totalRows);
 
         if (isNaN(totalRows) || totalRows < 1) {
             totalRows = 1;
         }
 
         var tableBody = document.getElementById("tableBody");
-        console.log("Table Body:", tableBody);
+        // console.log("Table Body:", tableBody);
 
         var rowToCopy = document.getElementById(rowId);
-        console.log("Row to Copy:", rowToCopy);
+        // console.log("Row to Copy:", rowToCopy);
 
         if (!rowToCopy) {
             console.error("Row with ID '" + rowId + "' not found.");
@@ -1462,7 +1208,7 @@
             });
 
             tableBody.appendChild(clonedRow);
-            console.log("Row appended to table body");
+            // console.log("Row appended to table body");
 
             // Increment totalRows
             totalRows++;
@@ -1508,6 +1254,7 @@
       $(document).ready(function() {
           $('.select2-item-code').select2({
             placeholder: 'Select Item Code',
+            width: '200px',
             tags: true, // Enable the tagging feature
             ajax: {
                 url: '{% url "proposal_app:opportunity:item-code-search" %}',
@@ -1576,10 +1323,10 @@
             // item code
             var $input = $(e.target);
             var id = $input.data("id");
-            console.log("id", id);
+            // console.log("id", id);
 
             var value = $input.val();
-            console.log("value",value);
+            // console.log("value",value);
 
             // Payload data
             data = {
@@ -1594,7 +1341,7 @@
                 'X-CSRFToken': "{{ csrf_token }}",
               },
               success: function(response) {
-                console.log('API call success:', response);
+                // console.log('API call success:', response);
                 if (response.code == 200) {
                   updateDescription(response.description, id);
                   var $stdCostField = $(`input[data-id="${id}"][id="std_cost"]`);
@@ -1614,7 +1361,7 @@
                 }
               },
               error: function(xhr, status, error) {
-                console.log("Error:", error);
+                // console.log("Error:", error);
               }
             });
           }); */
@@ -1626,6 +1373,7 @@
       $(document).ready(function() {
         $('.select2-item-description').select2({
             placeholder: 'Select Item description',
+            width: '250px',
             tags: true, // Enable the tagging feature
             ajax: {
                 url: '{% url "proposal_app:opportunity:item-description-search" %}',
@@ -1810,13 +1558,14 @@
               }
             },
             error: function(xhr, status, error) {
-              console.log("Error:", error);
+              // console.log("Error:", error);
             }
           });
         });
 
         $('.labour-task-name ').select2({
           placeholder: 'Select task Name',
+          width: '250px',
           tags: true, // Enable the tagging feature
           ajax: {
               url: '{% url "proposal_app:opportunity:labor-task-name-search" %}',
@@ -1843,6 +1592,7 @@
       $(document).ready(function() {
         $('.labour-description ').select2({
           placeholder: 'Select task description',
+          width: '250px',
           tags: true, // Enable the tagging feature
           ajax: {
               url: '{% url "proposal_app:opportunity:labor-task-description-search" %}',
@@ -1885,7 +1635,16 @@
   <!-- Delete Assigned Product -->
   <script>
     $(document).on('click', '.assign-prod-delete-btn', function (e) {
+
+      function updateRowNumbers(id) {
+        const rows = $(`.tr-${id} .row-template-${id}`);
+        rows.each(function(index) {
+            $(this).find('.sr-no').text(index + 1);
+        });
+      }
+
       var id = $(this).data("id")
+      var task_id = $(this).data("task-id")
       var prod_name = $(this).data("title")
       if (prod_name == "None") {
         prod_name = ""
@@ -1904,6 +1663,16 @@
 
         if (result.isConfirmed) {
           $(this).closest('tr').remove();
+
+          var current_row = $(this).closest('tr');
+          var task_id = $(this).data('task-id');
+
+          current_row.remove();
+
+          $(`#tableBody-${task_id} tbody tr`).each(function(index) {
+              $(this).find('.sr-no').text(index + 1);
+          });
+
           $.ajax({
             type: "POST",
             url: url,
@@ -1912,7 +1681,8 @@
               "csrfmiddlewaretoken": '{{ csrf_token }}'
             },
             success: function (data) {
-              console.log("", data);
+              // console.log("", data);
+              updateRowNumbers(id);
               toastr.info(data.message, 'Info', {
                 closeButton: true,
                 progressBar: true,
@@ -1953,8 +1723,8 @@
             inputType = 'comment';
           }
 
-          console.log(inputType.charAt(0).toUpperCase() + inputType.slice(1) + " Id:", id);
-          console.log(inputType.charAt(0).toUpperCase() + inputType.slice(1) + " Value:", value);
+          // console.log(inputType.charAt(0).toUpperCase() + inputType.slice(1) + " Id:", id);
+          // console.log(inputType.charAt(0).toUpperCase() + inputType.slice(1) + " Value:", value);
 
           $.ajax({
             url: '{% url "proposal_app:opportunity:assign-prod-update-ajax" %}', // Replace with your actual URL
@@ -1968,7 +1738,7 @@
               'X-CSRFToken': "{{ csrf_token }}",
             },
             success: function(response) {
-              console.log('API call success:', response);
+              // console.log('API call success:', response);
               toastr.success(response.message, 'Success', {
                 closeButton: true,
                 progressBar: true,
@@ -1995,10 +1765,10 @@
       $(".select2-vendor, .select2-task, .select2-labor-task").on("change", function(e) {
         var $input = $(e.target);
         var id = $input.data("id");
-        console.log("id", id);
+        // console.log("id", id);
 
         var value = $input.val();
-        console.log("value",value);
+        // console.log("value",value);
 
         var inputType = '';
 
@@ -2011,8 +1781,8 @@
         }
 
         // Log the values based on the input type
-        console.log(inputType.charAt(0).toUpperCase() + inputType.slice(1) + " Id:", id);
-        console.log(inputType.charAt(0).toUpperCase() + inputType.slice(1) + " Value:", value);
+        // console.log(inputType.charAt(0).toUpperCase() + inputType.slice(1) + " Id:", id);
+        // console.log(inputType.charAt(0).toUpperCase() + inputType.slice(1) + " Value:", value);
 
         // AJAX call to a single endpoint
         $.ajax({
@@ -2027,7 +1797,7 @@
             'X-CSRFToken': "{{ csrf_token }}",
           },
           success: function(response) {
-            console.log('API call success:', response);
+            // console.log('API call success:', response);
             toastr.success(response.message, 'Success', {
               closeButton: true,
               progressBar: true,
@@ -2089,7 +1859,7 @@
     $(document).ready(function() {
 
       $(".select-labor-task").select2({
-        width: "100%",
+        width: "250px",
         placeholder: 'Select Tasks',
         ajax: {
           url: function () {
@@ -2152,9 +1922,8 @@
 
   <!-- Auto populated calculation -->
   <script>
-    $(document).ready(function(){
+    $(document).ready(function() {
       $(".standard-cost, .vendor-quoted-cost, .quantity").on("input", function(e) {
-
         var $input = $(e.target);
         var task_id = $(this).data("task-id");
         var tr = document.querySelectorAll(`.tr-${task_id}`);
@@ -2165,19 +1934,19 @@
         var $row = $(this).closest("tr");
 
         // Values
-        var standard_cost = $row.find(".standard-cost").val();
-        var vendor_quoted_cost = $row.find(".vendor-quoted-cost").val();
+        var standard_cost = parseFloat($row.find(".standard-cost").val()) || 0;
+        var vendor_quoted_cost = parseFloat($row.find(".vendor-quoted-cost").val()) || 0;
+        var quantity = parseFloat($row.find(".quantity").val()) || 0;
 
+        // If it's the quantity input, calculate the total for that row
         if ($input.hasClass("quantity")) {
 
           var totalQuantity = 0;
-
           tr.forEach(function(row) {
-              var costTotalQuantity = row.getElementsByClassName('quantity');
-
-              for (var j = 0; j < costTotalQuantity.length; j++) {
-                  totalQuantity += parseFloat(costTotalQuantity[j].value) || 0;
-              }
+            var costTotalQuantity = row.getElementsByClassName('quantity');
+            for (var j = 0; j < costTotalQuantity.length; j++) {
+              totalQuantity += parseFloat(costTotalQuantity[j].value) || 0;
+            }
           });
 
           $(`.mapping-total-qauntiy-${task_id}`).text(totalQuantity.toFixed(2));
@@ -2186,37 +1955,46 @@
           var laborTaskToalQuantity = 0;
 
           task_tr.forEach(function(row) {
-
             var costTaskTotalQuantity = row.getElementsByClassName('t-quantity');
-
             for (var j = 0; j < costTaskTotalQuantity.length; j++) {
               taskToalQuantity += parseFloat(costTaskTotalQuantity[j].textContent) || 0;
             }
-
           });
 
           $(".mapping-grand-total-quantity").text(taskToalQuantity.toFixed(2));
 
           labor_task_tr.forEach(function(row) {
-
             var costTaskTotalQuantity = row.getElementsByClassName('t-quantity');
-
             for (var j = 0; j < costTaskTotalQuantity.length; j++) {
               laborTaskToalQuantity += parseFloat(costTaskTotalQuantity[j].textContent) || 0;
             }
-
           });
 
           $(".mapping-grand-total-labor-quantity").text(laborTaskToalQuantity.toFixed(2));
 
-        }else if (vendor_quoted_cost != 0.0) {
+          // Recalculate cost totals based on quantity
+          var totalCost = (standard_cost * quantity) || (vendor_quoted_cost * quantity);
 
-          $row.find(".cost-total").text(vendor_quoted_cost);
+          $row.find(".cost-total").text(totalCost.toFixed(2));
+
+          var mapping_total_sell = totalCost + 0.25;
+          var mapping_total_gross_profit = mapping_total_sell - totalCost;
+          var mapping_total_gross_percentage = (mapping_total_gross_profit / mapping_total_sell) * 100;
+
+          $row.find(".mapping-prod-sell").text(mapping_total_sell.toFixed(2));
+          $row.find(".mapping-prod-gross-profit").text(mapping_total_gross_profit.toFixed(2));
+          $row.find(".mapping-prod-gross-percentage").text(mapping_total_gross_percentage.toFixed(2));
+
+        } else if (vendor_quoted_cost !== 0.0) {
+
+          var totalCost = vendor_quoted_cost * quantity;
+
+          $row.find(".cost-total").text(totalCost.toFixed(2));
           $row.find(".mapping-prod-sell").text();
 
-          var mapping_total_sell = parseFloat(vendor_quoted_cost) + 0.25;
-          var mapping_total_gross_profit = parseFloat(mapping_total_sell) - parseFloat(vendor_quoted_cost);
-          var mapping_total_gross_percentage = parseFloat(mapping_total_gross_profit / mapping_total_sell) * 100;
+          var mapping_total_sell = totalCost + 0.25;
+          var mapping_total_gross_profit = mapping_total_sell - totalCost;
+          var mapping_total_gross_percentage = (mapping_total_gross_profit / mapping_total_sell) * 100;
 
           $row.find(".mapping-prod-sell").text(mapping_total_sell.toFixed(2));
           $row.find(".mapping-prod-gross-profit").text(mapping_total_gross_profit.toFixed(2));
@@ -2224,24 +2002,25 @@
 
         } else {
 
-          $row.find(".cost-total").text(standard_cost);
+          var totalCost = standard_cost * quantity;
+
+          $row.find(".cost-total").text(totalCost.toFixed(2));
           $row.find(".mapping-prod-sell").text();
 
-          var mapping_total_sell = parseFloat(standard_cost) + 0.25;
-          var mapping_total_gross_profit = parseFloat(mapping_total_sell) - parseFloat(standard_cost);
-          var mapping_total_gross_percentage = parseFloat(mapping_total_gross_profit / mapping_total_sell) * 100;
+          var mapping_total_sell = totalCost + 0.25;
+          var mapping_total_gross_profit = mapping_total_sell - totalCost;
+          var mapping_total_gross_percentage = (mapping_total_gross_profit / mapping_total_sell) * 100;
 
           $row.find(".mapping-prod-sell").text(mapping_total_sell.toFixed(2));
           $row.find(".mapping-prod-gross-profit").text(mapping_total_gross_profit.toFixed(2));
           $row.find(".mapping-prod-gross-percentage").text(mapping_total_gross_percentage.toFixed(2));
         }
 
-        // Stotr total value
+        // Store total values
         var totalCost = 0;
         var totalPercent = 0;
 
         tr.forEach(function(row) {
-
           var costTotalElements = row.getElementsByClassName('cost-total');
           var costTotalPercent = row.getElementsByClassName('mapping-prod-gross-percentage');
 
@@ -2252,41 +2031,190 @@
           for (var j = 0; j < costTotalPercent.length; j++) {
             totalPercent += parseFloat(costTotalPercent[j].textContent) || 0;
           }
-
         });
 
-        $(`.mapping-total-price-${task_id}`).text("$"+totalCost.toFixed(2));
-        $(`.mapping-total-percent-${task_id}`).text(totalPercent.toFixed(2)+"%");
+        $(`.mapping-total-price-${task_id}`).text("$" + totalCost.toFixed(2));
+        $(`.mapping-total-percent-${task_id}`).text(totalPercent.toFixed(2) + "%");
 
-         // Task Total
+        // Task Total
         var all_task_total = 0;
         var all_labor_task_total = 0;
 
         task_tr.forEach(function(row) {
           var costTaskTotal = row.getElementsByClassName('t-price');
-
           for (var j = 0; j < costTaskTotal.length; j++) {
             all_task_total += parseFloat(costTaskTotal[j].textContent.replace(/\$/g, '').trim()) || 0;
           }
-
         });
 
-        $(".mapping-grand-total").text("$"+all_task_total)
+        $(".mapping-grand-total").text("$" + all_task_total);
 
         labor_task_tr.forEach(function(row) {
           var costTaskTotal = row.getElementsByClassName('t-price');
-
           for (var j = 0; j < costTaskTotal.length; j++) {
             all_labor_task_total += parseFloat(costTaskTotal[j].textContent.replace(/\$/g, '').trim()) || 0;
           }
-
         });
 
-        $(".mapping-grand-total-labor").text("$"+all_labor_task_total)
+        $(".mapping-grand-total-labor").text("$" + all_labor_task_total);
+      });
+    });
+  </script>
 
+
+  <!-- Update sequence -->
+  <script>
+    $(document).ready(function() {
+      // Initialize SortableJS for task rows
+      $('.sortable').each(function() {
+          new Sortable(this, {
+              handle: '.drag-handle', // Optional: You can add a specific handle for dragging
+              animation: 150, // Adjust the animation speed
+              onEnd: function(evt) {
+                  // Handle the reordering logic when drag ends
+                  updateProductIndices(evt.from);
+              }
+          });
       });
 
+      // Function to update product indices
+      function updateProductIndices(taskBody) {
+          const updatedOrder = [];
+
+          // Collect updated order based on row's current position
+          $(taskBody).find('tr').each(function(index) {
+              const productId = $(this).data('id');  // Get the product ID from the data-id attribute
+              updatedOrder.push({ id: productId, order: index + 1 });
+          });
+
+          // Send the updated order to Django (AJAX request)
+          //
+          $.ajax({
+              url: "",
+              type: "POST",
+              contentType: "application/json",
+              data: JSON.stringify({
+                  task_id: "{{t_id}}",
+                  updated_order: updatedOrder
+              }),
+              headers: {
+                  'X-CSRFToken': '{{ csrf_token }}'  // CSRF token for security
+              },
+              success: function(response) {
+                  console.log("Product order updated successfully");
+              },
+              error: function(xhr, status, error) {
+                  console.error("Error updating product order: " + error);
+              }
+          });
+      }
     });
   </script>
 
 {% endblock script %}
+
+<!-- Drag And Move Feature Start -->
+  <!-- Including SortableJS -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      function initializeTableFeatures(t_id, type, p_id) {
+          // console.log(`Initializing features for Task ID: ${t_id}, Type: ${type}`);
+
+          const selector = type === 'sortable' ? `#sortable-${t_id}` : `#labor-${t_id}`;
+          const sortableInstance = new Sortable(document.querySelector(selector), {
+              animation: 150,
+              onStart: function(evt) {
+                  $(evt.item).addClass('dragging');
+              },
+              onEnd: function(evt) {
+                  $(evt.item).removeClass('dragging');
+                  updateSrNo(t_id, type);
+                  updateSequenceOnServer(t_id, type, p_id);
+              },
+              onMove: function(evt) {
+                  const rows = $(evt.from).find('tr');
+                  rows.removeClass('dragging-over');
+                  $(evt.related).addClass('dragging-over');
+              }
+          });
+
+          // Function to update the Sr No column after sorting
+          function updateSrNo(t_id, type) {
+              const selector = type === 'sortable' ? `#sortable-${t_id}` : `#labor-${t_id}`;
+              $(selector).find('tr').each(function(index) {
+                  // console.log(`Updating Sr No of ${t_id} for row: ${index + 1} in ${type} list`);
+                  $(this).find('.sr-no').text(index + 1);
+              });
+          }
+
+          // Function to send updated sequence to the server
+          function updateSequenceOnServer(t_id, type, p_id) {
+              const selector = type === 'sortable' ? `#sortable-${t_id}` : `#labor-${t_id}`;
+              const sequenceData = [];
+
+              // Collect data for each row
+              $(selector).find('tr').each(function(index) {
+                  const rowId = $(this).data('row-id');
+                  sequenceData.push({
+                      id: rowId,
+                      sequence: index + 1
+                  });
+              });
+
+              // Make AJAX call to update sequence on the server
+              $.ajax({
+                  url: "{% url 'proposal_app:opportunity:update-sequence' %}",
+                  method: 'POST',
+                  headers: {
+                    'X-CSRFToken': "{{ csrf_token }}",
+                  },
+                  data: JSON.stringify({
+                      task_id: t_id,
+                      p_id:p_id,
+                      type: type,
+                      sequence: sequenceData
+                  }),
+                  contentType: 'application/json',
+                  success: function(response) {
+                      //console.log('Sequence updated successfully:', response);
+                  },
+                  error: function(xhr, status, error) {
+                    let response = JSON.parse(xhr.responseText);
+                    toastr.error(response.message, 'Error', {
+                      closeButton: true,
+                      progressBar: true,
+                      positionClass: 'toast-bottom-right',
+                      timeOut: 6000
+                    });
+                  }
+              });
+          }
+      }
+
+      // Initialize sortable features for each list type separately
+      {% for t_id, t_info in task_mapping_list.items %}
+        {% for ap in t_info.assigned_products %}
+          initializeTableFeatures("{{ t_id }}", 'sortable', "{{ap.id}}");
+        {% endfor %}
+      {% endfor %}
+
+      {% for t_id, t_info in task_mapping_labor_list.items %}
+        {% for ap in t_info.assigned_products %}
+          initializeTableFeatures("{{ t_id }}", 'labor', "{{ap.id}}");
+        {% endfor %}
+      {% endfor %}
+    });
+  </script> -->
+
+  <!-- Including Custom Sortable CSS -->
+  <!-- <style>
+      /* Optional styling for feedback during drag */
+      .dragging {
+          opacity: 0.6;
+      }
+      .dragging-over {
+          background-color: #f0f0f0;
+      }
+  </style>  -->
+  <!-- Drag And Move Feature End -->

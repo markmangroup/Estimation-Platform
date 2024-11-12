@@ -105,7 +105,7 @@
       const urlParams = new URLSearchParams(window.location.search);
       const tab = urlParams.get('tab') || '{{ default_tab }}';  // Use context variable if URL parameter is not present
 
-      console.log('Tab parameter:', tab);  // Debugging line
+      // console.log('Tab parameter:', tab);  // Debugging line
 
       // Remove the 'active' class from all fieldsets
       document.querySelectorAll('fieldset').forEach(fieldset => {
@@ -114,7 +114,7 @@
 
       // Add the 'active' class to the desired tab
       const activeTab = document.getElementById(`tab-${tab}`);
-      console.log('Active tab element:', activeTab);  // Debugging line
+      // console.log('Active tab element:', activeTab);  // Debugging line
       if (activeTab) {
           activeTab.classList.add('active');
       } else {

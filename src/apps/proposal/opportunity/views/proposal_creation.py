@@ -210,10 +210,11 @@ class ProposalCreationData:
             for product in assigned_products:
                 if product.is_select:  # Only include selected products
                     filtered_assigned_products.append(product)
-                    value = ProposalCreationData._calculate_product_value(product)
 
-                    result[group_name]["task_totals"][task_object] += value
-                    result[group_name]["main_total"] += value
+                value = ProposalCreationData._calculate_product_value(product)
+
+                result[group_name]["task_totals"][task_object] += value
+                result[group_name]["main_total"] += value
 
             # Store the filtered assigned products
             result[group_name]["assigned_products"][task_object] = filtered_assigned_products

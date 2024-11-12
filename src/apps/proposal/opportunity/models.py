@@ -201,7 +201,9 @@ class GlueAndAdditionalMaterial(BaseModel):
     )
     description = models.CharField(_("Description"), max_length=255)
     item_number = models.CharField(_("Item Number"), max_length=255)
-    category = models.CharField(_("Category"), max_length=255)
+    category = models.CharField(
+        _("Category"), max_length=255, null=True, blank=True
+    )  # Currently we are not using a category
 
     def __str__(self):
         return f"{self.item_number}"
@@ -226,8 +228,10 @@ class PreliminaryMaterialList(BaseModel):
     )
     description = models.CharField(_("Description"), max_length=255)
     item_number = models.CharField(_("Item Number"), max_length=255)
-    category = models.CharField(_("Category"), max_length=255)
-    bag_bundle_quantity = models.CharField(_("Bag/Bundle Quantity"), max_length=255, blank=True, null=True)
+    category = models.CharField(_("Category"), max_length=255)  # Currently we are not using a category
+    bag_bundle_quantity = models.CharField(
+        _("Bag/Bundle Quantity"), max_length=255, blank=True, null=True
+    )  # Currently we are not using a bag bundle quantity
 
     def __str__(self):
         return f"{self.item_number}"
@@ -444,21 +448,22 @@ class AssignedProduct(BaseModel):
     labor_task = models.CharField(_("Labor Task"), max_length=255, blank=True, null=True)
     local_cost = models.FloatField(_("Labor Local Cost"), blank=True, null=True)
     out_of_town_cost = models.FloatField(_("Out Of Town Cost"), blank=True, null=True)
+    sequence = models.IntegerField(default=0)
 
     @property
     def sell(self):
         if self.vendor_quoted_cost:
-            sell_sum = 0.25 + self.vendor_quoted_cost
+            sell_sum = 0.25 + (self.vendor_quoted_cost * self.quantity)
         else:
-            sell_sum = 0.25 + self.standard_cost
+            sell_sum = 0.25 + (self.standard_cost * self.quantity)
         return round(sell_sum, 2)
 
     @property
     def gross_profit(self):
         if self.vendor_quoted_cost:
-            gross_profit_sum = self.sell - self.vendor_quoted_cost
+            gross_profit_sum = self.sell - (self.vendor_quoted_cost * self.quantity)
         else:
-            gross_profit_sum = self.sell - self.standard_cost
+            gross_profit_sum = self.sell - (self.standard_cost * self.quantity)
         return round(gross_profit_sum, 2)
 
     @property

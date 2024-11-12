@@ -1,17 +1,18 @@
 {% load static %}
+
 <!-- Loader HTML -->
 <div id="loader-container" style="display: none;">
     <div id="loader">
         <div class="spinner-border" role="status">
             <span class="sr-only">Loading...</span>
         </div>
-        <p>Labour Cost Import...</p>
+        <p>Additional Matetial Importing...</p>
     </div>
 </div>
 
 <div class="modal-header">
     <h4 class="modal-title" id="myModalLabel5">
-        Import Labour Cost
+        Import Additional Matetial
     </h4>
     <button
         type="button"
@@ -24,8 +25,7 @@
         </span>
     </button>
 </div>
-
-<form id="importLabourCostForm" hx-post="{% url 'proposal_app:labour_cost:import-labour-cost' %}" hx-target="#modelLabourCost" hx-swap="#inlineForm" enctype="multipart/form-data" novalidate>
+<form id="importProductForm" hx-post="{% url 'proposal_app:product:import-additional-material' %}" hx-target="#glueModalContent" hx-swap="#inlineForm" enctype="multipart/form-data" novalidate>
     {% csrf_token %}
     <div class="modal-body">
         <label>Upload File </label>
@@ -72,9 +72,6 @@
         var $loader = $('#loader-container');
 
         if(evt.detail.xhr.status === 200){
-            // console.log("evt.detail.xhr.status", evt.detail.xhr.status)
-            // console.log("evt.detail.xhr.response", evt.detail.xhr.response)
-
             // Parse the JSON response
             var response = JSON.parse(evt.detail.xhr.response);
 
@@ -83,22 +80,8 @@
                 $loader.hide();
                 evt.detail.shouldSwap = false;
 
-                // Hide the modal
-                $("#inlineForm").modal('hide');
+                window.location.reload(); // Reaload the location
 
-                // Clear the modal body
-                $("#inlineForm .modal-body").html('');
-
-                // Reload the DataTable
-                $("#labour-cost-table").DataTable().ajax.reload(null, false);
-
-                // Display message
-                toastr.success(response.message, 'Success', {
-                    closeButton: true,
-                    progressBar: true,
-                    positionClass: 'toast-bottom-right',
-                    timeOut: 6000
-                });
             }
         }
     });

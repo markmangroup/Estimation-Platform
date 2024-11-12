@@ -199,29 +199,29 @@ NOTE : For adding border lines into table add "table-bordered" class into table 
 
     $(".labor_gp_percent, .mat_gp_percent, .s_and_h").on("input", function(e){
       updateOverallTotals()
-        console.log("Chnaged...........");
+        // console.log("Chnaged...........");
         var $row = $(this).closest("tr");
 
         var laborGpPercent = parseFloat($row.find(".labor_gp_percent").val()) / 100;
-        console.log("Labour GP %", laborGpPercent);
+        // console.log("Labour GP %", laborGpPercent);
 
         var matGpPercent = parseFloat($row.find(".mat_gp_percent").val()) / 100;
-        console.log("MAT GP %", matGpPercent);
+        // console.log("MAT GP %", matGpPercent);
 
         var s_and_h = parseFloat($row.find(".s_and_h").val()) / 100;
-        console.log("S & H", s_and_h);
+        // console.log("S & H", s_and_h);
 
         // Calculate Labor Cost
         var laborCost = parseFloat($row.find(".labor_cost").text());
-        console.log("Labor Cost", laborCost);
+        // console.log("Labor Cost", laborCost);
 
         // parseFloat($row.find(".labor_sell").text());
         var laborSell = laborCost / (1 - laborGpPercent);
         $row.find(".labor_sell").text(laborSell.toFixed(2));
-        console.log("Labor Sell", laborSell);
+        // console.log("Labor Sell", laborSell);
 
         var matCost = parseFloat($row.find(".mat_cost").text());
-        console.log("MAT Cost", matCost);
+        // console.log("MAT Cost", matCost);
 
         // Calculate Labor GP $
         var laborGp = laborSell - laborCost;
@@ -259,7 +259,7 @@ NOTE : For adding border lines into table add "table-bordered" class into table 
 
     function updateOverallTotals() {
 
-      console.log("=-=-=-= Innnn -===---=-=");
+      // console.log("=-=-=-= Innnn -===---=-=");
       // Initialize totals
       var totalLaborCost = 0;
       var totalLaborGp = 0;
@@ -329,21 +329,21 @@ NOTE : For adding border lines into table add "table-bordered" class into table 
     }
 
     $(".labor_gp_percent, .mat_gp_percent, .s_and_h").on("change", function(e){
-        console.log("=-=-=-=- Chnaged =-=-=-=-");
+        // console.log("=-=-=-=- Chnaged =-=-=-=-");
         var $row = $(this).closest("tr");
         var $input = $(e.target);
 
         var taskMappingId = $row.find(".task_mapping").val();
-        console.log("Task Mapping ID", taskMappingId);
+        // console.log("Task Mapping ID", taskMappingId);
 
         var laborGpPercent = $row.find(".labor_gp_percent").val();
-        console.log("Labour GP %", laborGpPercent);
+        // console.log("Labour GP %", laborGpPercent);
 
         var matGpPercent = $row.find(".mat_gp_percent").val();
-        console.log("MAT GP %", matGpPercent);
+        // console.log("MAT GP %", matGpPercent);
 
         var s_and_h = $row.find(".s_and_h").val();
-        console.log("S & H", s_and_h);
+        // console.log("S & H", s_and_h);
 
         if ($input.hasClass("labor_gp_percent")){
             data = {
@@ -371,7 +371,7 @@ NOTE : For adding border lines into table add "table-bordered" class into table 
             'X-CSRFToken': "{{ csrf_token }}",
           },
           success: function(response) {
-            console.log('API call success:', response);
+            // console.log('API call success:', response);
             toastr.success(response.message, 'Success', {
               closeButton: true,
               progressBar: true,

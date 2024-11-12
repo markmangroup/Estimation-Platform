@@ -1766,13 +1766,13 @@
           'X-CSRFToken': "{{ csrf_token }}",
         },
         success: function(response) {
-          console.log('Response:', response);
+          // console.log('Response:', response);
           if (response.code == 200) {
             window.location.reload();
           }
         },
         error: function(xhr, status, error) {
-          console.log("Error:", error);
+          // console.log("Error:", error);
         }
       });
     });
@@ -1789,10 +1789,10 @@
 
         const value = $(this).val().replace(/^\$/, '');
         totalSum += parseFloat(value) || 0;
-        console.log("totalSum plus", totalSum);
+        // console.log("totalSum plus", totalSum);
     });
 
-    console.log("totalSum", totalSum);
+    // console.log("totalSum", totalSum);
 
     $(".main_total").val("$"+totalSum.toFixed(2));
   });
@@ -1834,7 +1834,7 @@
             'X-CSRFToken': "{{ csrf_token }}",
           },
           success: function(response) {
-            console.log('Response:', response);
+            // console.log('Response:', response);
             if (response.status == "success") {
               toastr.success(response.message, 'Updated', {
                 closeButton: true,
@@ -1852,7 +1852,7 @@
             }
           },
           error: function(response) {
-            console.log('Error Response:', response);
+            // console.log('Error Response:', response);
             toastr.error(response.message, 'Error', {
               closeButton: true,
               progressBar: true,
@@ -1897,7 +1897,7 @@
     $(`.totals`).each(function () {
         const value = $(this).val().replace(/^\$/, '');
         totalSum += parseFloat(value) || 0;
-        console.log("totalSum plus", totalSum);
+        // console.log("totalSum plus", totalSum);
     });
 
     $(".main_total").val("$"+totalSum);
@@ -1944,7 +1944,7 @@
           'X-CSRFToken': "{{ csrf_token }}",
         },
         success: function(response) {
-          console.log('Response:', response);
+          // console.log('Response:', response);
           if (response.status == "success") {
             toastr.success(response.message, 'Updated', {
               closeButton: true,
@@ -1962,7 +1962,7 @@
           }
         },
         error: function(response) {
-          console.log('Error Response:', response);
+          // console.log('Error Response:', response);
           toastr.error(response.message, 'Error', {
             closeButton: true,
             progressBar: true,
@@ -2048,7 +2048,7 @@
       "id": id,
     }
 
-    console.log("data", data);
+    // console.log("data", data);
 
     $.ajax({
       url: '{% url "proposal_app:opportunity:update-invoice-ajax" %}',
@@ -2058,7 +2058,7 @@
         'X-CSRFToken': "{{ csrf_token }}",
       },
       success: function(response) {
-        console.log('API call success:', response);
+        // console.log('API call success:', response);
         if (response.status == "success"){
           toastr.success(response.message, 'Success', {
             closeButton: true,
@@ -2182,7 +2182,7 @@
           }
         });
 
-        console.log("Data -=-=-==--===-",terms);
+        // console.log("Data -=-=-==--===-",terms);
         var document_number = "{{ opportunity.document_number }}";
 
         data = {
@@ -2200,7 +2200,7 @@
             'X-CSRFToken': "{{ csrf_token }}",
           },
           success: function(response) {
-            console.log('API call success:', response);
+            // console.log('API call success:', response);
             if (response.status == "success"){
               toastr.success(response.message, 'Success', {
                 closeButton: true,
@@ -2237,7 +2237,7 @@
   $(document).on("keypress", ".new-terms", function(e) {
     if (e.which == 13) {
         e.preventDefault();
-        console.log("New terms added");
+        // console.log("New terms added");
 
         var $currentRow = $(this).closest('tr');
         var $newRow = `
@@ -2269,7 +2269,7 @@
   $(document).on("keypress", ".new-pump-terms", function(e) {
     if (e.which == 13) {
         e.preventDefault();
-        console.log("New Pump terms added");
+        // console.log("New Pump terms added");
 
         var $currentRow = $(this).closest('tr');
         var $newRow = `
@@ -2300,7 +2300,7 @@
   $(document).on("keypress", ".new-sales-agreement", function(e) {
     if (e.which == 13) {
         e.preventDefault();
-        console.log("New Pump terms added");
+        // console.log("New Pump terms added");
         var $currentRow = $(this).closest('tr');
         var $newRow = `
             <tr>

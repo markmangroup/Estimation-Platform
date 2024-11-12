@@ -321,10 +321,17 @@ class AddProdRowView(ViewMixin):
         if not quoted_cost:
             return {"status": "warning", "message": "Please add quoted cost"}
 
-        labor_task = LabourCost.objects.filter(id=product.get("task_name")).first()
-        task_name_value = labor_task.labour_task if labor_task else product.get("task_name")
-        task_description = LabourCost.objects.filter(id=product.get("labor_description")).first()
-        task_desc_value = task_description.description if task_description else product.get("labor_description")
+        try:
+            labor_task = LabourCost.objects.filter(id=product.get("task_name")).first()
+            task_name_value = labor_task.labour_task
+            task_desc_value = labor_task.description if labor_task else product.get("labor_description")
+        except Exception:  # Handle custom item code data
+            task_name_value = product.get("task_name")
+            try:
+                labor_task = LabourCost.objects.filter(id=product.get("task_name")).first()
+                task_desc_value = labor_task.description
+            except Exception:
+                task_desc_value = product.get("labor_description")
 
         AssignedProduct.objects.create(
             task_mapping=task_mapping,
@@ -503,7 +510,17 @@ class TaskMappingData:
         filtered_task_mappings = task_mappings.exclude(task__description__icontains="labor")
         task_mapping_ids = filtered_task_mappings.values_list("id", flat=True)
 
-        assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids)
+        try:
+            print("assigned_products try")
+            assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids).order_by(
+                "sequence"
+            )
+            print("assigned_products", assigned_products)
+
+        except Exception as e:
+            print("assigned_products Exception", e)
+            assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids)
+            print("assigned_products", assigned_products)
 
         tasks_with_products = {}
 
@@ -512,6 +529,14 @@ class TaskMappingData:
 
             total_quantity = sum(product.quantity for product in task_assigned_products)
             total_price = sum(
+                (
+                    product.vendor_quoted_cost * product.quantity
+                    if product.vendor_quoted_cost
+                    else product.standard_cost * product.quantity
+                )
+                for product in task_assigned_products
+            )
+            total_unit_price = sum(
                 product.vendor_quoted_cost if product.vendor_quoted_cost else product.standard_cost
                 for product in task_assigned_products
             )
@@ -523,6 +548,7 @@ class TaskMappingData:
                 "assigned_products": task_assigned_products,
                 "total_quantity": round(total_quantity, 2),
                 "total_price": round(total_price, 2),
+                "total_unit_price": round(total_unit_price, 2),
                 "total_percent": round(total_percent, 2),
             }
 
@@ -549,7 +575,10 @@ class TaskMappingData:
 
             total_quantity = sum(product.quantity for product in task_assigned_products)
             total_price = sum(
-                product.vendor_quoted_cost if product.vendor_quoted_cost else product.standard_cost
+                (
+                    (product.vendor_quoted_cost if product.vendor_quoted_cost is not None else product.standard_cost) 
+                    * product.quantity
+                )
                 for product in task_assigned_products
             )
 
@@ -558,9 +587,8 @@ class TaskMappingData:
                 "total_price": total_price,
             }
 
-        # Calculate grand total price correctly
+        # Calculate grand total price and quantity
         grand_total_price = sum(v["total_price"] for v in tasks_with_products.values())
-
         grand_total_quantity = sum(v["total_quantity"] for v in tasks_with_products.values())
 
         total_data = {
@@ -581,7 +609,13 @@ class TaskMappingData:
         filtered_task_mappings = task_mappings.filter(task__description__icontains="labor")
         task_mapping_ids = filtered_task_mappings.values_list("id", flat=True)
 
-        assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids)
+        try:
+            assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids).order_by(
+                "sequence"
+            )
+        except Exception as e:
+            LOGGER.error(f"error: {e}")
+            assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids)
 
         tasks_with_products = {}
 
@@ -590,6 +624,14 @@ class TaskMappingData:
 
             total_quantity = sum(product.quantity for product in task_assigned_products)
             total_price = sum(
+                (
+                    product.vendor_quoted_cost * product.quantity
+                    if product.vendor_quoted_cost
+                    else product.standard_cost * product.quantity
+                )
+                for product in task_assigned_products
+            )
+            total_unit_price = sum(
                 product.vendor_quoted_cost if product.vendor_quoted_cost else product.standard_cost
                 for product in task_assigned_products
             )
@@ -601,6 +643,7 @@ class TaskMappingData:
                 "assigned_products": task_assigned_products,
                 "total_quantity": round(total_quantity, 2),
                 "total_price": round(total_price, 2),
+                "total_unit_price": round(total_unit_price, 2),
                 "total_percent": round(total_percent, 2),
             }
 
@@ -627,7 +670,7 @@ class TaskMappingData:
 
             total_quantity = sum(product.quantity for product in task_assigned_products)
             total_price = sum(
-                product.vendor_quoted_cost if product.vendor_quoted_cost else product.standard_cost
+                product.vendor_quoted_cost * product.quantity if product.vendor_quoted_cost * product.quantity else product.standard_cost
                 for product in task_assigned_products
             )
 
@@ -645,3 +688,31 @@ class TaskMappingData:
             "grand_total_quantity": round(grand_total_quantity, 2),
         }
         return total_data
+
+
+class UpdateSequenceView(ViewMixin):
+    """Update sequence of rows."""
+
+    def __update_sequence(self, body: bytes) -> None:
+        """
+        Updates the sequence field for each row in the provided data.
+        :prams:body (bytes): The JSON-encoded request body containing sequence data.
+        """
+        data = json.loads(body)
+        sequence_data = data.get("sequence", [])
+
+        for item in sequence_data:
+            row_id = item.get("id")
+            new_sequence = item.get("sequence")
+
+            if row_id:
+                AssignedProduct.objects.filter(id=row_id).update(sequence=new_sequence)
+
+    def post(self, request, *args, **kwargs):
+        """POST request to update sequence"""
+        try:
+            self.__update_sequence(request.body)
+            return JsonResponse({"status": "success", "message": "Sequence updated successfully"})
+
+        except Exception:
+            return JsonResponse({"status": "error", "message": ERROR_RESPONSE}, status=400)

@@ -89,7 +89,7 @@
             'X-CSRFToken': "{{ csrf_token }}",
           },
           success: function(response) {
-            console.log('Success:', response);
+            // console.log('Success:', response);
             stage_3_initializeDataTable();
             $('#stage_3_file-upload').val('');
             $('#stage_3_file-name').text('');
@@ -125,7 +125,7 @@
     });
       function stage_3_initializeDataTable() {
         var currentStage = "Material List"
-        console.log('currentStage: ', currentStage);
+        // console.log('currentStage: ', currentStage);
 
         // Destroy any existing DataTable instance to avoid conflicts
         if ($.fn.DataTable.isDataTable('#stage_3_document')) {
@@ -152,7 +152,7 @@
 
       $("a[href='#next'], a[href='#previous']").on("click", function(e) {
         e.preventDefault(); // Prevent default link behavior
-        console.log('Navigation link clicked');
+        // console.log('Navigation link clicked');
         setTimeout(function() {
           stage_3_initializeDataTable();
         }, 500);

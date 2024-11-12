@@ -72,8 +72,6 @@
         var $loader = $('#loader-container');
 
         if(evt.detail.xhr.status === 200){
-            console.log("evt.detail.xhr.status", evt.detail.xhr.status)
-            console.log("evt.detail.xhr.response", evt.detail.xhr.response)
 
             // Parse the JSON response
             var response = JSON.parse(evt.detail.xhr.response);

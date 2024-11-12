@@ -92,7 +92,7 @@
           'X-CSRFToken': "{{ csrf_token }}",
         },
         success: function(response) {
-          console.log('Success:', response);
+          // console.log('Success:', response);
           stage_1_initializeDataTable();
           $('#stage_1_file-upload').val('');
           $('#stage_1_file-name').text('');
@@ -128,7 +128,7 @@
   });
   function stage_1_initializeDataTable() {
     var currentStage = "Select Task Code";
-    console.log('currentStage: ', currentStage);
+    // console.log('currentStage: ', currentStage);
 
     // Destroy any existing DataTable instance to avoid conflicts
     if ($.fn.DataTable.isDataTable('#stage_1_document')) {
@@ -157,7 +157,7 @@
 
     $("a[href='#next'], a[href='#previous']").on("click", function(e) {
       e.preventDefault(); // Prevent default link behavior
-      console.log('Navigation link clicked');
+      // console.log('Navigation link clicked');
       setTimeout(function() {
         stage_1_initializeDataTable();
       }, 500);

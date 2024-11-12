@@ -126,7 +126,7 @@
                 "csrfmiddlewaretoken": '{{ csrf_token }}'
                 },
                 success: function (data) {
-                console.log("", data);
+                // console.log("", data);
                 toastr.info(data.message, 'Info', {
                     closeButton: true,
                     progressBar: true,
@@ -147,7 +147,7 @@
     });
 
     $(document).on('click', '.save-btn', function (e){
-        console.log("Clicked..............")
+        // console.log("Clicked..............")
         var rowsData = [];
         $('tr.prod').each(function() {
             var $row = $(this);
@@ -161,7 +161,7 @@
             rowsData.push(rowData);
         });
 
-        console.log("rowData", rowsData)
+        // console.log("rowData", rowsData)
 
         $.ajax({
             url: '{% url "proposal_app:opportunity:assign-prod-update-ajax" %}',
@@ -174,7 +174,7 @@
                 'X-CSRFToken': "{{ csrf_token }}",
             },
             success: function(response) {
-                console.log('API call success:', response);
+                // console.log('API call success:', response);
                 if (response.type){
                     window.location.reload();
                 }else{
