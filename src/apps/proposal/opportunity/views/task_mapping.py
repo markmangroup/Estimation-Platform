@@ -305,6 +305,7 @@ class AddProdRowView(ViewMixin):
             vendor_quoted_cost=float(product.get("quotedCost", 0)),
             vendor=vendor,
             comment=product.get("comment", ""),
+            sequence=product.get("sequence_number", "")
         )
         return None
 
@@ -341,6 +342,7 @@ class AddProdRowView(ViewMixin):
             standard_cost=product.get("standardCost", 0),
             vendor_quoted_cost=quoted_cost,
             comment=product.get("comment", ""),
+            sequence=product.get("sequence_number", "")
         )
         return None
 
@@ -499,6 +501,16 @@ class AddTaskView(CreateViewMixin):
 class TaskMappingData:
 
     @staticmethod
+    def _get_total_tasks(document_number: str) -> int:
+        """
+        Returns the total number of tasks.
+
+        :param document_number: The document number to filter task mappings.
+        """
+        task_mapping_obj = TaskMapping.objects.filter(opportunity__document_number=document_number)
+        return len(task_mapping_obj)
+
+    @staticmethod
     def _get_tasks(document_number: str) -> dict:
         """
         Retrieve tasks and their assigned products for a given document number.
@@ -576,7 +588,7 @@ class TaskMappingData:
             total_quantity = sum(product.quantity for product in task_assigned_products)
             total_price = sum(
                 (
-                    (product.vendor_quoted_cost if product.vendor_quoted_cost is not None else product.standard_cost) 
+                    (product.vendor_quoted_cost if product.vendor_quoted_cost is not None else product.standard_cost)
                     * product.quantity
                 )
                 for product in task_assigned_products
@@ -670,7 +682,11 @@ class TaskMappingData:
 
             total_quantity = sum(product.quantity for product in task_assigned_products)
             total_price = sum(
-                product.vendor_quoted_cost * product.quantity if product.vendor_quoted_cost * product.quantity else product.standard_cost
+                (
+                    product.vendor_quoted_cost * product.quantity
+                    if product.vendor_quoted_cost * product.quantity
+                    else product.standard_cost
+                )
                 for product in task_assigned_products
             )
 

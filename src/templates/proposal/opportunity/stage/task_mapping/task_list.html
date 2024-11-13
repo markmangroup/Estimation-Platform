@@ -146,7 +146,7 @@
                             <td>
                                 <input type="text" id="comment-{{ap.id}}" data-id="{{ ap.id }}" class="form-control comment" placeholder="Enter Item Note" value="{{ ap.comment|default:'' }}">
                             </td>
-                            <td><span class="cost-total">{{ ap.vendor_quoted_cost|default:ap.standard_cost|multiply:ap.quantity }}</span></td>
+                            <td><span class="cost-total">{{ ap.vendor_quoted_cost|default:ap.standard_cost|multiply:ap.quantity|round_value:"2" }}</span></td>
                             <td class="mapping-prod-sell">{{ ap.sell }}</td>
                             <td class="mapping-prod-sell">{{ ap.sell }}</td>
                             <td class="mapping-prod-gross-profit">{{ ap.gross_profit }}</td>

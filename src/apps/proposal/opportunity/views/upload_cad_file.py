@@ -326,9 +326,12 @@ class UploadCADFile(ViewMixin):
 
     def get_final_unit(self, qty: str, item_number: str) -> Optional[float]:
         """Get final unit based on a single formula."""
-        _formula = Product.objects.get(internal_id=item_number)
-        _amf = AdditionalMaterials.objects.get(material_id=item_number)
-        return self.__evaluate_formula(qty, _amf.additional_material_factor, _formula.formula)
+        try:
+            _amf = AdditionalMaterials.objects.get(product_item_number=item_number)
+            _formula = Product.objects.get(internal_id=_amf.material_id)
+            return self.__evaluate_formula(qty, _amf.additional_material_factor, _formula.formula)
+        except AdditionalMaterials.DoesNotExist:
+            LOGGER.error(f"AdditionalMaterials Not Exist")
 
     def generate_glue_and_additional_material_list(self, material_list: dict, document_number: str) -> dict:
         """
@@ -341,10 +344,12 @@ class UploadCADFile(ViewMixin):
         for qty, item in zip(material_list["Quantity"], material_list["Item Number"]):
             # print(f"Quantity: {qty}, Item Number: {item.strip()}")
             glue_qty = self.get_final_unit(qty, item)
-            material = AdditionalMaterials.objects.get(material_id=item)
-            glue_and_additional_data["Quantity"].append(glue_qty)
-            glue_and_additional_data["Description"].append(material.material_name)
-            glue_and_additional_data["Item"].append(item.strip())
+            
+            if glue_qty:
+                material = AdditionalMaterials.objects.get(product_item_number=item)
+                glue_and_additional_data["Quantity"].append(glue_qty)
+                glue_and_additional_data["Description"].append(material.material_name)
+                glue_and_additional_data["Item"].append(item.strip())
 
         # Get the opportunity instance to save the Glue and Additional material list data
         try:
