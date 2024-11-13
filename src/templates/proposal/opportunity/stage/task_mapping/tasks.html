@@ -388,7 +388,7 @@
 
                           // Check if there are results and set the first as selected
                           if (data.results.length > 0) {
-                              $select2Element.val(data.results[0].id).trigger('change');
+                              $select2Element.val(data.results[1].id).trigger('change');
                           }
 
                           return {
@@ -410,6 +410,8 @@
         $(document).on('select2:select', '.select2-item-code', function(e) {
 
           if (item_description_changed) return; // Prevent triggering if item description is changing
+
+          var selectedValue = $(this).val();
 
           item_code_changed = true;
 
@@ -434,7 +436,19 @@
               'X-CSRFToken': "{{ csrf_token }}",
             },
             success: function(response) {
-              if (response.code == 200) {
+              if (response.code == 0){
+                if (selectedValue === 'Clear') {
+                  // Remove all options except the placeholder
+                  $row.find('input').val('');
+                  $row.find('select').val('').trigger('change');
+                  $row.find('td.total').text('');
+                  $row.find('td.sell').text('');
+                  $row.find('td.sell-total').text('');
+                  $row.find('td.gross').text('');
+                  $row.find('td.gross-p').text('');
+                }
+              }
+              else if (response.code == 200) {
 
                 updateDescription(response.description, id);
 
@@ -499,7 +513,6 @@
           });
         });
 
-        // TODO: Test Funcation
         // Auto populated item code while select item description
         function updateItemCode(value, id) {
 
@@ -529,7 +542,7 @@
 
                         // Check if there are results and set the first as selected
                         if (data.results.length > 0) {
-                            $select2Element.val(data.results[0].id).trigger('change');
+                            $select2Element.val(data.results[1].id).trigger('change');
                         }
 
                         return {
@@ -547,7 +560,6 @@
           $select2Element.select2('close'); // Close dropdown immediately after fetching
         }
 
-        // TODO: Test Funcation
         // Set value of selectd item with with on change event
         $(document).on('select2:select', '.select2-item-description', function(e) {
 
@@ -555,6 +567,7 @@
 
           item_description_changed = true;
 
+          var selectedValue = $(this).val();
           var $row = $(this).closest('tr');
           var $input = $(e.target);
 
@@ -574,7 +587,18 @@
               'X-CSRFToken': "{{ csrf_token }}",
             },
             success: function(response) {
-              if (response.code == 200) {
+              if (response.code == 0){
+                if (selectedValue === 'Clear') {
+                  $row.find('input').val('');
+                  $row.find('select').val('').trigger('change');
+                  $row.find('td.total').text('');
+                  $row.find('td.sell').text('');
+                  $row.find('td.sell-total').text('');
+                  $row.find('td.gross').text('');
+                  $row.find('td.gross-p').text('');
+                }
+              }
+              else if (response.code == 200) {
 
                 updateItemCode(response.item_code, id);
 
@@ -646,7 +670,6 @@
           current_row.remove();
 
           $(`#tableBody-${task_id} tbody tr`).each(function(index) {
-              // console.log("Loppppppppppppppppp");
               $(this).find('.sr-no').text(index + 1);
           });
         });
@@ -667,6 +690,7 @@
                 var $row = $(this);
 
                 var rowData = {
+                    sequence_number: $row.find(".sr-no").text(),
                     task_id: $row.find('.task_id').val(),
                     quantity: $row.find('.quantity').val(),
                     item_code: $row.find('.select2-item-code').val(),
@@ -691,6 +715,27 @@
 
             // console.log("rowData", rowsData);
 
+            // Validation for black line
+            // Check if at least two rows have no standard cost
+            var missingStandardCostCount = 0;
+            let _available_tasks = "{{total_tasks}}";
+
+            rowsData.forEach(function (row) {
+                if (!row.standardCost || row.standardCost.trim() === '') {
+                    missingStandardCostCount++;
+                }
+            });
+            
+            if (missingStandardCostCount > _available_tasks) {
+              toastr.error("Please verify; some rows are missing values.", 'Missing Values', {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-bottom-right',
+                timeOut: 6000
+              });
+            }
+
+            // Ajax Request To Handle And Save New Generated Row Data Values.
             $.ajax({
                 url: '{% url "proposal_app:opportunity:add-prod-row-ajax" %}',
                 type: 'POST',
@@ -987,7 +1032,7 @@
 
                           // Check if there are results and set the first as selected
                           if (data.results.length > 0) {
-                              $select2Element.val(data.results[0].id).trigger('change');
+                              $select2Element.val(data.results[1].id).trigger('change');
                           }
 
                           return {
@@ -1008,6 +1053,7 @@
         $(document).on('select2:select', '.labour-task-name', function(e) {
 
           var $row = $(this).closest('tr');
+          var selectedValue = $(this).val();
 
           // item code
           var $input = $(e.target);
@@ -1027,7 +1073,19 @@
               'X-CSRFToken': "{{ csrf_token }}",
             },
             success: function(response) {
-              if (response.code == 200) {
+              if (response.code == 0){
+                if (selectedValue === 'Clear') {
+                  // Remove all options except the placeholder
+                  $row.find('input').val('');
+                  $row.find('select').val('').trigger('change');
+                  $row.find('td.total').text('');
+                  $row.find('td.sell').text('');
+                  $row.find('td.sell-total').text('');
+                  $row.find('td.gross').text('');
+                  $row.find('td.gross-p').text('');
+                }
+              }
+              else if (response.code == 200) {
                 updateDescription(response.description, id);
               }
             },
@@ -1059,8 +1117,6 @@
 
         });
 
-        // TODO: Make dyanmic
-        // NOTE: Update item code feature
         function updateTaskName(value, id) {
           var $select2Element = $(`select[data-id="${id}"].labour-task-name`);
 
@@ -1088,7 +1144,7 @@
 
                           // Check if there are results and set the first as selected
                           if (data.results.length > 0) {
-                              $select2Element.val(data.results[0].id).trigger('change');
+                              $select2Element.val(data.results[1].id).trigger('change');
                           }
 
                           return {
@@ -1111,6 +1167,7 @@
         $(document).on('select2:select', '.labour-description', function(e) {
 
           var $row = $(this).closest('tr');
+          var selectedValue = $(this).val();
 
           // item code
           var $input = $(e.target);
@@ -1130,7 +1187,18 @@
               'X-CSRFToken': "{{ csrf_token }}",
             },
             success: function(response) {
-              if (response.code == 200) {
+              if (response.code == 0){
+                if (selectedValue === 'Clear') {
+                  $row.find('input').val('');
+                  $row.find('select').val('').trigger('change');
+                  $row.find('td.total').text('');
+                  $row.find('td.sell').text('');
+                  $row.find('td.sell-total').text('');
+                  $row.find('td.gross').text('');
+                  $row.find('td.gross-p').text('');
+                }
+              }
+              else if (response.code == 200) {
                 updateTaskName(response.task_name, id);
               }
             },
@@ -1166,85 +1234,84 @@
   <!-- NOTE: Remove it -->
   <!-- BEGIN Copy Product Row based on model value-->
   <script>
-    function copyTableRow(rowId) {
-        // console.log("Copying table rows...");
+      function copyTableRow(rowId) {
+          // console.log("Copying table rows...");
 
-        // Log the rowId to check if it's correct
-        // console.log("Row ID Passed:", rowId);
+          // Log the rowId to check if it's correct
+          // console.log("Row ID Passed:", rowId);
 
-        var totalRows = parseInt(document.getElementById("totalRows").value, 10);
-        // console.log("Total Rows:", totalRows);
+          var totalRows = parseInt(document.getElementById("totalRows").value, 10);
+          // console.log("Total Rows:", totalRows);
 
-        if (isNaN(totalRows) || totalRows < 1) {
-            totalRows = 1;
+          if (isNaN(totalRows) || totalRows < 1) {
+              totalRows = 1;
+          }
+
+          var tableBody = document.getElementById("tableBody");
+          // console.log("Table Body:", tableBody);
+
+          var rowToCopy = document.getElementById(rowId);
+          // console.log("Row to Copy:", rowToCopy);
+
+          if (!rowToCopy) {
+              console.error("Row with ID '" + rowId + "' not found.");
+              return;
+          }
+
+          for (var i = 0; i < totalRows; i++) {
+              var clonedRow = rowToCopy.cloneNode(true);
+
+              // Remove ID and adjust class for cloned rows
+              clonedRow.removeAttribute('id');
+              clonedRow.classList.add('dynamic-row');
+
+              // Update input names and IDs to ensure they are unique
+              var inputs = clonedRow.querySelectorAll('input, select');
+              inputs.forEach(function(input, index) {
+                  var newName = input.name ? input.name.replace(/\d+/, totalRows + i + 1) : '';
+                  var newId = input.id ? input.id.replace(/\d+/, totalRows + i + 1) : '';
+                  input.name = newName;
+                  input.id = newId;
+                  input.value = '';
+              });
+
+              tableBody.appendChild(clonedRow);
+              // console.log("Row appended to table body");
+
+              // Increment totalRows
+              totalRows++;
+              document.getElementById("totalRows").value = totalRows;
+          }
         }
-
-        var tableBody = document.getElementById("tableBody");
-        // console.log("Table Body:", tableBody);
-
-        var rowToCopy = document.getElementById(rowId);
-        // console.log("Row to Copy:", rowToCopy);
-
-        if (!rowToCopy) {
-            console.error("Row with ID '" + rowId + "' not found.");
-            return;
-        }
-
-        for (var i = 0; i < totalRows; i++) {
-            var clonedRow = rowToCopy.cloneNode(true);
-
-            // Remove ID and adjust class for cloned rows
-            clonedRow.removeAttribute('id');
-            clonedRow.classList.add('dynamic-row');
-
-            // Update input names and IDs to ensure they are unique
-            var inputs = clonedRow.querySelectorAll('input, select');
-            inputs.forEach(function(input, index) {
-                var newName = input.name ? input.name.replace(/\d+/, totalRows + i + 1) : '';
-                var newId = input.id ? input.id.replace(/\d+/, totalRows + i + 1) : '';
-                input.name = newName;
-                input.id = newId;
-                input.value = '';
-            });
-
-            tableBody.appendChild(clonedRow);
-            // console.log("Row appended to table body");
-
-            // Increment totalRows
-            totalRows++;
-            document.getElementById("totalRows").value = totalRows;
-        }
-      }
   </script>
   <!-- END Copy Product Row based on model value-->
 
-
   <!-- BEGIN compare standardCost with productCost-->
   <script>
-    function checkCostEquality(standardCostId, productCostId) {
-      var standardCostElement = document.getElementById(standardCostId);
-      var productCostInput = document.getElementById(productCostId);
+      function checkCostEquality(standardCostId, productCostId) {
+        var standardCostElement = document.getElementById(standardCostId);
+        var productCostInput = document.getElementById(productCostId);
 
-      if (standardCostElement && productCostInput) {
-          var standardCost = parseFloat(standardCostElement.value .trim().replace('$', ''));
-          var productCost = parseFloat(productCostInput.value.trim().replace('$', ''));
+        if (standardCostElement && productCostInput) {
+            var standardCost = parseFloat(standardCostElement.value .trim().replace('$', ''));
+            var productCost = parseFloat(productCostInput.value.trim().replace('$', ''));
 
-          if (standardCost !== productCost) {
-                productCostInput.classList.add("border-danger", "border-2", "text-danger");
-            } else {
-                productCostInput.classList.remove("border-danger", "border-2", "text-danger");
-            }
-        }
-    }
+            if (standardCost !== productCost) {
+                  productCostInput.classList.add("border-danger", "border-2", "text-danger");
+              } else {
+                  productCostInput.classList.remove("border-danger", "border-2", "text-danger");
+              }
+          }
+      }
 
-    // Initialize cost checks if necessary
-    document.addEventListener("DOMContentLoaded", function() {
-        // Optional: Run checks on page load for all inputs
-        document.querySelectorAll('input[data-standard-cost]').forEach(function(input) {
-            var standardCostId = input.getAttribute('data-standard-cost');
-            checkCostEquality(standardCostId, input.id);
-        });
-    });
+      // Initialize cost checks if necessary
+      document.addEventListener("DOMContentLoaded", function() {
+          // Optional: Run checks on page load for all inputs
+          document.querySelectorAll('input[data-standard-cost]').forEach(function(input) {
+              var standardCostId = input.getAttribute('data-standard-cost');
+              checkCostEquality(standardCostId, input.id);
+          });
+      });
   </script>
 
   <!-- SEARCH start -->
@@ -1273,98 +1340,6 @@
                 cache: true
             }
           });
-
-          /* function updateDescription(value, id) {
-            var $select2Element = $(`select[data-id="${id}"].select2-item-description.js-example-programmatic.form-control`);
-
-            // Initialize Select2 if not already initialized
-            if (!$select2Element.hasClass('select2-hidden')) {
-                $select2Element.select2({
-                    ajax: {
-                        url: '{% url "proposal_app:opportunity:item-description-search" %}',
-                        dataType: 'json',
-                        delay: 250,
-                        data: function(params) {
-                            return {
-                                q: value
-                            };
-                        },
-                        processResults: function(data) {
-                            // Clear existing options
-                            $select2Element.empty();
-
-                            // Populate new options
-                            $.each(data.results, function(index, item) {
-                                var newOption = new Option(item.text, item.id, false, false);
-                                $select2Element.append(newOption);
-                            });
-
-                            // Check if there are results and set the first as selected
-                            if (data.results.length > 0) {
-                                $select2Element.val(data.results[0].id).trigger('change');
-                            }
-
-                            return {
-                                results: data.results
-                            };
-                        },
-                        cache: true
-                    }
-                });
-            }
-
-
-            $select2Element.select2('data', null);
-            $select2Element.select2('open');
-            $select2Element.select2('close');
-          }
-
-          $(document).on('change', '.select2-item-code', function(e) {
-            // item code
-            var $input = $(e.target);
-            var id = $input.data("id");
-            // console.log("id", id);
-
-            var value = $input.val();
-            // console.log("value",value);
-
-            // Payload data
-            data = {
-              value: value,
-            }
-
-            $.ajax({
-              url: '{% url "proposal_app:opportunity:item-code-search" %}',
-              type: 'POST',
-              data: data,
-              headers: {
-                'X-CSRFToken': "{{ csrf_token }}",
-              },
-              success: function(response) {
-                // console.log('API call success:', response);
-                if (response.code == 200) {
-                  updateDescription(response.description, id);
-                  var $stdCostField = $(`input[data-id="${id}"][id="std_cost"]`);
-                  var total = $(`td[data-id="${id}"].total`);
-                  var sell = $(`td[data-id="${id}"].sell`);
-                  var total_sell = $(`td[data-id="${id}"].sell-total`);
-                  var gross_profit = $(`td[data-id="${id}"].gross`);
-                  var gross_percent = $(`td[data-id="${id}"].gross-p`);
-
-                  $stdCostField.val(response.std_cost);
-                  total.text($stdCostField.val());
-                  sell.text(parseFloat($stdCostField.val()) + 0.25);
-                  total_sell.text(parseFloat($stdCostField.val()) + 0.25);
-                  gross_profit.text(parseFloat(sell.text()) - parseFloat($stdCostField.val()));
-                  gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
-
-                }
-              },
-              error: function(xhr, status, error) {
-                // console.log("Error:", error);
-              }
-            });
-          }); */
       });
     </script>
 
@@ -1397,27 +1372,27 @@
 
     <!-- SEARCH:  Vendor -->
     <script>
-      $(document).ready(function() {
-          $('.select2-vendor').select2({
-              placeholder: 'Select Vendor Name',
-              ajax: {
-                  url: '{% url "proposal_app:opportunity:vendor-search" %}',
-                  dataType: 'json',
-                  delay: 250,  // Add a delay for better UX
-                  data: function (params) {
-                      return {
-                          q: params.term
-                      };
-                  },
-                  processResults: function (data) {
-                      return {
-                          results: data.results
-                      };
-                  },
-                  cache: true
-              }
-          });
-      });
+        $(document).ready(function() {
+            $('.select2-vendor').select2({
+                placeholder: 'Select Vendor Name',
+                ajax: {
+                    url: '{% url "proposal_app:opportunity:vendor-search" %}',
+                    dataType: 'json',
+                    delay: 250,  // Add a delay for better UX
+                    data: function (params) {
+                        return {
+                            q: params.term
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.results
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
     </script>
 
     <!-- SEARCH: Task -->
@@ -1425,6 +1400,7 @@
       $(document).ready(function() {
             $('.select2-task').select2({
                 containerCss: { width: "150px" },
+                // allowClear: true,
                 dropdownAutoWidth: true,  // Ensure dropdown respects the width
                 width: 'resolve',
                 placeholder: 'Select Task Name',
@@ -1509,7 +1485,7 @@
 
                           // Check if there are results and set the first as selected
                           if (data.results.length > 0) {
-                              $select2Element.val(data.results[0].id).trigger('change');
+                              $select2Element.val(data.results[1].id).trigger('change');
                           }
 
                           return {
@@ -1530,6 +1506,7 @@
         $(document).on('change', '.labour-task-name', function(e) {
 
           var $row = $(this).closest('tr');
+          var selectedValue = $(this).val();
 
           // item code
           var $input = $(e.target);
@@ -1549,7 +1526,19 @@
               'X-CSRFToken': "{{ csrf_token }}",
             },
             success: function(response) {
-              if (response.code == 200) {
+              if (response.code == 0){
+                if (selectedValue === 'Clear') {
+                  // Remove all options except the placeholder
+                  $row.find('input').val('');
+                  $row.find('select').val('').trigger('change');
+                  $row.find('td.total').text('');
+                  $row.find('td.sell').text('');
+                  $row.find('td.sell-total').text('');
+                  $row.find('td.gross').text('');
+                  $row.find('td.gross-p').text('');
+                }
+              }
+              else if (response.code == 200) {
                 var $localcost = $(`input[data-id="${id}"][id="local_cost"]`);
                 var $out_of_town_cost = $(`input[data-id="${id}"][id="out_of_town_cost"]`);
                 updateDescription(response.description, id);
@@ -1618,84 +1607,84 @@
 
   <!-- Assigned Product Htmx -->
   <script>
-    $(document).on('click', '.htmx-trigger-btn-assign-prod' , function (e) {
+      $(document).on('click', '.htmx-trigger-btn-assign-prod' , function (e) {
 
-      var url = $(this).data('url');
-      htmx.ajax('GET',
-          url,
-          {
-            target:'#model-assign',
-            swap:'innerHTML',
-      }).then(() => {
-          $('#assign-prod').toggleClass('hidden');
-      })
-    });
+        var url = $(this).data('url');
+        htmx.ajax('GET',
+            url,
+            {
+              target:'#model-assign',
+              swap:'innerHTML',
+        }).then(() => {
+            $('#assign-prod').toggleClass('hidden');
+        })
+      });
   </script>
 
   <!-- Delete Assigned Product -->
   <script>
-    $(document).on('click', '.assign-prod-delete-btn', function (e) {
+      $(document).on('click', '.assign-prod-delete-btn', function (e) {
 
-      function updateRowNumbers(id) {
-        const rows = $(`.tr-${id} .row-template-${id}`);
-        rows.each(function(index) {
-            $(this).find('.sr-no').text(index + 1);
-        });
-      }
-
-      var id = $(this).data("id")
-      var task_id = $(this).data("task-id")
-      var prod_name = $(this).data("title")
-      if (prod_name == "None") {
-        prod_name = ""
-      }
-      var url = $(this).data("url")
-      var delete_ele = $(this)
-
-      Swal.fire({
-        html: `Are you sure you want to delete <b>${prod_name}</b>?`,
-        icon: 'question',
-        showCloseButton: true,
-        showCancelButton: true,
-        confirmButtonColor: "#7442DB",
-
-      }).then((result) => {
-
-        if (result.isConfirmed) {
-          $(this).closest('tr').remove();
-
-          var current_row = $(this).closest('tr');
-          var task_id = $(this).data('task-id');
-
-          current_row.remove();
-
-          $(`#tableBody-${task_id} tbody tr`).each(function(index) {
+        function updateRowNumbers(id) {
+          const rows = $(`.tr-${id} .row-template-${id}`);
+          rows.each(function(index) {
               $(this).find('.sr-no').text(index + 1);
           });
-
-          $.ajax({
-            type: "POST",
-            url: url,
-            data: {
-              "id": id,
-              "csrfmiddlewaretoken": '{{ csrf_token }}'
-            },
-            success: function (data) {
-              // console.log("", data);
-              updateRowNumbers(id);
-              toastr.info(data.message, 'Info', {
-                closeButton: true,
-                progressBar: true,
-                positionClass: 'toast-bottom-right',
-                timeOut: 6000
-              });
-            }
-          });
-        }else {
-              Swal.fire("Cencel delete", "", "info");
         }
+
+        var id = $(this).data("id")
+        var task_id = $(this).data("task-id")
+        var prod_name = $(this).data("title")
+        if (prod_name == "None") {
+          prod_name = ""
+        }
+        var url = $(this).data("url")
+        var delete_ele = $(this)
+
+        Swal.fire({
+          html: `Are you sure you want to delete <b>${prod_name}</b>?`,
+          icon: 'question',
+          showCloseButton: true,
+          showCancelButton: true,
+          confirmButtonColor: "#7442DB",
+
+        }).then((result) => {
+
+          if (result.isConfirmed) {
+            $(this).closest('tr').remove();
+
+            var current_row = $(this).closest('tr');
+            var task_id = $(this).data('task-id');
+
+            current_row.remove();
+
+            $(`#tableBody-${task_id} tbody tr`).each(function(index) {
+                $(this).find('.sr-no').text(index + 1);
+            });
+
+            $.ajax({
+              type: "POST",
+              url: url,
+              data: {
+                "id": id,
+                "csrfmiddlewaretoken": '{{ csrf_token }}'
+              },
+              success: function (data) {
+                // console.log("", data);
+                updateRowNumbers(id);
+                toastr.info(data.message, 'Info', {
+                  closeButton: true,
+                  progressBar: true,
+                  positionClass: 'toast-bottom-right',
+                  timeOut: 6000
+                });
+              }
+            });
+          }else {
+                Swal.fire("Cencel delete", "", "info");
+          }
+        });
       });
-    });
   </script>
 
   <!-- Update Assigned Product -->
@@ -1722,9 +1711,6 @@
           } else if ($input.hasClass("comment")) {
             inputType = 'comment';
           }
-
-          // console.log(inputType.charAt(0).toUpperCase() + inputType.slice(1) + " Id:", id);
-          // console.log(inputType.charAt(0).toUpperCase() + inputType.slice(1) + " Value:", value);
 
           $.ajax({
             url: '{% url "proposal_app:opportunity:assign-prod-update-ajax" %}', // Replace with your actual URL
@@ -1764,11 +1750,9 @@
     $(document).ready(function() {
       $(".select2-vendor, .select2-task, .select2-labor-task").on("change", function(e) {
         var $input = $(e.target);
-        var id = $input.data("id");
-        // console.log("id", id);
 
+        var id = $input.data("id");
         var value = $input.val();
-        // console.log("value",value);
 
         var inputType = '';
 
@@ -1780,13 +1764,9 @@
           inputType = 'labor-task';
         }
 
-        // Log the values based on the input type
-        // console.log(inputType.charAt(0).toUpperCase() + inputType.slice(1) + " Id:", id);
-        // console.log(inputType.charAt(0).toUpperCase() + inputType.slice(1) + " Value:", value);
-
         // AJAX call to a single endpoint
         $.ajax({
-          url: '{% url "proposal_app:opportunity:assign-prod-update-ajax" %}', // Replace with your actual URL
+          url: '{% url "proposal_app:opportunity:assign-prod-update-ajax" %}',
           type: 'POST',
           data: {
             type: inputType,
@@ -1797,7 +1777,6 @@
             'X-CSRFToken': "{{ csrf_token }}",
           },
           success: function(response) {
-            // console.log('API call success:', response);
             toastr.success(response.message, 'Success', {
               closeButton: true,
               progressBar: true,
@@ -1822,35 +1801,35 @@
 
   <!-- Add Task Htmx -->
   <script>
-    $(document).on('click', '.htmx-trigger-btn-add-task' , function (e) {
+      $(document).on('click', '.htmx-trigger-btn-add-task' , function (e) {
 
-      var url = $(this).data('url');
-      htmx.ajax('GET',
-          url,
-          {
-            target:'#model-add-task',
-            swap:'innerHTML',
-      }).then(() => {
-          $('#add-task').toggleClass('hidden');
-      })
-    });
+        var url = $(this).data('url');
+        htmx.ajax('GET',
+            url,
+            {
+              target:'#model-add-task',
+              swap:'innerHTML',
+            }).then(() => {
+            $('#add-task').toggleClass('hidden');
+          })
+        });
 
-    document.body.addEventListener('htmx:beforeSwap', function(evt) {
+        document.body.addEventListener('htmx:beforeSwap', function(evt) {
 
-      if(evt.detail.xhr.status === 200){
-          // console.log("evt.detail.xhr.status", evt.detail.xhr.status)
-          // console.log("evt.detail.xhr.response", evt.detail.xhr.response)
-          $("#add-task").modal('hide');
-          $("#add-task .modal-body").html('');
+          if(evt.detail.xhr.status === 200){
+              // console.log("evt.detail.xhr.status", evt.detail.xhr.status)
+              // console.log("evt.detail.xhr.response", evt.detail.xhr.response)
+              $("#add-task").modal('hide');
+              $("#add-task .modal-body").html('');
 
-          // Parse the JSON response
-          var response = JSON.parse(evt.detail.xhr.response);
+              // Parse the JSON response
+              var response = JSON.parse(evt.detail.xhr.response);
 
-          if (response.status === 'success') {
-            window.location.reload();
+              if (response.status === 'success') {
+                window.location.reload();
+              }
           }
-      }
-    });
+        });
   </script>
 
   <!-- Assign Labor for task -->
@@ -1918,7 +1897,6 @@
       });
     });
   </script>
-
 
   <!-- Auto populated calculation -->
   <script>
@@ -2061,7 +2039,6 @@
     });
   </script>
 
-
   <!-- Update sequence -->
   <script>
     $(document).ready(function() {
@@ -2115,12 +2092,10 @@
 
 <!-- Drag And Move Feature Start -->
   <!-- Including SortableJS -->
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
   <script>
     $(document).ready(function() {
       function initializeTableFeatures(t_id, type, p_id) {
-          // console.log(`Initializing features for Task ID: ${t_id}, Type: ${type}`);
-
           const selector = type === 'sortable' ? `#sortable-${t_id}` : `#labor-${t_id}`;
           const sortableInstance = new Sortable(document.querySelector(selector), {
               animation: 150,
@@ -2205,10 +2180,10 @@
         {% endfor %}
       {% endfor %}
     });
-  </script> -->
+  </script>
 
   <!-- Including Custom Sortable CSS -->
-  <!-- <style>
+  <style>
       /* Optional styling for feedback during drag */
       .dragging {
           opacity: 0.6;
@@ -2216,5 +2191,5 @@
       .dragging-over {
           background-color: #f0f0f0;
       }
-  </style>  -->
+  </style>
   <!-- Drag And Move Feature End -->
