@@ -146,6 +146,8 @@ class UserAjaxListView(AdminMixin, DataTableMixin, View):
                 "hx_target": hx_target,
                 "o": obj,
                 "request": self.request,
+                "class": "user-delete-btn",
+                "title": obj.email,
             }
         )
 

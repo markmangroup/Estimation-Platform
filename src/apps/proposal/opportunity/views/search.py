@@ -3,7 +3,7 @@ import urllib.parse
 from django.contrib import messages
 from django.http import JsonResponse
 
-from apps.constants import ERROR_RESPONSE, LOGGER
+from apps.constants import ERROR_RESPONSE, LOGGER, RESPONSE_CODE_0
 from apps.mixin import ViewMixin
 from apps.proposal.customer.models import Customer
 from apps.proposal.labour_cost.models import LabourCost
@@ -29,6 +29,7 @@ class ItemCodeSearchView(ViewMixin):
         search_term = request.GET.get("q", "")
         item_codes = Product.objects.filter(internal_id__icontains=search_term)[:15]
         item_code_list = [{"id": item_code.id, "text": item_code.internal_id} for item_code in item_codes]
+        item_code_list.insert(0, {"id": "0", "text": "--------------"})
         return JsonResponse({"results": item_code_list})
 
     def post(self, request, *args, **kwargs) -> JsonResponse:
@@ -39,19 +40,28 @@ class ItemCodeSearchView(ViewMixin):
         :return: JsonResponse containing the product's description and standard cost.
         :raises Product.DoesNotExist: If no product is found with the given ID.
         """
-        body_unicode = request.body.decode("utf-8")
-        data = urllib.parse.parse_qs(body_unicode)
-        id = data["value"][0]
-        product_object = Product.objects.get(id=id)
+        try:
+            body_unicode = request.body.decode("utf-8")
+            data = urllib.parse.parse_qs(body_unicode)
+            id = data["value"][0]
+            product_object = Product.objects.get(id=id)
 
-        return JsonResponse(
-            {
-                "code": 200,
-                "message": "success",
-                "description": product_object.description,
-                "std_cost": product_object.std_cost,
-            }
-        )
+            return JsonResponse(
+                {
+                    "code": 200,
+                    "message": "success",
+                    "description": product_object.description,
+                    "std_cost": product_object.std_cost,
+                }
+            )
+
+        except Product.DoesNotExist:
+            LOGGER.error(f"Error: Product ID Dose Not Exists")
+            return RESPONSE_CODE_0
+
+        except Exception as e:
+            LOGGER.error(f"Error: {e}")
+            return RESPONSE_CODE_0
 
 
 class ItemDescriptionSearchView(ViewMixin):
@@ -71,6 +81,7 @@ class ItemDescriptionSearchView(ViewMixin):
         item_description_list = [
             {"id": item_description.id, "text": item_description.description} for item_description in item_descriptions
         ]
+        item_description_list.insert(0, {"id": "Clear", "text": "--------------"})
         return JsonResponse({"results": item_description_list})
 
     def post(self, request, *args, **kwargs) -> JsonResponse:
@@ -96,9 +107,14 @@ class ItemDescriptionSearchView(ViewMixin):
                     "std_cost": product_object.std_cost,
                 }
             )
+
+        except Product.DoesNotExist:
+            LOGGER.error(f"Error: Product ID Dose Not Exists")
+            return RESPONSE_CODE_0
+
         except Exception as e:
-            LOGGER.error(f"{e}")
-            return {}
+            LOGGER.error(f"Error: {e}")
+            return RESPONSE_CODE_0
 
 
 class VendorSearchView(ViewMixin):
@@ -244,6 +260,7 @@ class LaborDescriptionView(ViewMixin):
         descriptions = LabourCost.objects.filter(description__icontains=search_term)[:15]  # Limit results to 15
 
         description_list = [{"id": description.id, "text": description.description} for description in descriptions]
+        description_list.insert(0, {"id": "Clear", "text": "--------------"})
         return JsonResponse({"results": description_list})
 
     def post(self, request, *args, **kwargs) -> JsonResponse:
@@ -272,10 +289,11 @@ class LaborDescriptionView(ViewMixin):
 
         except LabourCost.DoesNotExist:
             LOGGER.error("Labor Cost not exists")
-            return JsonResponse(ERROR_RESPONSE, status=404)
+            return RESPONSE_CODE_0
+
         except Exception as e:
             LOGGER.error(f"LaborDescriptionView: {e}")
-            return JsonResponse(ERROR_RESPONSE, status=400)
+            return RESPONSE_CODE_0
 
 
 class LaborTaskNameView(ViewMixin):
@@ -297,6 +315,7 @@ class LaborTaskNameView(ViewMixin):
         labors = LabourCost.objects.filter(labour_task__icontains=search_term)[:15]  # Limit results to 15
 
         labor_list = [{"id": labor.id, "text": labor.labour_task} for labor in labors]
+        labor_list.insert(0, {"id": "Clear", "text": "--------------"})
         return JsonResponse({"results": labor_list})
 
     def post(self, request, *args, **kwargs) -> JsonResponse:
@@ -325,10 +344,11 @@ class LaborTaskNameView(ViewMixin):
 
         except LabourCost.DoesNotExist:
             LOGGER.error("Labor Cost not exists")
-            return JsonResponse(ERROR_RESPONSE, status=404)
+            return RESPONSE_CODE_0
+
         except Exception as e:
             LOGGER.error(f"LaborTaskNameView: {e}")
-            return JsonResponse(ERROR_RESPONSE, status=400)
+            return RESPONSE_CODE_0
 
 
 class TaskItemView(ViewMixin):

@@ -244,23 +244,23 @@ class AddProdRowView(ViewMixin):
         overall_data_saved = False
 
         for task_id, products in result.items():
-            task_mapping = TaskMapping.objects.get(id=task_id)
+            task_mapping: TaskMapping = TaskMapping.objects.get(id=task_id)
+            if task_mapping:
+                for product in products:
+                    if not product.get("item_code") and not product.get("task_name"):
+                        continue
 
-            for product in products:
-                if not product.get("item_code") and not product.get("task_name"):
-                    continue
+                    if product.get("item_code"):
+                        response = self._save_product(task_mapping, product)
+                        if response:
+                            return response  # Return warning if any required field is missing
+                        overall_data_saved = True
 
-                if product.get("item_code"):
-                    response = self._save_product(task_mapping, product)
-                    if response:
-                        return response  # Return warning if any required field is missing
-                    overall_data_saved = True
-
-                elif product.get("task_name"):
-                    response = self._save_labor(task_mapping, product)
-                    if response:
-                        return response  # Return warning if any required field is missing
-                    overall_data_saved = True
+                    elif product.get("task_name"):
+                        response = self._save_labor(task_mapping, product)
+                        if response:
+                            return response  # Return warning if any required field is missing
+                        overall_data_saved = True
 
         return (
             {"status": "success", "message": "Product added successfully"}
@@ -305,7 +305,7 @@ class AddProdRowView(ViewMixin):
             vendor_quoted_cost=float(product.get("quotedCost", 0)),
             vendor=vendor,
             comment=product.get("comment", ""),
-            sequence=product.get("sequence_number", "")
+            sequence=product.get("sequence_number", ""),
         )
         return None
 
@@ -342,7 +342,7 @@ class AddProdRowView(ViewMixin):
             standard_cost=product.get("standardCost", 0),
             vendor_quoted_cost=quoted_cost,
             comment=product.get("comment", ""),
-            sequence=product.get("sequence_number", "")
+            sequence=product.get("sequence_number", ""),
         )
         return None
 
