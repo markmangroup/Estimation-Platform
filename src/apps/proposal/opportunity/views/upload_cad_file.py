@@ -344,7 +344,7 @@ class UploadCADFile(ViewMixin):
         for qty, item in zip(material_list["Quantity"], material_list["Item Number"]):
             # print(f"Quantity: {qty}, Item Number: {item.strip()}")
             glue_qty = self.get_final_unit(qty, item)
-            
+
             if glue_qty:
                 material = AdditionalMaterials.objects.get(product_item_number=item)
                 glue_and_additional_data["Quantity"].append(glue_qty)

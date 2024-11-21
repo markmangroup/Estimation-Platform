@@ -1,3 +1,4 @@
+{% load custom_filters %}
 <!-- override datatable css -->
 <style>
   .dataTables_filter label input[type="search"] {
@@ -102,8 +103,9 @@
                   <tr>
                     <td><b>GP Calc Costs:</b></td>
                     <td>
-                      <span class="badge bg-success users-view-status total_gp"
-                        >${{total.total_gp}}</span
+                      <span class="badge bg-success users-view-status total_gp">
+                          ${{total.total_gp}}
+                        </span
                       >
                     </td>
                   </tr>
@@ -202,7 +204,7 @@
                   <div class="media">
                     <div class="media-body secondary text-left">
                       <h3 id="total_gp_percent" class="font-large-1 secondary mb-0">
-                        {{total.total_gp_percent}}%
+                        {{total.total_gp_percent|round_value:"2"}}%
                       </h3>
                       <span>GP% Indirects</span>
                     </div>

@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.views.generic import (
     CreateView,
@@ -11,6 +12,8 @@ from django.views.generic import (
     View,
 )
 from django_datatables_too.mixins import DataTableMixin
+
+from apps.constants import ERROR_RESPONSE
 
 
 class AdminMixin(LoginRequiredMixin):
@@ -185,3 +188,27 @@ class ViewMixin(LoginRequiredMixin, View):
     """
 
     ...
+
+
+class CustomViewMixin(LoginRequiredMixin, View):
+    """
+    Mixin for a login-required View.
+    """
+
+    def generate_response(self):
+        """
+        Automatically generates a JsonResponse with the message and code.
+        Handles default error response for 400 status codes.
+        """
+        response_data = {
+            "message": getattr(self, "_message", "Success"),
+            "code": getattr(self, "_code", 200),
+            "status": getattr(self, "_status", "success"),
+        }
+
+        # Ensure the correct message for a 400 response
+        if response_data["code"] == 400:
+            response_data["message"] = getattr(self, "message", ERROR_RESPONSE.get("message", "Bad Request"))
+            response_data["status"] = getattr(self, "status", "error")
+
+        return JsonResponse(response_data)

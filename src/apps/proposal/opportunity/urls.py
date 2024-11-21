@@ -54,6 +54,11 @@ urlpatterns = [
         select_task_code.SelectedTaskListAjaxView.as_view(),
         name="ajax-selected-task-list",
     ),
+    path(
+        "delete-selected-task/ajax",
+        select_task_code.DeleteSelectedTask.as_view(),
+        name="ajax-delete-selected-task",
+    ),
     # Document
     path(
         "document-list/<str:document_number>/ajax/<str:stage>/",

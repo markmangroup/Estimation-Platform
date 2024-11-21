@@ -2,9 +2,11 @@ from django.contrib import messages
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
+from django.template.loader import get_template
 from django.urls import reverse
 
-from apps.mixin import CustomDataTableMixin, ViewMixin
+from apps.constants import LOGGER
+from apps.mixin import CustomDataTableMixin, CustomViewMixin, ViewMixin
 from apps.proposal.task.models import Task
 
 from ..models import Opportunity, SelectTaskCode
@@ -14,6 +16,23 @@ class SelectedTaskListAjaxView(CustomDataTableMixin):
     """AJAX view to return a list of selected tasks for DataTables."""
 
     model = SelectTaskCode
+
+    def _get_actions(self, obj):
+        """Generate action buttons for the Task to delete."""
+        t = get_template("proposal/partial/list_row_action_custom_url.html")
+
+        delete_url = reverse(
+            "proposal_app:opportunity:ajax-delete-selected-task",
+        )
+
+        return t.render(
+            {
+                "delete_url": delete_url,
+                "o": obj,
+                "class": "delete-task",
+                "title": obj.task.name,
+            }
+        )
 
     def get_queryset(self):
         """Returns a list of selected tasks"""
@@ -40,6 +59,7 @@ class SelectedTaskListAjaxView(CustomDataTableMixin):
                     "task__internal_id": o.task.internal_id,
                     "task__name": o.task.name,
                     "task__description": o.task.description,
+                    "action": self._get_actions(o),
                 }
             )
         return data
@@ -129,3 +149,38 @@ class TaskManagementView(ViewMixin):
         :return: Rendered response.
         """
         return render(self.request, self.template_name, context, **response_kwargs)
+
+
+class DeleteSelectedTask(CustomViewMixin):
+    """
+    View to delete assigned product objects.
+    """
+
+    def __post(self, task_id):
+        """
+        Handle the task deletion logic.
+
+        :param task_id: The ID of the task to be deleted.
+        """
+        try:
+            select_task_code = SelectTaskCode.objects.filter(id=task_id)
+            select_task_code.delete()
+
+            self._code = 200
+            self._message = "Task Deleted Successfully"
+            self._status = "success"
+
+        except Exception as e:
+            LOGGER.error(f"Select Task Code Delete Error: {e}")
+            self._code = 400
+
+        return self.generate_response()
+
+    def post(self, request) -> JsonResponse:
+        """
+        Handle POST requests to delete an assigned product.
+
+        :param request: The request object containing the ID of the assigned product to delete.
+        """
+        task_id = request.POST.get("id")
+        return self.__post(task_id)

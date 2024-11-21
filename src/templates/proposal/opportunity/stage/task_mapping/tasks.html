@@ -406,112 +406,55 @@
           $select2Element.select2('close'); // Close dropdown immediately after fetching
         }
 
-        // Set value of selectd item code with on change event
-        $(document).on('select2:select', '.select2-item-code', function(e) {
-
-          if (item_description_changed) return; // Prevent triggering if item description is changing
-
-          var selectedValue = $(this).val();
-
-          item_code_changed = true;
-
-          var $row = $(this).closest('tr');
-
-          // item code
-          var $input = $(e.target);
-          var id = $input.data("id");
-
-          var value = $input.val();
-
-          // Payload data
-          data = {
-            value: value,
-          }
-
-          $.ajax({
-            url: '{% url "proposal_app:opportunity:item-code-search" %}',
-            type: 'POST',
-            data: data,
-            headers: {
-              'X-CSRFToken': "{{ csrf_token }}",
-            },
-            success: function(response) {
-              if (response.code == 0){
-                if (selectedValue === 'Clear') {
-                  // Remove all options except the placeholder
-                  $row.find('input').val('');
-                  $row.find('select').val('').trigger('change');
-                  $row.find('td.total').text('');
-                  $row.find('td.sell').text('');
-                  $row.find('td.sell-total').text('');
-                  $row.find('td.gross').text('');
-                  $row.find('td.gross-p').text('');
-                }
+        // Initialize The Drop Down Value For Description
+        function _initialise_description(){
+            $(`.select2-item-description`).select2({
+              placeholder: 'Select Item description',
+              width: '250px',
+              tags: true, // Enable the tagging feature
+              ajax: {
+                  url: '{% url "proposal_app:opportunity:item-description-search" %}',
+                  dataType: 'json',
+                  delay: 250,
+                  data: function (params) {
+                      return {
+                          q: params.term
+                      };
+                  },
+                  processResults: function (data) {
+                      return {
+                          results: data.results
+                      };
+                  },
+                  cache: true
               }
-              else if (response.code == 200) {
+            });
+        }
 
-                updateDescription(response.description, id);
-
-                var $stdCostField = $(`input[data-id="${id}"].standard-cost`);
-                var total = $(`td[data-id="${id}"].total`);
-                var sell = $(`td[data-id="${id}"].sell`);
-                var total_sell = $(`td[data-id="${id}"].sell-total`);
-                var gross_profit = $(`td[data-id="${id}"].gross`);
-                var gross_percent = $(`td[data-id="${id}"].gross-p`);
-
-                $stdCostField.val(response.std_cost);
-                total.text($stdCostField.val());
-                sell.text((parseFloat($stdCostField.val()) + 0.25).toFixed(2));
-                total_sell.text((parseFloat($stdCostField.val()) + 0.25).toFixed(2));
-                gross_profit.text((parseFloat(sell.text()) - parseFloat($stdCostField.val())).toFixed(2));
-                gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
-
-                $(".quoted-cost").on("input", function(e) {
-
-                  var row = $(this).closest("tr");
-                  var value = $(this).val();
-
-                  total = row.find(".total")
-                  sell = row.find(".sell")
-                  total_sell = row.find(".sell-total")
-                  gross_profit = row.find(".gross")
-                  gross_percent = row.find(".gross-p")
-
-                  total.text(value);
-                  sell.text((parseFloat(value) + 0.25).toFixed(2));
-                  total_sell.text((parseFloat(value) + 0.25).toFixed(2));
-                  gross_profit.text((parseFloat(sell.text()) - parseFloat(value)).toFixed(2));
-                  gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
-
-                });
-              }
-            },
-            error: function(xhr, status, error) {
-              // console.log("Error:", error);
-              $(".quoted-cost").on("input", function(e) {
-
-                var row = $(this).closest("tr");
-                var value = $(this).val();
-
-                total = row.find(".total")
-                sell = row.find(".sell")
-                total_sell = row.find(".sell-total")
-                gross_profit = row.find(".gross")
-                gross_percent = row.find(".gross-p")
-
-                total.text(value);
-                sell.text((parseFloat(value) + 0.25).toFixed(2));
-                total_sell.text((parseFloat(value) + 0.25).toFixed(2));
-                gross_profit.text((parseFloat(sell.text()) - parseFloat(value)).toFixed(2));
-                gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
-
-              });
-            },
-            complete: function() {
-              item_code_changed = false; // Reset flag after completion
+        // Initialize The Drop Down Value For Item Code
+        function _initialise_item_code(){
+          $('.select2-item-code').select2({
+            placeholder: 'Select Item Code',
+            width: '200px',
+            tags: true, // Enable the tagging feature
+            ajax: {
+                url: '{% url "proposal_app:opportunity:item-code-search" %}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.results
+                    };
+                },
+                cache: true
             }
           });
-        });
+        }
 
         // Auto populated item code while select item description
         function updateItemCode(value, id) {
@@ -560,6 +503,142 @@
           $select2Element.select2('close'); // Close dropdown immediately after fetching
         }
 
+        // Set value of selectd item code with on change event
+        $(document).on('select2:select', '.select2-item-code', function(e) {
+
+          // console.log("Value Selected....");
+
+          if (item_description_changed) return; // Prevent triggering if item description is changing
+
+          var selectedValue = $(this).val();
+
+          item_code_changed = true;
+
+          var $row = $(this).closest('tr');
+
+          // item code
+          var $input = $(e.target);
+          var id = $input.data("id");
+
+          var value = $input.val();
+
+          // Payload data
+          data = {
+            value: value,
+          }
+
+          $.ajax({
+            url: '{% url "proposal_app:opportunity:item-code-search" %}',
+            type: 'POST',
+            data: data,
+            headers: {
+              'X-CSRFToken': "{{ csrf_token }}",
+            },
+            success: function(response) {
+
+             // console.log("Success Reposnse", response);
+
+              if (response.code == 0){
+
+                console.log("Code 0");
+
+                if (selectedValue === '0') {
+
+                  // console.log("Selected Value Is 0")
+
+                  // Not remove task ID
+                  $row.find('input').each(function() {
+                    if (!$(this).hasClass('task_id')) {
+                        $(this).val('');
+                    }
+                  });
+
+                  $row.find('select').val(null).trigger('change');
+                  _initialise_description();
+                  $row.find('td.total').text('');
+                  $row.find('td.sell').text('');
+                  $row.find('td.sell-total').text('');
+                  $row.find('td.gross').text('');
+                  $row.find('td.gross-p').text('');
+
+                }
+              }
+              else if (response.code == 200) {
+
+                updateDescription(response.description, id);
+
+                var $stdCostField = $(`input[data-id="${id}"].standard-cost`);
+                var quantity = $(`input[data-id="quantity-${id}"].quantity`)
+                var total = $(`td[data-id="${id}"].total`);
+                var sell = $(`td[data-id="${id}"].sell`);
+                var total_sell = $(`td[data-id="${id}"].sell-total`);
+                var gross_profit = $(`td[data-id="${id}"].gross`);
+                var gross_percent = $(`td[data-id="${id}"].gross-p`);
+
+                $stdCostField.val(response.std_cost);
+
+                var _val = ($stdCostField.val() * quantity.val());
+
+                total.text(_val.toFixed(2));
+                sell.text((parseFloat(_val) + 0.25).toFixed(2));
+                total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
+                gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
+                gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
+
+                $(".quoted-cost").on("input", function(e) {
+
+                  var row = $(this).closest("tr");
+                  var value = $(this).val();
+
+                  total = row.find(".total")
+                  quantity = row.find(".quantity")
+                  sell = row.find(".sell")
+                  total_sell = row.find(".sell-total")
+                  gross_profit = row.find(".gross")
+                  gross_percent = row.find(".gross-p")
+
+                  _val = value * quantity.val()
+                  total.text(_val.toFixed(2));
+                  sell.text((parseFloat(_val) + 0.25).toFixed(2));
+                  total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
+                  gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
+                  gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
+
+                });
+              }
+            },
+            error: function(xhr, status, error) {
+
+              // console.log("Error Reposnse", xhr);
+
+              // console.log("Error:", error);
+              $(".quoted-cost").on("input", function(e) {
+
+                var row = $(this).closest("tr");
+                var value = $(this).val();
+
+                total = row.find(".total")
+                quantity = row.find(".quantity")
+                sell = row.find(".sell")
+                total_sell = row.find(".sell-total")
+                gross_profit = row.find(".gross")
+                gross_percent = row.find(".gross-p")
+
+                _val = value * quantity.val()
+                total.text(_val.toFixed(2));
+                sell.text((parseFloat(_val) + 0.25).toFixed(2));
+                total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
+                gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
+                gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
+
+              });
+            },
+            complete: function() {
+              item_code_changed = false; // Reset flag after completion
+            }
+          });
+        });
+
         // Set value of selectd item with with on change event
         $(document).on('select2:select', '.select2-item-description', function(e) {
 
@@ -589,8 +668,17 @@
             success: function(response) {
               if (response.code == 0){
                 if (selectedValue === 'Clear') {
-                  $row.find('input').val('');
-                  $row.find('select').val('').trigger('change');
+
+                  // Not remove task ID
+                  $row.find('input').each(function() {
+                    if (!$(this).hasClass('task_id')) {
+                        $(this).val('');
+                    }
+                  });
+
+                  $row.find('select').val(null).trigger('change');
+                  _initialise_item_code();
+
                   $row.find('td.total').text('');
                   $row.find('td.sell').text('');
                   $row.find('td.sell-total').text('');
@@ -603,6 +691,7 @@
                 updateItemCode(response.item_code, id);
 
                 var $stdCostField = $(`input[data-id="${id}"].standard-cost`);
+                var quantity = $(`input[data-id="quantity-${id}"].quantity`)
                 var total = $(`td[data-id="${id}"].total`);
                 var sell = $(`td[data-id="${id}"].sell`);
                 var total_sell = $(`td[data-id="${id}"].sell-total`);
@@ -610,10 +699,13 @@
                 var gross_percent = $(`td[data-id="${id}"].gross-p`);
 
                 $stdCostField.val(response.std_cost);
-                total.text($stdCostField.val());
-                sell.text((parseFloat($stdCostField.val()) + 0.25).toFixed(2));
-                total_sell.text((parseFloat($stdCostField.val()) + 0.25).toFixed(2));
-                gross_profit.text((parseFloat(sell.text()) - parseFloat($stdCostField.val())).toFixed(2));
+
+                var _val = ($stdCostField.val() * quantity.val());
+
+                total.text(_val.toFixed(2));
+                sell.text((parseFloat(_val) + 0.25).toFixed(2));
+                total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
+                gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
                 gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
 
                 $(".quoted-cost").on("input", function(e) {
@@ -622,15 +714,17 @@
                   var value = $(this).val();
 
                   total = row.find(".total")
+                  quantity = row.find(".quantity")
                   sell = row.find(".sell")
                   total_sell = row.find(".sell-total")
                   gross_profit = row.find(".gross")
                   gross_percent = row.find(".gross-p")
 
-                  total.text(value);
-                  sell.text((parseFloat(value) + 0.25).toFixed(2));
-                  total_sell.text((parseFloat(value) + 0.25).toFixed(2));
-                  gross_profit.text((parseFloat(sell.text()) - parseFloat(value)).toFixed(2));
+                  _val = value * quantity.val()
+                  total.text(_val.toFixed(2));
+                  sell.text((parseFloat(_val) + 0.25).toFixed(2));
+                  total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
+                  gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
                   gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
 
                 });
@@ -644,15 +738,17 @@
                 var value = $(this).val();
 
                 total = row.find(".total")
+                quantity = row.find(".quantity")
                 sell = row.find(".sell")
                 total_sell = row.find(".sell-total")
                 gross_profit = row.find(".gross")
                 gross_percent = row.find(".gross-p")
 
-                total.text(value);
-                sell.text((parseFloat(value) + 0.25).toFixed(2));
-                total_sell.text((parseFloat(value) + 0.25).toFixed(2));
-                gross_profit.text((parseFloat(sell.text()) - parseFloat(value)).toFixed(2));
+                _val = value * quantity.val()
+                total.text(_val.toFixed(2));
+                sell.text((parseFloat(_val) + 0.25).toFixed(2));
+                total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
+                gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
                 gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
 
               });
@@ -725,7 +821,7 @@
                     missingStandardCostCount++;
                 }
             });
-            
+
             if (missingStandardCostCount > _available_tasks) {
               toastr.error("Please verify; some rows are missing values.", 'Missing Values', {
                 closeButton: true,
@@ -801,7 +897,7 @@
           // Function to generate a new row with a unique ID
           function generateRow(unique_id, srNo) {
               return `
-                <tr id="row-${unique_id}" class="new_prod">
+                <tr id="row-${unique_id}" data-task-id="${task_id}" class="new_prod">
 
                   <td class="d-none"><input type="hidden" class="task_id" value="${task_id}"></td>
                   <td class="sr-no">${srNo}</td>
@@ -1005,6 +1101,57 @@
             });
         });
 
+        // Initialise Labor Task Name
+        function _initialise_labor_task_name(){
+          $('.labour-task-name').select2({
+            placeholder: 'Select task Name',
+            width: '250px',
+            tags: true, // Enable the tagging feature
+            ajax: {
+                url: '{% url "proposal_app:opportunity:labor-task-name-search" %}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.results
+                    };
+                },
+                cache: true
+              }
+          });
+        }
+
+        // Initialise Labor Task Description
+        function _initialise_labor_task_description(){
+          $('.labour-description').select2({
+            placeholder: 'Select task description',
+            width: '250px',
+            tags: true, // Enable the tagging feature
+            ajax: {
+                url: '{% url "proposal_app:opportunity:labor-task-description-search" %}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.results
+                    };
+                },
+                cache: true
+              }
+          });
+        }
+
+        // Update Description Function
         function updateDescription(value, id) {
           var $select2Element = $(`select[data-id="${id}"].labour-description`);
 
@@ -1050,73 +1197,7 @@
           $select2Element.select2('close'); // Close dropdown immediately after fetching
         }
 
-        $(document).on('select2:select', '.labour-task-name', function(e) {
-
-          var $row = $(this).closest('tr');
-          var selectedValue = $(this).val();
-
-          // item code
-          var $input = $(e.target);
-          var id = $input.data("id");
-          var value = $input.val();
-
-          // Payload data
-          data = {
-            value: value,
-          }
-
-          $.ajax({
-            url: '{% url "proposal_app:opportunity:labor-task-name-search" %}',
-            type: 'POST',
-            data: data,
-            headers: {
-              'X-CSRFToken': "{{ csrf_token }}",
-            },
-            success: function(response) {
-              if (response.code == 0){
-                if (selectedValue === 'Clear') {
-                  // Remove all options except the placeholder
-                  $row.find('input').val('');
-                  $row.find('select').val('').trigger('change');
-                  $row.find('td.total').text('');
-                  $row.find('td.sell').text('');
-                  $row.find('td.sell-total').text('');
-                  $row.find('td.gross').text('');
-                  $row.find('td.gross-p').text('');
-                }
-              }
-              else if (response.code == 200) {
-                updateDescription(response.description, id);
-              }
-            },
-            error: function(xhr, status, error) {
-              // console.log("Error:", error);
-            }
-          });
-
-          $(".quoted-cost").on("input", function(e) {
-
-            // console.log("Inputed.....");
-
-            var row = $(this).closest("tr");
-            var value = $(this).val();
-
-            total = row.find(".total")
-            sell = row.find(".sell")
-            total_sell = row.find(".sell-total")
-            gross_profit = row.find(".gross")
-            gross_percent = row.find(".gross-p")
-
-            total.text(value);
-            sell.text((parseFloat(value) + 0.25).toFixed(2));
-            total_sell.text((parseFloat(value) + 0.25).toFixed(2));
-            gross_profit.text((parseFloat(sell.text()) - parseFloat(value)).toFixed(2));
-            gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
-
-          });
-
-        });
-
+        // Update Task Name Function
         function updateTaskName(value, id) {
           var $select2Element = $(`select[data-id="${id}"].labour-task-name`);
 
@@ -1162,8 +1243,89 @@
           $select2Element.select2('close'); // Close dropdown immediately after fetching
         }
 
-        // TODO: Make dyanmic
-        // NOTE: Update item code feature
+        // Select Labor Task Name.
+        $(document).on('select2:select', '.labour-task-name', function(e) {
+
+          var $row = $(this).closest('tr');
+          var selectedValue = $(this).val();
+
+          // item code
+          var $input = $(e.target);
+          var id = $input.data("id");
+          var value = $input.val();
+          var task_id = $row.data('task-id');
+
+          // Payload data
+          data = {
+            value: value,
+          }
+
+          $.ajax({
+            url: '{% url "proposal_app:opportunity:labor-task-name-search" %}',
+            type: 'POST',
+            data: data,
+            headers: {
+              'X-CSRFToken': "{{ csrf_token }}",
+            },
+            success: function(response) {
+              if (response.code == 0){
+                if (selectedValue === 'Clear') {
+
+                  // NOTE: Set Tak ID, Beacuse Hidden Value Unexpectedlly Going Null
+                  if (task_id){
+                    $row.find('input.task_id').val(task_id);
+                  }
+
+                  $row.find('input.quantity').val('');
+                  $row.find('input.standard-cost').val('');
+                  $row.find('input.quoted-cost').val('');
+                  $row.find('input.comment').val('');
+
+                  $row.find('select').val(null).trigger('change');
+                  _initialise_labor_task_description();
+
+                  $row.find('td.total').text('');
+                  $row.find('td.sell').text('');
+                  $row.find('td.sell-total').text('');
+                  $row.find('td.gross').text('');
+                  $row.find('td.gross-p').text('');
+                }
+              }
+              else if (response.code == 200) {
+                updateDescription(response.description, id);
+              }
+            },
+            error: function(xhr, status, error) {
+              // console.log("Error:", error);
+            }
+          });
+
+          $(".quoted-cost").on("input", function(e) {
+
+            // console.log("Inputed.....");
+
+            var row = $(this).closest("tr");
+            var value = $(this).val();
+
+            total = row.find(".total")
+            quantity = row.find(".quantity")
+            sell = row.find(".sell")
+            total_sell = row.find(".sell-total")
+            gross_profit = row.find(".gross")
+            gross_percent = row.find(".gross-p")
+
+            _val = value * quantity.val()
+            total.text(_val.toFixed(2));
+            sell.text((parseFloat(_val) + 0.25).toFixed(2));
+            total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
+            gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
+            gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
+
+          });
+
+        });
+
+        // Select Labor Description.
         $(document).on('select2:select', '.labour-description', function(e) {
 
           var $row = $(this).closest('tr');
@@ -1173,6 +1335,7 @@
           var $input = $(e.target);
           var id = $input.data("id");
           var value = $input.val();
+          var task_id = $row.data('task-id');
 
           // Payload data
           data = {
@@ -1189,8 +1352,20 @@
             success: function(response) {
               if (response.code == 0){
                 if (selectedValue === 'Clear') {
-                  $row.find('input').val('');
-                  $row.find('select').val('').trigger('change');
+
+                  // NOTE: Set Tak ID, Beacuse Hidden Value Unexpectedlly Going Null
+                  if (task_id){
+                    $row.find('input.task_id').val(task_id);
+                  }
+
+                  $row.find('input.quantity').val('');
+                  $row.find('input.standard-cost').val('');
+                  $row.find('input.quoted-cost').val('');
+                  $row.find('input.comment').val('');
+
+                  $row.find('select').val(null).trigger('change');
+                  _initialise_labor_task_name();
+
                   $row.find('td.total').text('');
                   $row.find('td.sell').text('');
                   $row.find('td.sell-total').text('');
@@ -1213,15 +1388,17 @@
             var value = $(this).val();
 
             total = row.find(".total")
+            quantity = row.find(".quantity")
             sell = row.find(".sell")
             total_sell = row.find(".sell-total")
             gross_profit = row.find(".gross")
             gross_percent = row.find(".gross-p")
 
-            total.text(value);
-            sell.text((parseFloat(value) + 0.25).toFixed(2));
-            total_sell.text((parseFloat(value) + 0.25).toFixed(2));
-            gross_profit.text((parseFloat(sell.text()) - parseFloat(value)).toFixed(2));
+            _val = value * quantity.val()
+            total.text(_val.toFixed(2));
+            sell.text((parseFloat(_val) + 0.25).toFixed(2));
+            total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
+            gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
             gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
 
           });
@@ -1231,7 +1408,7 @@
     });
   </script>
 
-  <!-- NOTE: Remove it -->
+  <!-- TODO: Remove it -->
   <!-- BEGIN Copy Product Row based on model value-->
   <script>
       function copyTableRow(rowId) {
@@ -1693,6 +1870,7 @@
     // Input Fields
     $(document).ready(function() {
       $(".quantity, .vendor-quoted-cost, .comment, .standard-cost").on("keydown", function(e) {
+
         // Check if Enter key is pressed (keyCode 13)
         if (e.key === 'Enter' || e.keyCode === 13) {
           e.preventDefault();
@@ -1746,9 +1924,13 @@
       });
     });
 
+    // NOTE: Change Here to fix blank value isuue...
     // Select Fields
     $(document).ready(function() {
-      $(".select2-vendor, .select2-task, .select2-labor-task").on("change", function(e) {
+      $(".select2-vendor, .select2-task, .select2-labor-task").on("keydown", function(e) {
+
+        //console.log("Updated Single Value");
+
         var $input = $(e.target);
 
         var id = $input.data("id");
