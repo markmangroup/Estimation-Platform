@@ -570,47 +570,43 @@
 </script>
 
 <script>
-  $(".labor_gp_percent, .mat_gp_percent, .s_and_h").on("input", function(e){
-    // console.log("Chnaged...........");
+
+  // Old Version Code
+  /* $(".labor_gp_percent, .mat_gp_percent, .s_and_h").on("input", function(e) {
+    // Find the row of the element that was changed
     var $row = $(this).closest("tr");
 
+    // Get the updated values for the row
     var laborGpPercent = parseFloat($row.find(".labor_gp_percent").val()) / 100;
-    // console.log("Labour GP %", laborGpPercent);
-
     var matGpPercent = parseFloat($row.find(".mat_gp_percent").val()) / 100;
-    // console.log("MAT GP %", matGpPercent);
-
     var s_and_h = parseFloat($row.find(".s_and_h").val()) / 100;
-    // console.log("S & H", s_and_h);
 
-    // Calculate Labor Cost
+    console.log(`laborGpPercent ${laborGpPercent}`);
+    // $(".labor_gp_percent").val(laborGpPercent);
+
+    // Calculate the Labor Sell value
     var laborCost = parseFloat($row.find(".labor_cost").text());
-    // console.log("Labor Cost", laborCost);
-
-    // parseFloat($row.find(".labor_sell").text());
     var laborSell = laborCost / (1 - laborGpPercent);
     $row.find(".labor_sell").text(laborSell.toFixed(2));
-    // console.log("Labor Sell", laborSell);
-
-    var matCost = parseFloat($row.find(".mat_cost").text());
-    // console.log("MAT Cost", matCost);
 
     // Calculate Labor GP $
     var laborGp = laborSell - laborCost;
     $row.find(".labor_gp").text(laborGp.toFixed(2));
 
+    // Calculate Material values
+    var matCost = parseFloat($row.find(".mat_cost").text());
     var matPlusMu = matCost / (1 - matGpPercent);
     $row.find(".mat_plus_mu").text(matPlusMu.toFixed(2));
 
-    // Calculate MAT GP $
+    // Calculate Material GP $
     var matGp = matPlusMu - matCost;
     $row.find(".mat_gp").text(matGp.toFixed(2));
 
-    // Calculate Sales Tax
+    // Calculate Sales Tax for Material
     var salesTax = matPlusMu * 0.25;
     $row.find(".sales_tax").text(salesTax.toFixed(2));
 
-    // Calculate MAT Sell
+    // Calculate Material Sell
     var matSell = matPlusMu + salesTax;
     $row.find(".mat_sell").text(matSell.toFixed(2));
 
@@ -618,134 +614,193 @@
     var matTaxLabor = matSell + laborSell;
     $row.find(".mat_tax_labor").text(matTaxLabor.toFixed(2));
 
-    // console.log("laborGpPercent", laborGpPercent);
-    // console.log("matGpPercent", matGpPercent);
-    // console.log("laborSell", laborSell);
-    // console.log("matPlusMu", matPlusMu);
-
-    var combGp = (( laborGpPercent * 100 ) + (matGpPercent * 100)) / (laborSell + matPlusMu);
-    // console.log("combGp", combGp)
+    // Calculate Combined GP % for Labor and Material
+    var combGp = ((laborGpPercent * 100) + (matGpPercent * 100)) / (laborSell + matPlusMu);
     $row.find(".comb_gp").text(combGp.toFixed(3));
 
     // Calculate $/Acre
     var acre = matTaxLabor / matGpPercent;
     $row.find(".acre").text((isNaN(acre) ? 0 : acre).toFixed(2));
 
+    // Update overall totals after modifying the row
     updateOverallTotals();
-  });
+  }); */
 
-  function updateOverallTotals() {
+  // New Version Code
+  $(".labor_gp_percent, .mat_gp_percent, .s_and_h").on("input", function(e) {
+    // Find the row of the element that was changed
+    var $row = $(this).closest("tr");
 
-    // console.log("=-=-=-= Innnn -===---=-=");
-    // Initialize totals
-    var totalLaborCost = 0;
-    var totalLaborGp = 0;
-    var totalLaborSell = 0;
-    var totalMatCost = 0;
-    var totalMatGp = 0;
-    var totalMatPlusMu = 0;
-    var totalSalesTax = 0;
-    var totalMatSell = 0;
-    var totalMatTaxLabor = 0;
-    var totalCombGp = 0;
-    var totalAcre = 0;
-    var totalSAndH = 0;
-    var totalLaborGpPercent = 0;
-    var totalMatGpPercent = 0;
+    // Get the updated values for the row
+    var laborGpPercent = parseFloat($row.find(".labor_gp_percent").val());
+    var matGpPercent = parseFloat($row.find(".mat_gp_percent").val());
+    var s_and_h = parseFloat($row.find(".s_and_h").val());
 
-    // Iterate over each row and accumulate totals
+    $(".labor_gp_percent").val(laborGpPercent);
+    $(".mat_gp_percent").val(matGpPercent);
+    $(".s_and_h").val(s_and_h);
+
+    // Loop through each row to update calculations for all rows
     $("table tbody tr").each(function() {
         var $row = $(this);
 
-        var laborCost = parseFloat($row.find(".labor_cost").text()) || 0;
-        var laborGp = parseFloat($row.find(".labor_gp").text()) || 0;
-        var laborGpPercent = parseFloat($row.find(".labor_gp_percent").val()) || 0;
-        var laborSell = parseFloat($row.find(".labor_sell").text()) || 0;
-        var matCost = parseFloat($row.find(".mat_cost").text()) || 0;
-        var matGp = parseFloat($row.find(".mat_gp").text()) || 0;
-        var matGpPercent = parseFloat($row.find(".mat_gp_percent").val()) || 0;
-        var matPlusMu = parseFloat($row.find(".mat_plus_mu").text()) || 0;
-        var salesTax = parseFloat($row.find(".sales_tax").text()) || 0;
-        var matSell = parseFloat($row.find(".mat_sell").text()) || 0;
-        var matTaxLabor = parseFloat($row.find(".mat_tax_labor").text()) || 0;
-        var combGp = parseFloat($row.find(".comb_gp").text()) || 0;
-        var acre = parseFloat($row.find(".acre").text()) || 0;
-        var s_and_h = parseFloat($row.find(".s_and_h").val()) || 0;
+        // Get the values for this row
+        var laborGpPercent = parseFloat($row.find(".labor_gp_percent").val()) / 100;
+        var matGpPercent = parseFloat($row.find(".mat_gp_percent").val()) / 100;
+        var s_and_h = parseFloat($row.find(".s_and_h").val()) / 100;
 
-        totalLaborCost += laborCost;
-        totalLaborGp += laborGp;
-        totalLaborGpPercent += laborGpPercent;
-        totalLaborSell += laborSell;
-        totalMatCost += matCost;
-        totalMatGp += matGp;
-        totalMatGpPercent += matGpPercent;
-        totalMatPlusMu += matPlusMu;
-        totalSalesTax += salesTax;
-        totalMatSell += matSell;
-        totalMatTaxLabor += matTaxLabor;
-        totalCombGp += combGp;
-        totalAcre += acre;
-        totalSAndH += s_and_h;
+        // Calculate Labor Sell
+        var laborCost = parseFloat($row.find(".labor_cost").text()) || 0;
+        var laborSell = laborCost / (1 - laborGpPercent);
+        $row.find(".labor_sell").text(laborSell.toFixed(2));
+
+        // Calculate Labor GP $
+        var laborGp = laborSell - laborCost;
+        $row.find(".labor_gp").text(laborGp.toFixed(2));
+
+        // Calculate Material values
+        var matCost = parseFloat($row.find(".mat_cost").text()) || 0;
+        var matPlusMu = matCost / (1 - matGpPercent);
+        $row.find(".mat_plus_mu").text(matPlusMu.toFixed(2));
+
+        // Calculate Material GP $
+        var matGp = matPlusMu - matCost;
+        $row.find(".mat_gp").text(matGp.toFixed(2));
+
+        // Calculate Sales Tax for Material
+        var salesTax = matPlusMu * 0.25;
+        $row.find(".sales_tax").text(salesTax.toFixed(2));
+
+        // Calculate Material Sell
+        var matSell = matPlusMu + salesTax;
+        $row.find(".mat_sell").text(matSell.toFixed(2));
+
+        // Calculate MAT Tax Labor
+        var matTaxLabor = matSell + laborSell;
+        $row.find(".mat_tax_labor").text(matTaxLabor.toFixed(2));
+
+        // Calculate Combined GP % for Labor and Material
+        var combGp = ((laborGpPercent * 100) + (matGpPercent * 100)) / (laborSell + matPlusMu);
+        $row.find(".comb_gp").text(combGp.toFixed(3));
+
+        // Calculate $/Acre
+        var acre = matTaxLabor / matGpPercent;
+        $row.find(".acre").text((isNaN(acre) ? 0 : acre).toFixed(2));
     });
 
-    var total_cost = totalLaborCost + totalMatCost;
-    var total_sale = totalLaborSell + totalMatSell;
-    var total_gp = totalLaborGp + totalMatGp
-    var total_gp_percent = totalLaborGpPercent + totalMatGpPercent + totalCombGp
+    // Update overall totals after modifying the row
+    updateOverallTotals();
 
-    // Update totals in <tfoot>
-    $("#total_labor_cost").text(`$${totalLaborCost.toFixed(2)}`);
-    $("#total_labor_gp_percent").text(`${totalLaborGpPercent.toFixed(2)}%`);
-    $("#total_labor_gp").text(`$${totalLaborGp.toFixed(2)}`);
-    $("#total_labor_sell").text(`$${totalLaborSell.toFixed(2)}`);
-    $("#total_mat_cost").text(`$${totalMatCost.toFixed(2)}`);
-    $("#total_mat_gp_percent").text(`${totalMatGpPercent.toFixed(2)}%`);
-    $("#total_mat_gp").text(`$${totalMatGp.toFixed(2)}`);
-    $("#total_mat_mu").text(`$${totalMatPlusMu.toFixed(2)}`);
-    $("#total_sales_tax").text(`$${totalSalesTax.toFixed(2)}`);
-    $("#total_s_and_h").text(`$${totalSAndH.toFixed(2)}`);
-    $("#total_mat_sell").text(`$${totalMatSell.toFixed(2)}`);
-    $("#total_mat_tax_labor").text(`$${totalMatTaxLabor.toFixed(2)}`);
-    $("#total_comb_gp").text(`${totalCombGp.toFixed(2)}%`);
-    $("#total_acre").text(`${(isNaN(totalAcre) ? 0 : totalAcre).toFixed(2)}`);
+  });
 
-    $("#total_cost").text(`${total_cost.toFixed(2)}`);
-    $("#total_sale").text(`${total_sale.toFixed(2)}`);
-    $(".total_gp").text(`${total_gp.toFixed(2)}`);
-    $("#total_gp_percent").text(`${total_gp_percent.toFixed(2)}`);
+  // Function to update overall totals
+  function updateOverallTotals() {
+      // Initialize totals
+      var totalLaborCost = 0;
+      var totalLaborGp = 0;
+      var totalLaborSell = 0;
+      var totalMatCost = 0;
+      var totalMatGp = 0;
+      var totalMatPlusMu = 0;
+      var totalSalesTax = 0;
+      var totalMatSell = 0;
+      var totalMatTaxLabor = 0;
+      var totalCombGp = 0;
+      var totalAcre = 0;
+      var totalSAndH = 0;
+      var totalLaborGpPercent = 0;
+      var totalMatGpPercent = 0;
 
+      // Loop through all rows and accumulate totals
+      $("table tbody tr").each(function() {
+          var $row = $(this);
+
+          var laborCost = parseFloat($row.find(".labor_cost").text()) || 0;
+          var laborGp = parseFloat($row.find(".labor_gp").text()) || 0;
+          var laborGpPercent = parseFloat($row.find(".labor_gp_percent").val()) || 0;
+          var laborSell = parseFloat($row.find(".labor_sell").text()) || 0;
+          var matCost = parseFloat($row.find(".mat_cost").text()) || 0;
+          var matGp = parseFloat($row.find(".mat_gp").text()) || 0;
+          var matGpPercent = parseFloat($row.find(".mat_gp_percent").val()) || 0;
+          var matPlusMu = parseFloat($row.find(".mat_plus_mu").text()) || 0;
+          var salesTax = parseFloat($row.find(".sales_tax").text()) || 0;
+          var matSell = parseFloat($row.find(".mat_sell").text()) || 0;
+          var matTaxLabor = parseFloat($row.find(".mat_tax_labor").text()) || 0;
+          var combGp = parseFloat($row.find(".comb_gp").text()) || 0;
+          var acre = parseFloat($row.find(".acre").text()) || 0;
+          var s_and_h = parseFloat($row.find(".s_and_h").val()) || 0;
+
+          totalLaborCost += laborCost;
+          totalLaborGp += laborGp;
+          totalLaborGpPercent += laborGpPercent;
+          totalLaborSell += laborSell;
+          totalMatCost += matCost;
+          totalMatGp += matGp;
+          totalMatGpPercent += matGpPercent;
+          totalMatPlusMu += matPlusMu;
+          totalSalesTax += salesTax;
+          totalMatSell += matSell;
+          totalMatTaxLabor += matTaxLabor;
+          totalCombGp += combGp;
+          totalAcre += acre;
+          totalSAndH += s_and_h;
+      });
+
+      var total_cost = totalLaborCost + totalMatCost;
+      var total_sale = totalLaborSell + totalMatSell;
+      var total_gp = total_sale - total_cost;
+      var total_gp_percent = total_gp / total_sale * 100;
+
+      // Update totals in <tfoot>
+      $("#total_labor_cost").text(`$ ${totalLaborCost.toFixed(2)}`);
+      $("#total_labor_gp_percent").text(`${totalLaborGpPercent.toFixed(2)}%`);
+      $("#total_labor_gp").text(`$ ${totalLaborGp.toFixed(2)}`);
+      $("#total_labor_sell").text(`$ ${totalLaborSell.toFixed(2)}`);
+      $("#total_mat_cost").text(`$ ${totalMatCost.toFixed(2)}`);
+      $("#total_mat_gp_percent").text(`${totalMatGpPercent.toFixed(2)}%`);
+      $("#total_mat_gp").text(`$ ${totalMatGp.toFixed(2)}`);
+      $("#total_mat_mu").text(`$ ${totalMatPlusMu.toFixed(2)}`);
+      $("#total_sales_tax").text(`$ ${totalSalesTax.toFixed(2)}`);
+      $("#total_s_and_h").text(`$${totalSAndH.toFixed(2)}`);
+      $("#total_mat_sell").text(`$ ${totalMatSell.toFixed(2)}`);
+      $("#total_mat_tax_labor").text(`$ ${totalMatTaxLabor.toFixed(2)}`);
+      $("#total_comb_gp").text(`${totalCombGp.toFixed(2)}%`);
+      $("#total_acre").text(`${(isNaN(totalAcre) ? 0 : totalAcre).toFixed(2)}`);
+
+      $("#total_cost").text(`$ ${total_cost.toFixed(2)}`);
+      $("#total_sale").text(`$ ${total_sale.toFixed(2)}`);
+      $(".total_gp").text(`$ ${total_gp.toFixed(2)}`);
+      $("#total_gp_percent").text(`${total_gp_percent.toFixed(2)}%`);
   }
 
+  // Save changed value.
   $(".labor_gp_percent, .mat_gp_percent, .s_and_h").on("change", function(e){
-      // console.log("=-=-=-=- Chnaged =-=-=-=-");
+
       var $row = $(this).closest("tr");
       var $input = $(e.target);
+      var document_number = "{{ opportunity.document_number }}"
 
       var taskMappingId = $row.find(".task_mapping").val();
-      // console.log("Task Mapping ID", taskMappingId);
-
       var laborGpPercent = $row.find(".labor_gp_percent").val();
-      // console.log("Labour GP %", laborGpPercent);
-
       var matGpPercent = $row.find(".mat_gp_percent").val();
-      // console.log("MAT GP %", matGpPercent);
-
       var s_and_h = $row.find(".s_and_h").val();
-      // console.log("S & H", s_and_h);
 
       if ($input.hasClass("labor_gp_percent")){
           data = {
             task_mapping_id: taskMappingId,
+            document_number: document_number,
             labor_gp_percent: laborGpPercent,
           }
       } else if ($input.hasClass("mat_gp_percent")){
           data = {
             task_mapping_id: taskMappingId,
+            document_number: document_number,
             mat_gp_percent: matGpPercent,
           }
       } else if ($input.hasClass("s_and_h")){
           data = {
             task_mapping_id: taskMappingId,
+            document_number: document_number,
             s_and_h: s_and_h,
           }
       }
@@ -759,16 +814,25 @@
           'X-CSRFToken': "{{ csrf_token }}",
         },
         success: function(response) {
-          // console.log('API call success:', response);
-          toastr.success(response.message, 'Success', {
-            closeButton: true,
-            progressBar: true,
-            positionClass: 'toast-bottom-right',
-            timeOut: 6000
-          });
+          // console.error('API Response:', response);
+          if (response.code == "200"){
+            toastr.success(response.message, 'Success', {
+              closeButton: true,
+              progressBar: true,
+              positionClass: 'toast-bottom-right',
+              timeOut: 6000
+            });
+          } else if (response.code == "400"){
+            toastr.error(response.message, 'Error', {
+              closeButton: true,
+              progressBar: true,
+              positionClass: 'toast-bottom-right',
+              timeOut: 6000
+            });
+          }
         },
         error: function(xhr, status, error) {
-          console.error('API call error:', status, error);
+          // console.error('API call error:', status, error);
           toastr.error(xhr.responseJSON.message, 'Error', {
             closeButton: true,
             progressBar: true,
@@ -780,6 +844,7 @@
 
   });
 
+  // Save Estimation Details.
   $(".job_name, .job, .project, .ranch").on("change", function(e){
     var document_number = $(this).data("document");
     var $input = $(e.target);
@@ -841,6 +906,7 @@
 
     });
   });
+
 </script>
 
 {% endblock script %}
