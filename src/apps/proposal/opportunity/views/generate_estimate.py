@@ -6,8 +6,8 @@ from django.db.models import QuerySet
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
-from apps.constants import ERROR_RESPONSE, LOGGER
-from apps.mixin import ProposalViewMixin, TemplateViewMixin, ViewMixin
+from apps.constants import LOGGER
+from apps.mixin import CustomViewMixin, ProposalViewMixin, TemplateViewMixin
 
 from ..models import AssignedProduct, TaskMapping
 
@@ -40,6 +40,7 @@ class GenerateEstimateTable(ProposalViewMixin):
 
         # Calculate totals and add to context
         context["total"] = GenerateEstimate._get_total(document_number)
+        context["document_number"] = document_number
         return context
 
 
@@ -111,54 +112,55 @@ class UpdateEstimationLabor(TemplateViewMixin):
         return context
 
 
-class UpdateEstimationTable(ViewMixin):
+class UpdateEstimationTable(CustomViewMixin):
     """
     View for updating various fields in the estimation table.
     """
 
-    def _update_data(self, data: dict) -> dict:
+    def __post(self, data: dict) -> dict:
         """
         Update task mapping based on provided data.
 
         :param data: Parsed request data containing update information.
-        :return: Response dictionary with status and message.
         """
-
-        task_mapping_id = data.get("task_mapping_id", [None])[0]
-        task_mapping_obj = get_object_or_404(TaskMapping, id=task_mapping_id)
-
-        if not data:
-            return {"status": "error", "message": "No data provided"}
-
-        updates = {
-            "labor_gp_percent": "Labor GP % Updated successfully",
-            "mat_gp_percent": "MAT GP % Updated successfully",
-            "s_and_h": "S & H Updated successfully",
+        document_number = data.get("document_number", [None])[0]
+        print(f"document_number {type(document_number)}: {document_number}")
+        update_fields = {
+            "labor_gp_percent": data.get("labor_gp_percent", [None])[0],
+            "mat_gp_percent": data.get("mat_gp_percent", [None])[0],
+            "s_and_h": data.get("s_and_h", [None])[0],
         }
 
-        for key, success_message in updates.items():
-            if key in data and data[key]:
-                setattr(task_mapping_obj, key, float(data[key][0]))
-                task_mapping_obj.save()
-                return {"status": "success", "message": success_message}
+        task_mapping_objs = TaskMapping.objects.filter(opportunity__document_number=document_number)
+        update_data = {key: value for key, value in update_fields.items() if value is not None}
 
-        return {"status": "error", "message": "No valid fields provided for update"}
+        if update_data:
+            task_mapping_objs.update(**update_data)
+            _text = ", ".join(update_data.keys()).replace("_", " ").replace("percent", "%").title()
+            self._message = f"{_text} Updated Successfully"
+            self._code = 200
+        else:
+            self._message = "No valid fields provided to update"
+            self._code = 400
+
+        return self.generate_response()
 
     def post(self, request, *args, **kwargs) -> JsonResponse:
         """
         Handle POST requests to update estimation table data.
 
         :param request: The HTTP request object.
-        :return: JsonResponse with the result of the update operation.
         """
         try:
+            # Parse the incoming request body
             body_unicode = request.body.decode("utf-8")
             data = urllib.parse.parse_qs(body_unicode)
-            response = self._update_data(data)
-            return JsonResponse(response)
+            return self.__post(data)
+
         except Exception as e:
-            LOGGER.error(f"Error: [UpdateEstimationTable] {e}")
-            return JsonResponse(ERROR_RESPONSE, status=400)
+            LOGGER.error(f"Error occurred in [UpdateEstimationTable]: {str(e)}")
+            self._code = 400
+            return self.generate_response()
 
 
 class GenerateEstimate:
