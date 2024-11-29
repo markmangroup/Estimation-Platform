@@ -95,9 +95,124 @@
             return "id" + Math.random().toString(16).slice(2);
         }
 
+        // Function for selects
+        function InitSelects(){
+
+          $('.select2-vendor').select2({
+            placeholder: 'Select Vendor Name',
+            tags: true, // Enable the tagging feature
+            ajax: {
+                url: '{% url "proposal_app:opportunity:vendor-search" %}',
+                dataType: 'json',
+                delay: 250,  // Add a delay for better UX
+                data: function (params) {
+                    return {
+                        q: params.term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.results
+                    };
+                },
+                cache: true
+            }
+          });
+
+          // Item code start
+          $('.select2-item-code').select2({
+            placeholder: 'Select Item Code',
+            width: '200px',
+            tags: true, // Enable the tagging feature
+            ajax: {
+                url: '{% url "proposal_app:opportunity:item-code-search" %}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.results
+                    };
+                },
+                cache: true
+            }
+          });
+
+          // Set Select 2 for new generated rows
+          $(`.select2-item-description`).select2({
+            placeholder: 'Select Item description',
+            width: '250px',
+            tags: true, // Enable the tagging feature
+            ajax: {
+                url: '{% url "proposal_app:opportunity:item-description-search" %}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.results
+                    };
+                },
+                cache: true
+            }
+          });
+
+        }
+
+        // Function to generate a new row with a unique ID
+        function generateRow(unique_id, srNo) {
+            return `
+            <tr id="row-template-${unique_id}" class="new_prod">
+                <td class="d-none"><input type="hidden" class="task_id" value="${task_id}"></td>
+                <td class="sr-no">${srNo}</td>
+                <td class="text-nowrap"><input type="text" class="form-control quantity" data-id="quantity-${unique_id}" placeholder="Enter Quantity"></td>
+                <td class="text-nowrap">
+                    <select data-id="${unique_id}" class="select2-item-code js-example-programmatic form-control">
+                    </select>
+                </td>
+                <td>
+                    <select data-id="${unique_id}" class="select2-item-description js-example-programmatic form-control">
+                    </select>
+                </td>
+                <td><input data-id="${unique_id}" type="text" class="form-control standard-cost" placeholder="Enter Standard Cost"></td>
+                <td><input data-id="${unique_id}" type="text" class="form-control quoted-cost" placeholder="Enter Quoted Cost"></td>
+                <td>
+                    <select data-id="${unique_id}" class="select2-vendor vendor form-control">
+                      <option selected disabled>Select Vendor Name</option>
+                    </select>
+                </td>
+                <td><input type="text" class="form-control comment" placeholder="Enter Item Note"></td>
+                <td data-id="${unique_id}" class="total"></td>
+                <td data-id="${unique_id}" class="sell"></td>
+                <td data-id="${unique_id}" class="sell-total"></td>
+                <td data-id="${unique_id}" class="gross"></td>
+                <td data-id="${unique_id}" class="gross-p"></td>
+                <td class="d-flex">
+                    <button type="button" data-task-id="${task_id}" class="btn btn-danger mr-2 remove-row-btn"><i class="fa fa-trash"></i></button>
+                    <button type="button" data-id="${task_id}" class="btn btn-primary add-row-btn new-btn"><i class="fa fa-plus"></i></button>
+                </td>
+            </tr>
+            `;
+        }
+
+        function UpdateSrNo(tableBody){
+          var sr_number = -1;
+          tableBody.find('tr').each(function() {
+            $(this).find('.sr-no').text(sr_number);
+            sr_number++;
+          });
+        }
+
         // Handle 'Add Row' button click
         $('.add-row-btn, .add-multi-row-btn').on('click', function(e) {
-          // console.log("Clicked.........")
           var unique_id;
           var html;
           var $input = $(e.target);
@@ -114,155 +229,52 @@
 
           // console.log("multi", multi_row)
 
-          // Function to generate a new row with a unique ID
-          function generateRow(unique_id, srNo) {
-              return `
-              <tr id="row-template-${unique_id}" class="new_prod">
-                  <td class="d-none"><input type="hidden" class="task_id" value="${task_id}"></td>
-                  <td class="sr-no">${srNo}</td>
-                  <td class="text-nowrap"><input type="text" class="form-control quantity" data-id="quantity-${unique_id}" placeholder="Enter Quantity"></td>
-                  <td class="text-nowrap">
-                      <select data-id="${unique_id}" class="select2-item-code js-example-programmatic form-control">
-                      </select>
-                  </td>
-                  <td>
-                      <select data-id="${unique_id}" class="select2-item-description js-example-programmatic form-control">
-                      </select>
-                  </td>
-                  <td><input data-id="${unique_id}" type="text" class="form-control standard-cost" placeholder="Enter Standard Cost"></td>
-                  <td><input data-id="${unique_id}" type="text" class="form-control quoted-cost" placeholder="Enter Quoted Cost"></td>
-                  <td>
-                      <select data-id="${unique_id}" class="select2-vendor vendor form-control">
-                        <option selected disabled>Select Vendor Name</option>
-                      </select>
-                  </td>
-                  <td><input type="text" class="form-control comment" placeholder="Enter Item Note"></td>
-                  <td data-id="${unique_id}" class="total"></td>
-                  <td data-id="${unique_id}" class="sell"></td>
-                  <td data-id="${unique_id}" class="sell-total"></td>
-                  <td data-id="${unique_id}" class="gross"></td>
-                  <td data-id="${unique_id}" class="gross-p"></td>
-                  <td class="d-flex">
-                      <button type="button" data-task-id="${task_id}" class="btn btn-danger mr-2 remove-row-btn"><i class="fa fa-trash"></i></button>
-                  </td>
-              </tr>
-              `;
-          }
-
-          if (multi_row){
-
+          if (multi_row) {
             var currentRowCount = $(this).closest('tr').find(".sr-no").length;
-            var curent_value = $(this).closest('tr').find(".sr-no");
-            var tr_id = $(this).closest('tr').find("#sr-no")
-
+            var tr_id = $(this).closest('tr').find("#sr-no");
+    
             for (var i = 0; i < numRows; i++) {
-
                 unique_id = generateUniqueId();
-
                 var srNo = currentRowCount + i + 1;
+                html = generateRow(unique_id, srNo);
+    
+                // Find the current row with `row-template-${task_id}` and check if it has the plus button
+                var currentRow = $(this).closest('tr').find(`.new_prod:last`);
+    
+                // If the current row contains the add-row-btn (plus button), append a new row after it
+                if (currentRow.find('.add-row-btn').length > 0) {
+                    var data_id = $(this).data('id');
+                    var tableBody = $(`#tableBody-${data_id}`);
+    
+                    // Insert the new row after the current row
+                    tableBody.append(html);
+                    $(`#row-template-${unique_id}`).insertAfter(currentRow);
 
-                html = generateRow(unique_id, srNo - 1);
+                    $(`#tableBody-${data_id} .add-row-btn`).each(function(index, element) {
+                      // Hide the button for all rows except the last one
+                      if (index !== $(`#tableBody-${data_id} .add-row-btn`).length - 1) {
+                          $(element).hide();                          
+                      } else {
+                          $(element).show();
+                      }
+                    });
 
-                task_id = $(this).data('id');
-
-                if (multi_row) {
-                    var currentRow = $(this).closest('tr').find(`#row-template-${task_id}`);
-                } else {
-                    var currentRow = $(this).closest('tr');
+                    InitSelects(); // Initialize select2 for the new selects
                 }
-
-                // Find the ID of the table body to append the row
-                var data_id = $(this).data('id');
-                var tableBody = $(`#tableBody-${data_id}`);
-
-                // Insert the new row before the current row
-                tableBody.append(html);
-                $(`#row-template-${unique_id}`).insertBefore(currentRow);
-
-                // Initialize select2 for the new selects
-                $('.select2-vendor').select2({
-                  placeholder: 'Select Vendor Name',
-                  tags: true, // Enable the tagging feature
-                  ajax: {
-                      url: '{% url "proposal_app:opportunity:vendor-search" %}',
-                      dataType: 'json',
-                      delay: 250,  // Add a delay for better UX
-                      data: function (params) {
-                          return {
-                              q: params.term
-                          };
-                      },
-                      processResults: function (data) {
-                          return {
-                              results: data.results
-                          };
-                      },
-                      cache: true
-                  }
-                });
-
-                // Item code start
-                $('.select2-item-code').select2({
-                  placeholder: 'Select Item Code',
-                  width: '200px',
-                  tags: true, // Enable the tagging feature
-                  ajax: {
-                      url: '{% url "proposal_app:opportunity:item-code-search" %}',
-                      dataType: 'json',
-                      delay: 250,
-                      data: function (params) {
-                          return {
-                              q: params.term
-                          };
-                      },
-                      processResults: function (data) {
-                          return {
-                              results: data.results
-                          };
-                      },
-                      cache: true
-                  }
-                });
-
-                // Set Select 2 for new generated rows
-                $(`.select2-item-description`).select2({
-                  placeholder: 'Select Item description',
-                  width: '250px',
-                  tags: true, // Enable the tagging feature
-                  ajax: {
-                      url: '{% url "proposal_app:opportunity:item-description-search" %}',
-                      dataType: 'json',
-                      delay: 250,
-                      data: function (params) {
-                          return {
-                              q: params.term
-                          };
-                      },
-                      processResults: function (data) {
-                          return {
-                              results: data.results
-                          };
-                      },
-                      cache: true
-                  }
-                });
-
-            tr_id.text(srNo);
-
+    
+                tr_id.text(srNo);
             }
-
+            UpdateSrNo(tableBody);
           }else{
 
             var currentRowCount = $(this).closest('tr').find(".sr-no");
-            var curent_value = parseInt(currentRowCount.text(), 10);
+            var curent_value = parseInt(currentRowCount.text(), 10);            
 
             for (var i = 0; i < numRows; i++) {
 
                 unique_id = generateUniqueId();
 
-                curent_value += 1;
-
-                var srNo = curent_value - 1;
+                var srNo = curent_value + 1;
 
                 currentRowCount.text(curent_value)
 
@@ -281,85 +293,41 @@
                 var tableBody = $(`#tableBody-${data_id}`);
 
                 // Insert the new row before the current row
-                tableBody.append(html);
-                $(`#row-template-${unique_id}`).insertBefore(currentRow);
+                tableBody.append(html);    
+                $(`#row-template-${unique_id}`).insertAfter(currentRow);
 
-                // Initialize select2 for the new selects
-                $('.select2-vendor').select2({
-                  placeholder: 'Select Vendor Name',
-                  tags: true, // Enable the tagging feature
-                  ajax: {
-                      url: '{% url "proposal_app:opportunity:vendor-search" %}',
-                      dataType: 'json',
-                      delay: 250,  // Add a delay for better UX
-                      data: function (params) {
-                          return {
-                              q: params.term
-                          };
-                      },
-                      processResults: function (data) {
-                          return {
-                              results: data.results
-                          };
-                      },
-                      cache: true
-                  }
-                });
+                $('.add-row-btn').hide(); // Hide other "Add Row" buttons
 
-                // Item code start
-                $('.select2-item-code').select2({
-                  placeholder: 'Select Item Code',
-                  width: '200px',
-                  tags: true, // Enable the tagging feature
-                  ajax: {
-                      url: '{% url "proposal_app:opportunity:item-code-search" %}',
-                      dataType: 'json',
-                      delay: 250,
-                      data: function (params) {
-                          return {
-                              q: params.term
-                          };
-                      },
-                      processResults: function (data) {
-                          return {
-                              results: data.results
-                          };
-                      },
-                      cache: true
-                  }
-                });
+                $(`#row-template-${unique_id} .add-row-btn`).show(); // Show the "Add Row" button for the new row
 
-                // Set Select 2 for new generated rows
-                $(`.select2-item-description`).select2({
-                  placeholder: 'Select Item description',
-                  width: '250px',
-                  tags: true, // Enable the tagging feature
-                  ajax: {
-                      url: '{% url "proposal_app:opportunity:item-description-search" %}',
-                      dataType: 'json',
-                      delay: 250,
-                      data: function (params) {
-                          return {
-                              q: params.term
-                          };
-                      },
-                      processResults: function (data) {
-                          return {
-                              results: data.results
-                          };
-                      },
-                      cache: true
-                  }
-                });
-
+                InitSelects(); // Initialize select2 for the new selects
             }
           }
+        });
+
+        $(document).on('click', '.new-btn', function(e) {
+          e.preventDefault();
+
+          var $button = $(this);
+          var uniqueId = generateUniqueId();
+          var taskId = $button.data('id');
+          
+          var currentRowCount = $(this).closest('tr').find(".sr-no");
+          var curent_value = parseInt(currentRowCount.text(), 10);
+          var srNo = curent_value + 1;
+
+          var newRowHtml = generateRow(uniqueId, srNo);
+
+          $(`#tableBody-${taskId} tbody`).append(newRowHtml);                    
+          $('.add-row-btn').hide();                    
+          $(`#row-template-${uniqueId} .add-row-btn`).show();                
+        
+          InitSelects(); // Initialize select2 for the new selects
         });
 
         var item_code_changed = false;
         var item_description_changed = false;
 
-        // NOTE: Try to fix multiple ajax request
         // Auto populated description while select item code
         function updateDescription(value, id) {
             var $select2Element = $(`select[data-id="${id}"].select2-item-description.js-example-programmatic.form-control`);
@@ -503,6 +471,36 @@
           $select2Element.select2('close'); // Close dropdown immediately after fetching
         }
 
+        // Function for update value real time.
+        function UpdateRealTimeValue(){
+          $(".quoted-cost, .quantity").on("input", function(e) {
+
+            var row = $(this).closest("tr");
+            var value = $(this).val();
+
+            total = row.find(".total")
+            std_cost = row.find(".standard-cost").val();
+            quoted_cost = row.find(".quoted-cost").val();
+            quantity = row.find(".quantity")
+            sell = row.find(".sell")
+            total_sell = row.find(".sell-total")
+            gross_profit = row.find(".gross")
+            gross_percent = row.find(".gross-p")
+
+            if ($(e.target).hasClass("quoted-cost")) {
+              _val = value * quantity.val()
+            }else if($(e.target).hasClass("quantity")){
+              _val = value * quoted_cost || value * std_cost
+            }
+            total.text(_val.toFixed(2));
+            sell.text((parseFloat(_val) + 0.25).toFixed(2));
+            total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
+            gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
+            gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
+
+          });
+        }
+
         // Set value of selectd item code with on change event
         $(document).on('select2:select', '.select2-item-code', function(e) {
 
@@ -585,19 +583,25 @@
                 gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
                 gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
 
-                $(".quoted-cost").on("input", function(e) {
+                $(".quoted-cost, .quantity").on("input", function(e) {
 
                   var row = $(this).closest("tr");
                   var value = $(this).val();
 
                   total = row.find(".total")
+                  std_cost = row.find(".standard-cost").val();
+                  quoted_cost = row.find(".quoted-cost").val();
                   quantity = row.find(".quantity")
                   sell = row.find(".sell")
                   total_sell = row.find(".sell-total")
                   gross_profit = row.find(".gross")
                   gross_percent = row.find(".gross-p")
 
-                  _val = value * quantity.val()
+                  if ($(e.target).hasClass("quoted-cost")) {
+                    _val = value * quantity.val()
+                  }else if($(e.target).hasClass("quantity")){
+                    _val = value * quoted_cost || value * std_cost
+                  }
                   total.text(_val.toFixed(2));
                   sell.text((parseFloat(_val) + 0.25).toFixed(2));
                   total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
@@ -612,19 +616,25 @@
               // console.log("Error Reposnse", xhr);
 
               // console.log("Error:", error);
-              $(".quoted-cost").on("input", function(e) {
+              $(".quoted-cost, .quantity").on("input", function(e) {
 
                 var row = $(this).closest("tr");
                 var value = $(this).val();
 
                 total = row.find(".total")
+                std_cost = row.find(".standard-cost").val();
+                quoted_cost = row.find(".quoted-cost").val();
                 quantity = row.find(".quantity")
                 sell = row.find(".sell")
                 total_sell = row.find(".sell-total")
                 gross_profit = row.find(".gross")
                 gross_percent = row.find(".gross-p")
 
-                _val = value * quantity.val()
+                if ($(e.target).hasClass("quoted-cost")) {
+                  _val = value * quantity.val()
+                }else if($(e.target).hasClass("quantity")){
+                  _val = value * quoted_cost || value * std_cost
+                }
                 total.text(_val.toFixed(2));
                 sell.text((parseFloat(_val) + 0.25).toFixed(2));
                 total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
@@ -708,50 +718,12 @@
                 gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
                 gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
 
-                $(".quoted-cost").on("input", function(e) {
-
-                  var row = $(this).closest("tr");
-                  var value = $(this).val();
-
-                  total = row.find(".total")
-                  quantity = row.find(".quantity")
-                  sell = row.find(".sell")
-                  total_sell = row.find(".sell-total")
-                  gross_profit = row.find(".gross")
-                  gross_percent = row.find(".gross-p")
-
-                  _val = value * quantity.val()
-                  total.text(_val.toFixed(2));
-                  sell.text((parseFloat(_val) + 0.25).toFixed(2));
-                  total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
-                  gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
-                  gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
-
-                });
+                UpdateRealTimeValue(); // Update value real time
               }
             },
             error: function(xhr, status, error) {
               // console.log("Error:", error);
-              $(".quoted-cost").on("input", function(e) {
-
-                var row = $(this).closest("tr");
-                var value = $(this).val();
-
-                total = row.find(".total")
-                quantity = row.find(".quantity")
-                sell = row.find(".sell")
-                total_sell = row.find(".sell-total")
-                gross_profit = row.find(".gross")
-                gross_percent = row.find(".gross-p")
-
-                _val = value * quantity.val()
-                total.text(_val.toFixed(2));
-                sell.text((parseFloat(_val) + 0.25).toFixed(2));
-                total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
-                gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
-                gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
-
-              });
+              UpdateRealTimeValue(); // Update value real time
             },
             complete: function() {
               item_description_changed = false; // Reset flag after completion
@@ -764,10 +736,8 @@
           var task_id = $(this).data('task-id');
 
           current_row.remove();
-
-          $(`#tableBody-${task_id} tbody tr`).each(function(index) {
-              $(this).find('.sr-no').text(index + 1);
-          });
+          var Tbody = $(`#tableBody-${task_id}`)
+          UpdateSrNo(Tbody);
         });
 
         // Handle Save All data on next click
@@ -875,6 +845,102 @@
             return "id" + Math.random().toString(16).slice(2);
         }
 
+        function initSelect(){
+
+          $('.labour-task-name').select2({
+            placeholder: 'Select task Name',
+            width: '250px',
+            tags: true, // Enable the tagging feature
+            ajax: {
+                url: '{% url "proposal_app:opportunity:labor-task-name-search" %}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.results
+                    };
+                },
+                cache: true
+              }
+          });
+
+          $('.labour-description').select2({
+            placeholder: 'Select task description',
+            width: '250px',
+            tags: true, // Enable the tagging feature
+            ajax: {
+                url: '{% url "proposal_app:opportunity:labor-task-description-search" %}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.results
+                    };
+                },
+                cache: true
+              }
+          });
+        }
+
+        // Function to generate a new row with a unique ID
+        function _generateRow(unique_id, srNo) {
+          return `
+            <tr id="row-${unique_id}" data-task-id="${task_id}" class="new_prod">
+
+              <td class="d-none"><input type="hidden" class="task_id" value="${task_id}"></td>
+              <td class="sr-no">${srNo}</td>
+              <td>
+                <input type="text" class="form-control quantity" placeholder="Enter Qunatity">
+              </td>
+              <td>
+                <select data-id="${unique_id}" class="labour-task-name form-control">
+                </select>
+              </td>
+              <td class="text-nowrap">
+                <select data-id="${unique_id}" class="labour-description form-control">
+                </select>
+              </td>
+              <td id="standardCost13" class="text-nowrap">
+                <input type="text" data-id="${unique_id}" class="form-control standard-cost" placeholder="Enter standard cost">
+              </td>
+              <td class="text-nowrap">
+                <input type="text" data-id="${unique_id}" class="quoted-cost form-control" placeholder="Enter out of town cost">
+              </td>
+              <td>
+                <input type="text" class="form-control comment"placeholder="Enter Item Note">
+              </td>
+              <td class="total" data-id="${unique_id}"></td>
+              <td class="sell" data-id="${unique_id}"></td>
+              <td class="sell-total" data-id="${unique_id}"></td>
+              <td class="gross" data-id="${unique_id}"></td>
+              <td class="gross-p" data-id="${unique_id}"></td>
+
+              <td class="d-flex">
+                <button type="button" data-task-id="${task_id}" data-id="${unique_id}" class="btn btn-danger mr-2 remove-labor-row-btn"><i class="fa fa-trash"></i></button>
+                <button type="button" data-id="${task_id}" class="btn btn-primary add-labor-row new-labor-btn"><i class="fa fa-plus"></i></button>
+              </td>
+            </tr>
+          `;
+        }
+
+        function _UpdateSrNo(tableBody){
+          var sr_number = -1;
+          tableBody.find('tr').each(function() {
+            $(this).find('.sr-no').text(sr_number);
+            sr_number++;
+          });
+        }
+
         // Handle 'Add Row' button click
         $('.add-labor-row, .add-multi-labor-row-btn').on('click', function(e) {
           // console.log("Clicked.........")
@@ -894,122 +960,42 @@
 
           // console.log("multi", multi_row)
 
-          // Function to generate a new row with a unique ID
-          function generateRow(unique_id, srNo) {
-              return `
-                <tr id="row-${unique_id}" data-task-id="${task_id}" class="new_prod">
-
-                  <td class="d-none"><input type="hidden" class="task_id" value="${task_id}"></td>
-                  <td class="sr-no">${srNo}</td>
-                  <td>
-                    <select data-id="${unique_id}" class="labour-task-name form-control">
-                    </select>
-                  </td>
-                  <td class="text-nowrap">
-                    <select data-id="${unique_id}" class="labour-description form-control">
-                    </select>
-                  </td>
-                  <td>
-                    <input type="text" class="form-control quantity" placeholder="Enter Qunatity">
-                  </td>
-                  <td id="standardCost13" class="text-nowrap">
-                    <input type="text" data-id="${unique_id}" class="form-control standard-cost" placeholder="Enter standard cost">
-                  </td>
-                  <td class="text-nowrap">
-                    <input type="text" data-id="${unique_id}" class="quoted-cost form-control" placeholder="Enter out of town cost">
-                  </td>
-                  <td>
-                    <input type="text" class="form-control comment"placeholder="Enter Item Note">
-                  </td>
-                  <td class="total" data-id="${unique_id}"></td>
-                  <td class="sell" data-id="${unique_id}"></td>
-                  <td class="sell-total" data-id="${unique_id}"></td>
-                  <td class="gross" data-id="${unique_id}"></td>
-                  <td class="gross-p" data-id="${unique_id}"></td>
-
-                  <td class="d-flex">
-                    <button type="button" data-task-id="${task_id}" data-id="${unique_id}" class="btn btn-danger mr-2 remove-labor-row-btn"><i class="fa fa-trash"></i></button>
-                  </td>
-                </tr>
-              `;
-          }
-
           if (multi_row){
 
             var currentRowCount = $(this).closest('tr').find(".sr-no").length;
-            var curent_value = $(this).closest('tr').find(".sr-no");
             var tr_id = $(this).closest('tr').find("#sr-labor-no")
 
             for (var i = 0; i < numRows; i++) {
-
                 unique_id = generateUniqueId();
                 var srNo = currentRowCount + i + 1;
-
-                html = generateRow(unique_id, srNo - 1);
+                html = _generateRow(unique_id, srNo - 1);
 
                 task_id = $(this).data('id');
 
-                if (multi_row) {
-                  var currentRow = $(this).closest('tr').find(`#row-${task_id}`);
-                } else {
-                  var currentRow = $(this).closest('tr');
+                var currentRow = $(this).closest('tr').find(`.new_prod:last`);
+
+                if (currentRow.find('.add-labor-row').length > 0) {
+                    var data_id = $(this).data('id');
+                    var tableBody = $(`#tableBody-${data_id}`);
+    
+                    // Insert the new row after the current row
+                    tableBody.append(html);
+                    $(`#row-${unique_id}`).insertAfter(currentRow);
+
+                    $(`#tableBody-${data_id} .add-labor-row`).each(function(index, element) {
+                      // Hide the button for all rows except the last one
+                      if (index !== $(`#tableBody-${data_id} .add-labor-row`).length - 1) {
+                          $(element).hide();                          
+                      } else {
+                          $(element).show();
+                      }
+                    });
+
+                    initSelect(); // Initialize select2 for the new selects
                 }
-
-                // Find the ID of the table body to append the row
-                var data_id = $(this).data('id');
-                var tableBody = $(`#labor-${data_id}`);
-
-                // Insert the new row before the current row
-                tableBody.append(html);
-                $(`#row-${unique_id}`).insertBefore(currentRow);
-
-                $('.labour-task-name').select2({
-                  placeholder: 'Select task Name',
-                  width: '250px',
-                  tags: true, // Enable the tagging feature
-                  ajax: {
-                      url: '{% url "proposal_app:opportunity:labor-task-name-search" %}',
-                      dataType: 'json',
-                      delay: 250,
-                      data: function (params) {
-                          return {
-                              q: params.term
-                          };
-                      },
-                      processResults: function (data) {
-                          return {
-                              results: data.results
-                          };
-                      },
-                      cache: true
-                    }
-                });
-
-                $('.labour-description').select2({
-                  placeholder: 'Select task description',
-                  width: '250px',
-                  tags: true, // Enable the tagging feature
-                  ajax: {
-                      url: '{% url "proposal_app:opportunity:labor-task-description-search" %}',
-                      dataType: 'json',
-                      delay: 250,
-                      data: function (params) {
-                          return {
-                              q: params.term
-                          };
-                      },
-                      processResults: function (data) {
-                          return {
-                              results: data.results
-                          };
-                      },
-                      cache: true
-                    }
-                });
-
-            tr_id.text(srNo);
-
+                tr_id.text(srNo);
             }
+            _UpdateSrNo(tableBody);
 
           }else{
 
@@ -1019,12 +1005,11 @@
             for (var i = 0; i < numRows; i++) {
 
                 unique_id = generateUniqueId();
-
-                curent_labor_value += 1;
-                var srNo = curent_labor_value - 1;
+                var srNo = curent_labor_value + 1;
+                
                 currentLaborRowCount.text(curent_labor_value);
 
-                html = generateRow(unique_id, srNo);
+                html = _generateRow(unique_id, srNo);
 
                 task_id = $(this).data('id');
 
@@ -1036,58 +1021,40 @@
 
                 // Find the ID of the table body to append the row
                 var data_id = $(this).data('id');
-                var tableBody = $(`#labor-${data_id}`);
+                var tableBody = $(`#tableBody-${data_id}`);
 
                 // Insert the new row before the current row
                 tableBody.append(html);
-                $(`#row-${unique_id}`).insertBefore(currentRow);
+                $(`#row-${unique_id}`).insertAfter(currentRow);
 
-                $('.labour-task-name').select2({
-                  placeholder: 'Select task Name',
-                  width: '250px',
-                  tags: true, // Enable the tagging feature
-                  ajax: {
-                      url: '{% url "proposal_app:opportunity:labor-task-name-search" %}',
-                      dataType: 'json',
-                      delay: 250,
-                      data: function (params) {
-                          return {
-                              q: params.term
-                          };
-                      },
-                      processResults: function (data) {
-                          return {
-                              results: data.results
-                          };
-                      },
-                      cache: true
-                    }
-                });
+                $('.add-labor-row').hide(); // Hide other "Add Row" buttons
 
-                $('.labour-description').select2({
-                  placeholder: 'Select task description',
-                  width: '250px',
-                  tags: true, // Enable the tagging feature
-                  ajax: {
-                      url: '{% url "proposal_app:opportunity:labor-task-description-search" %}',
-                      dataType: 'json',
-                      delay: 250,
-                      data: function (params) {
-                          return {
-                              q: params.term
-                          };
-                      },
-                      processResults: function (data) {
-                          return {
-                              results: data.results
-                          };
-                      },
-                      cache: true
-                    }
-                });
+                $(`#row-${unique_id} .add-labor-row`).show(); // Show the "Add Row" button for the new row
+
+                initSelect();
             }
           }
 
+        });
+
+        $(document).on('click', '.new-labor-btn', function(e) {
+          e.preventDefault();
+          var $button = $(this);
+          var uniqueId = generateUniqueId();
+          
+          var taskId = $button.data('id');
+          
+          var currentRowCount = $(this).closest('tr').find(".sr-no");
+          var curent_value = parseInt(currentRowCount.text(), 10);
+          var srNo = curent_value + 1;
+
+          var newRowHtml = _generateRow(uniqueId, srNo);
+
+          $(`#tableBody-${taskId}`).append(newRowHtml);           
+          $('.add-labor-row').hide();                    
+          $(`#row-${uniqueId} .add-labor-row`).show();
+
+          initSelect(); // Initialize select2 for the new selects
         });
 
         $(document).on('click', '.remove-labor-row-btn', function() {
@@ -1095,10 +1062,9 @@
           var task_id = $(this).data('task-id');
 
           current_row.remove();
-
-            $(`#labor-${task_id} tr`).each(function(index) {
-                $(this).find('.sr-no').text(index + 1);
-            });
+          
+          var Tbody = $(`#tableBody-${task_id}`)
+          _UpdateSrNo(Tbody);
         });
 
         // Initialise Labor Task Name
@@ -1243,6 +1209,46 @@
           $select2Element.select2('close'); // Close dropdown immediately after fetching
         }
 
+        // Function for update value real time.
+        function UpdateRealTimeValue(){
+          $(".quoted-cost, .standard-cost, .quantity").on("input", function(e) {
+
+            var row = $(this).closest("tr");
+            var value = $(this).val();
+
+            total = row.find(".total")
+            std_cost = row.find(".standard-cost").val();
+            quoted_cost = row.find(".quoted-cost").val();
+            quantity = row.find(".quantity")
+            sell = row.find(".sell")
+            total_sell = row.find(".sell-total")
+            gross_profit = row.find(".gross")
+            gross_percent = row.find(".gross-p")
+
+            if ($(e.target).hasClass("quoted-cost")) {
+              _val = value * quantity.val()
+            }else if($(e.target).hasClass("quantity")){
+              _val = value * quoted_cost || value * std_cost
+            }
+            else if($(e.target).hasClass("standard-cost")){
+              if(quoted_cost){
+                if (quoted_cost > 0 ){
+                  _val = quantity.val() * quoted_cost
+                }
+              } else {
+                _val = value * quantity.val()
+              }
+            }
+
+            total.text(_val.toFixed(2));
+            sell.text((parseFloat(_val) + 0.25).toFixed(2));
+            total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
+            gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
+            gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
+
+          });
+        }
+
         // Select Labor Task Name.
         $(document).on('select2:select', '.labour-task-name', function(e) {
 
@@ -1300,28 +1306,7 @@
             }
           });
 
-          $(".quoted-cost").on("input", function(e) {
-
-            // console.log("Inputed.....");
-
-            var row = $(this).closest("tr");
-            var value = $(this).val();
-
-            total = row.find(".total")
-            quantity = row.find(".quantity")
-            sell = row.find(".sell")
-            total_sell = row.find(".sell-total")
-            gross_profit = row.find(".gross")
-            gross_percent = row.find(".gross-p")
-
-            _val = value * quantity.val()
-            total.text(_val.toFixed(2));
-            sell.text((parseFloat(_val) + 0.25).toFixed(2));
-            total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
-            gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
-            gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
-
-          });
+          UpdateRealTimeValue(); // Update value real time
 
         });
 
@@ -1382,33 +1367,13 @@
             }
           });
 
-          $(".quoted-cost").on("input", function(e) {
-
-            var row = $(this).closest("tr");
-            var value = $(this).val();
-
-            total = row.find(".total")
-            quantity = row.find(".quantity")
-            sell = row.find(".sell")
-            total_sell = row.find(".sell-total")
-            gross_profit = row.find(".gross")
-            gross_percent = row.find(".gross-p")
-
-            _val = value * quantity.val()
-            total.text(_val.toFixed(2));
-            sell.text((parseFloat(_val) + 0.25).toFixed(2));
-            total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
-            gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
-            gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
-
-          });
+          UpdateRealTimeValue(); // Update value real time
 
         });
 
     });
   </script>
 
-  <!-- TODO: Remove it -->
   <!-- BEGIN Copy Product Row based on model value-->
   <script>
       function copyTableRow(rowId) {
@@ -2133,7 +2098,7 @@
           $(".mapping-grand-total-labor-quantity").text(laborTaskToalQuantity.toFixed(2));
 
           // Recalculate cost totals based on quantity
-          var totalCost = (standard_cost * quantity) || (vendor_quoted_cost * quantity);
+          var totalCost = (vendor_quoted_cost * quantity) || (standard_cost * quantity);
 
           $row.find(".cost-total").text(totalCost.toFixed(2));
 

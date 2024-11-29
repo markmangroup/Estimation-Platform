@@ -7,13 +7,13 @@ from django.db.models import QuerySet
 from django.http import JsonResponse
 
 from apps.constants import ERROR_RESPONSE, LOGGER
-from apps.mixin import CreateViewMixin, TemplateViewMixin, ViewMixin
+from apps.mixin import TemplateViewMixin, ViewMixin
+from django.shortcuts import get_object_or_404, render
 from apps.proposal.labour_cost.models import LabourCost
 from apps.proposal.product.models import Product
 from apps.proposal.task.models import Task
 from apps.proposal.vendor.models import Vendor
 
-from ..forms import AddTaskForm
 from ..models import AssignedProduct, Opportunity, PreliminaryMaterialList, TaskMapping
 
 
@@ -443,59 +443,147 @@ class DeleteAssignProdLabor(ViewMixin):
         return JsonResponse({"message": "Deleted Successfully.", "code": 200, "status": "success"})
 
 
-class AddTaskView(CreateViewMixin):
+# NOTE: Old feature of `Add Task` for `Task Mapping Screen` 
+# class AddTaskView(CreateViewMixin):
+#     """
+#     View to add a manual task to task mapping.
+#     """
+
+#     template_name = "proposal/opportunity/stage/task_mapping/add_tasks.html"
+#     form_class = AddTaskForm
+
+#     def form_valid(self, form):
+#         """
+#         Handle valid form submission to create a new TaskMapping.
+
+#         :param form: The submitted form with valid data.
+#         :return: JsonResponse indicating success.
+#         """
+#         document_number = self.kwargs["document_number"]
+
+#         try:
+#             opportunity = Opportunity.objects.get(document_number=document_number)
+#         except Opportunity.DoesNotExist:
+#             LOGGER.error("Opportunity does not exist")
+#             return JsonResponse(ERROR_RESPONSE, status=404)
+
+#         # Get form data
+#         code = form.cleaned_data["code"]
+#         description = form.cleaned_data["description"]
+
+#         if code and description:
+#             TaskMapping.objects.create(opportunity=opportunity, code=code, description=description)
+#             messages.success(self.request, f'Task "{code} - {description}" added successfully!')
+#             return JsonResponse({"status": "success", "code": "200"})
+
+#         return JsonResponse({"status": "error", "message": "Code and description are required."}, status=400)
+
+#     def form_invalid(self, form):
+#         """
+#         Handle invalid form submission.
+
+#         :param form: The submitted form with errors.
+#         :return: Render response with the form errors.
+#         """
+#         return self.render_to_response(self.get_context_data(form=form), status=400)
+
+#     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+#         """
+#         Add additional context to the template.
+
+#         :param kwargs: Additional keyword arguments.
+#         :return: Updated context dictionary.
+#         """
+#         context = super().get_context_data(**kwargs)
+#         context["document_number"] = self.kwargs["document_number"]
+#         return context
+
+
+class AddTaskView(ViewMixin):
     """
     View to add a manual task to task mapping.
     """
 
     template_name = "proposal/opportunity/stage/task_mapping/add_tasks.html"
-    form_class = AddTaskForm
 
-    def form_valid(self, form):
+    def __get(self, document_number: str) -> dict:  
         """
-        Handle valid form submission to create a new TaskMapping.
+        Returns context data with available tasks.
 
-        :param form: The submitted form with valid data.
-        :return: JsonResponse indicating success.
+        :param document_number: The document number associated with the opportunity.
+        :return: A dictionary containing available tasks and the document number.
         """
-        document_number = self.kwargs["document_number"]
+        opportunity = get_object_or_404(Opportunity, document_number=document_number)
 
-        try:
-            opportunity = Opportunity.objects.get(document_number=document_number)
-        except Opportunity.DoesNotExist:
-            LOGGER.error("Opportunity does not exist")
-            return JsonResponse(ERROR_RESPONSE, status=404)
+        selected_task_ids = (
+            TaskMapping.objects.filter(opportunity=opportunity)
+            .values_list("task_id", flat=True)
+        )
+        available_tasks = Task.objects.exclude(id__in=selected_task_ids)
 
-        # Get form data
-        code = form.cleaned_data["code"]
-        description = form.cleaned_data["description"]
+        return {
+            "select_tasks": available_tasks,
+            "document_number": document_number,
+        }
 
-        if code and description:
-            TaskMapping.objects.create(opportunity=opportunity, code=code, description=description)
-            messages.success(self.request, f'Task "{code} - {description}" added successfully!')
-            return JsonResponse({"status": "success", "code": "200"})
-
-        return JsonResponse({"status": "error", "message": "Code and description are required."}, status=400)
-
-    def form_invalid(self, form):
+    def get(self, request, *args, **kwargs):
         """
-        Handle invalid form submission.
+        Render the task selection template with available tasks.
 
-        :param form: The submitted form with errors.
-        :return: Render response with the form errors.
+        :param request: The HTTP request object.
+        :param args: Additional positional arguments.
+        :param kwargs: Additional keyword arguments, including 'document_number'.
+        :return: Rendered response containing available tasks.
         """
-        return self.render_to_response(self.get_context_data(form=form), status=400)
+        document_number = self.kwargs.get("document_number")
+        context = self.__get(document_number)
+        return self.render_to_response(context)
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+    def post(self, request, *args, **kwargs) -> JsonResponse:
         """
-        Add additional context to the template.
+        Handle task selection and creation.
 
+        :param request: The HTTP request object containing form data.
+        :param args: Additional positional arguments.
         :param kwargs: Additional keyword arguments.
-        :return: Updated context dictionary.
+        :return: JSON response indicating success or error status.
         """
-        context = super().get_context_data(**kwargs)
-        context["document_number"] = self.kwargs["document_number"]
-        return context
+        tasks = request.POST.getlist("task")
+        print(f'tasks {type(tasks)}: {tasks}')
+        document_number = request.POST.get("document_number")
+        print(f'document_number {type(document_number)}: {document_number}')
+
+        if not tasks or not document_number:
+            return JsonResponse({"error": "Tasks and document number are required."}, status=400)
+
+        opportunity = get_object_or_404(Opportunity, document_number=document_number)
+        print(f'opportunity {type(opportunity)}: {opportunity}')
+
+        for task_name in tasks:
+            task_instance = get_object_or_404(Task, name=task_name)
+            TaskMapping.objects.create(
+                opportunity=opportunity, task=task_instance,
+                code=task_instance.name, description=task_instance.description
+            )
+
+        messages.success(request, "Tasks added successfully!")
+        return JsonResponse(
+            {
+                "status": "Created",
+                "message": "Task added successfully",
+            },
+            status=201,
+        )
+
+    def render_to_response(self, context, **response_kwargs):
+        """
+        Render the response using the template specified.
+
+        :param context: A dictionary containing the context data for rendering.
+        :param response_kwargs: Additional keyword arguments for rendering.
+        :return: Rendered response.
+        """
+        return render(self.request, self.template_name, context, **response_kwargs)
 
 
 class TaskMappingData:

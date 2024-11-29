@@ -47,6 +47,7 @@ class ProductListAjaxView(CustomDataTableMixin):
                 | Q(name__icontains=self.search)
                 | Q(display_name__icontains=self.search)
                 | Q(tax_schedule__icontains=self.search)
+                | Q(formula__icontains=self.search)
             )
         return qs
 
@@ -68,6 +69,7 @@ class ProductListAjaxView(CustomDataTableMixin):
                     "parent": o.parent,
                     "display_name": o.display_name,
                     "tax_schedule": o.tax_schedule,
+                    "formula": o.formula,
                 }
             )
         return data
