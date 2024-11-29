@@ -47,14 +47,15 @@ class UploadDocumentForm(forms.ModelForm):
         self.fields["document"].required = False
 
 
-class AddTaskForm(forms.ModelForm):
-    """
-    Add Task from for manually adding tasks.
-    """
+# NOTE: This form class form old feature of `Add Task` feature
+# class AddTaskForm(forms.ModelForm):
+#     """
+#     Add Task from for manually adding tasks.
+#     """
 
-    class Meta:
-        model = TaskMapping
-        fields = [
-            "code",
-            "description",
-        ]
+#     class Meta:
+#         model = TaskMapping
+#         fields = [
+#             "code",
+#             "description",
+#         ]
