@@ -67,7 +67,7 @@
         <button type="button" class="btn bg-light-secondary" data-dismiss="modal">
             Close
         </button>
-        <button id="AddTask" type="submit" class="btn bg-light-success">
+        <button id="AddTasks" type="submit" class="btn bg-light-success">
             <em class="ft-plus font-medium-5"></em> Add Task
         </button>
         </div>
@@ -104,7 +104,7 @@
     <!-- Ajax Call To Save Task-->
     <script>
         $(document).ready(function() {
-            $('#AddTask').on('click', function(event) {
+            $('#AddTasks').on('click', function(event) {
                 event.preventDefault();
         
                 const selectedValues = $('#SelectDescription').val();
