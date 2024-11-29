@@ -359,7 +359,6 @@
         var item_code_changed = false;
         var item_description_changed = false;
 
-        // NOTE: Try to fix multiple ajax request
         // Auto populated description while select item code
         function updateDescription(value, id) {
             var $select2Element = $(`select[data-id="${id}"].select2-item-description.js-example-programmatic.form-control`);
@@ -503,6 +502,36 @@
           $select2Element.select2('close'); // Close dropdown immediately after fetching
         }
 
+        // Function for update value real time.
+        function UpdateRealTimeValue(){
+          $(".quoted-cost, .quantity").on("input", function(e) {
+
+            var row = $(this).closest("tr");
+            var value = $(this).val();
+
+            total = row.find(".total")
+            std_cost = row.find(".standard-cost").val();
+            quoted_cost = row.find(".quoted-cost").val();
+            quantity = row.find(".quantity")
+            sell = row.find(".sell")
+            total_sell = row.find(".sell-total")
+            gross_profit = row.find(".gross")
+            gross_percent = row.find(".gross-p")
+
+            if ($(e.target).hasClass("quoted-cost")) {
+              _val = value * quantity.val()
+            }else if($(e.target).hasClass("quantity")){
+              _val = value * quoted_cost || value * std_cost
+            }
+            total.text(_val.toFixed(2));
+            sell.text((parseFloat(_val) + 0.25).toFixed(2));
+            total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
+            gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
+            gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
+
+          });
+        }
+
         // Set value of selectd item code with on change event
         $(document).on('select2:select', '.select2-item-code', function(e) {
 
@@ -585,19 +614,25 @@
                 gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
                 gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
 
-                $(".quoted-cost").on("input", function(e) {
+                $(".quoted-cost, .quantity").on("input", function(e) {
 
                   var row = $(this).closest("tr");
                   var value = $(this).val();
 
                   total = row.find(".total")
+                  std_cost = row.find(".standard-cost").val();
+                  quoted_cost = row.find(".quoted-cost").val();
                   quantity = row.find(".quantity")
                   sell = row.find(".sell")
                   total_sell = row.find(".sell-total")
                   gross_profit = row.find(".gross")
                   gross_percent = row.find(".gross-p")
 
-                  _val = value * quantity.val()
+                  if ($(e.target).hasClass("quoted-cost")) {
+                    _val = value * quantity.val()
+                  }else if($(e.target).hasClass("quantity")){
+                    _val = value * quoted_cost || value * std_cost
+                  }
                   total.text(_val.toFixed(2));
                   sell.text((parseFloat(_val) + 0.25).toFixed(2));
                   total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
@@ -612,19 +647,27 @@
               // console.log("Error Reposnse", xhr);
 
               // console.log("Error:", error);
-              $(".quoted-cost").on("input", function(e) {
+              $(".quoted-cost, .quantity").on("input", function(e) {
+
+                console.log("=-=-=---=-=-=-=-==-== Error 4");
 
                 var row = $(this).closest("tr");
                 var value = $(this).val();
 
                 total = row.find(".total")
+                std_cost = row.find(".standard-cost").val();
+                quoted_cost = row.find(".quoted-cost").val();
                 quantity = row.find(".quantity")
                 sell = row.find(".sell")
                 total_sell = row.find(".sell-total")
                 gross_profit = row.find(".gross")
                 gross_percent = row.find(".gross-p")
 
-                _val = value * quantity.val()
+                if ($(e.target).hasClass("quoted-cost")) {
+                  _val = value * quantity.val()
+                }else if($(e.target).hasClass("quantity")){
+                  _val = value * quoted_cost || value * std_cost
+                }
                 total.text(_val.toFixed(2));
                 sell.text((parseFloat(_val) + 0.25).toFixed(2));
                 total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
@@ -708,50 +751,12 @@
                 gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
                 gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
 
-                $(".quoted-cost").on("input", function(e) {
-
-                  var row = $(this).closest("tr");
-                  var value = $(this).val();
-
-                  total = row.find(".total")
-                  quantity = row.find(".quantity")
-                  sell = row.find(".sell")
-                  total_sell = row.find(".sell-total")
-                  gross_profit = row.find(".gross")
-                  gross_percent = row.find(".gross-p")
-
-                  _val = value * quantity.val()
-                  total.text(_val.toFixed(2));
-                  sell.text((parseFloat(_val) + 0.25).toFixed(2));
-                  total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
-                  gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
-                  gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
-
-                });
+                UpdateRealTimeValue(); // Update value real time
               }
             },
             error: function(xhr, status, error) {
               // console.log("Error:", error);
-              $(".quoted-cost").on("input", function(e) {
-
-                var row = $(this).closest("tr");
-                var value = $(this).val();
-
-                total = row.find(".total")
-                quantity = row.find(".quantity")
-                sell = row.find(".sell")
-                total_sell = row.find(".sell-total")
-                gross_profit = row.find(".gross")
-                gross_percent = row.find(".gross-p")
-
-                _val = value * quantity.val()
-                total.text(_val.toFixed(2));
-                sell.text((parseFloat(_val) + 0.25).toFixed(2));
-                total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
-                gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
-                gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
-
-              });
+              UpdateRealTimeValue(); // Update value real time
             },
             complete: function() {
               item_description_changed = false; // Reset flag after completion
@@ -902,15 +907,15 @@
                   <td class="d-none"><input type="hidden" class="task_id" value="${task_id}"></td>
                   <td class="sr-no">${srNo}</td>
                   <td>
+                    <input type="text" class="form-control quantity" placeholder="Enter Qunatity">
+                  </td>
+                  <td>
                     <select data-id="${unique_id}" class="labour-task-name form-control">
                     </select>
                   </td>
                   <td class="text-nowrap">
                     <select data-id="${unique_id}" class="labour-description form-control">
                     </select>
-                  </td>
-                  <td>
-                    <input type="text" class="form-control quantity" placeholder="Enter Qunatity">
                   </td>
                   <td id="standardCost13" class="text-nowrap">
                     <input type="text" data-id="${unique_id}" class="form-control standard-cost" placeholder="Enter standard cost">
@@ -1243,6 +1248,46 @@
           $select2Element.select2('close'); // Close dropdown immediately after fetching
         }
 
+        // Function for update value real time.
+        function UpdateRealTimeValue(){
+          $(".quoted-cost, .standard-cost, .quantity").on("input", function(e) {
+
+            var row = $(this).closest("tr");
+            var value = $(this).val();
+
+            total = row.find(".total")
+            std_cost = row.find(".standard-cost").val();
+            quoted_cost = row.find(".quoted-cost").val();
+            quantity = row.find(".quantity")
+            sell = row.find(".sell")
+            total_sell = row.find(".sell-total")
+            gross_profit = row.find(".gross")
+            gross_percent = row.find(".gross-p")
+
+            if ($(e.target).hasClass("quoted-cost")) {
+              _val = value * quantity.val()
+            }else if($(e.target).hasClass("quantity")){
+              _val = value * quoted_cost || value * std_cost
+            }
+            else if($(e.target).hasClass("standard-cost")){
+              if(quoted_cost){
+                if (quoted_cost > 0 ){
+                  _val = quantity.val() * quoted_cost
+                }
+              } else {
+                _val = value * quantity.val()
+              }
+            }
+
+            total.text(_val.toFixed(2));
+            sell.text((parseFloat(_val) + 0.25).toFixed(2));
+            total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
+            gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
+            gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
+
+          });
+        }
+
         // Select Labor Task Name.
         $(document).on('select2:select', '.labour-task-name', function(e) {
 
@@ -1300,28 +1345,7 @@
             }
           });
 
-          $(".quoted-cost").on("input", function(e) {
-
-            // console.log("Inputed.....");
-
-            var row = $(this).closest("tr");
-            var value = $(this).val();
-
-            total = row.find(".total")
-            quantity = row.find(".quantity")
-            sell = row.find(".sell")
-            total_sell = row.find(".sell-total")
-            gross_profit = row.find(".gross")
-            gross_percent = row.find(".gross-p")
-
-            _val = value * quantity.val()
-            total.text(_val.toFixed(2));
-            sell.text((parseFloat(_val) + 0.25).toFixed(2));
-            total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
-            gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
-            gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
-
-          });
+          UpdateRealTimeValue(); // Update value real time
 
         });
 
@@ -1382,26 +1406,7 @@
             }
           });
 
-          $(".quoted-cost").on("input", function(e) {
-
-            var row = $(this).closest("tr");
-            var value = $(this).val();
-
-            total = row.find(".total")
-            quantity = row.find(".quantity")
-            sell = row.find(".sell")
-            total_sell = row.find(".sell-total")
-            gross_profit = row.find(".gross")
-            gross_percent = row.find(".gross-p")
-
-            _val = value * quantity.val()
-            total.text(_val.toFixed(2));
-            sell.text((parseFloat(_val) + 0.25).toFixed(2));
-            total_sell.text((parseFloat(_val) + 0.25).toFixed(2));
-            gross_profit.text((parseFloat(sell.text()) - parseFloat(_val)).toFixed(2));
-            gross_percent.text(((parseFloat(gross_profit.text()) / parseFloat(sell.text())) * 100).toFixed(2));
-
-          });
+          UpdateRealTimeValue(); // Update value real time
 
         });
 
@@ -2133,7 +2138,7 @@
           $(".mapping-grand-total-labor-quantity").text(laborTaskToalQuantity.toFixed(2));
 
           // Recalculate cost totals based on quantity
-          var totalCost = (standard_cost * quantity) || (vendor_quoted_cost * quantity);
+          var totalCost = (vendor_quoted_cost * quantity) || (standard_cost * quantity);
 
           $row.find(".cost-total").text(totalCost.toFixed(2));
 

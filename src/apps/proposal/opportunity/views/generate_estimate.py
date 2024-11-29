@@ -237,10 +237,13 @@ class GenerateEstimate:
 
         totals["total_cost"] = totals["total_labor_cost"] + totals["total_mat_cost"]
         totals["total_sale"] = totals["total_labor_sell"] + totals["total_mat_sell"]
-        totals["total_gp"] = totals["total_labor_gp"] + totals["total_mat_gp"]
-        totals["total_gp_percent"] = (
-            totals["total_labor_gp_percent"] + totals["total_mat_gp_percent"] + totals["total_comb_gp"]
-        )
+        totals["total_gp"] = totals["total_sale"] - totals["total_cost"]
+
+        if totals["total_sale"] != 0:
+            totals["total_gp_percent"] = (totals["total_gp"] / totals["total_sale"]) * 100
+
+        else:
+            totals["total_gp_percent"] = Decimal("0.00")
 
         return totals
 
@@ -342,16 +345,18 @@ class TotalGPBreakdown(TemplateViewMixin):
         :return: A dictionary with total labor GP, material GP, and overall total GP.
         """
         task_mapping_qs = TaskMapping.objects.filter(opportunity__document_number=document_number)
+
         totals = {
-            "total_labor_gp": Decimal("0.00"),
-            "total_mat_gp": Decimal("0.00"),
+            "total_sale": Decimal("0.00"),
+            "total_cost": Decimal("0.00"),
         }
 
         for task in task_mapping_qs:
-            totals["total_labor_gp"] += Decimal(task.labor_gp or "0.0")
-            totals["total_mat_gp"] += Decimal(task.mat_gp or "0.0")
+            totals["total_sale"] += Decimal(task.labor_sell or "0.0") + Decimal(task.mat_sell or "0.0")
+            totals["total_cost"] += Decimal(task.labor_cost or "0.0") + Decimal(task.mat_cost or "0.0")
 
-        totals["total_gp"] = totals["total_labor_gp"] + totals["total_mat_gp"]
+        totals["total_gp"] = totals["total_sale"] - totals["total_cost"]
+
         return totals
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
@@ -382,20 +387,19 @@ class TotalGPPerBreakdown(TemplateViewMixin):
         :return: A dictionary with total labor GP%, material GP%, combined GP%, and overall GP%.
         """
         task_mapping_qs = TaskMapping.objects.filter(opportunity__document_number=document_number)
+
+        total_cost = 0
         totals = {
-            "total_labor_gp_percent": Decimal("0.00"),
-            "total_mat_gp_percent": Decimal("0.00"),
-            "total_comb_gp": Decimal("0.00"),
+            "total_gp": Decimal("0.00"),
+            "total_sell": Decimal("0.00"),
         }
 
         for task in task_mapping_qs:
-            totals["total_labor_gp_percent"] += Decimal(task.labor_gp_percent or "0.0")
-            totals["total_mat_gp_percent"] += Decimal(task.mat_gp_percent or "0.0")
-            totals["total_comb_gp"] += Decimal(task.comb_gp or "0.0")
+            totals["total_sell"] += Decimal(task.labor_sell or "0.0") + Decimal(task.mat_sell or "0.0")
+            total_cost += Decimal(task.labor_cost or "0.0") + Decimal(task.mat_cost or "0.0")
 
-        totals["total_gp_percent"] = (
-            totals["total_labor_gp_percent"] + totals["total_mat_gp_percent"] + totals["total_comb_gp"]
-        )
+        totals["total_gp"] = totals["total_sell"] - total_cost
+        totals["total_gp_percent"] = (totals["total_gp"] / totals["total_sell"]) * 100
         return totals
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
