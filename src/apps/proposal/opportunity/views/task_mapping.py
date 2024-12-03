@@ -516,10 +516,13 @@ class AddTaskView(ViewMixin):
         opportunity = get_object_or_404(Opportunity, document_number=document_number)
 
         selected_task_ids = (
-            TaskMapping.objects.filter(opportunity=opportunity)
+            TaskMapping.objects.filter(opportunity=opportunity, task__isnull=False)
             .values_list("task_id", flat=True)
         )
+        print(f'selected_task_ids {type(selected_task_ids)}: {selected_task_ids}')
+        
         available_tasks = Task.objects.exclude(id__in=selected_task_ids)
+        print(f'available_tasks {type(available_tasks)}: {available_tasks}')
 
         return {
             "select_tasks": available_tasks,
@@ -549,22 +552,32 @@ class AddTaskView(ViewMixin):
         :return: JSON response indicating success or error status.
         """
         tasks = request.POST.getlist("task")
-        print(f'tasks {type(tasks)}: {tasks}')
+        description = request.POST.get("description")
+        print(f'description {type(description)}: {description}')
         document_number = request.POST.get("document_number")
-        print(f'document_number {type(document_number)}: {document_number}')
 
         if not tasks or not document_number:
             return JsonResponse({"error": "Tasks and document number are required."}, status=400)
 
-        opportunity = get_object_or_404(Opportunity, document_number=document_number)
-        print(f'opportunity {type(opportunity)}: {opportunity}')
+        opportunity = get_object_or_404(Opportunity, document_number=document_number)        
 
         for task_name in tasks:
+
+            if description:
+                print("-=-=-==-=-")
+                task_description = description
+            else:
+                print("-=-=-==-=- 2")
+                task_description = task_instance.description
+
+            print("-=-=-==-=- 3")
             task_instance = get_object_or_404(Task, name=task_name)
+            print("-=-=-==-=- 4")
             TaskMapping.objects.create(
                 opportunity=opportunity, task=task_instance,
-                code=task_instance.name, description=task_instance.description
+                code=task_instance.name, description=task_description
             )
+            print("-=-=-==-=- 5")
 
         messages.success(request, "Tasks added successfully!")
         return JsonResponse(
