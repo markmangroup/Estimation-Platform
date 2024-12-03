@@ -287,12 +287,12 @@ class AddProdRowView(ViewMixin):
         try:
             product_obj = Product.objects.get(id=item_code)
             product_item_code = product_obj.internal_id
-            description = product_obj.description
+            description = product_obj.display_name
         except Exception:  # Handle custom item code data
             product_item_code = item_code
             try:
                 product_obj = Product.objects.get(id=product.get("description"))
-                description = product_obj.description
+                description = product_obj.display_name
             except Exception:  # Handle custom description data
                 description = product.get("description")
 
@@ -518,11 +518,8 @@ class AddTaskView(ViewMixin):
         selected_task_ids = (
             TaskMapping.objects.filter(opportunity=opportunity, task__isnull=False)
             .values_list("task_id", flat=True)
-        )
-        print(f'selected_task_ids {type(selected_task_ids)}: {selected_task_ids}')
-        
+        )        
         available_tasks = Task.objects.exclude(id__in=selected_task_ids)
-        print(f'available_tasks {type(available_tasks)}: {available_tasks}')
 
         return {
             "select_tasks": available_tasks,
@@ -564,20 +561,15 @@ class AddTaskView(ViewMixin):
         for task_name in tasks:
 
             if description:
-                print("-=-=-==-=-")
                 task_description = description
             else:
-                print("-=-=-==-=- 2")
                 task_description = task_instance.description
 
-            print("-=-=-==-=- 3")
             task_instance = get_object_or_404(Task, name=task_name)
-            print("-=-=-==-=- 4")
             TaskMapping.objects.create(
                 opportunity=opportunity, task=task_instance,
                 code=task_instance.name, description=task_description
             )
-            print("-=-=-==-=- 5")
 
         messages.success(request, "Tasks added successfully!")
         return JsonResponse(
@@ -624,16 +616,13 @@ class TaskMappingData:
         task_mapping_ids = filtered_task_mappings.values_list("id", flat=True)
 
         try:
-            print("assigned_products try")
             assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids).order_by(
                 "sequence"
             )
-            print("assigned_products", assigned_products)
 
         except Exception as e:
-            print("assigned_products Exception", e)
+            LOGGER.error(f"assigned_products Exception : {e}")
             assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids)
-            print("assigned_products", assigned_products)
 
         tasks_with_products = {}
 

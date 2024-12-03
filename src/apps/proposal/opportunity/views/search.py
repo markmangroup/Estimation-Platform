@@ -77,12 +77,14 @@ class ItemDescriptionSearchView(ViewMixin):
         :return: JsonResponse containing a list of item descriptions matching the search term.
         """
         search_term = request.GET.get("q", "")
-        item_descriptions = Product.objects.filter(description__icontains=search_term)[:15]
-        item_description_list = [
-            {"id": item_description.id, "text": item_description.description} for item_description in item_descriptions
+        item_display_names = Product.objects.filter(display_name__icontains=search_term)
+        item_display_name_list = [
+            {"id": item_display_name.id, "text": item_display_name.display_name}
+            for item_display_name in item_display_names
+            if item_display_name.display_name and item_display_name.id
         ]
-        item_description_list.insert(0, {"id": "Clear", "text": "--------------"})
-        return JsonResponse({"results": item_description_list})
+        item_display_name_list.insert(0, {"id": "Clear", "text": "--------------"})
+        return JsonResponse({"results": item_display_name_list})
 
     def post(self, request, *args, **kwargs) -> JsonResponse:
         """
