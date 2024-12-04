@@ -50,7 +50,7 @@ class ItemCodeSearchView(ViewMixin):
                 {
                     "code": 200,
                     "message": "success",
-                    "description": product_object.description,
+                    "description": product_object.display_name,
                     "std_cost": product_object.std_cost,
                 }
             )

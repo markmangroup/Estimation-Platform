@@ -559,13 +559,12 @@ class AddTaskView(ViewMixin):
         opportunity = get_object_or_404(Opportunity, document_number=document_number)        
 
         for task_name in tasks:
-
+            task_instance = get_object_or_404(Task, name=task_name)
             if description:
                 task_description = description
             else:
                 task_description = task_instance.description
 
-            task_instance = get_object_or_404(Task, name=task_name)
             TaskMapping.objects.create(
                 opportunity=opportunity, task=task_instance,
                 code=task_instance.name, description=task_description

@@ -47,16 +47,18 @@
             <div class="card-content">
             <div class="card-body">
                 <div class="form-group">
-                <label>Select tasks</label>
+                    <label>Select tasks</label>
                     {% csrf_token %}
                     <select class="select-list form-control" name="task" id="SelectDescription" multiple>
                     {% for t in select_tasks %}
                         <option value="{{t.name}}" data-description="{{t.description}}">{{t.name}}</option>
                     {% endfor %}
-                    </select>
-                    <div class="mt-3">
-                        <input type="text" class="form-control" id="description" name="description" placeholder="Enter description">
-                    </div>
+                    </select>                
+                    
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" class="form-control" id="description" name="description" placeholder="Enter description">                    
                 </div>
                 </div>
             </div>
