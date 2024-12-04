@@ -356,7 +356,11 @@
 
                           // Check if there are results and set the first as selected
                           if (data.results.length > 0) {
+                            if(value){
                               $select2Element.val(data.results[1].id).trigger('change');
+                            }else{
+                              $select2Element.val(data.results[0].id).trigger('change');
+                            }
                           }
 
                           return {
@@ -453,7 +457,11 @@
 
                         // Check if there are results and set the first as selected
                         if (data.results.length > 0) {
+                          if(value){
                             $select2Element.val(data.results[1].id).trigger('change');
+                          }else{
+                            $select2Element.val(data.results[0].id).trigger('change');
+                          }
                         }
 
                         return {
