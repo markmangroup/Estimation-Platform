@@ -287,12 +287,12 @@ class AddProdRowView(ViewMixin):
         try:
             product_obj = Product.objects.get(id=item_code)
             product_item_code = product_obj.internal_id
-            description = product_obj.description
+            description = product_obj.display_name
         except Exception:  # Handle custom item code data
             product_item_code = item_code
             try:
                 product_obj = Product.objects.get(id=product.get("description"))
-                description = product_obj.description
+                description = product_obj.display_name
             except Exception:  # Handle custom description data
                 description = product.get("description")
 
@@ -516,9 +516,9 @@ class AddTaskView(ViewMixin):
         opportunity = get_object_or_404(Opportunity, document_number=document_number)
 
         selected_task_ids = (
-            TaskMapping.objects.filter(opportunity=opportunity)
+            TaskMapping.objects.filter(opportunity=opportunity, task__isnull=False)
             .values_list("task_id", flat=True)
-        )
+        )        
         available_tasks = Task.objects.exclude(id__in=selected_task_ids)
 
         return {
@@ -549,21 +549,25 @@ class AddTaskView(ViewMixin):
         :return: JSON response indicating success or error status.
         """
         tasks = request.POST.getlist("task")
-        print(f'tasks {type(tasks)}: {tasks}')
+        description = request.POST.get("description")
+        print(f'description {type(description)}: {description}')
         document_number = request.POST.get("document_number")
-        print(f'document_number {type(document_number)}: {document_number}')
 
         if not tasks or not document_number:
             return JsonResponse({"error": "Tasks and document number are required."}, status=400)
 
-        opportunity = get_object_or_404(Opportunity, document_number=document_number)
-        print(f'opportunity {type(opportunity)}: {opportunity}')
+        opportunity = get_object_or_404(Opportunity, document_number=document_number)        
 
         for task_name in tasks:
             task_instance = get_object_or_404(Task, name=task_name)
+            if description:
+                task_description = description
+            else:
+                task_description = task_instance.description
+
             TaskMapping.objects.create(
                 opportunity=opportunity, task=task_instance,
-                code=task_instance.name, description=task_instance.description
+                code=task_instance.name, description=task_description
             )
 
         messages.success(request, "Tasks added successfully!")
@@ -611,16 +615,13 @@ class TaskMappingData:
         task_mapping_ids = filtered_task_mappings.values_list("id", flat=True)
 
         try:
-            print("assigned_products try")
             assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids).order_by(
                 "sequence"
             )
-            print("assigned_products", assigned_products)
 
         except Exception as e:
-            print("assigned_products Exception", e)
+            LOGGER.error(f"assigned_products Exception : {e}")
             assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids)
-            print("assigned_products", assigned_products)
 
         tasks_with_products = {}
 

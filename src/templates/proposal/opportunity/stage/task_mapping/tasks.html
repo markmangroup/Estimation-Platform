@@ -296,9 +296,15 @@
                 tableBody.append(html);    
                 $(`#row-template-${unique_id}`).insertAfter(currentRow);
 
-                $('.add-row-btn').hide(); // Hide other "Add Row" buttons
+                $(`#tableBody-${data_id} .add-row-btn`).each(function(index, element) {
+                  // Hide the button for all rows except the last one
+                  if (index !== $(`#tableBody-${data_id} .add-row-btn`).length - 1) {
+                      $(element).hide();                          
+                  } else {
+                      $(element).show();
+                  }
 
-                $(`#row-template-${unique_id} .add-row-btn`).show(); // Show the "Add Row" button for the new row
+                });
 
                 InitSelects(); // Initialize select2 for the new selects
             }
@@ -318,9 +324,15 @@
 
           var newRowHtml = generateRow(uniqueId, srNo);
 
-          $(`#tableBody-${taskId} tbody`).append(newRowHtml);                    
-          $('.add-row-btn').hide();                    
-          $(`#row-template-${uniqueId} .add-row-btn`).show();                
+          $(`#tableBody-${taskId} tbody`).append(newRowHtml);
+          $(`#tableBody-${taskId} .add-row-btn`).each(function(index, element) {
+            // Hide the button for all rows except the last one
+            if (index !== $(`#tableBody-${taskId} .add-row-btn`).length - 1) {
+                $(element).hide();                          
+            } else {
+                $(element).show();
+            }     
+          });
         
           InitSelects(); // Initialize select2 for the new selects
         });
@@ -356,7 +368,11 @@
 
                           // Check if there are results and set the first as selected
                           if (data.results.length > 0) {
+                            if(value){
                               $select2Element.val(data.results[1].id).trigger('change');
+                            }else{
+                              $select2Element.val(data.results[0].id).trigger('change');
+                            }
                           }
 
                           return {
@@ -453,7 +469,11 @@
 
                         // Check if there are results and set the first as selected
                         if (data.results.length > 0) {
+                          if(value){
                             $select2Element.val(data.results[1].id).trigger('change');
+                          }else{
+                            $select2Element.val(data.results[0].id).trigger('change');
+                          }
                         }
 
                         return {
@@ -1027,9 +1047,14 @@
                 tableBody.append(html);
                 $(`#row-${unique_id}`).insertAfter(currentRow);
 
-                $('.add-labor-row').hide(); // Hide other "Add Row" buttons
-
-                $(`#row-${unique_id} .add-labor-row`).show(); // Show the "Add Row" button for the new row
+                $(`#tableBody-${data_id} .add-labor-row`).each(function(index, element) {
+                  // Hide the button for all rows except the last one
+                  if (index !== $(`#tableBody-${data_id} .add-labor-row`).length - 1) {
+                      $(element).hide();                          
+                  } else {
+                      $(element).show();
+                  }
+                });
 
                 initSelect();
             }
@@ -1051,8 +1076,14 @@
           var newRowHtml = _generateRow(uniqueId, srNo);
 
           $(`#tableBody-${taskId}`).append(newRowHtml);           
-          $('.add-labor-row').hide();                    
-          $(`#row-${uniqueId} .add-labor-row`).show();
+          $(`#tableBody-${taskId} .add-labor-row`).each(function(index, element) {
+            // Hide the button for all rows except the last one
+            if (index !== $(`#tableBody-${taskId} .add-labor-row`).length - 1) {
+                $(element).hide();                          
+            } else {
+                $(element).show();
+            }
+          });
 
           initSelect(); // Initialize select2 for the new selects
         });
