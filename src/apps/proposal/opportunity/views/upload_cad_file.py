@@ -2,6 +2,7 @@ import csv
 import math
 from collections import defaultdict
 from io import StringIO
+import re
 from typing import Optional
 
 import pandas as pd
@@ -281,10 +282,12 @@ class UploadCADFile(ViewMixin):
 
         return flex_riser_summary
 
+    # NOTE: Currently we are not using this in new versions
     def __custom_round(self, value: float) -> float:
         """Round the given total to the nearest whole number (upward)."""
         return math.ceil(value)
 
+    # NOTE: Currently we are not using this in new versions
     def __custom_sum(self, *args) -> float:
         """
         Sum the given numbers.
@@ -296,33 +299,27 @@ class UploadCADFile(ViewMixin):
     def __evaluate_formula(self, qty: str, amf: str, formula: str) -> Optional[float]:
         """
         Evaluate the given formula string after substituting 'qty' and 'amf'.
-
-        NOTE: Fetch `amf` and `qty` value after `Material List` generated.
-        TODO: Fetch `qty``from CAD file Data and `amf` from Table `Glue and Additional Materials Master Table` filed Additional Material Factor
         """
-        formula = formula.replace("$qty", str(qty)).replace("$amf", str(amf))
-        formula_content = formula.replace("(", "").replace(")", "").replace("round", "").strip()
+        product_code_match = re.search(r"ProductCode\s*=\s*\[([0-9, ]+)\]", formula)
+        product_code = []
+        if product_code_match:
+            product_code = list(map(int, product_code_match.group(1).split(',')))
+        
+        cumulative_values = {}
 
-        if formula_content.startswith("sum"):
-            values = formula_content.replace("sum", "").strip()
-            args = [float(num.strip()) for num in values.split(",")]
-            total_value = self.__custom_round(*args)
-            return self.__custom_round(total_value)
-
-        elif formula_content.startswith("round"):
+        for i in product_code:
             try:
-                result = eval(formula_content)
-                print(f"result {type(result)}: {result}")
-                return self.__custom_round(result)
-
+                _amf = AdditionalMaterials.objects.get(material_id=i)
+                formula_with_values = formula.replace("$qty", str(qty)).replace("$amf", str(_amf.additional_material_factor))
+                formula_content = re.sub(r"ProductCode\s*=\s*\[.*?\],?\s*", "", formula_with_values).strip()
+                calculated_value = eval(formula_content)
+                cumulative_values[i] = cumulative_values.get(i, 0) + calculated_value
+            except AdditionalMaterials.DoesNotExist:
+                print(f"Material ID {i} not found in AdditionalMaterials.")
             except Exception as e:
-                print(f"Error evaluating formula '{formula_content}': {e}")
-                return None
-
-        else:
-            formula = formula.replace("$qty", str(qty)).replace("$amf", str(amf))
-            value = eval(formula)
-            return round(value, 2)
+                print(f"Error evaluating formula for Product Code {i}: {e}")
+        # final_value = sum(cumulative_values.values())
+        return cumulative_values
 
     def get_final_unit(self, qty: str, item_number: str) -> Optional[float]:
         """Get final unit based on a single formula."""
@@ -331,40 +328,53 @@ class UploadCADFile(ViewMixin):
             _formula = Product.objects.get(internal_id=_amf.material_id)
             return self.__evaluate_formula(qty, _amf.additional_material_factor, _formula.formula)
         except AdditionalMaterials.DoesNotExist:
-            LOGGER.error(f"AdditionalMaterials Not Exist")
+            pass
+            # LOGGER.error(f"AdditionalMaterials Not Exist")
 
     def generate_glue_and_additional_material_list(self, material_list: dict, document_number: str) -> dict:
-        """
-        Generate Glu and Additional Material List.
-
-        :param document_number: Document number for the associated opportunity.
-        """
         glue_and_additional_data = {"Quantity": [], "Description": [], "Item": []}
 
-        for qty, item in zip(material_list["Quantity"], material_list["Item Number"]):
-            # print(f"Quantity: {qty}, Item Number: {item.strip()}")
-            glue_qty = self.get_final_unit(qty, item)
+        glue_list : list = []
+        for qty, item in zip(material_list.get("Quantity", []), material_list.get("Item Number", [])):
+            try:
+                glue_qty = self.get_final_unit(qty, item)
+                if glue_qty:
+                    glue_list.append(glue_qty)
+            except Exception as e:
+                print(f"Error processing item {item}: {e}")
 
-            if glue_qty:
-                material = AdditionalMaterials.objects.get(product_item_number=item)
-                glue_and_additional_data["Quantity"].append(glue_qty)
+        result : dict = {}
+        for d in glue_list:
+            for key, value in d.items():
+                # Add value to the key directly, initialize if key doesn't exist
+                result[key] = result.get(key, 0) + value
+        
+        print(f'result {type(result)}: {result}')
+
+        for key, value in result.items():
+            try:
+                material = AdditionalMaterials.objects.get(material_id=key)
+                glue_and_additional_data["Quantity"].append(value)
                 glue_and_additional_data["Description"].append(material.material_name)
-                glue_and_additional_data["Item"].append(item.strip())
+                glue_and_additional_data["Item"].append(material.product_item_number)
+            except AdditionalMaterials.DoesNotExist:
+                LOGGER.error(f"Additional material not found")
+            except Exception as e:
+                LOGGER.error(f"Error processing item {key}: {e}")
 
-        # Get the opportunity instance to save the Glue and Additional material list data
         try:
             opportunity = Opportunity.objects.get(document_number=document_number)
+            for i in range(len(glue_and_additional_data["Item"])):
+                GlueAndAdditionalMaterial.objects.create(
+                    opportunity=opportunity,
+                    quantity=glue_and_additional_data["Quantity"][i],
+                    description=glue_and_additional_data["Description"][i],
+                    item_number=glue_and_additional_data["Item"][i],
+                )
         except Opportunity.DoesNotExist:
-            LOGGER.error(f"Opportunity with document number {document_number} not found.")
-            return glue_and_additional_data
-
-        for i in range(len(glue_and_additional_data["Item"])):
-            GlueAndAdditionalMaterial.objects.create(
-                opportunity=opportunity,
-                quantity=glue_and_additional_data["Quantity"][i],
-                description=glue_and_additional_data["Description"][i],
-                item_number=glue_and_additional_data["Item"][i],
-            )
+            print(f"Opportunity with document number {document_number} not found.")
+        except Exception as e:
+            print(f"Error saving glue and additional material data: {e}")
 
         return glue_and_additional_data
 
@@ -406,7 +416,7 @@ class UploadCADFile(ViewMixin):
         irricad_quantities = {
             item.strip(): quantity for item, quantity in zip(irricad_data["Item Number"], irricad_data["Quantity"])
         }
-        glue_quantities = {item.strip(): quantity for item, quantity in zip(glue_data["Item"], glue_data["Quantity"])}
+        glue_quantities = {item: quantity for item, quantity in zip(glue_data["Item"], glue_data["Quantity"])}
 
         # Combine quantities for the same item_number
         combined_quantities = defaultdict(
