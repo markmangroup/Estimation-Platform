@@ -633,8 +633,29 @@
 
     // Get the updated values for the row
     var laborGpPercent = parseFloat($row.find(".labor_gp_percent").val());
+
+    // Check if the value is empty or invalid, and set it to 0 if so
+    if (laborGpPercent === "" || isNaN(laborGpPercent)) {
+      laborGpPercent = 0;
+    } else {
+      laborGpPercent = parseFloat(laborGpPercent);
+    }
+
     var matGpPercent = parseFloat($row.find(".mat_gp_percent").val());
+
+    if (matGpPercent === "" || isNaN(matGpPercent)) {
+      matGpPercent = 0;
+    } else {
+      matGpPercent = parseFloat(matGpPercent);
+    }
+
     var s_and_h = parseFloat($row.find(".s_and_h").val());
+
+    if (s_and_h === "" || isNaN(s_and_h)) {
+      s_and_h = 0;
+    } else {
+      s_and_h = parseFloat(s_and_h);
+    }
 
     $(".labor_gp_percent").val(laborGpPercent);
     $(".mat_gp_percent").val(matGpPercent);
@@ -679,8 +700,15 @@
         var matTaxLabor = matSell + laborSell;
         $row.find(".mat_tax_labor").text(matTaxLabor.toFixed(2));
 
+        var denominator = laborSell + matPlusMu;
+
         // Calculate Combined GP % for Labor and Material
-        var combGp = ((laborGpPercent * 100) + (matGpPercent * 100)) / (laborSell + matPlusMu);
+        var combGp;
+        if (denominator === 0) {
+          combGp = 0;  // Set to 0 if the denominator is zero
+        } else {
+          combGp = ((laborGpPercent * 100) + (matGpPercent * 100)) / (laborSell + matPlusMu);
+        }
         $row.find(".comb_gp").text(combGp.toFixed(3));
 
         // Calculate $/Acre
