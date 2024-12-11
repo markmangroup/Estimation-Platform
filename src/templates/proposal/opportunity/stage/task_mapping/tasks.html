@@ -1081,10 +1081,9 @@
 
           var newRowHtml = _generateRow(uniqueId, srNo);
 
-          $(`#tableBody-${taskId}`).append(newRowHtml);           
+          $(`#tableBody-${taskId} tbody`).append(newRowHtml);           
           $(`#tableBody-${taskId} .add-labor-row`).each(function(index, element) {
-            // Hide the button for all rows except the last one
-            if (index !== $(`#tableBody-${taskId} .add-labor-row`).length - 1) {
+            if (index !== $(`#tableBody-${taskId} .add-labor-row`).length - 1) { // Hide the button for all rows except the last one
                 $(element).hide();                          
             } else {
                 $(element).show();
@@ -2025,6 +2024,7 @@
       $(".select-labor-task").select2({
         width: "250px",
         placeholder: 'Select Tasks',
+        dropdownCssClass: 'wide-dropdown',
         ajax: {
           url: function () {
             return $(this).data("url");
@@ -2356,13 +2356,18 @@
       {% for t_id, t_info in task_mapping_list.items %}
         {% for ap in t_info.assigned_products %}
           initializeTableFeatures("{{ t_id }}", 'sortable', "{{ap.id}}");
+        {% empty %}
+          initializeTableFeatures("{{ t_id}}", 'sortable', "{{ t_id}}");
         {% endfor %}
       {% endfor %}
 
       {% for t_id, t_info in task_mapping_labor_list.items %}
         {% for ap in t_info.assigned_products %}
           initializeTableFeatures("{{ t_id }}", 'labor', "{{ap.id}}");
+        {% empty %}
+          initializeTableFeatures("{{ t_id}}", 'labor', "{{ t_id}}");
         {% endfor %}
+        
       {% endfor %}
     });
   </script>
