@@ -178,10 +178,10 @@
                                 </select>
                             </td>
                             <td>
-                                <input type="text" id="standardCost{{ t_id }}" data-task-id="{{t_id}}" class="form-control standard-cost" data-id="{{ t_id }}" placeholder="Enter Standard Cost" value="">
+                                <input type="text" id="standardCost{{ t_id }}" data-task-id="{{t_id}}" class="form-control standard-cost" data-id="{{ t_id }}" placeholder="Enter Standard Cost" value="0">
                             </td>
                             <td>
-                                <input id="productCost{{ t_id }}" data-id="{{ t_id }}" data-task-id="{{t_id}}" data-standard-cost="standardCost{{ t_id }}" type="text" class="form-control quoted-cost" onchange="checkCostEquality('standardCost{{ t_id }}', 'productCost{{ t_id }}')" onkeyup="checkCostEquality('standardCost{{ t_id }}', 'productCost{{ t_id }}')" placeholder="Enter Quoted Cost">
+                                <input id="productCost{{ t_id }}" data-id="{{ t_id }}" data-task-id="{{t_id}}" data-standard-cost="standardCost{{ t_id }}" type="text" class="form-control quoted-cost" onchange="checkCostEquality('standardCost{{ t_id }}', 'productCost{{ t_id }}')" onkeyup="checkCostEquality('standardCost{{ t_id }}', 'productCost{{ t_id }}')" placeholder="Enter Quoted Cost" value="0">
                             </td>
                             <td>
                                 <select data-id="{{ t_id }}" class="select2-vendor vendor form-control">
