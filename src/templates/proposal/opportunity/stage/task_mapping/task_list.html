@@ -159,10 +159,7 @@
                             {% endif %}
                             </td>
                         </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="13" class="text-center">No products assigned</td>
-                        </tr>
+
                         {% endfor %}
 
                         <!-- Genarate dynamic rows -->
@@ -180,8 +177,9 @@
                                     <!-- Data will apper here -->
                                 </select>
                             </td>
-                            <td><input type="text" class="form-control standard-cost" data-id="{{ t_id }}" id="std_cost" placeholder="Enter Standard Cost"></td>
-                            <td><input type="text" class="form-control quoted-cost" placeholder="Enter Quoted Cost"></td>
+                            <td><input type="text" id="standardCost{{ t_id }}" data-task-id="{{t_id}}" class="form-control standard-cost" data-id="{{ t_id }}" placeholder="Enter Standard Cost" value=""></td>
+                            <td><input id="productCost{{ t_id }}" data-id="{{ t_id }}" data-task-id="{{t_id}}" data-standard-cost="standardCost{{ t_id }}" type="text" class="form-control quoted-cost" onchange="checkCostEquality('standardCost{{ t_id }}', 'productCost{{ t_id }}')" onkeyup="checkCostEquality('standardCost{{ t_id }}', 'productCost{{ t_id }}')" placeholder="Enter Quoted Cost" value="">
+                            </td>
                             <td>
                                 <select data-id="{{ t_id }}" class="select2-vendor vendor form-control">
                                 <option selected disabled>Select Vendor Name</option>
