@@ -177,11 +177,11 @@
                             <!-- Data will apper here -->
                         </select>
                         </td>
-                        <td class="text-nowrap">
-                        <input type="text" class="form-control standard-cost" data-id="{{t_id}}" value="" placeholder="Enter standard cost">
+                        <td>
+                            <input type="text" id="standardCost{{ t_id }}" data-task-id="{{t_id}}" class="form-control standard-cost" data-id="{{ t_id }}" placeholder="Enter Standard Cost" value="0">
                         </td>
-                        <td class="text-nowrap">
-                        <input type="text" class="quoted-cost form-control" data-id="{{t_id}}" value="" placeholder="Enter vendor quoted cost">
+                        <td>
+                            <input id="productCost{{ t_id }}" data-id="{{ t_id }}" data-task-id="{{t_id}}" data-standard-cost="standardCost{{ t_id }}" type="text" class="form-control quoted-cost" placeholder="Enter Quoted Cost" onchange="checkCostEquality('standardCost{{ t_id }}', 'productCost{{ t_id }}')" onkeyup="checkCostEquality('standardCost{{ t_id }}', 'productCost{{ t_id }}')" value="0">
                         </td>
                         <td>
                         <input type="text" class="form-control comment"placeholder="Enter Item Note">

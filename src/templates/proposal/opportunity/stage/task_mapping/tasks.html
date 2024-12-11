@@ -183,8 +183,9 @@
                     <select data-id="${unique_id}" class="select2-item-description js-example-programmatic form-control">
                     </select>
                 </td>
-                <td><input data-id="${unique_id}" type="text" class="form-control standard-cost" placeholder="Enter Standard Cost"></td>
-                <td><input data-id="${unique_id}" type="text" class="form-control quoted-cost" placeholder="Enter Quoted Cost"></td>
+                <td><input id="standardCost${unique_id}" data-task-id="${task_id}" data-id="${unique_id}" type="text" class="form-control standard-cost" placeholder="Enter Standard Cost"></td>
+                <td><input id="productCost${unique_id}" data-standard-cost="standardCost${unique_id}" data-task-id="${task_id}" data-id="${unique_id}" type="text" class="form-control quoted-cost" placeholder="Enter Quoted Cost" onchange="checkCostEquality('standardCost${unique_id}', 'productCost${unique_id}')" onkeyup="checkCostEquality('standardCost${unique_id}', 'productCost${unique_id}')">
+                </td>
                 <td>
                     <select data-id="${unique_id}" class="select2-vendor vendor form-control">
                       <option selected disabled>Select Vendor Name</option>
@@ -260,6 +261,7 @@
                       }
                     });
 
+                    //vendorCostValidation(); // Add validation of vendor quoted cost
                     InitSelects(); // Initialize select2 for the new selects
                 }
     
@@ -307,6 +309,7 @@
 
                 });
 
+                //vendorCostValidation(); // Add validation of vendor quoted cost
                 InitSelects(); // Initialize select2 for the new selects
             }
           }
@@ -334,7 +337,8 @@
                 $(element).show();
             }     
           });
-        
+
+          // vendorCostValidation(); // Add validation of vendor quoted cost
           InitSelects(); // Initialize select2 for the new selects
         });
 
@@ -587,7 +591,8 @@
                 updateDescription(response.description, id);
 
                 var $stdCostField = $(`input[data-id="${id}"].standard-cost`);
-                var quantity = $(`input[data-id="quantity-${id}"].quantity`)
+                var quantity = $(`input[data-id="quantity-${id}"].quantity`);
+                var quoted_cost = $(`input[data-id=${id}].quoted-cost`);
                 var total = $(`td[data-id="${id}"].total`);
                 var sell = $(`td[data-id="${id}"].sell`);
                 var total_sell = $(`td[data-id="${id}"].sell-total`);
@@ -595,6 +600,7 @@
                 var gross_percent = $(`td[data-id="${id}"].gross-p`);
 
                 $stdCostField.val(response.std_cost);
+                quoted_cost.val("");
 
                 var _val = ($stdCostField.val() * quantity.val());
 
@@ -722,7 +728,8 @@
                 updateItemCode(response.item_code, id);
 
                 var $stdCostField = $(`input[data-id="${id}"].standard-cost`);
-                var quantity = $(`input[data-id="quantity-${id}"].quantity`)
+                var quantity = $(`input[data-id="quantity-${id}"].quantity`);
+                var quoted_cost = $(`input[data-id=${id}].quoted-cost`);
                 var total = $(`td[data-id="${id}"].total`);
                 var sell = $(`td[data-id="${id}"].sell`);
                 var total_sell = $(`td[data-id="${id}"].sell-total`);
@@ -730,6 +737,7 @@
                 var gross_percent = $(`td[data-id="${id}"].gross-p`);
 
                 $stdCostField.val(response.std_cost);
+                quoted_cost.val("");
 
                 var _val = ($stdCostField.val() * quantity.val());
 
@@ -931,11 +939,8 @@
                 <select data-id="${unique_id}" class="labour-description form-control">
                 </select>
               </td>
-              <td id="standardCost13" class="text-nowrap">
-                <input type="text" data-id="${unique_id}" class="form-control standard-cost" placeholder="Enter standard cost">
-              </td>
-              <td class="text-nowrap">
-                <input type="text" data-id="${unique_id}" class="quoted-cost form-control" placeholder="Enter out of town cost">
+              <td><input id="standardCost${unique_id}" data-task-id="${task_id}" data-id="${unique_id}" type="text" class="form-control standard-cost" placeholder="Enter Standard Cost"></td>
+                <td><input id="productCost${unique_id}" data-standard-cost="standardCost${unique_id}" data-task-id="${task_id}" data-id="${unique_id}" type="text" class="form-control quoted-cost" placeholder="Enter Quoted Cost" onchange="checkCostEquality('standardCost${unique_id}', 'productCost${unique_id}')" onkeyup="checkCostEquality('standardCost${unique_id}', 'productCost${unique_id}')">
               </td>
               <td>
                 <input type="text" class="form-control comment"placeholder="Enter Item Note">
@@ -1076,10 +1081,9 @@
 
           var newRowHtml = _generateRow(uniqueId, srNo);
 
-          $(`#tableBody-${taskId}`).append(newRowHtml);           
+          $(`#tableBody-${taskId} tbody`).append(newRowHtml);           
           $(`#tableBody-${taskId} .add-labor-row`).each(function(index, element) {
-            // Hide the button for all rows except the last one
-            if (index !== $(`#tableBody-${taskId} .add-labor-row`).length - 1) {
+            if (index !== $(`#tableBody-${taskId} .add-labor-row`).length - 1) { // Hide the button for all rows except the last one
                 $(element).hide();                          
             } else {
                 $(element).show();
@@ -2020,6 +2024,7 @@
       $(".select-labor-task").select2({
         width: "250px",
         placeholder: 'Select Tasks',
+        dropdownCssClass: 'wide-dropdown',
         ajax: {
           url: function () {
             return $(this).data("url");
@@ -2351,13 +2356,18 @@
       {% for t_id, t_info in task_mapping_list.items %}
         {% for ap in t_info.assigned_products %}
           initializeTableFeatures("{{ t_id }}", 'sortable', "{{ap.id}}");
+        {% empty %}
+          initializeTableFeatures("{{ t_id}}", 'sortable', "{{ t_id}}");
         {% endfor %}
       {% endfor %}
 
       {% for t_id, t_info in task_mapping_labor_list.items %}
         {% for ap in t_info.assigned_products %}
           initializeTableFeatures("{{ t_id }}", 'labor', "{{ap.id}}");
+        {% empty %}
+          initializeTableFeatures("{{ t_id}}", 'labor', "{{ t_id}}");
         {% endfor %}
+        
       {% endfor %}
     });
   </script>
