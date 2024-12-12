@@ -662,7 +662,7 @@
           }
         });
       }else {
-            Swal.fire("Cencel delete", "", "info");
+            Swal.fire("Cancel delete", "", "info");
       }
     });
   });
