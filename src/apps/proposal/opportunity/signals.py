@@ -19,21 +19,22 @@ def generate_invoice_details(sender, instance, created, **kwargs):
     """
     Generate and save an invoice objects for opportunity.
 
-    :Arg sender: The model class that sent the signal (SelectTaskCode).
-    :Arg instance: The actual instance of SelectTaskCode that was saved.
-    :Arg created: Boolean indicating if a new record was created.
-    :Arg **kwargs: Additional keyword arguments..
+    Args:
+        sender: The model class that sent the signal (SelectTaskCode).
+        instance: The actual instance of SelectTaskCode that was saved.
+        created: Boolean indicating if a new record was created.
+        **kwargs: Additional keyword arguments..
     """
     invoice_number = random.randint(1, 999999)
     invoice_number = f"INV-{invoice_number}"
     if created:
         Invoice.objects.create(opportunity=instance, invoice_number=invoice_number)
 
-    # Check if invoice is already created but invoice number is not assigned
-    try:
+    try: # Check if invoice is already created but invoice number is not assigned
         invoice_object = Invoice.objects.get(opportunity=instance)
-        LOGGER.info(f"Invoice ==>> {invoice_object}")
+        LOGGER.info(f"-- Invoice -- {invoice_object}")
     except Invoice.DoesNotExist:
+        LOGGER.info(f"-- Invoice created for opportunity -- ")
         Invoice.objects.create(opportunity=instance, invoice_number=invoice_number)
 
 
@@ -42,10 +43,11 @@ def save_task_mapping_tasks(sender, instance, created, **kwargs):
     """
     Save multiple TaskMapping objects when a Task Mapping instance is created.
 
-    :Arg sender: The model class that sent the signal (Task Mapping).
-    :Arg instance: The actual instance of Task Mapping that was saved.
-    :Arg created: Boolean indicating if a new record was created.
-    :Arg **kwargs: Additional keyword arguments..
+    Args:
+        sender: The model class that sent the signal (Task Mapping).
+        instance: The actual instance of Task Mapping that was saved.
+        created: Boolean indicating if a new record was created.
+        **kwargs: Additional keyword arguments..
     """
     if created:
         TaskMapping.objects.create(
@@ -54,6 +56,16 @@ def save_task_mapping_tasks(sender, instance, created, **kwargs):
             code=instance.task.name,
             description=instance.task.description,
         )
+        LOGGER.info(f"-- Task added on task mapping --")
+    else:
+        try:
+            task_mapping_object = TaskMapping.objects.filter(
+                opportunity=instance.opportunity, task=instance.task,
+            ).first()
+            task_mapping_object.description = instance.task_description
+            task_mapping_object.save()
+        except Exception as e:
+            LOGGER.error(f"-- An error occurred while sync data with select task code -- {e}")
 
 
 @receiver(post_save, sender=Document)
@@ -61,13 +73,40 @@ def remove_document(sender, instance, created, **kwargs):
     """
     Remove documents.
 
-    :Arg sender: The model class that sent the signal (Document).
-    :Arg instance: The actual instance of Document that was saved.
-    :Arg created: Boolean indicating if a new record was created.
-    :Arg **kwargs: Additional keyword arguments..
+    Args:
+        sender: The model class that sent the signal (Document).
+        instance: The actual instance of Document that was saved.
+        created: Boolean indicating if a new record was created.
+        **kwargs: Additional keyword arguments..
     """
     if created:
-        document_obj = Document.objects.filter(
-            Q(document__isnull=True) | Q(document=""), Q(comment__isnull=True) | Q(comment="")
-        )
-        document_obj.delete()
+        try:
+            document_obj = Document.objects.filter(
+                Q(document__isnull=True) | Q(document=""), Q(comment__isnull=True) | Q(comment="")
+            )
+            document_obj.delete()
+        except Exception as e:
+            LOGGER.error(f"-- An error occurred while remove empty document from db -- {e}")
+
+
+@receiver(post_save, sender=TaskMapping)
+def sync_task_description_value(sender, instance, created, **kwargs):
+    """
+    Sync task description value while update
+
+    Args:
+        sender: The model class that sent the signal (TaskMapping).
+        instance: The actual instance of Document that was saved.
+        created: Boolean indicating if a new record was created.
+        **kwargs: Additional keyword arguments..
+    """
+    if not created: # Check object is updated
+        try:
+            select_task_code = SelectTaskCode.objects.filter(
+                opportunity=instance.opportunity, task=instance.task
+            ).first()
+
+            select_task_code.task_description = instance.description
+            select_task_code.save()
+        except Exception as e:
+            LOGGER.info(f"-- An error occurred while sync data with select task code -- {e}")

@@ -111,6 +111,7 @@ class SelectTaskCode(BaseModel):
 
     opportunity = models.ForeignKey(Opportunity, on_delete=models.CASCADE, related_name="opportunity")
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="tasks")
+    task_description = models.CharField(_("Task Description"), max_length=255, null=True, blank=True)
 
     def __str__(self):
         return f"{self.opportunity.document_number} - {self.task.name}"
