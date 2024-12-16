@@ -236,29 +236,18 @@
                   </tr>
 
                   {% for t in opportunity.term_and_condition.term_and_condition %}
-                    <tr class="tac-table">
-                      <td><i class="fa fa-trash danger remove-terms d-icon"></i></td>
-                      <td>
-                        <input
-                          type="text"
-                          class="form-control term"
-                          data-id="{{ t.id }}"
-                          value="{{ t.text }}"
-                        />
-                      </td>
+                    <tr class="tac-table tac">
+                      <!-- <td><i class="fa fa-trash danger remove-terms d-icon"></i></td> -->
+                      <td><input type="checkbox" name="" checked></td>
+                      <td> <input type="text" class="form-control term" data-id="{{ t.id }}" value="{{ t.text }}"/> </td>
                     </tr>
                   {% endfor %}
 
                   <!-- Add new Terms -->
-                  <tr class="add-new-term-tr icon">
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
-                    <td>
-                      <input
-                        type="text"
-                        class="form-control term new-terms"
-                        placeholder="Write new terms..."
-                      />
-                    </td>
+                  <tr class="add-new-term-tr tac icon">
+                    <!-- <td><i class="fa fa-trash danger remove-terms"></i></td> -->
+                    <td><input type="checkbox" name=""></td>
+                    <td> <input type="text" class="form-control term new-terms" placeholder="Write new terms..."/> </td>
                   </tr>
 
                   <tr>
@@ -269,22 +258,17 @@
                   </tr>
 
                   {% for p in opportunity.term_and_condition.pump_installation_terms %}
-                    <tr>
-                      <td><i class="fa fa-trash danger remove-terms d-icon"></i></td>
-                      <td>
-                        <input
-                          type="text"
-                          data-id="{{ p.id }}"
-                          class="form-control pump-term"
-                          value="{{ p.text }}"
-                        />
-                      </td>
+                    <tr class="pit">
+                      <!-- <td><i class="fa fa-trash danger remove-terms d-icon"></i></td> -->
+                      <td><input type="checkbox" name="" checked></td>
+                      <td> <input type="text" data-id="{{ p.id }}" class="form-control pump-term" value="{{ p.text }}"/> </td>
                     </tr>
                   {% endfor %}
 
                   <!-- Add New Row -->
-                  <tr class="new-pump-tr icon">
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+                  <tr class="new-pump-tr pit icon">
+                    <!-- <td><i class="fa fa-trash danger remove-terms"></i></td> -->
+                    <td><input type="checkbox" name=""></td>
                     <td>
                       <input
                         type="text"
@@ -293,6 +277,7 @@
                       />
                     </td>
                   </tr>
+
                 </tbody>
               </table>
 
@@ -303,26 +288,18 @@
                 <table class="table">
                   <tbody>
                     {% for s in opportunity.term_and_condition.sales_agreement %}
-                      <tr>
-                        <td style="width: 60px;"><i class="fa fa-trash danger remove-terms d-icon"></i></td>
-                        <td>
-                          <input
-                          type="text"
-                          class="form-control sales-agreement"
-                          data-id="{{s.id}}"
-                          value="{{s.text}}"/>
-                        </td>
+                      <tr class="spa">
+                        <!-- <td><input type="checkbox" name="" checked></td> -->
+                        <td style="width: 4%;"><input type="checkbox" name="" checked></td>
+                        <td> <input type="text" class="form-control sales-agreement" data-id="{{s.id}}" value="{{s.text}}"/></td>
                       </tr>
                     {% endfor %}
                     <!-- Add New Row -->
-                    <tr class="new-sales-agreement-tr icon">
-                      <td><i class="fa fa-trash danger remove-terms"></i></td>
+                    <tr class="new-sales-agreement-tr spa icon">
+                      <!-- <td><i class="fa fa-trash danger remove-terms"></i></td> -->
+                      <td style="width: 4%;"><input type="checkbox" name=""></td>
                       <td>
-                        <input
-                          type="text"
-                          class="form-control sales-agreement new-sales-agreement"
-                          placeholder="Write new sales and approval agreement..."
-                        />
+                        <input type="text" class="form-control sales-agreement new-sales-agreement" placeholder="Write new sales and approval agreement..."/>
                       </td>
                     </tr>
                   </tbody>
@@ -384,6 +361,7 @@
                             {% endif %}
 
                           </div>
+
                           <div class="col-12 mb-3">
 
                             {% if invoice.buyer_position %}
@@ -404,6 +382,7 @@
                             {% endif %}
 
                           </div>
+
                         </div>
                       </div>
                     </div>
@@ -414,6 +393,7 @@
                     <div class="card">
                       <div class="card-body">
                         <div class="row">
+
                           <div class="col-6 mb-3">
                             <label>Seller:</label>
                             {% if invoice.seller %}
@@ -433,6 +413,7 @@
                               />
                             {% endif %}
                           </div>
+
                           <div class="col-6 mb-3">
                             <label>Date:</label>
                             <input
@@ -442,6 +423,7 @@
                               value="{{ invoice.seller_date|date:"Y-m-d" }}"
                             />
                           </div>
+
                           <div class="col-12 mb-3">
                             {% if invoice.seller_name %}
                               <input
@@ -461,6 +443,7 @@
                             {% endif %}
 
                           </div>
+
                           <div class="col-12 mb-3">
                             {% if invoice.seller_position %}
                               <input
@@ -479,6 +462,7 @@
                               />
                             {% endif %}
                           </div>
+
                         </div>
                       </div>
                     </div>
@@ -583,6 +567,7 @@
                         </strong>
                       </div>
                     </div>
+
                   </div>
 
                   <table class="table">
@@ -727,9 +712,12 @@
                     </tbody>
                   </table>
                 </div>
+
                 <br>
+
               </div>
 
+            <!-- Hard coded terms -->
             {% else %}
               <!-- Term & Condition and Pipe term-->
               <table class="table">
@@ -743,8 +731,8 @@
                     </td>
                   </tr>
 
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+                  <tr class="tac">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -755,8 +743,8 @@
                     </td>
                   </tr>
 
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+                  <tr class="tac">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -767,8 +755,8 @@
                     </td>
                   </tr>
 
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+                  <tr class="tac">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -779,8 +767,8 @@
                     </td>
                   </tr>
 
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+                  <tr class="tac">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -791,8 +779,8 @@
                     </td>
                   </tr>
 
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+                  <tr class="tac">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -803,8 +791,8 @@
                     </td>
                   </tr>
 
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+                  <tr class="tac">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -814,8 +802,9 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                  <tr class="tac">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -826,8 +815,8 @@
                     </td>
                   </tr>
 
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+                  <tr class="tac">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -838,8 +827,8 @@
                     </td>
                   </tr>
 
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+                  <tr class="tac">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -850,8 +839,8 @@
                     </td>
                   </tr>
 
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+                  <tr class="tac">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -862,8 +851,8 @@
                     </td>
                   </tr>
 
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+                  <tr class="tac">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -874,8 +863,8 @@
                     </td>
                   </tr>
 
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+                  <tr class="tac">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -886,8 +875,8 @@
                     </td>
                   </tr>
 
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+                  <tr class="tac">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -898,8 +887,8 @@
                     </td>
                   </tr>
 
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+                  <tr class="tac">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -909,8 +898,9 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                  <tr class="tac">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -921,8 +911,8 @@
                     </td>
                   </tr>
 
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+                  <tr class="tac">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -932,17 +922,18 @@
                       />
                     </td>
                   </tr>
-                    <!-- Add new Terms -->
-                    <tr>
-                      <td><i class="fa fa-trash danger remove-terms"></i></td>
-                      <td>
-                        <input
-                          type="text"
-                          class="form-control term new-terms"
-                          placeholder="Write Here Term & Condition"
-                        />
-                      </td>
-                    </tr>
+
+                  <!-- Add new Terms -->
+                  <tr class="tac">
+                    <td><input type="checkbox" name=""></td>
+                    <td>
+                      <input
+                        type="text"
+                        class="form-control term new-terms"
+                        placeholder="Write Here Term & Condition"
+                      />
+                    </td>
+                  </tr>
 
                   <tr>
                     <th>*</th>
@@ -951,8 +942,8 @@
                     </th>
                   </tr>
 
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+                  <tr class="pit">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -962,8 +953,9 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                  <tr class="pit">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -973,8 +965,9 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                  <tr class="pit">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -984,8 +977,9 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                  <tr class="pit">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -995,8 +989,9 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                  <tr class="pit">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -1006,8 +1001,9 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                  <tr class="pit">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -1017,8 +1013,9 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                  <tr class="pit">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -1028,8 +1025,9 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                  <tr class="pit">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -1039,8 +1037,9 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                  <tr class="pit">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -1050,8 +1049,9 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                  <tr class="pit">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -1061,8 +1061,9 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                  <tr class="pit">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -1072,8 +1073,9 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                  <tr class="pit">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -1083,8 +1085,9 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                  <tr class="pit">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -1094,8 +1097,9 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                  <tr class="pit">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -1105,8 +1109,9 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                  <tr class="pit">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -1116,8 +1121,9 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                  <tr class="pit">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -1127,8 +1133,9 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                  <tr class="pit">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -1138,8 +1145,9 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                  <tr class="pit">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -1149,8 +1157,9 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                  <tr class="pit">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -1160,8 +1169,9 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                  <tr class="pit">
+                    <td><input type="checkbox" name="" checked></td>
                     <td>
                       <input
                         type="text"
@@ -1171,8 +1181,10 @@
                       />
                     </td>
                   </tr>
-                  <tr>
-                    <td><i class="fa fa-trash danger remove-terms"></i></td>
+                  
+                  <!-- Add More -->
+                  <tr class="pit">
+                    <td><input type="checkbox" name=""></td>
                     <td>
                       <input
                         type="text"
@@ -1181,6 +1193,7 @@
                       />
                     </td>
                   </tr>
+
                 </tbody>
               </table>
 
@@ -1190,8 +1203,9 @@
                 <h4 class="text-center">SALES AND APPROVAL AGREEMENT</h4>
                 <table class="table">
                   <tbody>
-                    <tr>
-                      <td style="width: 60px;"><i class="fa fa-trash danger remove-terms d-icon"></i></td>
+
+                    <tr class="spa">
+                      <td style="width: 4%;"><input type="checkbox" name="" checked></td>
                       <td>
                         <input
                       type="text"
@@ -1201,8 +1215,9 @@
                       />
                       </td>
                     </tr>
-                    <tr>
-                      <td style="width: 60px;"><i class="fa fa-trash danger remove-terms d-icon"></i></td>
+
+                    <tr class="spa">
+                      <td style="width: 4%;"><input type="checkbox" name="" checked></td>
                       <td>
                         <input
                       type="text"
@@ -1212,8 +1227,9 @@
                       />
                       </td>
                     </tr>
-                    <tr>
-                      <td style="width: 60px;"><i class="fa fa-trash danger remove-terms d-icon"></i></td>
+
+                    <tr class="spa">
+                      <td style="width: 4%;"><input type="checkbox" name="" checked></td>
                       <td>
                         <input
                       type="text"
@@ -1223,8 +1239,9 @@
                       />
                       </td>
                     </tr>
-                    <tr>
-                      <td style="width: 60px;"><i class="fa fa-trash danger remove-terms d-icon"></i></td>
+
+                    <tr class="spa">
+                      <td style="width: 4%;"><input type="checkbox" name="" checked></td>
                       <td>
                         <input
                       type="text"
@@ -1234,8 +1251,9 @@
                       />
                       </td>
                     </tr>
-                    <tr>
-                      <td style="width: 60px;"><i class="fa fa-trash danger remove-terms d-icon"></i></td>
+
+                    <tr class="spa">
+                      <td style="width: 4%;"><input type="checkbox" name="" checked></td>
                       <td>
                         <input
                       type="text"
@@ -1245,8 +1263,9 @@
                       />
                       </td>
                     </tr>
-                    <tr>
-                      <td style="width: 60px;"><i class="fa fa-trash danger remove-terms d-icon"></i></td>
+
+                    <tr class="spa">
+                      <td style="width: 4%;"><input type="checkbox" name="" checked></td>
                       <td>
                         <input
                       type="text"
@@ -1256,8 +1275,9 @@
                       />
                       </td>
                     </tr>
-                    <tr>
-                      <td style="width: 60px;"><i class="fa fa-trash danger remove-terms d-icon"></i></td>
+
+                    <tr class="spa">
+                      <td style="width: 4%;"><input type="checkbox" name="" checked></td>
                       <td>
                         <input
                       type="text"
@@ -1267,8 +1287,9 @@
                       />
                       </td>
                     </tr>
-                    <tr>
-                      <td style="width: 60px;"><i class="fa fa-trash danger remove-terms d-icon"></i></td>
+
+                    <tr class="spa">
+                      <td style="width: 4%;"><input type="checkbox" name="" checked></td>
                       <td>
                         <input
                       type="text"
@@ -1278,8 +1299,9 @@
                       />
                       </td>
                     </tr>
-                    <tr>
-                      <td style="width: 60px;"><i class="fa fa-trash danger remove-terms d-icon"></i></td>
+
+                    <tr class="spa">
+                      <td style="width: 4%;"><input type="checkbox" name="" checked></td>
                       <td>
                         <input
                       type="text"
@@ -1289,8 +1311,9 @@
                       />
                       </td>
                     </tr>
-                    <tr class="new-sales-agreement-tr icon">
-                      <td><i class="fa fa-trash danger remove-terms"></i></td>
+
+                    <tr class="new-sales-agreement-tr spa icon">
+                      <td style="width: 4%;"><input type="checkbox" name=""></td>
                       <td>
                         <input
                           type="text"
@@ -1299,6 +1322,7 @@
                         />
                       </td>
                     </tr>
+
                   </tbody>
                 </table>
 
@@ -1706,6 +1730,7 @@
 
               <!-- Invoice Items Details ends -->
             {% endif %}
+
           </div>
         </div>
       </div>
@@ -2138,9 +2163,6 @@
       var foundElements = $(".steps li").find(".current");
       var current_stage_value = $(".current a span.step").text();
 
-      // console.log("foundElements", foundElements);
-      // console.log("current_stage_value", current_stage_value);
-
       if (current_stage_value == "8"){
         var terms = {
           "term_and_condition": [],
@@ -2148,41 +2170,48 @@
           "sales_agreement": []
         };
 
-        $('.term').each(function() {
-            var term_id = $(this).data('id');
-            var term_value = $(this).val();
+        $('.tac').each(function() {
+          if ($(this).find('input[type="checkbox"]:checked').length > 0) {
+            var term_id = $(this).find('.term').data('id');
+            var term_value = $(this).find('.term').val();
 
             if (term_value !== "" && term_value !== null) {
-              terms.term_and_condition.push({
-                  "id": term_id,
-                  "text": term_value
-              });
+                terms.term_and_condition.push({
+                    "id": term_id,
+                    "text": term_value
+                });
             }
-        });
-        $(".pump-term").each(function() {
-          var pump_term_id = $(this).data('id');
-          var pump_term_value = $(this).val();
-
-          if (pump_term_value !== "" && pump_term_value !== null) {
-            terms.pump_installation_terms.push({
-              "id": pump_term_id,
-              "text": pump_term_value
-            });
-          }
-        });
-        $(".sales-agreement").each(function() {
-          var sales_agreement_id = $(this).data('id');
-          var sales_agreement_value = $(this).val();
-
-          if (sales_agreement_value !== "" && sales_agreement_value !== null) {
-            terms.sales_agreement.push({
-              "id": sales_agreement_id,
-              "text": sales_agreement_value
-            });
           }
         });
 
-        // console.log("Data -=-=-==--===-",terms);
+        $('.pit').each(function() {
+          if ($(this).find('input[type="checkbox"]:checked').length > 0) {
+            var pump_term_id = $(this).find('.pump-term').data('id');
+            var pump_term_value = $(this).find('.pump-term').val();
+
+            if (pump_term_value !== "" && pump_term_value !== null) {
+                terms.pump_installation_terms.push({
+                    "id": pump_term_id,
+                    "text": pump_term_value
+                });
+            }
+          }
+        });
+
+        $('.spa').each(function() {
+          if ($(this).find('input[type="checkbox"]:checked').length > 0) {
+            var sales_agreement_id = $(this).find('.sales-agreement').data('id');
+            var sales_agreement_value = $(this).find('.sales-agreement').val();
+        
+            if (sales_agreement_value !== "" && sales_agreement_value !== null) {
+                terms.sales_agreement.push({
+                    "id": sales_agreement_id,
+                    "text": sales_agreement_value
+                });
+            }        
+          }
+        });
+
         var document_number = "{{ opportunity.document_number }}";
 
         data = {
@@ -2191,7 +2220,6 @@
           "value": JSON.stringify(terms)
         }
 
-        // ajax call
         $.ajax({
           url: '{% url "proposal_app:opportunity:update-opportunity-ajax" %}',
           type: 'POST',
@@ -2200,7 +2228,6 @@
             'X-CSRFToken': "{{ csrf_token }}",
           },
           success: function(response) {
-            // console.log('API call success:', response);
             if (response.status == "success"){
               toastr.success(response.message, 'Success', {
                 closeButton: true,
@@ -2237,12 +2264,12 @@
   $(document).on("keypress", ".new-terms", function(e) {
     if (e.which == 13) {
         e.preventDefault();
-        // console.log("New terms added");
 
         var $currentRow = $(this).closest('tr');
+
         var $newRow = `
-            <tr>
-                <td><i class="fa fa-trash danger remove-terms"></i></td>
+            <tr class="tac">
+                <td><input type="checkbox" name=""></td>
                 <td>
                     <input type="text" class="form-control term new-terms" placeholder="Write Here" />
                 </td>
@@ -2250,18 +2277,9 @@
         `;
 
         $currentRow.after($newRow);
-        attachRemoveHandler();
         $currentRow.next().find('.new-terms').focus();
     }
   });
-
-  // Function to attach the remove handler
-  function attachRemoveHandler() {
-      $('.remove-terms').off('click').on('click', function(e) {
-          $(this).closest('tr').remove();
-      });
-  }
-
 </script>
 
 <!-- Add new pump term -->
@@ -2269,12 +2287,12 @@
   $(document).on("keypress", ".new-pump-terms", function(e) {
     if (e.which == 13) {
         e.preventDefault();
-        // console.log("New Pump terms added");
 
         var $currentRow = $(this).closest('tr');
+
         var $newRow = `
-            <tr>
-                <td><i class="fa fa-trash danger remove-terms"></i></td>
+            <tr class="pit">
+                <td><input type="checkbox" name=""></td>
                 <td>
                     <input type="text" class="form-control pump-term new-pump-terms" placeholder="Write new pump installation term" />
                 </td>
@@ -2282,16 +2300,9 @@
         `;
 
         $currentRow.after($newRow);
-        attachRemoveHandler();
         $currentRow.next().find('.new-pump-terms').focus();
     }
   });
-
-  function attachRemoveHandler() {
-      $('.remove-terms').off('click').on('click', function(e) {
-          $(this).closest('tr').remove();
-      });
-  }
 
 </script>
 
@@ -2303,8 +2314,8 @@
         // console.log("New Pump terms added");
         var $currentRow = $(this).closest('tr');
         var $newRow = `
-            <tr>
-                <td><i class="fa fa-trash danger remove-terms"></i></td>
+            <tr class="spa">
+                <td><input type="checkbox" name=""></td>
                 <td>
                     <input type="text" class="form-control sales-agreement new-sales-agreement" placeholder="Write new sales and approval agreement..." />
                 </td>
@@ -2312,17 +2323,9 @@
         `;
 
         $currentRow.after($newRow);
-        attachRemoveHandler();
         $currentRow.next().find('.new-sales-agreement').focus();
     }
   });
-
-  function attachRemoveHandler() {
-      $('.remove-terms').off('click').on('click', function(e) {
-          $(this).closest('tr').remove();
-      });
-  }
-
 </script>
 
 {% endblock script %}
