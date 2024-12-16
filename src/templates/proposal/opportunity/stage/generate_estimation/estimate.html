@@ -663,57 +663,62 @@
 
     // Loop through each row to update calculations for all rows
     $("table tbody tr").each(function() {
-        var $row = $(this);
+      var $row = $(this);
 
-        // Get the values for this row
-        var laborGpPercent = parseFloat($row.find(".labor_gp_percent").val()) / 100;
-        var matGpPercent = parseFloat($row.find(".mat_gp_percent").val()) / 100;
-        var s_and_h = parseFloat($row.find(".s_and_h").val()) / 100;
+      // Get the values for this row
+      var laborGpPercent = parseFloat($row.find(".labor_gp_percent").val()) / 100;
+      var matGpPercent = parseFloat($row.find(".mat_gp_percent").val()) / 100;
+      var s_and_h = parseFloat($row.find(".s_and_h").val()) / 100;
 
-        // Calculate Labor Sell
-        var laborCost = parseFloat($row.find(".labor_cost").text()) || 0;
-        var laborSell = laborCost / (1 - laborGpPercent);
-        $row.find(".labor_sell").text(laborSell.toFixed(2));
+      // Calculate Labor Sell
+      var laborCost = parseFloat($row.find(".labor_cost").text()) || 0;
+      var laborSell = laborGpPercent === 1 ? 0 : laborCost / (1 - laborGpPercent);
+      $row.find(".labor_sell").text(laborSell.toFixed(2));
 
-        // Calculate Labor GP $
-        var laborGp = laborSell - laborCost;
-        $row.find(".labor_gp").text(laborGp.toFixed(2));
+      // Calculate Labor GP $
+      var laborGp = laborGpPercent === 1 ? 0 : laborSell - laborCost;
+      $row.find(".labor_gp").text(laborGp.toFixed(2));
 
-        // Calculate Material values
-        var matCost = parseFloat($row.find(".mat_cost").text()) || 0;
-        var matPlusMu = matCost / (1 - matGpPercent);
-        $row.find(".mat_plus_mu").text(matPlusMu.toFixed(2));
+      // Calculate Material values
+      var matCost = parseFloat($row.find(".mat_cost").text()) || 0;
 
-        // Calculate Material GP $
-        var matGp = matPlusMu - matCost;
-        $row.find(".mat_gp").text(matGp.toFixed(2));
+      // Check if matGpPercent is 100 (avoid division by zero)
+      var matPlusMu = matGpPercent === 1 ? 0 : matCost / (1 - matGpPercent);
+      $row.find(".mat_plus_mu").text(matPlusMu.toFixed(2));
 
-        // Calculate Sales Tax for Material
-        var salesTax = matPlusMu * 0.25;
-        $row.find(".sales_tax").text(salesTax.toFixed(2));
+      // Calculate Material GP $
+      var matGp = matPlusMu - matCost;
+      if (matGp === 0){
+        matGp = 0;
+      }
+      $row.find(".mat_gp").text(matGp.toFixed(2));
 
-        // Calculate Material Sell
-        var matSell = matPlusMu + salesTax;
-        $row.find(".mat_sell").text(matSell.toFixed(2));
+      // Calculate Sales Tax for Material
+      var salesTax = matPlusMu * 0.25;
+      $row.find(".sales_tax").text(salesTax.toFixed(2));
 
-        // Calculate MAT Tax Labor
-        var matTaxLabor = matSell + laborSell;
-        $row.find(".mat_tax_labor").text(matTaxLabor.toFixed(2));
+      // Calculate Material Sell
+      var matSell = matPlusMu + salesTax;
+      $row.find(".mat_sell").text(matSell.toFixed(2));
 
-        var denominator = laborSell + matPlusMu;
+      // Calculate MAT Tax Labor
+      var matTaxLabor = matSell + laborSell;
+      $row.find(".mat_tax_labor").text(matTaxLabor.toFixed(2));
 
-        // Calculate Combined GP % for Labor and Material
-        var combGp;
-        if (denominator === 0) {
-          combGp = 0;  // Set to 0 if the denominator is zero
-        } else {
-          combGp = ((laborGpPercent * 100) + (matGpPercent * 100)) / (laborSell + matPlusMu);
-        }
-        $row.find(".comb_gp").text(combGp.toFixed(3));
+      var denominator = laborSell + matPlusMu;
 
-        // Calculate $/Acre
-        var acre = matTaxLabor / matGpPercent;
-        $row.find(".acre").text((isNaN(acre) ? 0 : acre).toFixed(2));
+      // Calculate Combined GP % for Labor and Material
+      var combGp;
+      if (denominator === 0) {
+        combGp = 0;  // Set to 0 if the denominator is zero
+      } else {
+        combGp = ((laborGpPercent * 100) + (matGpPercent * 100)) / (laborSell + matPlusMu);
+      }
+      $row.find(".comb_gp").text(combGp.toFixed(3));
+
+      // Calculate $/Acre
+      var acre = matTaxLabor / matGpPercent;
+      $row.find(".acre").text((isNaN(acre) ? 0 : acre).toFixed(2));
     });
 
     // Update overall totals after modifying the row
@@ -777,7 +782,7 @@
       var total_cost = totalLaborCost + totalMatCost;
       var total_sale = totalLaborSell + totalMatSell;
       var total_gp = total_sale - total_cost;
-      var total_gp_percent = total_gp / total_sale * 100;
+      var total_gp_percent = (total_sale !== 0) ? (total_gp / total_sale) * 100 : 0;
 
       // Update totals in <tfoot>
       $("#total_labor_cost").text(`$ ${totalLaborCost.toFixed(2)}`);

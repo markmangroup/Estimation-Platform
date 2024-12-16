@@ -385,6 +385,7 @@ class TotalGPPerBreakdown(TemplateViewMixin):
 
         :param document_number: The unique identifier for the opportunity.
         :return: A dictionary with total labor GP%, material GP%, combined GP%, and overall GP%.
+        :raises ZeroDivisionError: if the value not divided by the number.
         """
         task_mapping_qs = TaskMapping.objects.filter(opportunity__document_number=document_number)
 
@@ -399,7 +400,12 @@ class TotalGPPerBreakdown(TemplateViewMixin):
             total_cost += Decimal(task.labor_cost or "0.0") + Decimal(task.mat_cost or "0.0")
 
         totals["total_gp"] = totals["total_sell"] - total_cost
-        totals["total_gp_percent"] = (totals["total_gp"] / totals["total_sell"]) * 100
+        try:
+            totals["total_gp_percent"] = (totals["total_gp"] / totals["total_sell"]) * 100
+        
+        except ZeroDivisionError:
+            totals["total_gp_percent"] = 0
+
         return totals
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
