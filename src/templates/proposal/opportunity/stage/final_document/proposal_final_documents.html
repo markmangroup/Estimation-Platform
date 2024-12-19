@@ -199,19 +199,22 @@
   <!-- printContent function -->
   <script>
     function printContent(id) {
-        // Get the content to print
-        var content = document.getElementById(id).innerHTML;
+        var content = document.getElementById(id).innerHTML; // Get the content to print
         var originalDocument = document.body.innerHTML;
 
-        // Temporarily replace the document's body content
-        document.body.innerHTML = content;
+        document.body.innerHTML = content; // Temporarily replace the document's body content
 
         // Hide icons and any other elements that shouldn't appear in print
-        var printStyles = `
+        var printStyles = ` 
             <style>
                 /* Hide all icons */
                 .icon {
-                    display: none !important;
+                  display: none !important;
+                }
+
+                input[type="checkbox"] {
+                  display: none !important;
+                  border: none;
                 }
             </style>
         `;
@@ -220,35 +223,26 @@
             icon.outerHTML = "*";
         });
 
-        // Function to handle after printing
-        function afterPrint() {
-            // Restore the original document content
+        function afterPrint() { // Function to handle after printing
             document.body.innerHTML = originalDocument;
-            // Reload the window
             window.location.reload();
         }
 
-        // Create a MutationObserver to wait for content changes
-        const observer = new MutationObserver(() => {
-            // Call print and then disconnect the observer
+        const observer = new MutationObserver(() => { // Create a MutationObserver to wait for content changes
             window.print();
             observer.disconnect();
         });
 
-        // Start observing the body for changes
-        observer.observe(document.body, {
+        observer.observe(document.body, { // Start observing the body for changes
             childList: true,
             subtree: true
         });
 
-        // Listen for the after print event
-        window.onafterprint = afterPrint;
+        window.onafterprint = afterPrint; // Listen for the after print event
 
-        // If there's a known delay for loading content, you can use setTimeout here
         setTimeout(() => {
-            // Trigger the observer manually if needed
-            document.body.innerHTML = document.body.innerHTML; // This can help trigger the observer
-        }, 1000); // Adjust this delay based on your loading time
+            document.body.innerHTML = document.body.innerHTML;
+        }, 1000);
     }
   </script>
 {% endblock script %}
