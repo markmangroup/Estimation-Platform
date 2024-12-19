@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, render
 from django.template.loader import get_template
 from django.urls import reverse
 
-from apps.constants import LOGGER
+from apps.constants import LOGGER, ERROR_RESPONSE
 from apps.mixin import CustomDataTableMixin, CustomViewMixin, ViewMixin
 from apps.proposal.task.models import Task
 
@@ -33,6 +33,11 @@ class SelectedTaskListAjaxView(CustomDataTableMixin):
                 "title": obj.task.name,
             }
         )
+    
+    def _get_description(self, obj):
+        """Make description editable."""
+        t = get_template("proposal/partial/edit_description.html")
+        return t.render({"o": obj,})
 
     def get_queryset(self):
         """Returns a list of selected tasks"""
@@ -47,6 +52,7 @@ class SelectedTaskListAjaxView(CustomDataTableMixin):
                 Q(task__internal_id__icontains=self.search)
                 | Q(task__name__icontains=self.search)
                 | Q(task__description__icontains=self.search)
+                | Q(task_description__icontains=self.search)
             )
         return qs
 
@@ -58,7 +64,7 @@ class SelectedTaskListAjaxView(CustomDataTableMixin):
                 {
                     "task__internal_id": o.task.internal_id,
                     "task__name": o.task.name,
-                    "task__description": o.task.description,
+                    "task__description": self._get_description(o),
                     "action": self._get_actions(o),
                 }
             )
@@ -149,6 +155,39 @@ class TaskManagementView(ViewMixin):
         :return: Rendered response.
         """
         return render(self.request, self.template_name, context, **response_kwargs)
+
+
+class UpdateDescription(ViewMixin):
+    """
+    View to handle updating the description of a task code.
+    """
+
+    def post(self, request, *args, **kwargs) -> JsonResponse:
+        """
+        Handle the POST request to update the task description.
+
+        :param request (HttpRequest): The HTTP request object containing POST data.
+        :param *args: Additional positional arguments.
+        :param **kwargs: Additional keyword arguments.
+        :return JsonResponse: A JSON response indicating success or failure with a status code.
+        """
+        task_code_id = request.POST.get("task_code_id")
+        task_description = request.POST.get("task_description")
+
+        try:
+            select_task_code_obj = SelectTaskCode.objects.get(id=task_code_id)
+            select_task_code_obj.task_description = task_description
+            select_task_code_obj.save()
+            return JsonResponse(
+            {
+                "message": "Task description updated successfully",
+                "status": "OK",
+            },
+            status=201,
+        )
+        except Exception as e:
+            LOGGER.error(f"-- An error occurred while updating description of task -- {e}")
+            return JsonResponse(ERROR_RESPONSE,status=400)
 
 
 class DeleteSelectedTask(CustomViewMixin):

@@ -9,7 +9,7 @@
             </select>
         </td>
         <td>
-            <input type="text" class="form-control" value="{{ t_info.task.description }}" disabled />
+            <input type="text" class="form-control task_description" data-id="{{ t_id }}" value="{{ t_info.task.description }}" />
         </td>
         <td class="mapping-total-price-{{t_id}} t-price">${{ t_info.total_price }}</td>
         <td class="mapping-total-percent-{{t_id}} t-percent">{{ t_info.total_percent }}%</td>
@@ -30,7 +30,7 @@
             </select>
         </td>
         <td>
-            <input type="text" class="form-control" value="{{ t_info.task.task.description }}" disabled />
+            <input type="text" class="form-control task_description" data-id="{{ t_id }}" value="{{ t_info.task.task.description }}"/>
         </td>
         <td class="mapping-total-price-{{t_id}} t-price">${{ t_info.total_price }}</td>
         <td class="mapping-total-percent-{{t_id}} t-percent">{{ t_info.total_percent }}%</td>

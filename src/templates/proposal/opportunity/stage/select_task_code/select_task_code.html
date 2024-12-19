@@ -145,7 +145,53 @@
 </script>
 <!-- Update Stages -->
 
-<!-- Delete -->
+<!-- Update description Ajax -->
+<script>
+  $(document).on("change", ".edi-description", function(e) {
+      var field = $(this);
+      var id = field.data('id');
+      var description = field.val();
+
+      if (!id || !description) {
+          toastr.error("Task code ID and description are required.", "Validation Error", {
+              closeButton: true,
+              progressBar: true,
+              positionClass: "toast-bottom-right",
+              timeOut: 4000
+          });
+          return;
+      }
+
+      $.ajax({
+          url: "{% url 'proposal_app:opportunity:update-selected-task-ajax' %}",
+          type: 'POST',
+          data: {
+              task_code_id: id,
+              task_description: description,
+              csrfmiddlewaretoken: '{{ csrf_token }}'
+          },
+          success: function(response) {
+              toastr.success(response.message || "Description updated successfully.", "Success", {
+                  closeButton: true,
+                  progressBar: true,
+                  positionClass: 'toast-bottom-right',
+                  timeOut: 6000
+              });
+          },
+          error: function(xhr) {
+              var message = xhr.responseJSON ? xhr.responseJSON.message : "An error occurred";
+              toastr.error(message, "Error", {
+                  closeButton: true,
+                  progressBar: true,
+                  positionClass: 'toast-bottom-right',
+                  timeOut: 6000
+              });
+          }
+      });
+  });
+</script>
+
+<!-- Delete Task Ajax-->
 <script>
 	$(document).on('click', '.delete-task', function (e) {
 		var id = $(this).data("id")

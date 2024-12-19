@@ -55,6 +55,11 @@ urlpatterns = [
         name="ajax-selected-task-list",
     ),
     path(
+        "update-selected-task/ajax",
+        select_task_code.UpdateDescription.as_view(),
+        name="update-selected-task-ajax",
+    ),
+    path(
         "delete-selected-task/ajax",
         select_task_code.DeleteSelectedTask.as_view(),
         name="ajax-delete-selected-task",
