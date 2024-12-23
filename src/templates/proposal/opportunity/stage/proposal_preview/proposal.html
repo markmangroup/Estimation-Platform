@@ -157,9 +157,17 @@
                               </td>
                               <td>
                                 {% if task.task.name %}
-                                  <button type="button" class="btn btn-danger icon delete-task-btn" data-id="{{task.id}}" data-title="{{task.task.name}}" data-url="{% url 'proposal_app:opportunity:task-delete-ajax' %}"><em class="fa fa-trash"></em></button>
+                                <button type="button" 
+                                        class="btn btn-danger delete-task-btn" 
+                                        data-id="{{ data.proposal_ids|get_proposal_id:forloop.counter0 }}" 
+                                        data-title="{{task.code}}" 
+                                        data-url="{% url 'proposal_app:opportunity:task-delete-ajax' %}">
+                                    <em class="fa fa-trash"></em>
+                                </button>
+
                                 {% else %}
-                                  <button type="button" class="btn btn-danger icon delete-task-btn" data-id="{{task.id}}" data-title="{{task.code}}" data-url="{% url 'proposal_app:opportunity:task-delete-ajax' %}"><em class="fa fa-trash"></em></button>
+                                  <button type="button" class="btn btn-danger delete-task-btn" data-id="{{ data.proposal_ids|get_proposal_id:forloop.counter0 }}" data-title="{{task.code}}" data-url="{% url 'proposal_app:opportunity:task-delete-ajax' %}"><em class="fa fa-trash"></em></button>
+
                                 {% endif %}
                               </td>
 

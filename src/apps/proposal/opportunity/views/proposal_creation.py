@@ -110,8 +110,15 @@ class DeleteTaskView(ViewMixin):
         :param request: The HTTP request object containing the task mapping ID.
         :return: JsonResponse indicating the success of the deletion.
         """
-        task_mapping_id = request.POST.get("id")
-        TaskMapping.objects.filter(id=task_mapping_id).delete()
+        _id = request.POST.get("id")
+        _type = request.POST.get("type")
+
+        if _type == "proposal":
+            ProposalCreation.objects.filter(id=_id).delete()
+
+        else:
+            TaskMapping.objects.filter(id=_id).delete()
+
         messages.info(request, "Deleted Successfully")
         return JsonResponse({"message": "Deleted Successfully.", "code": 200, "status": "success"})
 
