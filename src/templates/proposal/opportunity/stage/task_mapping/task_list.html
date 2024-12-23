@@ -107,7 +107,7 @@
                     <tr>
                         <th>Sr No</th>
                         <th class="text-nowrap">Quantity</th>
-                        <th class="text-nowrap">Item Code</th>
+                        <th>Item Code</th>
                         <th>Description</th>
                         <th>Standard Cost</th>
                         <th>Vendor Quoted cost</th>
@@ -130,7 +130,7 @@
                             <td>
                                 <input type="text" data-id="{{ap.id}}" class="form-control quantity" value="{{ap.quantity|default:''}}" data-task-id="{{t_id}}" placeholder="Enter Quantity">
                             </td>
-                            <td class="text-nowrap">{{ ap.item_code }}</td>
+                            <td>{{ ap.item_code }}</td>
                             <td>{{ ap.description|default:'-' }}</td>
                             <td>
                                 <input type="text" id="standardCost{{ ap.id }}" class="form-control standard-cost" data-id="{{ap.id}}" data-task-id="{{t_id}}" value="{{ ap.standard_cost|default:'' }}">
