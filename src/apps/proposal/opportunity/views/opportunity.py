@@ -4,6 +4,7 @@ import urllib.parse
 from typing import Any, Dict
 
 from django.db.models import Q, QuerySet
+from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import get_template
@@ -421,6 +422,7 @@ class UpdateOpportunityView(ViewMixin):
                 if opportunity_obj.term_and_condition != json_data:
                     opportunity_obj.term_and_condition = json_data
                     opportunity_obj.save()
+                    messages.success(self.request, "Terms updated successfully")
                     return {
                         "status": "success",
                         "message": "Terms updated successfully",

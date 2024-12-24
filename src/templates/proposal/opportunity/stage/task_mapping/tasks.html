@@ -140,7 +140,8 @@
                     };
                 },
                 cache: true
-            }
+            },
+            dropdownAutoWidth : true,
           });
 
           // Set Select 2 for new generated rows
@@ -443,7 +444,8 @@
                     };
                 },
                 cache: true
-            }
+            },
+            dropdownAutoWidth : true,
           });
         }
 
@@ -451,6 +453,9 @@
         function updateItemCode(value, id) {
 
           var $select2Element = $(`select[data-id="${id}"].select2-item-code.js-example-programmatic.form-control`);
+
+          console.log("-- value -- ", value);
+          console.log("-- ID --", id);
 
           // Initialize Select2 if not already initialized
           if (!$select2Element.hasClass('select2-hidden')) {
@@ -531,8 +536,6 @@
         // Set value of selectd item code with on change event
         $(document).on('select2:select', '.select2-item-code', function(e) {
 
-          // console.log("Value Selected....");
-
           if (item_description_changed) return; // Prevent triggering if item description is changing
 
           var selectedValue = $(this).val();
@@ -561,15 +564,11 @@
             },
             success: function(response) {
 
-             // console.log("Success Reposnse", response);
-
               if (response.code == 0){
 
-                console.log("Code 0");
+                if (selectedValue === 'Clear') {
 
-                if (selectedValue === '0') {
-
-                  // console.log("Selected Value Is 0")
+                  console.log("-- clear values --")
 
                   // Not remove task ID
                   $row.find('input').each(function() {
@@ -708,6 +707,8 @@
               if (response.code == 0){
                 if (selectedValue === 'Clear') {
 
+                  console.log("--- clear --");
+
                   // Not remove task ID
                   $row.find('input').each(function() {
                     if (!$(this).hasClass('task_id')) {
@@ -727,7 +728,7 @@
               }
               else if (response.code == 200) {
 
-                updateItemCode(response.item_code, id);
+                updateItemCode(response.display_name, id);
 
                 var $stdCostField = $(`input[data-id="${id}"].standard-cost`);
                 var quantity = $(`input[data-id="quantity-${id}"].quantity`);
@@ -1518,7 +1519,8 @@
                     };
                 },
                 cache: true
-            }
+            },
+            dropdownAutoWidth : true,
           });
       });
     </script>
@@ -1932,9 +1934,9 @@
     // NOTE: Change Here to fix blank value isuue...
     // Select Fields
     $(document).ready(function() {
-      $(".select2-vendor, .select2-task, .select2-labor-task").on("keydown", function(e) {
+      $(".select2-vendor, .select2-task, .select2-labor-task").on("select2:select", function(e) {
 
-        //console.log("Updated Single Value");
+        console.log("Updated Single Value");
 
         var $input = $(e.target);
 

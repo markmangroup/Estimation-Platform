@@ -286,13 +286,20 @@ class AddProdRowView(ViewMixin):
 
         try:
             product_obj = Product.objects.get(id=item_code)
-            product_item_code = product_obj.internal_id
-            description = product_obj.display_name
+            
+            # product_item_code = product_obj.internal_id
+            # description = product_obj.display_name
+
+            product_item_code = product_obj.display_name
+            description = product_obj.name
         except Exception:  # Handle custom item code data
             product_item_code = item_code
             try:
                 product_obj = Product.objects.get(id=product.get("description"))
-                description = product_obj.display_name
+            
+                # description = product_obj.display_name
+                
+                description = product_obj.name
             except Exception:  # Handle custom description data
                 description = product.get("description")
 
@@ -550,7 +557,6 @@ class AddTaskView(ViewMixin):
         """
         tasks = request.POST.getlist("task")
         description = request.POST.get("description")
-        print(f'description {type(description)}: {description}')
         document_number = request.POST.get("document_number")
 
         if not tasks or not document_number:
