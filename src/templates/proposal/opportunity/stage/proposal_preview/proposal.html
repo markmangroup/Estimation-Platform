@@ -244,9 +244,9 @@
                   </tr>
 
                   {% for t in opportunity.term_and_condition.term_and_condition %}
-                    <tr class="tac-table tac">
+                    <tr class="tac-table tac {% if t.checked %}{% else %}icon{% endif %}">
                       <!-- <td><i class="fa fa-trash danger remove-terms d-icon"></i></td> -->
-                      <td><input type="checkbox" name="" checked></td>
+                      <td><input type="checkbox" name="" {% if t.checked %}checked{% endif %}></td>
                       <td> <input type="text" class="form-control term" data-id="{{ t.id }}" value="{{ t.text }}"/> </td>
                     </tr>
                   {% endfor %}
@@ -266,9 +266,9 @@
                   </tr>
 
                   {% for p in opportunity.term_and_condition.pump_installation_terms %}
-                    <tr class="pit">
+                    <tr class="pit {% if p.checked %}{% else %}icon{% endif %}">
                       <!-- <td><i class="fa fa-trash danger remove-terms d-icon"></i></td> -->
-                      <td><input type="checkbox" name="" checked></td>
+                      <td><input type="checkbox" name="" {% if p.checked %}checked{% endif %}></td>
                       <td> <input type="text" data-id="{{ p.id }}" class="form-control pump-term" value="{{ p.text }}"/> </td>
                     </tr>
                   {% endfor %}
@@ -296,9 +296,9 @@
                 <table class="table">
                   <tbody>
                     {% for s in opportunity.term_and_condition.sales_agreement %}
-                      <tr class="spa">
+                      <tr class="spa {% if s.checked %}{% else %}icon{% endif %}">
                         <!-- <td><input type="checkbox" name="" checked></td> -->
-                        <td style="width: 4%;"><input type="checkbox" name="" checked></td>
+                        <td style="width: 4%;"><input type="checkbox" name="" {% if s.checked %}checked{% endif %}></td>
                         <td> <input type="text" class="form-control sales-agreement" data-id="{{s.id}}" value="{{s.text}}"/></td>
                       </tr>
                     {% endfor %}
@@ -2179,44 +2179,50 @@
         };
 
         $('.tac').each(function() {
-          if ($(this).find('input[type="checkbox"]:checked').length > 0) {
-            var term_id = $(this).find('.term').data('id');
-            var term_value = $(this).find('.term').val();
-
-            if (term_value !== "" && term_value !== null) {
-                terms.term_and_condition.push({
-                    "id": term_id,
-                    "text": term_value
-                });
-            }
+          var checkbox = $(this).find('input[type="checkbox"]');
+          if (checkbox.length > 0) {
+              var term_id = $(this).find('.term').data('id');
+              var term_value = $(this).find('.term').val();
+      
+              if (term_value !== "" && term_value !== null) {
+                  terms.term_and_condition.push({
+                      "id": term_id,
+                      "text": term_value,
+                      "checked": checkbox.is(':checked') // Sets true if checked, false otherwise
+                  });
+              }
           }
         });
 
         $('.pit').each(function() {
-          if ($(this).find('input[type="checkbox"]:checked').length > 0) {
-            var pump_term_id = $(this).find('.pump-term').data('id');
-            var pump_term_value = $(this).find('.pump-term').val();
-
-            if (pump_term_value !== "" && pump_term_value !== null) {
-                terms.pump_installation_terms.push({
-                    "id": pump_term_id,
-                    "text": pump_term_value
-                });
-            }
+          var checkbox = $(this).find('input[type="checkbox"]');
+          if (checkbox.length > 0) {
+              var term_id = $(this).find('.pump-term').data('id');
+              var term_value = $(this).find('.pump-term').val();
+      
+              if (term_value !== "" && term_value !== null) {
+                  terms.pump_installation_terms.push({
+                      "id": term_id,
+                      "text": term_value,
+                      "checked": checkbox.is(':checked') // Sets true if checked, false otherwise
+                  });
+              }
           }
         });
 
         $('.spa').each(function() {
-          if ($(this).find('input[type="checkbox"]:checked').length > 0) {
-            var sales_agreement_id = $(this).find('.sales-agreement').data('id');
-            var sales_agreement_value = $(this).find('.sales-agreement').val();
-        
-            if (sales_agreement_value !== "" && sales_agreement_value !== null) {
-                terms.sales_agreement.push({
-                    "id": sales_agreement_id,
-                    "text": sales_agreement_value
-                });
-            }        
+          var checkbox = $(this).find('input[type="checkbox"]');
+          if (checkbox.length > 0) {
+              var term_id = $(this).find('.sales-agreement').data('id');
+              var term_value = $(this).find('.sales-agreement').val();
+      
+              if (term_value !== "" && term_value !== null) {
+                  terms.sales_agreement.push({
+                      "id": term_id,
+                      "text": term_value,
+                      "checked": checkbox.is(':checked') // Sets true if checked, false otherwise
+                  });
+              }
           }
         });
 
@@ -2237,12 +2243,14 @@
           },
           success: function(response) {
             if (response.status == "success"){
-              toastr.success(response.message, 'Success', {
+              /*toastr.success(response.message, 'Success', {
                 closeButton: true,
                 progressBar: true,
                 positionClass: 'toast-bottom-right',
                 timeOut: 6000
-              });
+              }); */
+              window.location.reload();
+              
             } else if (response.status == "error"){
               toastr.warning(response.message, 'Warning', {
                 closeButton: true,
