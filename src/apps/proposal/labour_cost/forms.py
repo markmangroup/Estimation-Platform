@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 
 class ImportLabourCostCSVForm(forms.Form):
     """
-    A form for uploading CSV/XLSX files with labour cost data.
+    A form for uploading CSV/XLSX files with Labor Cost data.
     Validates file type and ensures required columns are present.
     """
 

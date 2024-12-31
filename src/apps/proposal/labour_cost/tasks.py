@@ -74,7 +74,7 @@ def import_labour_cost_from_xlsx(file: InMemoryUploadedFile) -> dict:
                 },
             )
             action = "Created" if created else "Updated"
-            context["messages"].append(f"{action} labour cost: {labour_task}")
+            context["messages"].append(f"{action} Labor Cost: {labour_task}")
 
         except Exception as e:
             LOGGER.error(f"Error processing record: {e}")
