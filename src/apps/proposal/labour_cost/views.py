@@ -92,7 +92,7 @@ class LabourCostCreateFromCSVFormView(FormView):
         return JsonResponse(
             {
                 "redirect": reverse("proposal_app:labour_cost:labour-cost-list"),
-                "message": "Labour Cost imported successfully!",
+                "message": "Labor Cost imported successfully!",
                 "status": "success",
                 "code": 200,
             }

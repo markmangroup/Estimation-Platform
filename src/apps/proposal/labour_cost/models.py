@@ -15,4 +15,4 @@ class LabourCost(BaseModel):
         return self.labour_task
 
     class Meta:
-        verbose_name = "Proposal Labour Cost"
+        verbose_name = "Proposal Labor Cost"
