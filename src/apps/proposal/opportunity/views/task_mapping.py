@@ -407,6 +407,7 @@ class AssignTaskLaborView(ViewMixin):
 
             current_task_id = data["id"][0]
             value = data["value"][0]
+            # document_number = data["document_number"][0]  # Currently we are not using this value.
 
             current_task = TaskMapping.objects.get(id=current_task_id)
             assign_labor_task = TaskMapping.objects.get(id=value)

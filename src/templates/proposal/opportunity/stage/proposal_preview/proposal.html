@@ -1869,6 +1869,11 @@
           success: function(response) {
             // console.log('Response:', response);
             if (response.status == "success") {
+              if (inputType == 'task_description'){
+                console.log('Task Description');
+                $(`.edi-description[data-task-id=${$id}]`).val(value);
+                console.log('Task Description Updated');
+              }
               toastr.success(response.message, 'Updated', {
                 closeButton: true,
                 progressBar: true,

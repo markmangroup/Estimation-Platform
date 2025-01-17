@@ -26,22 +26,22 @@ class ItemCodeSearchView(ViewMixin):
         :param request: The HTTP request object containing search parameters.
         :return: JsonResponse containing a list of item codes matching the search term.
         """
-        search_term = request.GET.get("q", "")
+        search_term = request.GET.get("q", "").strip()
+        search_terms = search_term.split()
+        LOGGER.info(f"Search Terms: {search_terms}")
 
-        # NOTE: Old Code
-        # item_codes = Product.objects.filter(internal_id__icontains=search_term)
-        # item_code_list = [{"id": item_code.id, "text": item_code.internal_id} for item_code in item_codes]
-        # item_code_list.insert(0, {"id": "0", "text": "--------------"})
-        # return JsonResponse({"results": item_code_list})
+        if search_terms:
+            queryset = Product.objects.all()
 
-        # Define the query based on the search term
-        queryset = (
-            Product.objects.filter(display_name__icontains=search_term)[:50]
-            if search_term
-            else Product.objects.filter(display_name__isnull=False).exclude(display_name="")[:50]
-        )
+            for term in search_terms:
+                queryset = queryset.filter(display_name__icontains=term)
+
+            queryset = queryset[:50]
+        else:
+            queryset = Product.objects.filter(display_name__isnull=False).exclude(display_name="")[:50]
+
         results = [{"id": product.id, "text": product.display_name} for product in queryset]
-        results.insert(0, {"id": "Clear", "text": "--------------"})  # Add the "Clear" option at the top of the list
+        results.insert(0, {"id": "Clear", "text": "--------------"})
         return JsonResponse({"results": results})
 
     def post(self, request, *args, **kwargs) -> JsonResponse:
@@ -102,7 +102,7 @@ class ItemDescriptionSearchView(ViewMixin):
         queryset = (
             Product.objects.filter(name__icontains=search_term)[:50]
             if search_term
-            else Product.objects.filter(name__isnull=False).exclude(display_name="")[:50]
+            else Product.objects.filter(name__isnull=False).exclude(name="")[:50]
         )
         results = [{"id": product.id, "text": product.name} for product in queryset]
         results.insert(0, {"id": "Clear", "text": "--------------"})  # Add the "Clear" option at the top of the list
