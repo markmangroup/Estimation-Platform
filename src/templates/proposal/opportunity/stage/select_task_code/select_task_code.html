@@ -150,6 +150,7 @@
   $(document).on("change", ".edi-description", function(e) {
       var field = $(this);
       var id = field.data('id');
+      var task_id = field.data('task-id');
       var description = field.val();
 
       if (!id || !description) {
@@ -169,8 +170,9 @@
               task_code_id: id,
               task_description: description,
               csrfmiddlewaretoken: '{{ csrf_token }}'
-          },
-          success: function(response) {
+            },
+            success: function(response) {
+              $(`.task_description[data-id=${task_id}]`).val(description); // Sync description value with Task Mapping screen.
               toastr.success(response.message || "Description updated successfully.", "Success", {
                   closeButton: true,
                   progressBar: true,
@@ -232,12 +234,7 @@
                 timeOut: 6000
               });
             } else if (data["code"] == "200") {
-              toastr.info(data.message, 'Deleted', {
-                closeButton: true,
-                progressBar: true,
-                positionClass: 'toast-bottom-right',
-                timeOut: 6000
-              });
+              window.location.reload();
 						}
 					}
 				});

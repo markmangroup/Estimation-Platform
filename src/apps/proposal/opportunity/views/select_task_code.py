@@ -9,7 +9,7 @@ from apps.constants import LOGGER, ERROR_RESPONSE
 from apps.mixin import CustomDataTableMixin, CustomViewMixin, ViewMixin
 from apps.proposal.task.models import Task
 
-from ..models import Opportunity, SelectTaskCode
+from ..models import Opportunity, SelectTaskCode, TaskMapping
 
 
 class SelectedTaskListAjaxView(CustomDataTableMixin):
@@ -36,8 +36,11 @@ class SelectedTaskListAjaxView(CustomDataTableMixin):
     
     def _get_description(self, obj):
         """Make description editable."""
+        task_mapping_object = TaskMapping.objects.filter(
+                opportunity=obj.opportunity, task=obj.task,
+        ).first()
         t = get_template("proposal/partial/edit_description.html")
-        return t.render({"o": obj,})
+        return t.render({"o": obj, "task": task_mapping_object,})
 
     def get_queryset(self):
         """Returns a list of selected tasks"""
@@ -202,12 +205,28 @@ class DeleteSelectedTask(CustomViewMixin):
         :param task_id: The ID of the task to be deleted.
         """
         try:
-            select_task_code = SelectTaskCode.objects.filter(id=task_id)
-            select_task_code.delete()
+            select_task_code = SelectTaskCode.objects.filter(id=task_id).first()
+            task_mapping = TaskMapping.objects.filter(
+                opportunity=select_task_code.opportunity,
+                task=select_task_code.task, 
+                description=(select_task_code.task_description 
+                    if select_task_code.task_description 
+                    else select_task_code.task.description
+                )
+            )
 
-            self._code = 200
-            self._message = "Task Deleted Successfully"
-            self._status = "success"
+            LOGGER.info(f"-- Select Task Code -- {select_task_code}")
+            LOGGER.info(f"-- Task Mapping Object -- {task_mapping}")
+
+            select_task_code.delete()
+            task_mapping.delete()
+            LOGGER.info(f"-- Deleted Task In Sync -- ")
+
+            # :: Deprecated ::
+            # self._code = 200
+            # self._message = "Task Deleted Successfully"
+            # self._status = "success"
+            messages.info(self.request, "Task Deleted Successfully")
 
         except Exception as e:
             LOGGER.error(f"Select Task Code Delete Error: {e}")

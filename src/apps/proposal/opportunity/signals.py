@@ -1,7 +1,7 @@
 import random
 
 from django.db.models import Q
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save, pre_delete
 from django.dispatch import receiver
 
 from apps.constants import LOGGER
@@ -37,7 +37,6 @@ def generate_invoice_details(sender, instance, created, **kwargs):
         LOGGER.info(f"-- Invoice created for opportunity -- ")
         Invoice.objects.create(opportunity=instance, invoice_number=invoice_number)
 
-
 @receiver(post_save, sender=SelectTaskCode)
 def save_task_mapping_tasks(sender, instance, created, **kwargs):
     """
@@ -67,7 +66,6 @@ def save_task_mapping_tasks(sender, instance, created, **kwargs):
         except Exception as e:
             LOGGER.error(f"-- An error occurred while sync data with select task code -- {e}")
 
-
 @receiver(post_save, sender=Document)
 def remove_document(sender, instance, created, **kwargs):
     """
@@ -87,7 +85,6 @@ def remove_document(sender, instance, created, **kwargs):
             document_obj.delete()
         except Exception as e:
             LOGGER.error(f"-- An error occurred while remove empty document from db -- {e}")
-
 
 @receiver(post_save, sender=TaskMapping)
 def sync_task_description_value(sender, instance, created, **kwargs):
@@ -110,3 +107,50 @@ def sync_task_description_value(sender, instance, created, **kwargs):
             select_task_code.save()
         except Exception as e:
             LOGGER.info(f"-- An error occurred while sync data with select task code -- {e}")
+
+@receiver(pre_save, sender=TaskMapping)
+def remove_assigned_task(sender, instance, **kwargs):
+    """
+    Removes the old assigned task after a new one is assigned.
+
+    Args:
+        sender: The model class that sent the signal (TaskMapping).
+        instance: The actual instance of TaskMapping that is being saved.
+        **kwargs: Additional keyword arguments.
+    """
+    if instance.pk:
+        try:
+            # Fetch the existing instance from the database
+            old_instance = TaskMapping.objects.get(pk=instance.pk)
+
+            # Proceed only if there was a previous assignee
+            if old_instance.assign_to:
+                # Get tasks associated with the same opportunity and "labor" in the description
+                task_queryset = TaskMapping.objects.filter(
+                    opportunity__internal_id=old_instance.opportunity_id,
+                    description__icontains="labor"
+                )
+
+                # Extract non-null 'assign_to' values from the queryset
+                assigned_list = task_queryset.filter(assign_to__isnull=False).values_list('assign_to', flat=True)
+
+                if assigned_list:
+                    # Update all non-assigned tasks for this opportunity
+                    TaskMapping.objects.filter(
+                        opportunity__internal_id=old_instance.opportunity_id
+                    ).exclude(
+                        assign_to__in=assigned_list
+                    ).exclude(
+                        description__icontains="labor"
+                    ).update(
+                        is_assign_task=False,
+                        assign_to=""
+                    )
+                else:
+                    LOGGER.info(f"No tasks with 'labor' description assigned to anyone for opportunity {old_instance.opportunity_id}.")
+
+        except TaskMapping.DoesNotExist:
+            LOGGER.error(f"TaskMapping with id {instance.pk} does not exist.")
+
+    else:
+        LOGGER.info("This is a new task, no previous assignment to clean up.")

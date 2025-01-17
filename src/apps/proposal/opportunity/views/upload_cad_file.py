@@ -492,9 +492,8 @@ class UploadCADFile(ViewMixin):
         uploaded_file = request.FILES["file"]
         document_number = request.POST.get("document_number")
 
-        if uploaded_file.name.lower().endswith(".tmp"):
-            # Generate and save Material List
-            # NOTE: Converted Macro code into python ("Split List")
+        if uploaded_file.name.lower().endswith((".tmp", ".txt")):
+            # Generate and save Material List            
             material_list = self.generate_material_list(uploaded_file, document_number)
             material_list_df = pd.DataFrame(material_list)
 

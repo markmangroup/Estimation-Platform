@@ -246,6 +246,7 @@ class TaskMapping(BaseModel):
     opportunity = models.ForeignKey(Opportunity, on_delete=models.CASCADE, related_name="task_mapping_opportunity")
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="task_mapping_tasks", blank=True, null=True)
 
+    # Assign labor 
     is_assign_task = models.BooleanField(_("Is Assign Task"), default=False)
     assign_to = models.CharField(_("Assign to"), max_length=255, null=True, blank=True)
 
