@@ -102,6 +102,6 @@ jobs:
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'test-dev-eastus-webapp'
+          app-name: 'laurelag-prod-eastus-webapp'
           slot-name: 'Production'
           startup-command: './startup.sh'
