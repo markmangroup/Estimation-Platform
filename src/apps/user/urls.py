@@ -1,6 +1,7 @@
 from django.urls import path
 
 from . import rental_user, views
+from .views import health_check  
 
 app_name = "user"
 
@@ -17,4 +18,5 @@ urlpatterns = [
     path("rental/user/<int:pk>/edit", rental_user.UpdateUserView.as_view(), name="rental-edit-user"),
     path("rental/user/delete/ajax", rental_user.DeleteUserView.as_view(), name="ajax-rental-user-delete"),
     path("rental/user/list/ajax", rental_user.UserAjaxListView.as_view(), name="ajax-rental-user-list"),
+    path('health/', health_check, name='health_check'),
 ]

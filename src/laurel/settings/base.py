@@ -15,9 +15,13 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+# Changes for Application Insights
+from opencensus.ext.azure.log_exporter import AzureLogHandler
+from opencensus.ext.azure.trace_exporter import AzureExporter
+from opencensus.trace.samplers import ProbabilitySampler
+
 dotenv_path = os.path.join(os.path.dirname(__file__), ".env")
 load_dotenv(dotenv_path)
-
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 
@@ -105,6 +109,7 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
     "django_auto_logout.middleware.auto_logout",
     "apps.user.middleware.CheckUserAppTypeMiddleware",
+    "opencensus.ext.django.middleware.OpencensusMiddleware",
 ]
 
 ROOT_URLCONF = "laurel.urls"
@@ -194,6 +199,9 @@ MEDIA_URL = "/media/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Logging Configuration for Azure Application Insights
+INSTRUMENTATION_KEY = os.getenv("APPINSIGHTS_INSTRUMENTATIONKEY")
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -212,6 +220,12 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "formatter": "simple",
         },
+              # Added Azure Log Handler
+        "azure": {
+            "level": "INFO",
+            "class": "opencensus.ext.azure.log_exporter.AzureLogHandler",
+            "instrumentation_key": os.getenv("APPINSIGHTS_INSTRUMENTATIONKEY"),
+        },
     },
     "root": {
         "handlers": ["console"],
@@ -229,6 +243,16 @@ LOGGING = {
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 SOCIALACCOUNT_ADAPTER = "apps.user.adapter.CustomSocialAccountAdapter"
+
+# Tracing Configuration for Azure Application Insights
+OPENCENSUS = {
+    'TRACE': {
+        'SAMPLER': ProbabilitySampler(1.0),  # 1.0 means 100% of the requests will be sampled
+        'EXPORTER': AzureExporter(
+            connection_string = os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING")
+        ),
+    }
+}
 
 SOCIALACCOUNT_PROVIDERS = {
     "microsoft": {

@@ -18,7 +18,10 @@ from apps.mixin import AdminMixin, ProposalCreateViewMixin
 from apps.user.models import User
 
 from .forms import UserForm, UserUpdateForm
+from django.http import JsonResponse  
 
+def health_check(request):  
+    return JsonResponse({'status': 'ok'}) 
 
 class LoginView(TemplateView):
     """

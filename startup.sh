@@ -1,3 +1,6 @@
+# activate the virtual environment
+source antenv/bin/activate
+
 # set environment variables required by your Django application
 export DEBUG="False"
 
