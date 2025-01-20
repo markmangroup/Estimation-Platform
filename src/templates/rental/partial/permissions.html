@@ -1,0 +1,9 @@
+{% load static %}
+{% for permission in permissions %}
+    <span class="badge bg-light-primary mb-2">{{ permission }}</span>
+    {% if forloop.counter|divisibleby:3 and not forloop.last %}
+        <br>
+    {% endif %}
+{% empty %}
+    <span class="badge bg-light-danger mb-2">No Permissions</span>
+{% endfor %}

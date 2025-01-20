@@ -402,7 +402,7 @@ class TotalGPPerBreakdown(TemplateViewMixin):
         totals["total_gp"] = totals["total_sell"] - total_cost
         try:
             totals["total_gp_percent"] = (totals["total_gp"] / totals["total_sell"]) * 100
-        
+
         except ZeroDivisionError:
             totals["total_gp_percent"] = 0
 

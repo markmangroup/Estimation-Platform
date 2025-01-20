@@ -1,0 +1,100 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'vendors/css/leaflet.css' %}">
+<link rel="stylesheet" href="{% static 'app/css/pages/map-leaflet.min.css' %}">
+
+<div class="card">
+    <div class="card-body">
+        <section id="maps-leaflet">
+            <div id="legend">
+                <div class="legend-item">
+                    <img src="{% static 'app/img/blue2.png' %}" width="35" height="35" alt="Warehouse Icon">
+                    <span>Warehouse</span>
+                </div>
+                <div class="legend-item">
+                    <img src="{% static 'app/img/red2.png' %}" width="35" height="35" alt="Customer Icon">
+                    <span>Customer</span>
+                </div>
+            </div>
+            <div id="maps-leaflet-marker-dragable" class="maps-leaflet-container"></div>
+        </section>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBfimrFLSTYP3EjNsQsZCkh46hv9r07_H4"></script>
+
+{% block script %}
+
+    <!-- Map JS -->
+    <script>
+        const Icon = "{% static 'app/img/red2.png' %}";
+        const BlueIcon = "{% static 'app/img/blue2.png' %}";
+
+        // Dynamic List Of Warehouse
+        const warehouse = {{ warehouse|safe }}
+
+        // List Customer coordinates
+        const customers = {{ customer|safe}}
+
+        $(document).ready(function () {
+            const map = new google.maps.Map(document.getElementById("maps-leaflet-marker-dragable"), {
+                center: { lat: 39.6832332500313, lng: -117.32223701168071  },
+                zoom: 6,
+            });
+
+            // Function to create the warehouse detail URL dynamically
+            function getWarehouseDetailUrl(id) {
+                return "{% url 'rental:warehouse:warehouse_detail' 0 %}".replace(0, id);
+            }
+
+            // Function to create the customer detail URL dynamically
+            function getCustomerDetailUrl(id) {
+                return "{% url 'rental:rental_customer:customer-detail' 0 %}".replace(0, id);
+            }
+
+            // Function to add markers to the map
+            function addMarkers(locations, iconUrl, getLinkUrl) {
+                locations.forEach(location => {
+                    const marker = new google.maps.Marker({
+                        position: { lat: location.lat, lng: location.lng },
+                        map: map,
+                        title: location.name,
+                        icon: {
+                            url: iconUrl,
+                            scaledSize: new google.maps.Size(60, 60),
+                        },
+                    });
+
+                    const infoWindowContent = `
+                        <div>
+                            <strong>${location.name}</strong><br>
+                            Address: ${location.address}<br>
+                            <a href="${getLinkUrl(location.id)}" target='_blank'>View Details</a>
+                            ${location.product ? `<br>Product: <a href="${location.product.url}" target='_blank'>${location.product.name}</a>` : ''}
+                        </div>
+                    `;
+
+                    const infoWindow = new google.maps.InfoWindow({
+                        content: infoWindowContent,
+                    });
+
+                    marker.addListener("click", () => {
+                        infoWindow.open(map, marker);
+                    });
+                });
+            }
+
+            // Add markers for warehouses
+            addMarkers(warehouse, BlueIcon, id => getWarehouseDetailUrl(id));
+
+            // Add markers for customers
+            addMarkers(customers, Icon, id => getCustomerDetailUrl(id));
+
+            const legend = document.getElementById("legend");
+            map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
+        });
+
+    </script>
+
+{% endblock script %}

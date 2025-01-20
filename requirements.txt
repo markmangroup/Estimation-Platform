@@ -61,3 +61,8 @@ django-multiselectfield
 
 #Django auto logged out
 django-auto-logout~=0.5.1
+
+#Celery
+django-celery~=3.1.17
+django-celery-beat~=2.7.0
+django-celery-results~=2.5.1

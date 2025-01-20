@@ -26,9 +26,9 @@ def round_value(value, decimals=2):
         return ""
 
 
-@register.filter(name='get_proposal_id')
+@register.filter(name="get_proposal_id")
 def get_proposal_id(proposal_ids, index):
-    """ Returns the proposal ID at the given index """
+    """Returns the proposal ID at the given index"""
     try:
         return proposal_ids[index]
     except IndexError:

@@ -1,0 +1,7 @@
+{% load static %}
+<td class="user-action-buttons">
+
+    <a data-url="{{edit_url}}" hx-get="{{edit_url}}" data-toggle="modal" data-target="{{data_target}}" hx-swap="innerHTML" hx-target="{{hx_target}}" class="success mr-2 htmx-trigger-btn"> <i class="fa ft-edit font-medium-3 mr-2"></i></a>
+
+    <a href="javascript:;" data-title="{{o.username}}" data-url="{{delete_url}}" data-id="{{o.id}}" class="danger p-0 user-delete-btn"><i class="ft-trash-2 font-medium-3"></i></a>
+</td>

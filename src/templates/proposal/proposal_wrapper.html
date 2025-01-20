@@ -52,12 +52,18 @@
                   </span>
               </a>
               <div class="dropdown-menu text-left dropdown-menu-right m-0 pb-0" aria-labelledby="drop-down-1">
-                  <a class="dropdown-item" href="{% url 'rental:map_view' %}">
+
+                  {% if ACCESS %}
+
+                    <a class="dropdown-item" href="{% url 'rental:map_view' %}">
                       <div class="d-flex align-items-center">
                           <i class="ft-refresh-ccw mr-2"></i>
                           <span>Rental Application</span>
                       </div>
-                  </a>
+                    </a>
+
+                  {% endif %}
+
                   <a class="dropdown-item" href="{% url 'user:logout' %}">
                       <div class="d-flex align-items-center">
                           <i class="ft-power mr-2"></i>

@@ -105,7 +105,7 @@ class ProposalDetailViewMixin(LoginRequiredMixin, DetailView):
         return context
 
 
-class WarehouseViewMixin(TemplateView):
+class WarehouseViewMixin(LoginRequiredMixin, TemplateView):
     """
     Mixin for rendering warehouse-related views.
     """
@@ -116,6 +116,32 @@ class WarehouseViewMixin(TemplateView):
         context = super().get_context_data(**kwargs)
         context["template_name"] = self.render_template_name
         return context
+
+
+class WarehouseDetailViewMixin(LoginRequiredMixin, DetailView):
+    """
+    Mixin for rendering warehouse-related views.
+    """
+
+    template_name = "rental/warehouse_wrapper.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["template_name"] = self.render_template_name
+        return context
+
+
+# class WarehouseListViewMixin(LoginRequiredMixin, ListView):
+#     """
+#     Mixin for rendering rental-related views.
+#     """
+
+#     template_name = "rental/warehouse_wrapper.html"
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context["template_name"] = self.render_template_name
+#         return context
 
 
 class CustomDataTableMixin(LoginRequiredMixin, DataTableMixin, View):

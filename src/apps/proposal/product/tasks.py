@@ -1,9 +1,6 @@
 import os
 
 import pandas as pd
-from concurrent.futures import ThreadPoolExecutor, as_completed
-
-from django.db import transaction
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from apps.constants import LOGGER
@@ -12,7 +9,11 @@ from apps.proposal.product.models import AdditionalMaterials, Product
 
 def import_product_from_file(file: InMemoryUploadedFile) -> dict:
     """
-    Imports product data from an uploaded Excel or CSV file using multithreading to reduce the import time.
+    Imports product data from an uploaded Excel or CSV file.
+
+    :prams file (File): The uploaded file containing product data.
+    :return: A context dictionary with messages about created/updated products
+            or errors if the columns do not match or records are skipped.
     """
     # Define the expected columns
     expected_columns = {
@@ -59,24 +60,20 @@ def import_product_from_file(file: InMemoryUploadedFile) -> dict:
     context = {"messages": []}
     skipped_records = []
 
-    # Helper function to process a single record
-    def process_record(record):
+    # Validate 'Internal ID' and process records
+    for record in records:
         internal_id = record.get("Internal ID")
         if not isinstance(internal_id, (int, str)):
-            print("skipped 1")
             skipped_records.append(record)
             context["messages"].append(f"Invalid 'Internal ID' in record: {record}. Must be an integer.")
-            return
+            continue
 
         try:
-            
             internal_id = int(internal_id)
-            print(f'internal_id {type(internal_id)}: {internal_id}')
-        except ValueError as v:
-            print("skipped 2", v)
+        except ValueError:
             skipped_records.append(record)
             context["messages"].append(f"Invalid 'Internal ID' in record: {record}. Must be an integer.")
-            return
+            continue
 
         # Prepare data for updating or creating the product
         product_data = {
@@ -85,7 +82,7 @@ def import_product_from_file(file: InMemoryUploadedFile) -> dict:
             "description": record["Description"],
             "primary_units_type": record["Primary Units Type"],
             "primary_stock_unit": record["Primary Stock Unit"],
-            "std_cost": record["Std Cost"] or None,
+            "std_cost": record["Std Cost"],
             "preferred_vendor": record["Preferred Vendor"],
             "type": record["Type"],
             "name": record["Name"],
@@ -95,24 +92,15 @@ def import_product_from_file(file: InMemoryUploadedFile) -> dict:
         }
 
         try:
-            # Use Django's transaction management for atomic updates
-            with transaction.atomic():
-                product, created = Product.objects.update_or_create(
-                    internal_id=internal_id,
-                    defaults=product_data,
-                )
-                action = "Created" if created else "Updated"
-                context["messages"].append(f"{action} product with Internal ID: {internal_id}")
+            product, created = Product.objects.update_or_create(
+                internal_id=internal_id,
+                defaults=product_data,
+            )
+            action = "Created" if created else "Updated"
+            context["messages"].append(f"{action} product with Internal ID: {internal_id}")
         except Exception as e:
-            print("skipped 3", e)
             skipped_records.append(record)
             context["messages"].append(f"Error processing record: {record}. Error: {str(e)}")
-
-    # Use ThreadPoolExecutor to process records concurrently
-    with ThreadPoolExecutor(max_workers=15) as executor:
-        futures = {executor.submit(process_record, record): record for record in records}
-        for future in as_completed(futures):
-            pass  # Simply waiting for all threads to finish
 
     if skipped_records:
         LOGGER.info(f"Skipped Records: {skipped_records}")
@@ -181,13 +169,16 @@ def import_additional_material_from_file(file: InMemoryUploadedFile) -> dict:
 
         try:
             if material_id:
+                print("-=-=-====-==---")
                 material, created = AdditionalMaterials.objects.update_or_create(
                     material_id=material_id,
                     defaults=material_data,
                 )
+                print("-=-=-====-==--- 2")
                 action = "Created" if created else "Updated"
                 context["messages"].append(f"{action} Material with Internal ID: {material_id}")
         except Exception as e:
+            print("-=-=-=-=-=-=-=-=")
             skipped_material.append(record)
             context["messages"].append(f"Error processing record: {record}. Error: {str(e)}")
 

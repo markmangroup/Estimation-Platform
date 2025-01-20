@@ -1,8 +1,8 @@
 import csv
 import math
+import re
 from collections import defaultdict
 from io import StringIO
-import re
 from typing import Optional
 
 import pandas as pd
@@ -303,14 +303,16 @@ class UploadCADFile(ViewMixin):
         product_code_match = re.search(r"ProductCode\s*=\s*\[([0-9, ]+)\]", formula)
         product_code = []
         if product_code_match:
-            product_code = list(map(int, product_code_match.group(1).split(',')))
-        
+            product_code = list(map(int, product_code_match.group(1).split(",")))
+
         cumulative_values = {}
 
         for i in product_code:
             try:
                 _amf = AdditionalMaterials.objects.get(material_id=i)
-                formula_with_values = formula.replace("$qty", str(qty)).replace("$amf", str(_amf.additional_material_factor))
+                formula_with_values = formula.replace("$qty", str(qty)).replace(
+                    "$amf", str(_amf.additional_material_factor)
+                )
                 formula_content = re.sub(r"ProductCode\s*=\s*\[.*?\],?\s*", "", formula_with_values).strip()
                 calculated_value = eval(formula_content)
                 cumulative_values[i] = cumulative_values.get(i, 0) + calculated_value
@@ -334,7 +336,7 @@ class UploadCADFile(ViewMixin):
     def generate_glue_and_additional_material_list(self, material_list: dict, document_number: str) -> dict:
         glue_and_additional_data = {"Quantity": [], "Description": [], "Item": []}
 
-        glue_list : list = []
+        glue_list: list = []
         for qty, item in zip(material_list.get("Quantity", []), material_list.get("Item Number", [])):
             try:
                 glue_qty = self.get_final_unit(qty, item)
@@ -343,13 +345,13 @@ class UploadCADFile(ViewMixin):
             except Exception as e:
                 print(f"Error processing item {item}: {e}")
 
-        result : dict = {}
+        result: dict = {}
         for d in glue_list:
             for key, value in d.items():
                 # Add value to the key directly, initialize if key doesn't exist
                 result[key] = result.get(key, 0) + value
-        
-        print(f'result {type(result)}: {result}')
+
+        print(f"result {type(result)}: {result}")
 
         for key, value in result.items():
             try:
@@ -493,7 +495,7 @@ class UploadCADFile(ViewMixin):
         document_number = request.POST.get("document_number")
 
         if uploaded_file.name.lower().endswith((".tmp", ".txt")):
-            # Generate and save Material List            
+            # Generate and save Material List
             material_list = self.generate_material_list(uploaded_file, document_number)
             material_list_df = pd.DataFrame(material_list)
 

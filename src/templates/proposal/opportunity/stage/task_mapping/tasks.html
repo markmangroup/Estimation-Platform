@@ -236,20 +236,20 @@
           if (multi_row) {
             var currentRowCount = $(this).closest('tr').find(".sr-no").length;
             var tr_id = $(this).closest('tr').find("#sr-no");
-    
+
             for (var i = 0; i < numRows; i++) {
                 unique_id = generateUniqueId();
                 var srNo = currentRowCount + i + 1;
                 html = generateRow(unique_id, srNo);
-    
+
                 // Find the current row with `row-template-${task_id}` and check if it has the plus button
                 var currentRow = $(this).closest('tr').find(`.new_prod:last`);
-    
+
                 // If the current row contains the add-row-btn (plus button), append a new row after it
                 if (currentRow.find('.add-row-btn').length > 0) {
                     var data_id = $(this).data('id');
                     var tableBody = $(`#tableBody-${data_id}`);
-    
+
                     // Insert the new row after the current row
                     tableBody.append(html);
                     $(`#row-template-${unique_id}`).insertAfter(currentRow);
@@ -257,7 +257,7 @@
                     $(`#tableBody-${data_id} .add-row-btn`).each(function(index, element) {
                       // Hide the button for all rows except the last one
                       if (index !== $(`#tableBody-${data_id} .add-row-btn`).length - 1) {
-                          $(element).hide();                          
+                          $(element).hide();
                       } else {
                           $(element).show();
                       }
@@ -266,14 +266,14 @@
                     //vendorCostValidation(); // Add validation of vendor quoted cost
                     InitSelects(); // Initialize select2 for the new selects
                 }
-    
+
                 tr_id.text(srNo);
             }
             UpdateSrNo(tableBody);
           }else{
 
             var currentRowCount = $(this).closest('tr').find(".sr-no");
-            var curent_value = parseInt(currentRowCount.text(), 10);            
+            var curent_value = parseInt(currentRowCount.text(), 10);
 
             for (var i = 0; i < numRows; i++) {
 
@@ -298,13 +298,13 @@
                 var tableBody = $(`#tableBody-${data_id}`);
 
                 // Insert the new row before the current row
-                tableBody.append(html);    
+                tableBody.append(html);
                 $(`#row-template-${unique_id}`).insertAfter(currentRow);
 
                 $(`#tableBody-${data_id} .add-row-btn`).each(function(index, element) {
                   // Hide the button for all rows except the last one
                   if (index !== $(`#tableBody-${data_id} .add-row-btn`).length - 1) {
-                      $(element).hide();                          
+                      $(element).hide();
                   } else {
                       $(element).show();
                   }
@@ -323,7 +323,7 @@
           var $button = $(this);
           var uniqueId = generateUniqueId();
           var taskId = $button.data('id');
-          
+
           var currentRowCount = $(this).closest('tr').find(".sr-no");
           var curent_value = parseInt(currentRowCount.text(), 10);
           var srNo = curent_value + 1;
@@ -334,10 +334,10 @@
           $(`#tableBody-${taskId} .add-row-btn`).each(function(index, element) {
             // Hide the button for all rows except the last one
             if (index !== $(`#tableBody-${taskId} .add-row-btn`).length - 1) {
-                $(element).hide();                          
+                $(element).hide();
             } else {
                 $(element).show();
-            }     
+            }
           });
 
           // vendorCostValidation(); // Add validation of vendor quoted cost
@@ -1008,7 +1008,7 @@
                 if (currentRow.find('.add-labor-row').length > 0) {
                     var data_id = $(this).data('id');
                     var tableBody = $(`#tableBody-${data_id}`);
-    
+
                     // Insert the new row after the current row
                     tableBody.append(html);
                     $(`#row-${unique_id}`).insertAfter(currentRow);
@@ -1016,7 +1016,7 @@
                     $(`#tableBody-${data_id} .add-labor-row`).each(function(index, element) {
                       // Hide the button for all rows except the last one
                       if (index !== $(`#tableBody-${data_id} .add-labor-row`).length - 1) {
-                          $(element).hide();                          
+                          $(element).hide();
                       } else {
                           $(element).show();
                       }
@@ -1037,7 +1037,7 @@
 
                 unique_id = generateUniqueId();
                 var srNo = curent_labor_value + 1;
-                
+
                 currentLaborRowCount.text(curent_labor_value);
 
                 html = _generateRow(unique_id, srNo);
@@ -1061,7 +1061,7 @@
                 $(`#tableBody-${data_id} .add-labor-row`).each(function(index, element) {
                   // Hide the button for all rows except the last one
                   if (index !== $(`#tableBody-${data_id} .add-labor-row`).length - 1) {
-                      $(element).hide();                          
+                      $(element).hide();
                   } else {
                       $(element).show();
                   }
@@ -1077,19 +1077,19 @@
           e.preventDefault();
           var $button = $(this);
           var uniqueId = generateUniqueId();
-          
+
           var taskId = $button.data('id');
-          
+
           var currentRowCount = $(this).closest('tr').find(".sr-no");
           var curent_value = parseInt(currentRowCount.text(), 10);
           var srNo = curent_value + 1;
 
           var newRowHtml = _generateRow(uniqueId, srNo);
 
-          $(`#tableBody-${taskId} tbody`).append(newRowHtml);           
+          $(`#tableBody-${taskId} tbody`).append(newRowHtml);
           $(`#tableBody-${taskId} .add-labor-row`).each(function(index, element) {
             if (index !== $(`#tableBody-${taskId} .add-labor-row`).length - 1) { // Hide the button for all rows except the last one
-                $(element).hide();                          
+                $(element).hide();
             } else {
                 $(element).show();
             }
@@ -1103,7 +1103,7 @@
           var task_id = $(this).data('task-id');
 
           current_row.remove();
-          
+
           var Tbody = $(`#tableBody-${task_id}`)
           _UpdateSrNo(Tbody);
         });
@@ -2376,7 +2376,7 @@
         {% empty %}
           initializeTableFeatures("{{ t_id}}", 'labor', "{{ t_id}}");
         {% endfor %}
-        
+
       {% endfor %}
     });
   </script>

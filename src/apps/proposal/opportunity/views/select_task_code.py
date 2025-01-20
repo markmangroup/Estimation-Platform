@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, render
 from django.template.loader import get_template
 from django.urls import reverse
 
-from apps.constants import LOGGER, ERROR_RESPONSE
+from apps.constants import ERROR_RESPONSE, LOGGER
 from apps.mixin import CustomDataTableMixin, CustomViewMixin, ViewMixin
 from apps.proposal.task.models import Task
 
@@ -33,14 +33,20 @@ class SelectedTaskListAjaxView(CustomDataTableMixin):
                 "title": obj.task.name,
             }
         )
-    
+
     def _get_description(self, obj):
         """Make description editable."""
         task_mapping_object = TaskMapping.objects.filter(
-                opportunity=obj.opportunity, task=obj.task,
+            opportunity=obj.opportunity,
+            task=obj.task,
         ).first()
         t = get_template("proposal/partial/edit_description.html")
-        return t.render({"o": obj, "task": task_mapping_object,})
+        return t.render(
+            {
+                "o": obj,
+                "task": task_mapping_object,
+            }
+        )
 
     def get_queryset(self):
         """Returns a list of selected tasks"""
@@ -182,15 +188,15 @@ class UpdateDescription(ViewMixin):
             select_task_code_obj.task_description = task_description
             select_task_code_obj.save()
             return JsonResponse(
-            {
-                "message": "Task description updated successfully",
-                "status": "OK",
-            },
-            status=201,
-        )
+                {
+                    "message": "Task description updated successfully",
+                    "status": "OK",
+                },
+                status=201,
+            )
         except Exception as e:
             LOGGER.error(f"-- An error occurred while updating description of task -- {e}")
-            return JsonResponse(ERROR_RESPONSE,status=400)
+            return JsonResponse(ERROR_RESPONSE, status=400)
 
 
 class DeleteSelectedTask(CustomViewMixin):
@@ -208,11 +214,12 @@ class DeleteSelectedTask(CustomViewMixin):
             select_task_code = SelectTaskCode.objects.filter(id=task_id).first()
             task_mapping = TaskMapping.objects.filter(
                 opportunity=select_task_code.opportunity,
-                task=select_task_code.task, 
-                description=(select_task_code.task_description 
-                    if select_task_code.task_description 
+                task=select_task_code.task,
+                description=(
+                    select_task_code.task_description
+                    if select_task_code.task_description
                     else select_task_code.task.description
-                )
+                ),
             )
 
             LOGGER.info(f"-- Select Task Code -- {select_task_code}")
