@@ -72,6 +72,7 @@ THIRD_PARTY_APPS = [
 ]
 LOCAL_APPS = [
     "apps.user.apps.UserConfig",
+    # Proposal
     "apps.proposal",
     "apps.proposal.product.apps.ProductConfig",
     "apps.proposal.vendor.apps.VendorConfig",
@@ -79,6 +80,16 @@ LOCAL_APPS = [
     "apps.proposal.customer.apps.CustomerConfig",
     "apps.proposal.labour_cost.apps.LabourCostConfig",
     "apps.proposal.opportunity.apps.OpportunityConfig",
+    # Rental
+    "apps.rental",
+    "apps.rental.customer.apps.CustomerConfig",
+    "apps.rental.warehouse.apps.WarehouseConfig",
+    "apps.rental.account_manager.apps.AccountManagerConfig",
+    "apps.rental.product.apps.ProductConfig",
+    "apps.rental.workflow.apps.WorkflowConfig",
+    # Celery
+    "django_celery_results",
+    "django_celery_beat",
 ]
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
@@ -97,6 +108,7 @@ MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "allauth.account.middleware.AccountMiddleware",
     "django_auto_logout.middleware.auto_logout",
+    "apps.user.middleware.CheckUserAppTypeMiddleware",
     "opencensus.ext.django.middleware.OpencensusMiddleware",
 ]
 
@@ -117,6 +129,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "django_auto_logout.context_processors.auto_logout_client",
+                "apps.context_processors.get_user_application_access",
             ],
         },
     },
@@ -227,6 +240,8 @@ LOGGING = {
     },
 }
 
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+
 SOCIALACCOUNT_ADAPTER = "apps.user.adapter.CustomSocialAccountAdapter"
 
 # Tracing Configuration for Azure Application Insights
@@ -259,7 +274,7 @@ SECURE_SSL_REDIRECT = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 LOGIN_URL = "/"
-LOGIN_REDIRECT_URL = "/choose_screens"
+LOGIN_REDIRECT_URL = "/redirect"
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_LOGOUT_REDIRECT_URL = "/login"
 
@@ -278,3 +293,11 @@ AUTO_LOGOUT = {
     "REDIRECT_TO_LOGIN_IMMEDIATELY": True,
     "MESSAGE": "The session has expired. Please login again to continue.",
 }
+
+# Celery Configuration Options
+CELERY_BROKER_URL = "redis://localhost:6379/"
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_TIMEZONE = "Asia/Kolkata"
+CELERY_RESULT_EXTENDED = True
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"

@@ -53,12 +53,16 @@
                 </a>
                 {% if user.is_authenticated %}
                   <div class="dropdown-menu text-left dropdown-menu-right m-0 pb-0" aria-labelledby="dropdownBasic2">
+                    {% if ACCESS %}
                       <a class="dropdown-item" href="{% url 'proposal_app:opportunity:opportunity-list' %}">
                         <div class="d-flex align-items-center"><i class="ft-refresh-ccw mr-2"></i><span>Proposal Application</span></div>
                       </a>
+                    {% endif %}
+
                       <a class="dropdown-item" href="{% url 'user:logout' %}">
                           <div class="d-flex align-items-center"><i class="ft-power mr-2"></i><span>Logout</span></div>
                       </a>
+
                   </div>
                 {% endif %}
             </li>

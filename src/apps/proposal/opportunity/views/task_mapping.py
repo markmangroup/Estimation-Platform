@@ -5,10 +5,10 @@ from typing import Any, Dict
 from django.contrib import messages
 from django.db.models import QuerySet
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render
 
 from apps.constants import ERROR_RESPONSE, LOGGER
 from apps.mixin import TemplateViewMixin, ViewMixin
-from django.shortcuts import get_object_or_404, render
 from apps.proposal.labour_cost.models import LabourCost
 from apps.proposal.product.models import Product
 from apps.proposal.task.models import Task
@@ -286,7 +286,7 @@ class AddProdRowView(ViewMixin):
 
         try:
             product_obj = Product.objects.get(id=item_code)
-            
+
             # product_item_code = product_obj.internal_id
             # description = product_obj.display_name
 
@@ -296,9 +296,9 @@ class AddProdRowView(ViewMixin):
             product_item_code = item_code
             try:
                 product_obj = Product.objects.get(id=product.get("description"))
-            
+
                 # description = product_obj.display_name
-                
+
                 description = product_obj.name
             except Exception:  # Handle custom description data
                 description = product.get("description")
@@ -451,7 +451,7 @@ class DeleteAssignProdLabor(ViewMixin):
         return JsonResponse({"message": "Deleted Successfully.", "code": 200, "status": "success"})
 
 
-# NOTE: Old feature of `Add Task` for `Task Mapping Screen` 
+# NOTE: Old feature of `Add Task` for `Task Mapping Screen`
 # class AddTaskView(CreateViewMixin):
 #     """
 #     View to add a manual task to task mapping.
@@ -514,7 +514,7 @@ class AddTaskView(ViewMixin):
 
     template_name = "proposal/opportunity/stage/task_mapping/add_tasks.html"
 
-    def __get(self, document_number: str) -> dict:  
+    def __get(self, document_number: str) -> dict:
         """
         Returns context data with available tasks.
 
@@ -523,10 +523,9 @@ class AddTaskView(ViewMixin):
         """
         opportunity = get_object_or_404(Opportunity, document_number=document_number)
 
-        selected_task_ids = (
-            TaskMapping.objects.filter(opportunity=opportunity, task__isnull=False)
-            .values_list("task_id", flat=True)
-        )        
+        selected_task_ids = TaskMapping.objects.filter(opportunity=opportunity, task__isnull=False).values_list(
+            "task_id", flat=True
+        )
         available_tasks = Task.objects.exclude(id__in=selected_task_ids)
 
         return {
@@ -563,7 +562,7 @@ class AddTaskView(ViewMixin):
         if not tasks or not document_number:
             return JsonResponse({"error": "Tasks and document number are required."}, status=400)
 
-        opportunity = get_object_or_404(Opportunity, document_number=document_number)        
+        opportunity = get_object_or_404(Opportunity, document_number=document_number)
 
         for task_name in tasks:
             task_instance = get_object_or_404(Task, name=task_name)
@@ -573,8 +572,7 @@ class AddTaskView(ViewMixin):
                 task_description = task_instance.description
 
             TaskMapping.objects.create(
-                opportunity=opportunity, task=task_instance,
-                code=task_instance.name, description=task_description
+                opportunity=opportunity, task=task_instance, code=task_instance.name, description=task_description
             )
 
         messages.success(request, "Tasks added successfully!")

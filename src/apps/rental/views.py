@@ -1,4 +1,10 @@
+from typing import Any, Dict
+
+from django.urls import reverse
+
 from apps.mixin import TemplateViewMixin, WarehouseViewMixin
+from apps.rental.customer.models import RentalCustomer
+from apps.rental.warehouse.models import RentalWarehouse
 
 # Create your views here.
 
@@ -20,20 +26,50 @@ class Dashboard(WarehouseViewMixin):
     render_template_name = "rental/dashboard.html"
 
 
-class CustomerDetail(WarehouseViewMixin):
-    """
-    View class for rendering customer details.
-    """
-
-    render_template_name = "rental/map_customer_details.html"
-
-
 class MapView(WarehouseViewMixin):
     """
-    View class for rendering Map views with customer and warehouse locations.
+    View class for rendering map views with customer and warehouse locations.
     """
 
-    render_template_name = "rental/map.html"
+    render_template_name = "rental/map/map.html"
+
+    def _get_warehouse_data(self) -> list:
+        """Retrieve a list of warehouse data."""
+        return [
+            {
+                "id": warehouse.id,
+                "lat": float(warehouse.lat) if warehouse.lat is not None else None,
+                "lng": float(warehouse.lng) if warehouse.lng is not None else None,
+                "name": warehouse.location,
+                "address": warehouse.address,
+            }
+            for warehouse in RentalWarehouse.objects.all()
+            if warehouse.lat is not None and warehouse.lng is not None
+        ]
+
+    def _get_customer_data(self) -> list:
+        """Retrieve a list of customer data."""
+        return [
+            {
+                "id": customer.id,
+                "lat": float(customer.lat) if customer.lat is not None else None,
+                "lng": float(customer.lng) if customer.lng is not None else None,
+                "name": customer.name,
+                "address": customer.billing_address_1 or customer.billing_address_2,
+                "product": {
+                    "name": "name",
+                    "url": reverse("rental:warehouse_products"),
+                },
+            }
+            for customer in RentalCustomer.objects.filter(lat__isnull=False, lng__isnull=False)
+        ]
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        """Add warehouse and customer data to context."""
+        context = super().get_context_data(**kwargs)
+        context["warehouse"] = self._get_warehouse_data()
+        context["customer"] = self._get_customer_data()
+        return context
 
 
 class WarehouseProducts(WarehouseViewMixin):
@@ -44,36 +80,12 @@ class WarehouseProducts(WarehouseViewMixin):
     render_template_name = "rental/warehouse_product_list.html"
 
 
-class WarehouseList(WarehouseViewMixin):
-    """
-    View class for rendering the list of warehouses.
-    """
-
-    render_template_name = "rental/warehouse_list.html"
-
-
-class WarehouseDetailView(WarehouseViewMixin):
-    """
-    View class for rendering the detail of warehouse.
-    """
-
-    render_template_name = "rental/map_warehouse_detail.html"
-
-
-class CustomerListView(WarehouseViewMixin):
-    """
-    View class for rendering the list of warehouses.
-    """
-
-    render_template_name = "rental/customer_list.html"
-
-
 class UserList(WarehouseViewMixin):
     """
     View class for rendering the list of users.
     """
 
-    render_template_name = "rental/user_list.html"
+    render_template_name = "rental/authorization/user_list.html"
 
 
 class OrderList(WarehouseViewMixin):
@@ -141,12 +153,12 @@ class Reports(WarehouseViewMixin):
     render_template_name = "rental/reports.html"
 
 
-class Workflow(WarehouseViewMixin):
-    """
-    View class for rendering workflow details.
-    """
+# class Workflow(WarehouseViewMixin):
+#     """
+#     View class for rendering workflow details.
+#     """
 
-    render_template_name = "rental/workflow.html"
+#     render_template_name = "rental/workflow.html"
 
 
 class StockAdjustment(WarehouseViewMixin):

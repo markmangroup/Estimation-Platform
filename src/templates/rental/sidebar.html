@@ -72,14 +72,14 @@
         <!-- Master Data Start -->
         <li class="has-sub nav-item"><a href="javascript:;"><i class="ft-database"></i><span class="menu-title" data-i18n="MasterData">Master Data</span></a>
           <ul class="menu-content">
-            <li class="{% if 'warehouse_products' in request.path %}active{% endif %}"><a href="{% url 'rental:warehouse_products' %}"><i class="ft-list"></i><span class="menu-item">Products</span></a>
+            <li class="{% if 'warehouse_products' in request.path %}active{% endif %}"><a href="{% url 'rental:rental_product:rental-product-list' %}"><i class="ft-list"></i><span class="menu-item">Products</span></a>
             </li>
-            <li class="{% if 'warehouse_list' in request.path %}active{% endif %}"><a href="{% url 'rental:warehouse_list' %}"><i class="ft-archive"></i><span class="menu-item">Warehouse</span></a>
+            <li class="{% if 'warehouse' in request.path %}active{% endif %}"><a href="{% url 'rental:warehouse:warehouse' %}"><i class="ft-archive"></i><span class="menu-item">Warehouse</span></a>
             </li>
           </li>
-          <li class="{% if 'account_managers_list' in request.path %}active{% endif %}"><a href="{% url 'rental:account_managers_list' %}"><i class="icon-user-following"></i><span class="menu-item">Account Managers</span></a>
+          <li class="{% if 'account-manager' in request.path %}active{% endif %}"><a href="{% url 'rental:account_manager:account-manager' %}"><i class="icon-user-following"></i><span class="menu-item">Account Managers</span></a>
           </li>
-            <li class="{% if 'customer_list' in request.path %}active{% endif %}"><a href="{% url 'rental:customers' %}"><i class="ft-users"></i><span class="menu-item">Customers</span></a>
+            <li class="{% if 'customer-list' in request.path %}active{% endif %}"><a href="{% url 'rental:rental_customer:customers' %}"><i class="ft-users"></i><span class="menu-item">Customers</span></a>
             </li>
           </ul>
         </li>
@@ -201,7 +201,7 @@
         <li
           class="nav-item {% if 'workflow' in request.path %}active{% endif %}"
         >
-          <a href="{% url 'rental:workflow' %}"
+          <a href="{% url 'rental:rental_workflow:workflow' %}"
             ><i class="ft-wind"></i
             ><span class="menu-title" data-i18n="Dashboard">Workflow</span></a
           >

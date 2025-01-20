@@ -101,7 +101,7 @@
                                   </tr>
                               </thead>
                               <tbody id="collapse{{ forloop.counter }}" role="tabpanel" aria-labelledby="headingcollapse{{ forloop.counter }}" class="collapse show">
-                                
+
                                   {% for task, products in data.assigned_products.items %}
                                     <tr>
                                         <td>
@@ -218,10 +218,10 @@
                                         </td>
                                         <td>
                                           {% if task.task.name %}
-                                          <button type="button" 
-                                                  class="btn btn-danger delete-task-btn" 
-                                                  data-id="{{ data.proposal_ids|get_proposal_id:forloop.counter0 }}" 
-                                                  data-title="{{task.code}}" 
+                                          <button type="button"
+                                                  class="btn btn-danger delete-task-btn"
+                                                  data-id="{{ data.proposal_ids|get_proposal_id:forloop.counter0 }}"
+                                                  data-title="{{task.code}}"
                                                   data-url="{% url 'proposal_app:opportunity:task-delete-ajax' %}">
                                               <em class="fa fa-trash"></em>
                                           </button>

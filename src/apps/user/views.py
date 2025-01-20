@@ -91,25 +91,49 @@ class AddUserView(AdminMixin, CreateView):
     template_name = "proposal/forms/authorization/add_user.html"
 
     def get_success_url(self):
-        """
-        Redirect to the authorization page on successful user creation.
-        """
+        """Redirect to the authorization page on successful user creation."""
         return reverse_lazy("user:authorization")
 
     def form_valid(self, form):
-        """
-        Handle valid form submission by showing a success message and returning a success response.
-        """
-        messages.success(self.request, "The user has been successfully added.")
-        user = form.save(commit=False)
-        user.application_type = User.PROPOSAL
-        user.save()
+        """Handle valid form submission by adding or updating a user."""
+        user = self._get_user(form)
+
+        if user:
+            self._update_existing_user(user, form)
+        else:
+            self._create_new_user(form)
+
         return HttpResponse("success")
 
+    def _get_user(self, form):
+        """Retrieve user based on form data."""
+        first_name = form.cleaned_data["first_name"]
+        last_name = form.cleaned_data["last_name"]
+        email = form.cleaned_data["email"]
+
+        return User.objects.filter(email=email, first_name=first_name, last_name=last_name).first()
+
+    def _update_existing_user(self, user, form):
+        """Update an existing user with the provided form data."""
+        application_types = set(user.application_type)  # Use a set for faster membership testing
+        application_types.add(User.PROPOSAL)  # Add Proposal if it's not already present
+
+        user.application_type = list(application_types)
+        user.is_superuser = form.cleaned_data["is_superuser"]
+        user.save()
+
+        messages.success(self.request, "The user has been successfully updated.")
+
+    def _create_new_user(self, form):
+        """Create a new user with the provided form data."""
+        user = form.save(commit=False)
+        user.application_type = [User.PROPOSAL]
+        user.save()
+
+        messages.success(self.request, "The user has been successfully added.")
+
     def form_invalid(self, form):
-        """
-        Render the form with errors if the submission is invalid.
-        """
+        """Render the form with errors if the submission is invalid."""
         return render(self.request, self.template_name, {"form": form}, status=201)
 
 
@@ -122,7 +146,7 @@ class UserAjaxListView(AdminMixin, DataTableMixin, View):
 
     def get_queryset(self):
         """Return queryset."""
-        qs = User.objects.all()
+        qs = User.objects.filter(application_type__contains=User.PROPOSAL)
         return qs
 
     def _get_actions(self, obj):
@@ -173,6 +197,7 @@ class UserAjaxListView(AdminMixin, DataTableMixin, View):
                     "action": self._get_actions(o),
                 }
             )
+
         return data
 
     def get(self, request, *args, **kwargs):
@@ -230,7 +255,7 @@ class DeleteUserView(AdminMixin, View):
 class CheckUserAccountTypeView(View):
     def get(self, request, *args, **kwargs):
         if "Rental" in request.user.application_type and "Proposal" in request.user.application_type:
-            return redirect("proposal:choose_screens")
+            return redirect("choose_screens")
         elif "Proposal" in request.user.application_type:
             return redirect("proposal_app:opportunity:opportunity-list")
-        return redirect("proposal:map_view")
+        return redirect("rental:map_view")

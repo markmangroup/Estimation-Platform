@@ -3,8 +3,8 @@ import json
 import urllib.parse
 from typing import Any, Dict
 
-from django.db.models import Q, QuerySet
 from django.contrib import messages
+from django.db.models import Q, QuerySet
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import get_template

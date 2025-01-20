@@ -1,7 +1,7 @@
 import random
 
 from django.db.models import Q
-from django.db.models.signals import post_save, pre_save, pre_delete
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 from apps.constants import LOGGER
@@ -30,12 +30,13 @@ def generate_invoice_details(sender, instance, created, **kwargs):
     if created:
         Invoice.objects.create(opportunity=instance, invoice_number=invoice_number)
 
-    try: # Check if invoice is already created but invoice number is not assigned
+    try:  # Check if invoice is already created but invoice number is not assigned
         invoice_object = Invoice.objects.get(opportunity=instance)
         LOGGER.info(f"-- Invoice -- {invoice_object}")
     except Invoice.DoesNotExist:
         LOGGER.info(f"-- Invoice created for opportunity -- ")
         Invoice.objects.create(opportunity=instance, invoice_number=invoice_number)
+
 
 @receiver(post_save, sender=SelectTaskCode)
 def save_task_mapping_tasks(sender, instance, created, **kwargs):
@@ -59,12 +60,14 @@ def save_task_mapping_tasks(sender, instance, created, **kwargs):
     else:
         try:
             task_mapping_object = TaskMapping.objects.filter(
-                opportunity=instance.opportunity, task=instance.task,
+                opportunity=instance.opportunity,
+                task=instance.task,
             ).first()
             task_mapping_object.description = instance.task_description
             task_mapping_object.save()
         except Exception as e:
             LOGGER.error(f"-- An error occurred while sync data with select task code -- {e}")
+
 
 @receiver(post_save, sender=Document)
 def remove_document(sender, instance, created, **kwargs):
@@ -86,6 +89,7 @@ def remove_document(sender, instance, created, **kwargs):
         except Exception as e:
             LOGGER.error(f"-- An error occurred while remove empty document from db -- {e}")
 
+
 @receiver(post_save, sender=TaskMapping)
 def sync_task_description_value(sender, instance, created, **kwargs):
     """
@@ -97,7 +101,7 @@ def sync_task_description_value(sender, instance, created, **kwargs):
         created: Boolean indicating if a new record was created.
         **kwargs: Additional keyword arguments..
     """
-    if not created: # Check object is updated
+    if not created:  # Check object is updated
         try:
             select_task_code = SelectTaskCode.objects.filter(
                 opportunity=instance.opportunity, task=instance.task
@@ -107,6 +111,7 @@ def sync_task_description_value(sender, instance, created, **kwargs):
             select_task_code.save()
         except Exception as e:
             LOGGER.info(f"-- An error occurred while sync data with select task code -- {e}")
+
 
 @receiver(pre_save, sender=TaskMapping)
 def remove_assigned_task(sender, instance, **kwargs):
@@ -127,27 +132,21 @@ def remove_assigned_task(sender, instance, **kwargs):
             if old_instance.assign_to:
                 # Get tasks associated with the same opportunity and "labor" in the description
                 task_queryset = TaskMapping.objects.filter(
-                    opportunity__internal_id=old_instance.opportunity_id,
-                    description__icontains="labor"
+                    opportunity__internal_id=old_instance.opportunity_id, description__icontains="labor"
                 )
 
                 # Extract non-null 'assign_to' values from the queryset
-                assigned_list = task_queryset.filter(assign_to__isnull=False).values_list('assign_to', flat=True)
+                assigned_list = task_queryset.filter(assign_to__isnull=False).values_list("assign_to", flat=True)
 
                 if assigned_list:
                     # Update all non-assigned tasks for this opportunity
-                    TaskMapping.objects.filter(
-                        opportunity__internal_id=old_instance.opportunity_id
-                    ).exclude(
+                    TaskMapping.objects.filter(opportunity__internal_id=old_instance.opportunity_id).exclude(
                         assign_to__in=assigned_list
-                    ).exclude(
-                        description__icontains="labor"
-                    ).update(
-                        is_assign_task=False,
-                        assign_to=""
-                    )
+                    ).exclude(description__icontains="labor").update(is_assign_task=False, assign_to="")
                 else:
-                    LOGGER.info(f"No tasks with 'labor' description assigned to anyone for opportunity {old_instance.opportunity_id}.")
+                    LOGGER.info(
+                        f"No tasks with 'labor' description assigned to anyone for opportunity {old_instance.opportunity_id}."
+                    )
 
         except TaskMapping.DoesNotExist:
             LOGGER.error(f"TaskMapping with id {instance.pk} does not exist.")

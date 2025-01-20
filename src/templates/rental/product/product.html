@@ -1,0 +1,120 @@
+{% load static %}
+
+<div class="row">
+  <div class="col-12">
+    <div class="content-header">Warehouse Product</div>
+  </div>
+</div>
+
+<!-- Wizard Starts -->
+<section id="icon-tabs">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <h4 class="card-title"></h4>
+
+          <!-- Import Warehouse Product  -->
+          <div class="float-right">
+            <button type="button" class="btn bg-light-secondary" hx-get="{% url 'rental:rental_product:rental-import-products' %}" hx-target="#modalContent" hx-trigger="click" data-toggle="modal" data-target="#inlineForm">
+              <i class="fa ft-briefcase mr-1"></i>Import Warehouse Product
+            </button>
+
+            <!-- Warehouse Product Modal -->
+            <div class="modal fade text-left" id="inlineForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true" data-backdrop="false">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div id="modalContent">
+                    <!-- Form content will be dynamically inserted here by HTMX -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>  
+        <div class="card">
+          <div class="card-content">
+            <!-- Filters -->
+            <div class="float-left ml-3 mb-3">
+              <div class="row">
+                <div class="col">
+                  <label for="id_mat_grp" class="form-label font-weight-bold">Equipment Material Group</label>
+                  <select class="select2 form-control" id="id_mat_grp" multiple>
+                    {% for i in equipment_material_group %}
+                      <option value="{{ i.equipment_material_group }}">{{ i.equipment_material_group }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col">
+                  <label for="id_name" class="form-label font-weight-bold">Equipment Name</label>
+                  <select class="select2 form-control" id="id_name" multiple>
+                    {% for i in equipment_name %}
+                      <option value="{{ i.equipment_name }}">{{ i.equipment_name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <div class="table-responsive">
+                <table id="rental-product" class="table table-striped table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Equipment ID</th>
+                      <th>Equipment Material Group</th>
+                      <th>Equipment Name</th>
+                      <th>SubType</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="{% static 'app/js/jquery.min.js' %}"></script>
+<script src="{% static 'vendors/js/select2.full.min.js' %}"></script>
+<script src="{% static 'app/js/select2.min.js' %}"></script>
+<script src="{% static 'vendors/js/dataTables.min.js' %}"></script>
+
+<script>
+  $(document).ready(function() {
+    $("#rental-product").DataTable({
+        autoWidth: false,
+        order: [[0, 'asc']],
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: '{% url "rental:rental_product:rental-products-list-ajax" %}',
+            type: 'GET',
+            data: function(d) {
+                return $.extend({}, d, set_filters());
+            } 
+        },
+        columns: [
+            { data: 'equipment_id', name: 'equipment_id' },
+            { data: 'equipment_material_group', name: 'equipment_material_group' },
+            { data: 'equipment_name', name: 'equipment_name' },
+            { data: 'subtype', name: 'subtype' }
+        ]
+    });
+
+    function set_filters() {
+        return {
+            equipment_mat_grp: $("#id_mat_grp").val(),
+            name: $("#id_name").val()
+        };
+    }
+});
+
+$('#id_mat_grp, #id_name').on("change", function() {
+  $("#rental-product").DataTable().ajax.reload();
+});
+
+</script>

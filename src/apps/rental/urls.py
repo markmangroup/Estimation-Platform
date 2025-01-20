@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import include, path
 
 from . import views
 
@@ -6,13 +6,8 @@ app_name = "rental"
 
 
 warehouse_urls = [
-    path("account_managers_list", views.AccountManagersList.as_view(), name="account_managers_list"),
     path("order-overview", views.OrderOverview.as_view(), name="order_overview"),
     path("home", views.MapView.as_view(), name="map_view"),
-    path("customer_list", views.CustomerListView.as_view(), name="customers"),
-    path("customer_detail", views.CustomerDetail.as_view(), name="customer_detail"),
-    path("warehouse_list", views.WarehouseList.as_view(), name="warehouse_list"),
-    path("warehouse_detail", views.WarehouseDetailView.as_view(), name="warehouse_detail"),
     path(
         "warehouse_products",
         views.WarehouseProducts.as_view(),
@@ -27,7 +22,7 @@ warehouse_urls = [
     path("express_delivery", views.ExpressDelivery.as_view(), name="express_delivery"),
     path("delivery_list", views.Delivery.as_view(), name="delivery_list"),
     #     path("reports", views.Reports.as_view(), name="reports"),
-    path("workflow", views.Workflow.as_view(), name="workflow"),
+    # path("workflow", views.Workflow.as_view(), name="workflow"),
     path("stock_adjustment", views.StockAdjustment.as_view(), name="stock_adjustment"),
     path(
         "return_delivery_list",
@@ -68,6 +63,11 @@ urlpatterns = (
     [
         # path("dashboard", views.Dashboard.as_view(), name="dashboard"),
         path("coming_soon", views.ComingSoon.as_view(), name="coming_soon"),
+        path("", include(("apps.rental.customer.urls", "rental_customer"), namespace="rental_customer")),
+        path("", include(("apps.rental.product.urls", "rental_customer"), namespace="rental_product")),
+        path("", include(("apps.rental.warehouse.urls", "warehouse"), namespace="warehouse")),
+        path("", include(("apps.rental.account_manager.urls", "account_manager"), namespace="account_manager")),
+        path("", include(("apps.rental.workflow.urls", "rental_workflow"), namespace="rental_workflow")),
     ]
     + warehouse_urls
     + reports_urls
