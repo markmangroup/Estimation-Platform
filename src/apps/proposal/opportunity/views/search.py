@@ -88,21 +88,22 @@ class ItemDescriptionSearchView(ViewMixin):
         :param request: The HTTP request object containing search parameters.
         :return: JsonResponse containing a list of item descriptions matching the search term.
         """
-        search_term = request.GET.get("q", "").strip()
-        search_terms = search_term.split()
-        LOGGER.info(f"Search Terms: {search_terms}")
+        search_term = request.GET.get("q", "")
 
-        if search_terms:
-            queryset = Product.objects.all()
+        # NOTE: Old Code
+        # item_display_names = Product.objects.filter(display_name__icontains=search_term)
+        # item_display_name_list = [
+        #     {"id": item_display_name.id, "text": item_display_name.display_name}
+        #     for item_display_name in item_display_names
+        #     if item_display_name.display_name and item_display_name.id
+        # ]
 
-            for term in search_terms:
-                queryset = queryset.filter(name__icontains=term)
-
-            queryset = queryset[:50]
-        else:
-            queryset = Product.objects.filter(name__isnull=False).exclude(name="")[:50]
-
-
+        # Define the query based on the search term
+        queryset = (
+            Product.objects.filter(name__icontains=search_term)[:50]
+            if search_term
+            else Product.objects.filter(name__isnull=False).exclude(name="")[:50]
+        )
         results = [{"id": product.id, "text": product.name} for product in queryset]
         results.insert(0, {"id": "Clear", "text": "--------------"})  # Add the "Clear" option at the top of the list
         return JsonResponse({"results": results})

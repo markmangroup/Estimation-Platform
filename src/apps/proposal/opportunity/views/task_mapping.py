@@ -407,10 +407,9 @@ class AssignTaskLaborView(ViewMixin):
 
             current_task_id = data["id"][0]
             value = data["value"][0]
-            document_number = data["document_number"][0]
+            # document_number = data["document_number"][0]  # Currently we are not using this value.
 
             current_task = TaskMapping.objects.get(id=current_task_id)
-            _assign_to = current_task.assign_to # old value
             assign_labor_task = TaskMapping.objects.get(id=value)
 
             current_task.assign_to = assign_labor_task.code
@@ -418,12 +417,6 @@ class AssignTaskLaborView(ViewMixin):
             assign_labor_task.is_assign_task = True
             assign_labor_task.assign_to = current_task.code
             assign_labor_task.save()
-
-            if _assign_to:
-                task_mapping_object = TaskMapping.objects.filter(opportunity__document_number=document_number, code=_assign_to).first()
-                task_mapping_object.is_assign_task = False
-                task_mapping_object.assign_to = ""
-                task_mapping_object.save()
 
             messages.success(request, f"Labor Assigned to task {assign_labor_task.code}")
             return JsonResponse(

@@ -1,0 +1,265 @@
+<div class="modal fade t  ext-left" id="adjust_stock_details" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true" data-backdrop="false">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="myModalLabel5">Adjust Stock Details</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="post" hx-post="{% url 'rental:stock_management:rental-stock-management-edit' stock_adjustment.id %}" hx-target="#stockform" hx-swap="innerHTML">
+                {% csrf_token %}
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-6">
+                      <label>Item Number</label>
+                      <div class="form-group">
+                        <input
+                          type="text"
+                          class="form-control"
+                          placeholder="Item Number"
+                          value="{{stock_adjustment.rental_product.equipment_id}}"
+                          disabled
+                        />
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <label>Location</label>
+                      <div class="form-group">
+                        <input type="text" class="form-control" name="location" placeholder="Location" value="{{stock_adjustment.location}}"/>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <label>Date</label>
+                      <div class="form-group">
+                        <input type="date"  name="date" class="form-control" value="{{ stock_adjustment.date|date:'Y-m-d'}}">
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <label>Current Quantity</label>
+                      <div class="form-group">
+                        <input
+                          type="text"
+                          class="form-control"
+                          placeholder="Quantity"
+                          value="{{stock_adjustment.quantity}}"
+                          disabled
+                        />
+                      </div>
+                    </div>
+                    
+                    <div class="col-6 hide">
+                      <label>Revised Quantity</label>
+                      <div class="form-group">
+                        <input
+                          type="text"
+                          type="hidden"
+                          name="quantity"
+                          id="revisedQuantity"
+                          class="form-control"
+                          placeholder="Revised Quantity"
+                          value=""
+                        />
+                      </div>
+                    </div>
+                    <div class="col-6 hide">
+                      <label>Plus Quantity</label>
+                      <div class="form-group">
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="PluseQuantity"
+                          placeholder="Plus Quantity"
+                          value=""
+                        />
+                      </div>
+                    </div>
+                    <div class="col-6 hide">
+                      <label>Minus Quantity</label>
+                      <div class="form-group">
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="minusQuantity"
+                          placeholder="Quantity"
+                          value=""
+                        />
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <label>Reason</label>
+                        <div class="form-group">
+                            <select class="select2 form-control" name="reason">
+                                <option value="other" {% if stock_adjustment.reason == 'other' %}selected{% endif %}>Other</option>
+                                <option value="inspection" {% if stock_adjustment.reason == 'inspection' %}selected{% endif %}>Inspection</option>
+                                <option value="purchase" {% if stock_adjustment.reason == 'purchase' %}selected{% endif %}>Purchase</option>
+                                <option value="wh_difference" {% if stock_adjustment.reason == 'wh_difference' %}selected{% endif %}>WH differences</option>
+                              </select>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                      <label>Comment</label>
+                      <div class="form-group">
+                        <input
+                          type="text"
+                          name="comment"
+                          class="form-control"
+                          placeholder="Comment"
+                          value="{{stock_adjustment.comment}}"
+                        />
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Cancel</button>
+                <button type="submit" class="btn btn-success">Save</button>
+              </div>
+          </form>
+        </div>
+        </div>
+    </div>
+    </div>
+
+<script>
+    $("#adjust_stock_details").modal("show")
+</script>
+<script>
+let isRequestInProgress = false;
+document.body.addEventListener('htmx:afterRequest', function(event) {
+    if (event.detail.target.id === 'stockform') {
+        if (isRequestInProgress) {
+            return;
+        }
+        isRequestInProgress = true;
+        const response = event.detail.xhr.response;
+        try {
+            const data = JSON.parse(response);
+            if (data.success) {
+                $('#adjust_stock_details').modal('hide');
+                $("#stock_management_list").DataTable().ajax.reload(null, false);
+                toastr.success(data.message, 'Success', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-bottom-right',
+                    timeOut: 6000
+                });
+            } else {
+                toastr.error(data.message, 'Error', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-bottom-right',
+                    timeOut: 6000
+                });
+            }
+        } catch (e) {
+            console.error("Error parsing response:", e);
+        } finally {
+            isRequestInProgress = false;
+        }
+    }
+});
+</script>
+
+<!-- Date picker Start -->
+<script type="text/javascript">
+    $(document).ready(function() {
+    
+        var start = moment().subtract(29, 'days');
+        var end = moment();
+    
+        function cb(start, end) {
+            $('.reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        }
+    
+        $('.reportrange').daterangepicker({
+            startDate: start,
+            endDate: end,
+            ranges: {}
+        }, cb);
+    
+        cb(start, end);
+    
+    });
+</script>
+  <!-- Date picker End -->
+  
+  <!-- Calculation of stock adjustment Start -->
+  <script>
+    $(document).ready(function() {
+      const currentQuantity = {{stock_adjustment.quantity}};
+  
+      const $plusInput = $('#PluseQuantity');
+      const $minusInput = $('#minusQuantity');
+      const $revisedInput = $('#revisedQuantity');
+  
+      // Function to update plus quantity based on revised quantity
+      function updatePlusQuantity() {
+        const enteredRevisedQuantity = parseFloat($revisedInput.val()) || 0;
+        const newPlusQuantity = Math.max(0, enteredRevisedQuantity - currentQuantity);
+        $plusInput.val(newPlusQuantity);
+      }
+  
+      // Function to update minus quantity based on revised quantity
+      function updateMinusQuantity() {
+        const enteredRevisedQuantity = parseFloat($revisedInput.val()) || 0;
+        const newMinusQuantity = Math.max(0, currentQuantity - enteredRevisedQuantity);
+        $minusInput.val(newMinusQuantity);
+      }
+  
+      // Function to update revised quantity based on plus and minus quantities
+      function updateRevisedQuantity() {
+        const plusQuantity = parseFloat($plusInput.val()) || 0;
+        const minusQuantity = parseFloat($minusInput.val()) || 0;
+        const newRevisedQuantity = currentQuantity + plusQuantity - minusQuantity;
+        $revisedInput.val(newRevisedQuantity);
+      }
+  
+      // Event handlers
+      $plusInput.on('input', function() {
+        updateRevisedQuantity(); 
+        updateMinusQuantity();   
+      });
+  
+      $minusInput.on('input', function() {
+        updateRevisedQuantity(); 
+        updatePlusQuantity();    
+      });
+  
+      $revisedInput.on('input', function() {
+        updatePlusQuantity();    // Update plus quantity when revised quantity changes
+        updateMinusQuantity();   // Update minus quantity when revised quantity changes
+      });
+  
+      // Initialize values on page load
+      updateRevisedQuantity();
+      updatePlusQuantity();
+      updateMinusQuantity();
+    });
+  </script>
+  <!-- Calculation of stock adjustment End -->
+
+  <script>
+    $(document).ready(function() {
+      // Get today's date
+      var today = new Date();
+      
+      // Set the input field to today's date
+      var todayStr = today.toISOString().split('T')[0];
+      $('.today-date').val(todayStr);
+  
+      // Get the start and end of the current month
+      var startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+      var endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+  
+      // Format dates as YYYY-MM-DD
+      var startOfMonthStr = startOfMonth.toISOString().split('T')[0];
+      var endOfMonthStr = endOfMonth.toISOString().split('T')[0];
+  
+      // Set min and max attributes of the date inputs
+      $('.today-date').attr('min', startOfMonthStr);
+      $('.today-date').attr('max', endOfMonthStr);
+    });
+  </script>
+  

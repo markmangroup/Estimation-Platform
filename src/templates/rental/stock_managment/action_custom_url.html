@@ -1,0 +1,13 @@
+{% load static %}
+<td id="user-action-buttons-{{obj.id}}" >
+    {% if edit_url %}
+        <a class="success mr-2 htmx-trigger-btn" hx-get="{{edit_url}}" hx-target="#stockform" hx-swap="innnerHTML">
+            <i class="fa ft-edit font-medium-3 mr-2"></i>
+        </a>
+    {% endif %}
+</td>
+<script src="https://unpkg.com/htmx.org@1.7.0" crossorigin="anonymous"></script>
+<script>
+    var tddiv = document.querySelector("#user-action-buttons-{{obj.id}}")
+    htmx.process(tddiv)
+</script>

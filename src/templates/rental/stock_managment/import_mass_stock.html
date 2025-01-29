@@ -1,0 +1,166 @@
+{% load static %}
+
+<form hx-post="{% url 'rental:stock_management:import-mass_stock' %}"  enctype="multipart/form-data" novalidate> 
+{% csrf_token %}
+<div class="modal-body">
+    <label>Upload File </label>
+    <div class="form-group">
+    <div class="custom-file">
+        <input
+        type="file"
+        name="csv_file"
+        class="custom-file-input"
+        id="inputGroupFile02"
+        accept=".xlsx, .xls"
+        required
+        onchange="updateFileName(this)"
+        />
+        <label
+        class="custom-file-label"
+        for="inputGroupFile01"
+        >Choose file</label
+        >
+        {% if form.csv_file.errors %}
+        {% for error in form.csv_file.errors %}
+            <p style="color: red;">{{ error }}</p>
+        {% endfor %}
+        {% endif %}
+        <small class="form-text text-muted">{{ form.csv_file.help_text }}</small>
+    </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="submit" class="btn bg-light-secondary" data-toggle="modal">
+    <i class="fa ft-briefcase"></i> Upload
+    </button>
+</div>
+</form>
+
+<div class="modal fade text-left" id="mass_change" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true" data-backdrop="false">
+    <div class="modal-dialog modal-lg modal-dialog-centered mass-update" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel5">Mass Upload Confirmation</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
+                </button>
+            </div>
+            <div class="modal-body">            
+                    {% include "rental/stock_managment/confirmation_mass_stock.html" %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Cancel</button>
+                <button type="button" class="btn btn-success" id="save-mass-update">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateFileName(input) {
+        var fileName = input.files[0] ? input.files[0].name : 'Choose file';
+        var label = input.nextElementSibling;
+        label.textContent = fileName;
+    }
+
+    document.body.addEventListener('htmx:beforeRequest', function(evt) {
+        var $loader = $('#loader-container');
+        $loader.show();
+    });
+</script>
+
+<script>
+    document.body.addEventListener('htmx:beforeSwap', function(evt) {
+        var $loader = $('#loader-container');
+        if (evt.detail.xhr.status === 200) {
+
+            var response = JSON.parse(evt.detail.xhr.response);
+            console.log(response);  
+            if (response.status === 'success') {
+                $loader.hide();
+                evt.detail.shouldSwap = false;
+                
+                // Check for skipped records and show SweetAlert if any
+                if (response.skipped_records && response.skipped_records.length > 0) {
+                    // Show SweetAlert with skipped records info
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Skipped Records',
+                        text: 'Make Sure Equipment are available.',
+                        confirmButtonText: 'OK',
+                        allowOutsideClick: false,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Continue the process after the OK button click
+                            $("#mass_change .modal-body").html(response.modal_content);
+                            $('#mass_change').modal('show');
+                            $("#stock_management_list").DataTable().ajax.reload(null, false);
+                        }
+                    });
+                } else {
+                    // No skipped records, directly continue
+                    $("#mass_change .modal-body").html(response.modal_content);
+                    $('#mass_change').modal('show');
+                    $("#stock_management_list").DataTable().ajax.reload(null, false);
+                }
+            }
+        }
+    });
+</script>
+
+<script>
+    document.getElementById("save-mass-update").addEventListener("click", function() {
+        var recordsToSave = [];
+    
+        $("#mass_change .modal-body tr").each(function() {
+            var record = {
+                internal_id: $(this).find('td:eq(0)').text(),
+                location: $(this).find('td:eq(1)').text(),
+                date: $(this).find('td:eq(2) input').val(),
+                quantity: $(this).find('td:eq(4) input').val(),
+                reason: $(this).find('td:eq(7) select').val(),
+                comment: $(this).find('td:eq(8) input').val(),
+            };
+            if (record.internal_id.trim() !== "") {
+                recordsToSave.push(record);
+            }
+        });
+    
+        $.ajax({
+            url: "{% url 'rental:stock_management:save_mass_stock_adjustments' %}",
+            type: "POST",
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                records: JSON.stringify(recordsToSave)
+            },
+            success: function(response) {
+                if(response.status === 'success') {
+                    $('#mass_change').modal('hide');
+                    $('#exampleModal').modal('hide');
+                    toastr.success(response.message, 'Success', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-bottom-right',
+                        timeOut: 6000
+                    });
+                 $("#stock_management_list").DataTable().ajax.reload(null, false);
+                } else {
+                    toastr.error(response.message, 'Error', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-bottom-right',
+                        timeOut: 6000
+                    });
+                }
+            },
+            error: function(error) {
+                toastr.error("An error occurred while saving data.", 'Error', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-bottom-right',
+                    timeOut: 6000
+                });
+            }
+        });
+    });
+</script>

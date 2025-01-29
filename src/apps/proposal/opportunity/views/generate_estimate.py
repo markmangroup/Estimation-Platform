@@ -34,9 +34,9 @@ class GenerateEstimateTable(ProposalViewMixin):
             task__description__icontains="labor"
         )
 
-        context["estimation_table_labor"] = TaskMapping.objects.filter(opportunity__document_number=document_number).filter(
-            task__description__icontains="labor", assign_to__isnull=True
-        )
+        context["estimation_table_labor"] = TaskMapping.objects.filter(
+            opportunity__document_number=document_number
+        ).filter(task__description__icontains="labor")
 
         # Calculate totals and add to context
         context["total"] = GenerateEstimate._get_total(document_number)
@@ -188,7 +188,7 @@ class GenerateEstimate:
         :return: A queryset of task mappings that include 'labor' in the description.
         """
         qs = TaskMapping.objects.filter(opportunity__document_number=document_number).filter(
-            task__description__icontains="labor", assign_to__isnull=True
+            task__description__icontains="labor"
         )
         return qs
 
@@ -222,15 +222,15 @@ class GenerateEstimate:
 
         for task in task_mapping_qs:
             totals["total_labor_cost"] += round(Decimal(task.labor_cost or "0.0"), 2)
-            totals["total_labor_gp_percent"] = round(Decimal(task.labor_gp_percent or "0.0"), 2)
+            totals["total_labor_gp_percent"] += round(Decimal(task.labor_gp_percent or "0.0"), 2)
             totals["total_labor_gp"] += round(Decimal(task.labor_gp or "0.0"), 2)
             totals["total_labor_sell"] += round(Decimal(task.labor_sell or "0.0"), 2)
             totals["total_mat_cost"] += round(Decimal(task.mat_cost or "0.0"), 2)
-            totals["total_mat_gp_percent"] = round(Decimal(task.mat_gp_percent or "0.0"), 2)
+            totals["total_mat_gp_percent"] += round(Decimal(task.mat_gp_percent or "0.0"), 2)
             totals["total_mat_gp"] += round(Decimal(task.mat_gp or "0.0"), 2)
             totals["total_mat_mu"] += round(Decimal(task.mat_plus_mu or "0.0"), 2)
             totals["total_sales_tax"] += round(Decimal(task.sales_tax or "0.0"), 2)
-            totals["total_s_and_h"] = round(Decimal(task.s_and_h or "0.0"), 2)
+            totals["total_s_and_h"] += round(Decimal(task.s_and_h or "0.0"), 2)
             totals["total_mat_sell"] += round(Decimal(task.mat_sell or "0.0"), 2)
             totals["total_mat_tax_labor"] += round(Decimal(task.mat_tax_labor or "0.0"), 2)
             totals["total_comb_gp"] += round(Decimal(task.comb_gp or "0.0"), 2)

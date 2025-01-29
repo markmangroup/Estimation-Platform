@@ -1,11 +1,8 @@
-# activate the virtual environment
-source antenv/bin/activate
-
 # set environment variables required by your Django application
 export DEBUG="False"
 
 # install any required dependencies
-pip install -r requirements.txt --no-cache-dir
+pip install -r requirements.txt
 
 # perform Django database migrations
 python src/manage.py migrate

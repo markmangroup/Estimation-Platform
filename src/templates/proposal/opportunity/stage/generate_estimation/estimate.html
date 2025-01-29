@@ -323,7 +323,7 @@
                     {% endfor %}
 
                     <!-- Labor Removed -->
-                    {% for et_labor in task_labor_list %}
+                    {% comment %} {% for et_labor in task_labor_list %}
                       <!-- Labor -->
                       <tr class="selected-estimate-row">
                         <input type="hidden" class="task_mapping" value={{ et_labor.id }}>
@@ -361,7 +361,7 @@
                         <td class="comb_gp">{{ et_labor.comb_gp }}</td>
 
                       </tr>
-                    {% endfor %}
+                    {% endfor %} {% endcomment %}
                     <!--<tr>
                       <td class="text-nowrap">FRT</td>
                       <td class="text-nowrap">FRT: Freight</td>
@@ -723,9 +723,6 @@
 
     // Update overall totals after modifying the row
     updateOverallTotals();
-    $("#total_labor_gp_percent").text(`${laborGpPercent.toFixed(2)}%`);
-    $("#total_mat_gp_percent").text(`${matGpPercent.toFixed(2)}%`);
-    $("#total_s_and_h").text(`$${s_and_h.toFixed(2)}`);
 
   });
 
@@ -753,33 +750,33 @@
 
           var laborCost = parseFloat($row.find(".labor_cost").text()) || 0;
           var laborGp = parseFloat($row.find(".labor_gp").text()) || 0;
-          // var laborGpPercent = parseFloat($row.find(".labor_gp_percent").val()) || 0;
+          var laborGpPercent = parseFloat($row.find(".labor_gp_percent").val()) || 0;
           var laborSell = parseFloat($row.find(".labor_sell").text()) || 0;
           var matCost = parseFloat($row.find(".mat_cost").text()) || 0;
           var matGp = parseFloat($row.find(".mat_gp").text()) || 0;
-          // var matGpPercent = parseFloat($row.find(".mat_gp_percent").val()) || 0;
+          var matGpPercent = parseFloat($row.find(".mat_gp_percent").val()) || 0;
           var matPlusMu = parseFloat($row.find(".mat_plus_mu").text()) || 0;
           var salesTax = parseFloat($row.find(".sales_tax").text()) || 0;
           var matSell = parseFloat($row.find(".mat_sell").text()) || 0;
           var matTaxLabor = parseFloat($row.find(".mat_tax_labor").text()) || 0;
           var combGp = parseFloat($row.find(".comb_gp").text()) || 0;
           var acre = parseFloat($row.find(".acre").text()) || 0;
-          // var s_and_h = parseFloat($row.find(".s_and_h").val()) || 0;
+          var s_and_h = parseFloat($row.find(".s_and_h").val()) || 0;
 
           totalLaborCost += laborCost;
           totalLaborGp += laborGp;
-          // totalLaborGpPercent = laborGpPercent;
+          totalLaborGpPercent += laborGpPercent;
           totalLaborSell += laborSell;
           totalMatCost += matCost;
           totalMatGp += matGp;
-          // totalMatGpPercent = matGpPercent;
+          totalMatGpPercent += matGpPercent;
           totalMatPlusMu += matPlusMu;
           totalSalesTax += salesTax;
           totalMatSell += matSell;
           totalMatTaxLabor += matTaxLabor;
           totalCombGp += combGp;
           totalAcre += acre;
-          // totalSAndH = s_and_h;
+          totalSAndH += s_and_h;
       });
 
       var total_cost = totalLaborCost + totalMatCost;
@@ -789,15 +786,15 @@
 
       // Update totals in <tfoot>
       $("#total_labor_cost").text(`$ ${totalLaborCost.toFixed(2)}`);
-      // $("#total_labor_gp_percent").text(`${totalLaborGpPercent.toFixed(2)}%`);
+      $("#total_labor_gp_percent").text(`${totalLaborGpPercent.toFixed(2)}%`);
       $("#total_labor_gp").text(`$ ${totalLaborGp.toFixed(2)}`);
       $("#total_labor_sell").text(`$ ${totalLaborSell.toFixed(2)}`);
       $("#total_mat_cost").text(`$ ${totalMatCost.toFixed(2)}`);
-      // $("#total_mat_gp_percent").text(`${totalMatGpPercent.toFixed(2)}%`);
+      $("#total_mat_gp_percent").text(`${totalMatGpPercent.toFixed(2)}%`);
       $("#total_mat_gp").text(`$ ${totalMatGp.toFixed(2)}`);
       $("#total_mat_mu").text(`$ ${totalMatPlusMu.toFixed(2)}`);
       $("#total_sales_tax").text(`$ ${totalSalesTax.toFixed(2)}`);
-      // $("#total_s_and_h").text(`$${totalSAndH.toFixed(2)}`);
+      $("#total_s_and_h").text(`$${totalSAndH.toFixed(2)}`);
       $("#total_mat_sell").text(`$ ${totalMatSell.toFixed(2)}`);
       $("#total_mat_tax_labor").text(`$ ${totalMatTaxLabor.toFixed(2)}`);
       $("#total_comb_gp").text(`${totalCombGp.toFixed(2)}%`);
