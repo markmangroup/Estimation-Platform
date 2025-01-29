@@ -151,11 +151,13 @@
                             <td class="mapping-prod-sell">{{ ap.sell }}</td>
                             <td class="mapping-prod-gross-profit">{{ ap.gross_profit }}</td>
                             <td class="mapping-prod-gross-percentage">{{ ap.gross_profit_percentage }}</td>
-                            <td>
+                            <td class="d-flex">
                                 {% if t_info.task.code %}
-                                <button type="button" class="btn btn-danger assign-prod-delete-btn" data-task-id={{t_id}} data-id="{{ap.id}}" data-title="{{ap.description}} - {{ t_info.task.code }}" data-url="{% url   'proposal_app:opportunity:assign-prod-delete-ajax' %}"><em class="fa fa-trash"></em></button>
+                                <button type="button" class="btn btn-danger assign-prod-delete-btn remove-row-btn mr-2" data-task-id={{t_id}} data-id="{{ap.id}}" data-title="{{ap.description}} - {{ t_info.task.code }}" data-url="{% url   'proposal_app:opportunity:assign-prod-delete-ajax' %}"><em class="fa fa-trash"></em></button>
+                                <button type="button" data-id="{{t_id}}" class="btn btn-primary add-row-btn" style="display: none;"><i class="fa fa-plus"></i></button>
                                 {% else %}
-                                <button type="button" class="btn btn-danger assign-prod-delete-btn" data-task-id={{t_id}} data-id="{{ap.id}}" data-title="{{ap.description}} - {{ t_info.task.task.name }}" data-url="{% url   'proposal_app:opportunity:assign-prod-delete-ajax' %}"><em class="fa fa-trash"></em></button>
+                                <button type="button" class="btn btn-danger assign-prod-delete-btn remove-row-btn mr-2" data-task-id={{t_id}} data-id="{{ap.id}}" data-title="{{ap.description}} - {{ t_info.task.task.name }}" data-url="{% url   'proposal_app:opportunity:assign-prod-delete-ajax' %}"><em class="fa fa-trash"></em></button>
+                                <button type="button" data-id="{{t_id}}" class="btn btn-primary add-row-btn" style="display: none;"><i class="fa fa-plus"></i></button>
                             {% endif %}
                             </td>
                         </tr>
@@ -195,7 +197,7 @@
                             <td class="gross" data-id="{{t_id}}"></td>
                             <td class="gross-p" data-id="{{t_id}}"></td>
                             <td class="d-flex">
-                                <button type="button" data-id="{{t_id}}" class="btn btn-danger mr-2 remove-row-btn"><i class="fa fa-trash"></i></button>
+                                <button type="button" data-id="{{t_id}}" class="btn btn-danger mr-2 remove-row-btn" data-task-id="{{t_id}}"><i class="fa fa-trash"></i></button>
                                 <button type="button" data-id="{{t_id}}" class="btn btn-primary add-row-btn"><i class="fa fa-plus"></i></button>
                             </td>
                         </tr>

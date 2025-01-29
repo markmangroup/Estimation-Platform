@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 from django.contrib import messages
-from django.db.models import Count, Prefetch
+from django.db.models import Count, Prefetch, Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
@@ -9,13 +9,8 @@ from django.urls import reverse
 from apps.constants import ERROR_RESPONSE, LOGGER
 from apps.mixin import ViewMixin
 
-from ..models import (
-    AssignedProduct,
-    Invoice,
-    Opportunity,
-    ProposalCreation,
-    TaskMapping,
-)
+from ..models import (AssignedProduct, Invoice, Opportunity, ProposalCreation,
+                      TaskMapping)
 
 
 class CreateProposalView(ViewMixin):
@@ -38,7 +33,7 @@ class CreateProposalView(ViewMixin):
 
         # Fetch task mappings for the given document number
         task_mappings = TaskMapping.objects.filter(opportunity__document_number=document_number).exclude(
-            description="Labor"
+            Q(description="Labor") & Q(assign_to__isnull=False)
         )
 
         # Get the IDs of task mappings that are already in the ProposalCreation for the current opportunity

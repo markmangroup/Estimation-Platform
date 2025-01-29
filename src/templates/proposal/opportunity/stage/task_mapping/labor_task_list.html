@@ -155,7 +155,12 @@
                         <td class="mapping-prod-gross-profit">{{ ap.gross_profit }}</td>
                         <td class="mapping-prod-gross-percentage">{{ ap.gross_profit_percentage }}</td>
 
-                        <td><button type="button" class="btn btn-danger assign-prod-delete-btn" data-task-id="{{t_id}}" data-id="{{ap.id}}" data-title="{{ap.description}} - {{ t_info.task.task.name }}" data-url="{% url   'proposal_app:opportunity:assign-prod-delete-ajax' %}"><em class="fa fa-trash"></em></button></td>
+                        <td class="d-flex">
+                            <button type="button" class="btn btn-danger assign-prod-delete-btn remove-labor-row-btn mr-2" data-task-id="{{t_id}}" data-id="{{ap.id}}" data-title="{{ap.description}} - {{ t_info.task.task.name }}" data-url="{% url   'proposal_app:opportunity:assign-prod-delete-ajax' %}">
+                                <em class="fa fa-trash"></em>
+                            </button>
+                            <button type="button" data-id="{{t_id}}" class="btn btn-primary add-labor-row" style="display: none;"><i class="fa fa-plus"></i></button>
+                        </td>
                     </tr>
 
                     {% endfor %}
@@ -193,8 +198,8 @@
                         <td class="gross-p" data-id="{{t_id}}"></td>
 
                         <td class="d-flex">
-                        <button class="btn btn-danger mr-2"><i class="fa fa-trash"></i></button>
-                        <button type="button" data-id="{{t_id}}" class="btn btn-primary add-labor-row"><i class="fa fa-plus"></i></button>
+                            <button type="button" data-task-id="{{t_id}}" class="btn btn-danger mr-2 remove-labor-row-btn"><i class="fa fa-trash"></i></button>
+                            <button type="button" data-id="{{t_id}}" class="btn btn-primary add-labor-row"><i class="fa fa-plus"></i></button>
                         </td>
                     </tr>
 

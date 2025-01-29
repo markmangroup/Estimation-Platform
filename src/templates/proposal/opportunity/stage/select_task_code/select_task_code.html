@@ -99,10 +99,37 @@
 <!-- Update Stages -->
 <script>
   $(document).ready(function() {
+
+    var stageMapping = {
+      1 : "Select Task Code",
+      2 : "Upload CAD File",
+      3 : "Material List",
+      4 : "Task Mapping",
+      5 : "Generate Estimate",
+      6 : "Proposal Creation",
+      7 : "Proposal Preview",
+      8 : "Final Document"
+    };
+
+    $('.steps a').on('click', function(event) {
+      event.preventDefault();
+      var stepNumber = $(this).find('.step').text();
+      var stageKey = stageMapping[stepNumber];
+      var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?stage=" + stageKey;
+      history.pushState({ path: newUrl }, '', newUrl);
+    });
+
     $("a[href='#next']").on("click", function(e) {
       var foundElements = $(".steps li").find(".current");
       if (foundElements){
         value = $(".current a span.step").text();
+
+        var stageKey = stageMapping[value];
+        const url = new URL(window.location.href);
+
+        url.searchParams.set('stage', stageKey);
+        window.history.pushState({}, '', url);
+
         $.ajax({
           url: '{% url "proposal_app:opportunity:update-stages" %}',
           type: 'POST',
@@ -133,9 +160,17 @@
 
     $("a[href='#previous']").on("click", function(e) {
       // console.log("Previous Clicked");
+
       var foundElements = $(".steps li").find(".current");
+
       if (foundElements){
         value = $(".current a span.step").text();
+
+        var stageKey = stageMapping[value];
+        const url = new URL(window.location.href);
+
+        url.searchParams.set('stage', stageKey);
+        window.history.pushState({}, '', url);
       }
       else{
         // console.log("Not found elements:");
