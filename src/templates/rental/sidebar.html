@@ -120,9 +120,9 @@
 
         <!-- Rent Process Start -->
         <li
-          class="nav-item {% if 'order_list' in request.path %}active{% endif %}"
+          class="nav-item {% if 'rent-process' in request.path %}active{% endif %}"
         >
-          <a href="{% url 'rental:order_list' %}"
+          <a href="{% url 'rental:rent_process:order-list' %}"
             ><i class="ft-shopping-bag"></i
             ><span class="menu-title" >Rent Process</span></a
           >
@@ -133,7 +133,7 @@
         <li
           class="nav-item {% if 'stock_adjustment' in request.path %}active{% endif %}"
         >
-          <a href="{% url 'rental:stock_adjustment' %}"
+          <a href="{% url 'rental:stock_management:rental-stock-management-list' %}"
             ><i class="ft-sliders"></i
             ><span class="menu-title" data-i18n="Dashboard"
               >Stock Adjustment</span

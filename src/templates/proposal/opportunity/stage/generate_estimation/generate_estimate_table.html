@@ -19,7 +19,7 @@ NOTE : For adding border lines into table add "table-bordered" class into table 
         <tr style="border: 1px solid red">
           <th colspan="2"></th>
           <th colspan="5" class="align-top">Labor</th>
-          <th colspan="6" class="align-top">Materials</th>
+          <th colspan="5" class="align-top">Materials</th>
           <th colspan="2" class="align-top">Summary Info</th>
         </tr>
         <tr class="bg-white" style="z-index: 10">
@@ -34,7 +34,7 @@ NOTE : For adding border lines into table add "table-bordered" class into table 
             <th>MAT. GP $	</th>
             <th>MAT. + MU	</th>
             <th>SALES TAX	</th>
-            <th>S & H	</th>
+            <!-- <th>S & H	</th> -->
             <th>MAT. SELL	</th>
             <th>MAT, TAX, LABOR	</th>
             <th>COMB GP% </th>
@@ -89,9 +89,9 @@ NOTE : For adding border lines into table add "table-bordered" class into table 
           <td class="mat_gp">{{ et.mat_gp }}</td>
           <td class="mat_plus_mu">{{ et.mat_plus_mu }}</td>
           <td class="sales_tax">{{ et.sales_tax }}</td>
-          <td>
+          <!-- <td>
             <input type="text" class="form-control btn-outline-warning s_and_h" value="{{ et.s_and_h }}">
-          </td>
+          </td> -->
           <td class="mat_sell">{{ et.mat_sell }}</td>
           <td class="mat_tax_labor">{{ et.mat_tax_labor }}</td>
           <td class="comb_gp">{{ et.comb_gp }}</td>
@@ -100,7 +100,7 @@ NOTE : For adding border lines into table add "table-bordered" class into table 
       {% endfor %}
 
       <!-- Labor Removed -->
-      {% for et_labor in estimation_table_labor %}
+      {% comment %} {% for et_labor in task_labor_list %}
         <!-- Labor -->
         <tr class="selected-estimate-row">
           <input type="hidden" class="task_mapping" value={{ et_labor.id }}>
@@ -130,15 +130,15 @@ NOTE : For adding border lines into table add "table-bordered" class into table 
           <td class="mat_gp">{{ et_labor.mat_gp }}</td>
           <td class="mat_plus_mu">{{ et_labor.mat_plus_mu }}</td>
           <td class="sales_tax">{{ et_labor.sales_tax }}</td>
-          <td>
+          <!-- <td>
             <input type="text" class="form-control btn-outline-warning s_and_h" value="{{ et_labor.s_and_h }}">
-          </td>
+          </td> -->
           <td class="mat_sell">{{ et_labor.mat_sell }}</td>
           <td class="mat_tax_labor">{{ et_labor.mat_tax_labor }}</td>
           <td class="comb_gp">{{ et_labor.comb_gp }}</td>
 
         </tr>
-      {% endfor %}
+      {% endfor %} {% endcomment %}
       <!-- <tr>
         <td class="text-nowrap">FRT</td>
         <td class="text-nowrap">FRT: Freight</td>
@@ -176,7 +176,7 @@ NOTE : For adding border lines into table add "table-bordered" class into table 
         <th id="total_mat_gp">${{ total.total_mat_gp }}</th>
         <th id="total_mat_mu">${{ total.total_mat_mu }}</th>
         <th id="total_sales_tax">${{ total.total_sales_tax }}</th>
-        <th id="total_s_and_h">${{ total.total_s_and_h }}</th>
+        <!-- <th id="total_s_and_h">${{ total.total_s_and_h }}</th> -->
         <th id="total_mat_sell">${{ total.total_mat_sell }}</th>
         <th id="total_mat_tax_labor">${{ total.total_mat_tax_labor }}</th>
         <th></th>
@@ -299,9 +299,6 @@ NOTE : For adding border lines into table add "table-bordered" class into table 
 
     // Update overall totals after modifying the row
     updateOverallTotals();
-    $("#total_labor_gp_percent").text(`${laborGpPercent.toFixed(2)}%`);
-    $("#total_mat_gp_percent").text(`${matGpPercent.toFixed(2)}%`);
-    $("#total_s_and_h").text(`$${s_and_h.toFixed(2)}`);
 
   });
 
@@ -329,33 +326,33 @@ NOTE : For adding border lines into table add "table-bordered" class into table 
 
           var laborCost = parseFloat($row.find(".labor_cost").text()) || 0;
           var laborGp = parseFloat($row.find(".labor_gp").text()) || 0;
-          // var laborGpPercent = parseFloat($row.find(".labor_gp_percent").val()) || 0;
+          var laborGpPercent = parseFloat($row.find(".labor_gp_percent").val()) || 0;
           var laborSell = parseFloat($row.find(".labor_sell").text()) || 0;
           var matCost = parseFloat($row.find(".mat_cost").text()) || 0;
           var matGp = parseFloat($row.find(".mat_gp").text()) || 0;
-          // var matGpPercent = parseFloat($row.find(".mat_gp_percent").val()) || 0;
+          var matGpPercent = parseFloat($row.find(".mat_gp_percent").val()) || 0;
           var matPlusMu = parseFloat($row.find(".mat_plus_mu").text()) || 0;
           var salesTax = parseFloat($row.find(".sales_tax").text()) || 0;
           var matSell = parseFloat($row.find(".mat_sell").text()) || 0;
           var matTaxLabor = parseFloat($row.find(".mat_tax_labor").text()) || 0;
           var combGp = parseFloat($row.find(".comb_gp").text()) || 0;
           var acre = parseFloat($row.find(".acre").text()) || 0;
-          // var s_and_h = parseFloat($row.find(".s_and_h").val()) || 0;
+          var s_and_h = parseFloat($row.find(".s_and_h").val()) || 0;
 
           totalLaborCost += laborCost;
           totalLaborGp += laborGp;
-          // totalLaborGpPercent = laborGpPercent;
+          totalLaborGpPercent += laborGpPercent;
           totalLaborSell += laborSell;
           totalMatCost += matCost;
           totalMatGp += matGp;
-          // totalMatGpPercent = matGpPercent;
+          totalMatGpPercent += matGpPercent;
           totalMatPlusMu += matPlusMu;
           totalSalesTax += salesTax;
           totalMatSell += matSell;
           totalMatTaxLabor += matTaxLabor;
           totalCombGp += combGp;
           totalAcre += acre;
-          // totalSAndH = s_and_h;
+          totalSAndH += s_and_h;
       });
 
       var total_cost = totalLaborCost + totalMatCost;
@@ -365,15 +362,15 @@ NOTE : For adding border lines into table add "table-bordered" class into table 
 
       // Update totals in <tfoot>
       $("#total_labor_cost").text(`$ ${totalLaborCost.toFixed(2)}`);
-      // $("#total_labor_gp_percent").text(`${totalLaborGpPercent.toFixed(2)}%`);
+      $("#total_labor_gp_percent").text(`${totalLaborGpPercent.toFixed(2)}%`);
       $("#total_labor_gp").text(`$ ${totalLaborGp.toFixed(2)}`);
       $("#total_labor_sell").text(`$ ${totalLaborSell.toFixed(2)}`);
       $("#total_mat_cost").text(`$ ${totalMatCost.toFixed(2)}`);
-      // $("#total_mat_gp_percent").text(`${totalMatGpPercent.toFixed(2)}%`);
+      $("#total_mat_gp_percent").text(`${totalMatGpPercent.toFixed(2)}%`);
       $("#total_mat_gp").text(`$ ${totalMatGp.toFixed(2)}`);
       $("#total_mat_mu").text(`$ ${totalMatPlusMu.toFixed(2)}`);
       $("#total_sales_tax").text(`$ ${totalSalesTax.toFixed(2)}`);
-      // $("#total_s_and_h").text(`$${totalSAndH.toFixed(2)}`);
+      $("#total_s_and_h").text(`$${totalSAndH.toFixed(2)}`);
       $("#total_mat_sell").text(`$ ${totalMatSell.toFixed(2)}`);
       $("#total_mat_tax_labor").text(`$ ${totalMatTaxLabor.toFixed(2)}`);
       $("#total_comb_gp").text(`${totalCombGp.toFixed(2)}%`);

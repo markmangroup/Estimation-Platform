@@ -64,10 +64,12 @@ urlpatterns = (
         # path("dashboard", views.Dashboard.as_view(), name="dashboard"),
         path("coming_soon", views.ComingSoon.as_view(), name="coming_soon"),
         path("", include(("apps.rental.customer.urls", "rental_customer"), namespace="rental_customer")),
-        path("", include(("apps.rental.product.urls", "rental_customer"), namespace="rental_product")),
+        path("", include(("apps.rental.product.urls", "rental_product"), namespace="rental_product")),
         path("", include(("apps.rental.warehouse.urls", "warehouse"), namespace="warehouse")),
         path("", include(("apps.rental.account_manager.urls", "account_manager"), namespace="account_manager")),
         path("", include(("apps.rental.workflow.urls", "rental_workflow"), namespace="rental_workflow")),
+        path("", include(("apps.rental.stock_management.urls", "stock_management"), namespace="stock_management")),
+        path("", include(("apps.rental.rent_process.urls", "rent_process"), namespace="rent_process")),
     ]
     + warehouse_urls
     + reports_urls

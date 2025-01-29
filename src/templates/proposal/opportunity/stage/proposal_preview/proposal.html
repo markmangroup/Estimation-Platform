@@ -9,7 +9,7 @@
           <img src="{% static 'app/img/logos/logo.png' %}" alt="" class="img-fluid" width="100" height="100">
         </div>
         <div class="col-md-6 col-12 text-right">
-          <h2 class="primary text-uppercase"> </h2>
+          <h2 class="primary text-uppercase">Exhibit A - Project Detail</h2>
           <p class="pb-3">
             <label class="font-weight-bold form-label" style="">Invoice:</label>
             <input type="text" value="{{ invoice.invoice_number }}" data-id={{ invoice.id }} class="form-control invoice_number" style="width: 200px; float: right;">
@@ -254,7 +254,7 @@
                   <!-- Add new Terms -->
                   <tr class="add-new-term-tr tac icon">
                     <!-- <td><i class="fa fa-trash danger remove-terms"></i></td> -->
-                    <td><input type="checkbox" name="" checked></td>
+                    <td><input type="checkbox" name=""></td>
                     <td> <input type="text" class="form-control term new-terms" placeholder="Write new terms..."/> </td>
                   </tr>
 
@@ -276,7 +276,7 @@
                   <!-- Add New Row -->
                   <tr class="new-pump-tr pit icon">
                     <!-- <td><i class="fa fa-trash danger remove-terms"></i></td> -->
-                    <td><input type="checkbox" name="" checked></td>
+                    <td><input type="checkbox" name=""></td>
                     <td>
                       <input
                         type="text"
@@ -305,7 +305,7 @@
                     <!-- Add New Row -->
                     <tr class="new-sales-agreement-tr spa icon">
                       <!-- <td><i class="fa fa-trash danger remove-terms"></i></td> -->
-                      <td style="width: 4%;"><input type="checkbox" name="" checked></td>
+                      <td style="width: 4%;"><input type="checkbox" name=""></td>
                       <td>
                         <input type="text" class="form-control sales-agreement new-sales-agreement" placeholder="Write new sales and approval agreement..."/>
                       </td>
@@ -933,7 +933,7 @@
 
                   <!-- Add new Terms -->
                   <tr class="tac">
-                    <td><input type="checkbox" name="" checked></td>
+                    <td><input type="checkbox" name=""></td>
                     <td>
                       <input
                         type="text"
@@ -1192,7 +1192,7 @@
 
                   <!-- Add More -->
                   <tr class="pit">
-                    <td><input type="checkbox" name="" checked></td>
+                    <td><input type="checkbox" name=""></td>
                     <td>
                       <input
                         type="text"
@@ -1321,7 +1321,7 @@
                     </tr>
 
                     <tr class="new-sales-agreement-tr spa icon">
-                      <td style="width: 4%;"><input type="checkbox" name="" checked></td>
+                      <td style="width: 4%;"><input type="checkbox" name=""></td>
                       <td>
                         <input
                           type="text"
@@ -2290,7 +2290,7 @@
 
         var $newRow = `
             <tr class="tac">
-                <td><input type="checkbox" name="" checked></td>
+                <td><input type="checkbox" name=""></td>
                 <td>
                     <input type="text" class="form-control term new-terms" placeholder="Write Here" />
                 </td>
@@ -2313,7 +2313,7 @@
 
         var $newRow = `
             <tr class="pit">
-                <td><input type="checkbox" name="" checked></td>
+                <td><input type="checkbox" name=""></td>
                 <td>
                     <input type="text" class="form-control pump-term new-pump-terms" placeholder="Write new pump installation term" />
                 </td>
@@ -2336,7 +2336,7 @@
         var $currentRow = $(this).closest('tr');
         var $newRow = `
             <tr class="spa">
-                <td><input type="checkbox" name="" checked></td>
+                <td><input type="checkbox" name=""></td>
                 <td>
                     <input type="text" class="form-control sales-agreement new-sales-agreement" placeholder="Write new sales and approval agreement..." />
                 </td>

@@ -1,0 +1,21 @@
+<table class="table bordered">
+    {% for delivery in deliveries %}
+        <tr>
+            <td class="text-left">
+                {% if delivery.delivery_status == delivery.STAGE_1 %}
+                    <span class="badge bg-light-info">Pick Up</span>
+                {% elif delivery.delivery_status == delivery.STAGE_2 %}
+                    <span class="badge bg-light-danger">Check Out</span>
+                {% elif delivery.delivery_status == delivery.STAGE_3 %}
+                    <span class="badge bg-light-success">Delivered</span>
+                {% elif delivery.delivery_status == delivery.STAGE_4 %}
+                    <span class="badge bg-light-info">Check In</span>
+                {% elif delivery.delivery_status == delivery.STAGE_5 %}
+                    <span class="badge bg-light-primary">Create Return Delivery</span>
+                {% elif delivery.delivery_status == delivery.STAGE_6 %}
+                    <span class="badge bg-grey">Create Delivery</span>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+</table>

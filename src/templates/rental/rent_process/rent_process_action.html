@@ -1,0 +1,21 @@
+{% load static %}
+{% if delete_url %}
+    <a href="#" id="confirm-link" class="" title="Rental Stage">
+        <i class="ft-trash-2 font-medium-3 mr-1" style="color: rgb(255, 98, 98);"></i>
+    </a>
+{% endif %}
+{% if process_url %}
+    <a class="warning" href="{% url 'rental:order_detail' %}">
+        <i class="ft-truck font-medium-3 mr-1"></i>
+    </a>
+{% endif %}
+{% if time_line_url %}
+    <a href="" class="success" data-toggle="modal" data-target="#TimeLine">
+        <i class="ft-bar-chart font-medium-3 mr-1"></i>
+    </a>
+{% endif %}
+{% if edit_url %}
+<a href="" class="primary" data-toggle="modal" data-target="#TimeLine">
+    <i class="ft-edit font-medium-3 mr-2"></i>
+</a>
+{% endif %}

@@ -283,11 +283,33 @@ class TaskMapping(BaseModel):
             total_percent = 0.0
 
             for task in task_mappings:
-                if task.assign_to == self.code:
+                if task.assign_to == self.code and task.assign_to:
                     assigned_products = AssignedProduct.objects.filter(task_mapping_id=task.id)
                     total_quantity += sum(product.quantity for product in assigned_products)
                     total_price += sum(
                         product.vendor_quoted_cost * product.quantity if product.vendor_quoted_cost else product.standard_cost * product.quantity
+                        for product in assigned_products
+                    )
+                    total_percent += sum(product.gross_profit_percentage for product in assigned_products)
+
+            return round(total_price, 2)
+
+        elif not self.assign_to:
+            task_mappings = TaskMapping.objects.filter(
+                opportunity=self.opportunity, task__description__icontains="labor"
+            )
+
+            # Initialize total calculations
+            total_quantity = 0
+            total_price = 0.0
+            total_percent = 0.0
+
+            for task in task_mappings:
+                if not task.assign_to:
+                    assigned_products = AssignedProduct.objects.filter(task_mapping_id=task.id)
+                    total_quantity += sum(product.quantity for product in assigned_products)
+                    total_price += sum(
+                        product.vendor_quoted_cost if product.vendor_quoted_cost else product.standard_cost
                         for product in assigned_products
                     )
                     total_percent += sum(product.gross_profit_percentage for product in assigned_products)
@@ -341,7 +363,7 @@ class TaskMapping(BaseModel):
 
             total_quantity += sum(product.quantity for product in task_assigned_products)
             total_price += sum(
-                product.vendor_quoted_cost * product.quantity if product.vendor_quoted_cost else product.standard_cost * product.quantity
+                product.vendor_quoted_cost if product.vendor_quoted_cost else product.standard_cost
                 for product in task_assigned_products
             )
             total_percent += sum(product.gross_profit_percentage for product in task_assigned_products)

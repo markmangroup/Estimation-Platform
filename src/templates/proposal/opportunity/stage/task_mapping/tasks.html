@@ -88,8 +88,46 @@
   <script>
 
     var task_id = null;
+    var unapplied_change = false;
 
     $(document).ready(function() {
+
+        function refresh_page(change, text) {
+          if (change) {
+              // Listen for keydown events
+              window.addEventListener('keydown', function (event) {
+                  if (
+                      event.key === 'F5' ||
+                      event.keyCode === 116 ||
+                      (event.ctrlKey && (event.key === 'r' || event.key === 'R'))
+                  ) {
+                      event.preventDefault(); // Prevent the default refresh action
+      
+                      Swal.fire({
+                          icon: 'warning',
+                          title: 'Unsaved Changes!',
+                          text: text,
+                          showCancelButton: true,
+                          confirmButtonText: 'Yes, refresh!',
+                          cancelButtonText: 'No, cancel!',
+                          allowOutsideClick: false,
+                      }).then((result) => {
+                          if (result.isConfirmed) {
+                              // Reload the page if confirmed
+                              location.reload();
+                          }
+                      });
+                  }
+              });
+      
+              // Warn before leaving the page if there are unsaved changes
+              /* window.addEventListener('beforeunload', function (event) {
+                  const message = 'Changes that you made may not be saved.';
+                  event.returnValue = message; // Standard for most browsers
+                  return message; // For older browsers
+              }); */
+          }
+        }
 
         function generateUniqueId() {
             return "id" + Math.random().toString(16).slice(2);
@@ -222,6 +260,9 @@
           var $input = $(e.target);
           var multi_row;
           task_id = $(this).data('id');
+          unapplied_change = true;
+
+          refresh_page(unapplied_change, 'If you refresh the page, all changes will be lost stage 4 changes!');
 
           var numRows = 1;
           if ($input.hasClass("add-multi-row-btn")) {
@@ -365,19 +406,22 @@
                           };
                       },
                       processResults: function(data) {
-                          // Clear existing options
-                          $select2Element.empty();
+                          $select2Element.empty(); // Clear existing options
 
                           // Populate new options
                           $.each(data.results, function(index, item) {
                               var newOption = new Option(item.text, item.id, false, false);
-                              $select2Element.append(newOption);
+                              var $newOption = $(newOption);
+                              var option_value = $newOption.text();
+                              if (option_value == value){
+                                $select2Element.append(newOption);
+                              }
                           });
 
                           // Check if there are results and set the first as selected
                           if (data.results.length > 0) {
                             if(value){
-                              $select2Element.val(data.results[1].id).trigger('change');
+                              $select2Element.val(option_value).trigger('change');
                             }else{
                               $select2Element.val(data.results[0].id).trigger('change');
                             }
@@ -396,7 +440,6 @@
           $select2Element.select2('data', null); // Clear previous data
           $select2Element.select2('open'); // Trigger AJAX without user action
           $select2Element.select2('close'); // Close dropdown immediately after fetching
-          InitSelects();
         }
 
         // Initialize The Drop Down Value For Description
@@ -504,7 +547,6 @@
           $select2Element.select2('data', null); // Clear previous data
           $select2Element.select2('open'); // Trigger AJAX without user action
           $select2Element.select2('close'); // Close dropdown immediately after fetching
-          InitSelects();
         }
 
         // Function for update value real time.
@@ -767,27 +809,31 @@
           });
         });
 
-
         $(document).on('click', '.remove-row-btn', function() {
+
+          console.log("-- clicked --");
+
           var current_row = $(this).closest('tr');
           var task_id = $(this).data('task-id');
-          var Tbody = $(`#tableBody-${task_id}`);
 
           current_row.remove();
+          var Tbody = $(`#tableBody-${task_id}`)
 
-          UpdateSrNo(Tbody);   // Update the serial number after removing the row
+          UpdateSrNo(Tbody);   // Update the serial number after removing the row          
 
-          var addRowButtonExists = Tbody.find('button.add-row-btn:visible').length > 0;
+          var addRowButtonExists = Tbody.find('button.add-row-btn:visible').length > 0;          
+
           var lastPlusButton = Tbody.find('button.add-row-btn:last');
 
           if (lastPlusButton.length > 0 && !lastPlusButton.is(':visible')) {
-              lastPlusButton.show();
+            lastPlusButton.show();
           }
         });
 
         // Handle Save All data on next click
         $("a[href='#next']").on('click', function() {
 
+          unapplied_change = false;
           var foundElements = $(".steps li").find(".current");
           current_stage_value = $(".current a span.step").text();
 
@@ -1112,12 +1158,12 @@
         $(document).on('click', '.remove-labor-row-btn', function() {
           var current_row = $(this).closest('tr');
           var task_id = $(this).data('task-id');
-          var Tbody = $(`#tableBody-${task_id}`)
 
           current_row.remove();
 
-          var addRowButtonExists = Tbody.find('button.add-labor-row.new-labor-btn:visible').length > 0;
-          var lastPlusButton = Tbody.find('button.add-labor-row.new-labor-btn:last');
+          var Tbody = $(`#tableBody-${task_id}`)
+          var addRowButtonExists = Tbody.find('button.add-labor-row:visible').length > 0;
+          var lastPlusButton = Tbody.find('button.add-labor-row:last');
 
           if (lastPlusButton.length > 0 && !lastPlusButton.is(':visible')) {
             lastPlusButton.show();
@@ -1221,7 +1267,6 @@
           $select2Element.select2('data', null); // Clear previous data
           $select2Element.select2('open'); // Trigger AJAX without user action
           $select2Element.select2('close'); // Close dropdown immediately after fetching
-          initSelect();
         }
 
         // Update Task Name Function
@@ -1269,7 +1314,6 @@
           $select2Element.select2('data', null); // Clear previous data
           $select2Element.select2('open'); // Trigger AJAX without user action
           $select2Element.select2('close'); // Close dropdown immediately after fetching
-          initSelect();
         }
 
         // Function for update value real time.
@@ -1607,10 +1651,10 @@
     <script>
       $(document).ready(function() {
             $('.select2-task').select2({
-                // containerCss: { width: "150px" },
+                containerCss: { width: "150px" },
                 // allowClear: true,
                 dropdownAutoWidth: true,  // Ensure dropdown respects the width
-                width: '200px',
+                width: 'resolve',
                 placeholder: 'Select Task Name',
                 ajax: {
                     url: '{% url "proposal_app:opportunity:task-search" %}',
@@ -1637,9 +1681,9 @@
     <script>
       $(document).ready(function() {
             $('.select2-labor-task').select2({
-                // containerCss: { width: "150px" },
+                containerCss: { width: "150px" },
                 dropdownAutoWidth: true,
-                width: '200px',
+                width: 'resolve',
                 placeholder: 'Select Task Name',
 
                 ajax: {
@@ -1665,53 +1709,6 @@
     <!-- SEARCH: Labor task name -->
     <script>
       $(document).ready(function() {
-
-        function initSelect(){
-
-          $('.labour-task-name').select2({
-            placeholder: 'Select task Name',
-            width: '250px',
-            tags: true, // Enable the tagging feature
-            ajax: {
-                url: '{% url "proposal_app:opportunity:labor-task-name-search" %}',
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        q: params.term
-                    };
-                },
-                processResults: function (data) {
-                    return {
-                        results: data.results
-                    };
-                },
-                cache: true
-              }
-          });
-  
-          $('.labour-description').select2({
-            placeholder: 'Select task description',
-            width: '250px',
-            tags: true, // Enable the tagging feature
-            ajax: {
-                url: '{% url "proposal_app:opportunity:labor-task-description-search" %}',
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        q: params.term
-                    };
-                },
-                processResults: function (data) {
-                    return {
-                        results: data.results
-                    };
-                },
-                cache: true
-              }
-          });
-        }
 
         function updateDescription(value, id) {
           var $select2Element = $(`select[data-id="${id}"].labour-description`);
@@ -1756,7 +1753,6 @@
           $select2Element.select2('data', null); // Clear previous data
           $select2Element.select2('open'); // Trigger AJAX without user action
           $select2Element.select2('close'); // Close dropdown immediately after fetching
-          initSelect();
         }
 
         $(document).on('change', '.labour-task-name', function(e) {
@@ -1937,7 +1933,7 @@
               }
             });
           }else {
-                Swal.fire("Cancel delete", "", "info");
+              window.location.reload();
           }
         });
       });
@@ -2145,7 +2141,12 @@
             'X-CSRFToken': "{{ csrf_token }}",
           },
           success: function(response) {
-              window.location.reload();
+            toastr.success(response.message, 'Success', {
+              closeButton: true,
+              progressBar: true,
+              positionClass: 'toast-bottom-right',
+              timeOut: 6000
+            });
           },
           error: function(xhr, status, error) {
             toastr.error(xhr.responseJSON.message, 'Error', {

@@ -425,11 +425,11 @@ class AssignTaskLaborView(ViewMixin):
                 task_mapping_object.assign_to = ""
                 task_mapping_object.save()
 
-            messages.success(request, f"Labor Assigned to task {assign_labor_task.code}")
+            # messages.success(request, f"Labor Assigned to task {assign_labor_task.code}")
             return JsonResponse(
                 {
                     "code": 200,
-                    "message": "success",
+                    "message": f"Labor Assigned to task {assign_labor_task.code}",
                 }
             )
 
