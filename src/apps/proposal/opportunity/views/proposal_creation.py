@@ -218,9 +218,9 @@ class ProposalCreationData:
                 if product.is_select:  # Only include selected products
                     filtered_assigned_products.append(product)
 
-                value = ProposalCreationData._calculate_product_value(task_object)
+                value = ProposalCreationData._calculate_product_value(product)
 
-                result[group_name]["task_totals"][task_object] = value
+                result[group_name]["task_totals"][task_object] += value
                 result[group_name]["main_total"] += value
 
             # Store the filtered assigned products
@@ -234,24 +234,23 @@ class ProposalCreationData:
         return result
 
     @staticmethod
-    def _calculate_product_value(product: TaskMapping) -> float:
+    def _calculate_product_value(product: AssignedProduct) -> float:
         """
         Calculate the value of a product based on its costs.
 
         :param product: The product to calculate the value for.
         :return: The calculated value.
         """
-        # quantity = product.quantity or 0
-        # standard_cost = product.standard_cost or 0
-        # local_cost = product.local_cost or 0
+        quantity = product.quantity or 0
+        standard_cost = product.standard_cost or 0
+        local_cost = product.local_cost or 0
 
-        # if quantity and standard_cost:
-        #     return quantity * standard_cost
-        # elif quantity and local_cost:
-        #     return quantity * local_cost
-        # else:
-        #     return 0.0
-        return product.mat_tax_labor
+        if quantity and standard_cost:
+            return quantity * standard_cost
+        elif quantity and local_cost:
+            return quantity * local_cost
+        else:
+            return 0.0
 
     @staticmethod
     def _get_proposal_totals(document_number: str) -> dict:

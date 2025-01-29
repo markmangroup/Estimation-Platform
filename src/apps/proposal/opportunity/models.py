@@ -287,7 +287,7 @@ class TaskMapping(BaseModel):
                     assigned_products = AssignedProduct.objects.filter(task_mapping_id=task.id)
                     total_quantity += sum(product.quantity for product in assigned_products)
                     total_price += sum(
-                        product.vendor_quoted_cost * product.quantity if product.vendor_quoted_cost else product.standard_cost * product.quantity
+                        product.vendor_quoted_cost if product.vendor_quoted_cost else product.standard_cost
                         for product in assigned_products
                     )
                     total_percent += sum(product.gross_profit_percentage for product in assigned_products)
@@ -341,7 +341,7 @@ class TaskMapping(BaseModel):
 
             total_quantity += sum(product.quantity for product in task_assigned_products)
             total_price += sum(
-                product.vendor_quoted_cost * product.quantity if product.vendor_quoted_cost else product.standard_cost * product.quantity
+                product.vendor_quoted_cost if product.vendor_quoted_cost else product.standard_cost
                 for product in task_assigned_products
             )
             total_percent += sum(product.gross_profit_percentage for product in task_assigned_products)

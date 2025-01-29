@@ -62,10 +62,12 @@
         var label = input.nextElementSibling;
         label.textContent = fileName;
     }
+    let isSuccessShown = false;  // Flag to prevent multiple success messages
 
     document.body.addEventListener('htmx:beforeRequest', function(evt) {
         var $loader = $('#loader-container');
         $loader.show();
+        isSuccessShown = false;  // Reset the success flag when starting a new request
     });
 
     document.body.addEventListener('htmx:beforeSwap', function(evt) {
@@ -77,8 +79,8 @@
             // Parse the JSON response
             var response = JSON.parse(evt.detail.xhr.response);
 
-            // Check if response contains a success message
-            if (response.status === 'success') {
+            // Check if response contains a success message and if it's not already shown
+            if (response.status === 'success' && !isSuccessShown) {
                 $loader.hide();
                 evt.detail.shouldSwap = false;
 
@@ -98,6 +100,8 @@
                     positionClass: 'toast-bottom-right',
                     timeOut: 6000
                 });
+                // Set the flag to true to prevent further toast messages
+                isSuccessShown = true;
             }
         }
     });

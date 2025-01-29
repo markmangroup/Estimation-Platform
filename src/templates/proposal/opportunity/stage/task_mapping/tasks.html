@@ -396,7 +396,6 @@
           $select2Element.select2('data', null); // Clear previous data
           $select2Element.select2('open'); // Trigger AJAX without user action
           $select2Element.select2('close'); // Close dropdown immediately after fetching
-          InitSelects();
         }
 
         // Initialize The Drop Down Value For Description
@@ -504,7 +503,6 @@
           $select2Element.select2('data', null); // Clear previous data
           $select2Element.select2('open'); // Trigger AJAX without user action
           $select2Element.select2('close'); // Close dropdown immediately after fetching
-          InitSelects();
         }
 
         // Function for update value real time.
@@ -767,22 +765,13 @@
           });
         });
 
-
         $(document).on('click', '.remove-row-btn', function() {
           var current_row = $(this).closest('tr');
           var task_id = $(this).data('task-id');
-          var Tbody = $(`#tableBody-${task_id}`);
 
           current_row.remove();
-
-          UpdateSrNo(Tbody);   // Update the serial number after removing the row
-
-          var addRowButtonExists = Tbody.find('button.add-row-btn:visible').length > 0;
-          var lastPlusButton = Tbody.find('button.add-row-btn:last');
-
-          if (lastPlusButton.length > 0 && !lastPlusButton.is(':visible')) {
-              lastPlusButton.show();
-          }
+          var Tbody = $(`#tableBody-${task_id}`)
+          UpdateSrNo(Tbody);
         });
 
         // Handle Save All data on next click
@@ -1112,17 +1101,10 @@
         $(document).on('click', '.remove-labor-row-btn', function() {
           var current_row = $(this).closest('tr');
           var task_id = $(this).data('task-id');
-          var Tbody = $(`#tableBody-${task_id}`)
 
           current_row.remove();
 
-          var addRowButtonExists = Tbody.find('button.add-labor-row.new-labor-btn:visible').length > 0;
-          var lastPlusButton = Tbody.find('button.add-labor-row.new-labor-btn:last');
-
-          if (lastPlusButton.length > 0 && !lastPlusButton.is(':visible')) {
-            lastPlusButton.show();
-          }
-
+          var Tbody = $(`#tableBody-${task_id}`)
           _UpdateSrNo(Tbody);
         });
 
@@ -1221,7 +1203,6 @@
           $select2Element.select2('data', null); // Clear previous data
           $select2Element.select2('open'); // Trigger AJAX without user action
           $select2Element.select2('close'); // Close dropdown immediately after fetching
-          initSelect();
         }
 
         // Update Task Name Function
@@ -1269,7 +1250,6 @@
           $select2Element.select2('data', null); // Clear previous data
           $select2Element.select2('open'); // Trigger AJAX without user action
           $select2Element.select2('close'); // Close dropdown immediately after fetching
-          initSelect();
         }
 
         // Function for update value real time.
@@ -1607,10 +1587,10 @@
     <script>
       $(document).ready(function() {
             $('.select2-task').select2({
-                // containerCss: { width: "150px" },
+                containerCss: { width: "150px" },
                 // allowClear: true,
                 dropdownAutoWidth: true,  // Ensure dropdown respects the width
-                width: '200px',
+                width: 'resolve',
                 placeholder: 'Select Task Name',
                 ajax: {
                     url: '{% url "proposal_app:opportunity:task-search" %}',
@@ -1637,9 +1617,9 @@
     <script>
       $(document).ready(function() {
             $('.select2-labor-task').select2({
-                // containerCss: { width: "150px" },
+                containerCss: { width: "150px" },
                 dropdownAutoWidth: true,
-                width: '200px',
+                width: 'resolve',
                 placeholder: 'Select Task Name',
 
                 ajax: {
@@ -1665,53 +1645,6 @@
     <!-- SEARCH: Labor task name -->
     <script>
       $(document).ready(function() {
-
-        function initSelect(){
-
-          $('.labour-task-name').select2({
-            placeholder: 'Select task Name',
-            width: '250px',
-            tags: true, // Enable the tagging feature
-            ajax: {
-                url: '{% url "proposal_app:opportunity:labor-task-name-search" %}',
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        q: params.term
-                    };
-                },
-                processResults: function (data) {
-                    return {
-                        results: data.results
-                    };
-                },
-                cache: true
-              }
-          });
-  
-          $('.labour-description').select2({
-            placeholder: 'Select task description',
-            width: '250px',
-            tags: true, // Enable the tagging feature
-            ajax: {
-                url: '{% url "proposal_app:opportunity:labor-task-description-search" %}',
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        q: params.term
-                    };
-                },
-                processResults: function (data) {
-                    return {
-                        results: data.results
-                    };
-                },
-                cache: true
-              }
-          });
-        }
 
         function updateDescription(value, id) {
           var $select2Element = $(`select[data-id="${id}"].labour-description`);
@@ -1756,7 +1689,6 @@
           $select2Element.select2('data', null); // Clear previous data
           $select2Element.select2('open'); // Trigger AJAX without user action
           $select2Element.select2('close'); // Close dropdown immediately after fetching
-          initSelect();
         }
 
         $(document).on('change', '.labour-task-name', function(e) {

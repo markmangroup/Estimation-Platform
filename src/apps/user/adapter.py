@@ -51,12 +51,6 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
                 "Access Denied: You do not have the necessary permissions to access this application. Please contact your provider for assistance",
             )
             raise ImmediateHttpResponse(HttpResponseRedirect(reverse("user:login")))
-        elif not user_obj.first().application_type:
-            messages.error(
-                request,
-                "Access Denied: You do not have the necessary permissions to access this application. Please contact your provider for assistance",
-            )
-            raise ImmediateHttpResponse(HttpResponseRedirect(reverse("user:login")))
 
         elif user and not sociallogin.is_existing:
             sociallogin.connect(request, user_obj[0])
