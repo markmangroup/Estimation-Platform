@@ -91,10 +91,16 @@
               traditional: true,
               success: function(response) {
                   // console.log('Success:', response);
-                  window.location.reload();
-                  // $("#selected-task-table").DataTable().ajax.reload(null, false);
-                  // $("#selectTaskModal").modal('hide');
-                  // $("#selectTaskModal .modal-body").html('');
+                  $("#selected-task-table").DataTable().ajax.reload(null, false);
+                  $("#selectTaskModal").modal('hide');
+                  $("#selectTaskModal .modal-body").html('');
+
+                  toastr.success(response.message, 'Success', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-bottom-right',
+                    timeOut: 6000
+                  });
 
               },
               error: function(xhr, status, error) {

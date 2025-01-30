@@ -125,9 +125,11 @@ class TaskManagementView(ViewMixin):
             task_instance = get_object_or_404(Task, name=task_name)
             SelectTaskCode.objects.create(opportunity=opportunity, task=task_instance)
 
-        messages.success(request, "Tasks added successfully!")
+        # messages.success(request, "Tasks added successfully!")
         return JsonResponse(
             {
+                "code" : 201,
+                "message": "Tasks added successfully!",
                 "success_url": reverse("proposal_app:opportunity:opportunity-detail", args=(document_number,)),
                 "modal_to_close": "modelSelectTask",
             },
@@ -229,11 +231,12 @@ class DeleteSelectedTask(CustomViewMixin):
             task_mapping.delete()
             LOGGER.info(f"-- Deleted Task In Sync -- ")
 
+            self._code = 200
+            self._message = "Task Deleted Successfully"
+            self._status = "success"
+
             # :: Deprecated ::
-            # self._code = 200
-            # self._message = "Task Deleted Successfully"
-            # self._status = "success"
-            messages.info(self.request, "Task Deleted Successfully")
+            # messages.info(self.request, "Task Deleted Successfully")
 
         except Exception as e:
             LOGGER.error(f"Select Task Code Delete Error: {e}")

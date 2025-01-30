@@ -269,7 +269,13 @@
                 timeOut: 6000
               });
             } else if (data["code"] == "200") {
-              window.location.reload();
+              // window.location.reload();
+              toastr.success(data.message, 'Success', {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-bottom-right',
+                timeOut: 6000
+              });
 						}
 					}
 				});
