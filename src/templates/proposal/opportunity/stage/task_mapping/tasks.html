@@ -823,7 +823,15 @@
 
           var addRowButtonExists = Tbody.find('button.add-row-btn:visible').length > 0;          
 
+          console.log("-- Tbody --", Tbody);
+
+          console.log("-- Tbody --", Tbody);
+
+          var addRowButtonExists = Tbody.find('button.add-row-btn:visible').length > 0;
+          console.log("-- addRowButtonExists --", addRowButtonExists);
+
           var lastPlusButton = Tbody.find('button.add-row-btn:last');
+          console.log("-- lastPlusButton --", lastPlusButton);
 
           if (lastPlusButton.length > 0 && !lastPlusButton.is(':visible')) {
             lastPlusButton.show();

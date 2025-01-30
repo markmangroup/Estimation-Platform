@@ -100,7 +100,7 @@ NOTE : For adding border lines into table add "table-bordered" class into table 
       {% endfor %}
 
       <!-- Labor Removed -->
-      {% comment %} {% for et_labor in task_labor_list %}
+      {% for et_labor in estimation_table_labor %}
         <!-- Labor -->
         <tr class="selected-estimate-row">
           <input type="hidden" class="task_mapping" value={{ et_labor.id }}>
@@ -138,7 +138,7 @@ NOTE : For adding border lines into table add "table-bordered" class into table 
           <td class="comb_gp">{{ et_labor.comb_gp }}</td>
 
         </tr>
-      {% endfor %} {% endcomment %}
+      {% endfor %}
       <!-- <tr>
         <td class="text-nowrap">FRT</td>
         <td class="text-nowrap">FRT: Freight</td>
