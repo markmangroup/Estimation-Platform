@@ -1,0 +1,67 @@
+name: Deploy To Dev Web App
+
+on:
+  workflow_dispatch:
+
+jobs:
+  # Build job to prepare artifact for deployment to web app
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python version
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Create and start virtual environment
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Zip artifact for deployment
+        run: zip release.zip ./* -r
+
+      - name: Upload artifact for deployment jobs
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-app
+          path: |
+            release.zip
+            !venv/
+
+  # Job to deploy the artifact to the dev web app
+  deploy_dev:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      id-token: write # Required for requesting the JWT
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: python-app
+
+      - name: Unzip artifact for deployment
+        run: unzip release.zip
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: '63d8c1a5-9944-4003-b6c7-24ce70956a9b'
+          tenant-id: '11855f13-2464-464a-8e0a-b51873160cd3'
+          subscription-id: 'cffda582-a060-4e87-994f-9cff463aa651'
+
+      - name: 'Deploy to Azure Web App - Development'
+        uses: azure/webapps-deploy@v3
+        id: deploy-to-webapp
+        with:
+          app-name: 'laurelag-dev-eastus-webapp'
+          slot-name: 'Production'
+          startup-command: './startup.sh'
