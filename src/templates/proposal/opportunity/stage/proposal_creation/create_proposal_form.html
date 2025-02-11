@@ -79,13 +79,27 @@
                         csrfmiddlewaretoken: '{{ csrf_token }}'
                     },
                     traditional: true,
+                    beforeSend: function() {
+                        $("#proposalCreatetion").modal('hide');
+                        $("#proposalCreatetion .modal-body").html('');
+                        $('#show-loader-proposal-creation').css("display", "block");
+                        $('#ProposalContainer').css("display", "none");
+                    },
                     success: function(response) {
-                        // console.log('Success:', response);
-                        window.location.reload();
+
+                        $("#ProposalContainer").html(response.html)
+                        $('#show-loader-proposal-creation').css("display", "none");
+                        $('#ProposalContainer').css("display", "block").fadeIn (1000);
+
+                        toastr.success(response.message, 'Success', {
+                            closeButton: true,
+                            progressBar: true,
+                            positionClass: 'toast-bottom-right',
+                            timeOut: 6000
+                        });
                     },
                     error: function(response) {
-                        // console.log("response", response.responseJSON.message);
-                        // Display message
+
                         toastr.error(response.responseJSON.message, 'Error', {
                             closeButton: true,
                             progressBar: true,

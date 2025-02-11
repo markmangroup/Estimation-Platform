@@ -128,7 +128,21 @@
                         },
                         traditional: true,
                         success: function(response) {
-                            window.location.reload();
+                            // window.location.reload();
+
+                            $("#add-task-btn").modal('hide');
+                            $("#add-task-btn .modal-body").html('');
+
+                            $('#enstimate-table').DataTable().ajax.reload();
+
+                            $('#tableContainer').html(response.html);
+
+                            toastr.success(response.message, 'Success', {
+                                closeButton: true,
+                                progressBar: true,
+                                positionClass: 'toast-bottom-right',
+                                timeOut: 6000
+                            });
                         },
                         error: function(xhr, status, error) {
                             console.error('Error:', error);

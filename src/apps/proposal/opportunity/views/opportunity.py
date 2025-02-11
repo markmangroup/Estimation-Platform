@@ -411,10 +411,12 @@ class UpdateOpportunityView(ViewMixin):
                 "job_name": "job_name",
                 "project": "project",
                 "ranch": "ranch_name",
+                "tax_rate" : "tax_rate",
             }
 
             field_type = data["type"][0]
             if field_type in field_mapping:
+                print(data["value"][0])
                 return self._update_field(opportunity_obj, field_mapping[field_type], data["value"][0])
 
             if field_type == "term_and_condition":

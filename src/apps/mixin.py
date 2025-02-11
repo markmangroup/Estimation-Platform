@@ -221,7 +221,7 @@ class CustomViewMixin(LoginRequiredMixin, View):
     Mixin for a login-required View.
     """
 
-    def generate_response(self):
+    def generate_response(self, extra_data=None):
         """
         Automatically generates a JsonResponse with the message and code.
         Handles default error response for 400 status codes.
@@ -236,5 +236,9 @@ class CustomViewMixin(LoginRequiredMixin, View):
         if response_data["code"] == 400:
             response_data["message"] = getattr(self, "message", ERROR_RESPONSE.get("message", "Bad Request"))
             response_data["status"] = getattr(self, "status", "error")
+        
+        # Add the extra data if provided
+        if extra_data:
+            response_data.update(extra_data)
 
         return JsonResponse(response_data)

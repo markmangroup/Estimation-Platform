@@ -10,12 +10,12 @@ from django.shortcuts import get_object_or_404, render
 from apps.constants import ERROR_RESPONSE, LOGGER
 from apps.mixin import TemplateViewMixin, ViewMixin
 from apps.proposal.labour_cost.models import LabourCost
+from apps.proposal.opportunity.views.proposal_creation import ProposalCreationData, ProposalTable
 from apps.proposal.product.models import Product
 from apps.proposal.task.models import Task
 from apps.proposal.vendor.models import Vendor
 
 from ..models import AssignedProduct, Opportunity, PreliminaryMaterialList, TaskMapping
-
 
 class AssignProdLabor(TemplateViewMixin):
     """
@@ -87,9 +87,21 @@ class AssignProdLabor(TemplateViewMixin):
             return JsonResponse({"status": "error", "errors": errors}, status=404)
 
         task_name = task_mapping_obj.code or task_mapping_obj.task.name
-        messages.success(self.request, f'Product assigned for "{task_name}" successfully!')
+        # messages.success(self.request, f'Product assigned for "{task_name}" successfully!')
+        opportunity = get_object_or_404(Opportunity, document_number=document_number)
+        data = TaskMappingTable.generate_table(opportunity)
 
-        return JsonResponse({"status": "success", "created_products": created_products})
+        # Render the updated HTML for the task mapping table
+        html = render(request, 'proposal/opportunity/stage/task_mapping/tasks.html', data)
+
+        return JsonResponse(
+            {
+                "status": "success",
+                "message": f'Product assigned for "{task_name}" successfully!',
+                "created_products": created_products,
+                "html": html.content.decode('utf-8')
+            }
+        )
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -195,11 +207,21 @@ class UpdateAssignProdView(ViewMixin):
         try:
             body_unicode = request.body.decode("utf-8")
             data = urllib.parse.parse_qs(body_unicode)
+            document_number = data.get("document_number", [""])[0]
 
             if data.get("type")[0] == "bulk_update":
                 response = self.bulk_update(data)
             else:
                 response = self.update_fields(data)
+
+            # TODO: This view used for task mapping and proposal creation
+            # opportunity = get_object_or_404(Opportunity, document_number=document_number)
+            # data = ProposalTable.generate_table(opportunity)
+
+            # Render the updated HTML for the task mapping table
+            # html = render(request, 'proposal/opportunity/stage/proposal_creation/based_on_task.html', data)
+
+            # response["html"] = html.content.decode('utf-8')
 
             return JsonResponse(response)
 
@@ -582,11 +604,17 @@ class AddTaskView(ViewMixin):
                 opportunity=opportunity, task=task_instance, code=task_instance.name, description=task_description
             )
 
-        messages.success(request, "Tasks added successfully!")
+        data = TaskMappingTable.generate_table(opportunity)
+
+        # Render the updated HTML for the task mapping table
+        html = render(request, 'proposal/opportunity/stage/task_mapping/tasks.html', data)
+
+        # messages.success(request, "Tasks added successfully!")
         return JsonResponse(
             {
                 "status": "Created",
                 "message": "Task added successfully",
+                "html": html.content.decode('utf-8'),
             },
             status=201,
         )
@@ -833,3 +861,41 @@ class UpdateSequenceView(ViewMixin):
 
         except Exception:
             return JsonResponse({"status": "error", "message": ERROR_RESPONSE}, status=400)
+
+
+class TaskMappingTable:
+
+    @staticmethod
+    def generate_table(opportunity):
+        total_tasks = TaskMappingData._get_total_tasks(opportunity.document_number)
+        task_mapping_list = TaskMappingData._get_tasks(opportunity.document_number)
+        task_mapping_labor_list = TaskMappingData._get_labour_tasks(opportunity.document_number)
+        grand_total = TaskMappingData._get_task_total(opportunity.document_number)
+        labor_task_total = TaskMappingData._get_labor_task_total(opportunity.document_number)
+
+        data={
+            "total_tasks" : total_tasks,
+            "task_mapping_list" : task_mapping_list,
+            "task_mapping_labor_list" : task_mapping_labor_list,
+            "grand_total" : grand_total,
+            "labor_task_total" : labor_task_total,
+            "opportunity" : opportunity,
+        }
+        return data
+
+
+class ProposalTable:
+
+    @staticmethod
+    def generate_table(opportunity):
+        """Generate proposal table"""
+        grouped_proposals = ProposalCreationData._get_proposal_creation(opportunity.document_number)
+        proposal_total = ProposalCreationData._get_proposal_totals(opportunity.document_number)
+
+        data = {
+            "grouped_proposals" : grouped_proposals,
+            "proposal_total" : proposal_total,
+            "opportunity": opportunity
+        }
+
+        return data

@@ -5,6 +5,7 @@ import pandas as pd
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from apps.constants import LOGGER
+from apps.proposal.opportunity.views.task_mapping import TaskMappingData
 
 from .models import Opportunity
 
@@ -154,3 +155,23 @@ def import_opportunity_from_xlsx(file: InMemoryUploadedFile) -> dict:
 
     else:
         return {"error": "There is a mismatch in the columns."}
+
+
+def generate_task_mapping_table(opportunity):
+    """Generate Task Mapping table"""
+    total_tasks = TaskMappingData._get_total_tasks(opportunity.document_number)
+    task_mapping_list = TaskMappingData._get_tasks(opportunity.document_number)
+    task_mapping_labor_list = TaskMappingData._get_labour_tasks(opportunity.document_number)
+    grand_total = TaskMappingData._get_task_total(opportunity.document_number)
+    labor_task_total = TaskMappingData._get_labor_task_total(opportunity.document_number)
+
+    data={
+        "total_tasks" : total_tasks,
+        "task_mapping_list" : task_mapping_list,
+        "task_mapping_labor_list" : task_mapping_labor_list,
+        "grand_total" : grand_total,
+        "labor_task_total" : labor_task_total,
+        "opportunity" : opportunity,
+    }
+
+    return data

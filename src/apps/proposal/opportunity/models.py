@@ -85,6 +85,7 @@ class Opportunity(BaseModel):
     job_name = models.CharField(_("Job Name"), max_length=255, blank=True, null=True)
     ranch_name = models.CharField(_("Ranch Name"), max_length=255, blank=True, null=True)
     project = models.CharField(_("Project"), max_length=255, blank=True, null=True)
+    tax_rate = models.CharField(_("Tax Rate"), default="25.00%",blank=True, null=True)
     term_and_condition = models.JSONField(_("Term & Condition"), blank=True, null=True)
 
     def __str__(self):
@@ -294,7 +295,7 @@ class TaskMapping(BaseModel):
 
             return round(total_price, 2)
 
-        elif not self.assign_to:
+        elif not self.assign_to and "labor" in self.description.lower():
             task_mappings = TaskMapping.objects.filter(
                 opportunity=self.opportunity, task__description__icontains="labor"
             )

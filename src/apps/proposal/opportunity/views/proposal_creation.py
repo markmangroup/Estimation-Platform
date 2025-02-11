@@ -77,11 +77,16 @@ class CreateProposalView(ViewMixin):
             ]
             ProposalCreation.objects.bulk_create(proposals)
 
-            messages.success(request, "Proposal created successfully!")
+            data = ProposalTable.generate_table(opportunity)
+            # Render the updated HTML for the task mapping table
+            html = render(request, 'proposal/opportunity/stage/proposal_creation/based_on_task.html', data)
+
             return JsonResponse(
                 {
-                    "success_url": reverse("proposal_app:opportunity:opportunity-detail", args=(document_number,)),
                     "modal_to_close": "modelSelectTask",
+                    "message": "Proposal created successfully!",
+                    "html": html.content.decode('utf-8'),
+                    "code" : 201
                 },
                 status=201,
             )
@@ -105,17 +110,38 @@ class DeleteTaskView(ViewMixin):
         :param request: The HTTP request object containing the task mapping ID.
         :return: JsonResponse indicating the success of the deletion.
         """
-        _id = request.POST.get("id")
-        _type = request.POST.get("type")
+        id = request.POST.get("id", None)
+        task_type = request.POST.get("type", None)
+        document_number = request.POST.get("document_number", None)
 
-        if _type == "proposal":
-            ProposalCreation.objects.filter(id=_id).delete()
+        opportunity = Opportunity.objects.get(document_number=document_number)
+
+        if task_type == "proposal":
+            ProposalCreation.objects.filter(id=id).delete()
 
         else:
-            TaskMapping.objects.filter(id=_id).delete()
+            TaskMapping.objects.filter(id=id).delete()
+            data = TaskMappingTable.generate_table(
+                opportunity=opportunity
+            )
+            # Render the updated HTML for the task mapping table
+            html = render(request, 'proposal/opportunity/stage/task_mapping/tasks.html', data)
 
-        messages.info(request, "Deleted Successfully")
-        return JsonResponse({"message": "Deleted Successfully.", "code": 200, "status": "success"})
+        _data = ProposalTable.generate_table(
+            opportunity=opportunity
+        )
+        _html = render(request, 'proposal/opportunity/stage/proposal_creation/based_on_task.html', _data)
+
+        # messages.info(request, "Deleted Successfully")
+        return JsonResponse(
+            {
+                "message": "Deleted Successfully.",
+                "code": 200,
+                "status": "success",
+                "html": "" if task_type=="proposal" else html.content.decode('utf-8') ,
+                "_html": _html.content.decode('utf-8'),
+            }
+        )
 
 
 class UpdateGroupName(ViewMixin):
@@ -300,3 +326,248 @@ class ProposalCreationData:
         }
 
         return total_data
+
+
+
+# NOTE: Add data form handle circular import error
+class TaskMappingData:
+
+    @staticmethod
+    def _get_total_tasks(document_number: str) -> int:
+        """
+        Returns the total number of tasks.
+
+        :param document_number: The document number to filter task mappings.
+        """
+        task_mapping_obj = TaskMapping.objects.filter(opportunity__document_number=document_number)
+        return len(task_mapping_obj)
+
+    @staticmethod
+    def _get_tasks(document_number: str) -> dict:
+        """
+        Retrieve tasks and their assigned products for a given document number.
+
+        :param document_number: The document number to filter task mappings.
+        :return: A dictionary with task details, including total quantities, prices, and profit percentages.
+        """
+        task_mappings = TaskMapping.objects.filter(opportunity__document_number=document_number)
+        filtered_task_mappings = task_mappings.exclude(task__description__icontains="labor")
+        task_mapping_ids = filtered_task_mappings.values_list("id", flat=True)
+
+        try:
+            assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids).order_by(
+                "sequence"
+            )
+
+        except Exception as e:
+            LOGGER.error(f"assigned_products Exception : {e}")
+            assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids)
+
+        tasks_with_products = {}
+
+        for task in filtered_task_mappings:
+            task_assigned_products = assigned_products.filter(task_mapping_id=task.id)
+
+            total_quantity = sum(product.quantity for product in task_assigned_products)
+            total_price = sum(
+                (
+                    product.vendor_quoted_cost * product.quantity
+                    if product.vendor_quoted_cost
+                    else product.standard_cost * product.quantity
+                )
+                for product in task_assigned_products
+            )
+            total_unit_price = sum(
+                product.vendor_quoted_cost if product.vendor_quoted_cost else product.standard_cost
+                for product in task_assigned_products
+            )
+
+            total_percent = sum(product.gross_profit_percentage for product in task_assigned_products)
+
+            tasks_with_products[task.id] = {
+                "task": task,
+                "assigned_products": task_assigned_products,
+                "total_quantity": round(total_quantity, 2),
+                "total_price": round(total_price, 2),
+                "total_unit_price": round(total_unit_price, 2),
+                "total_percent": round(total_percent, 2),
+            }
+
+        return tasks_with_products
+
+    @staticmethod
+    def _get_task_total(document_number: str) -> dict:
+        """
+        Calculate total quantities and prices for tasks associated with a document number.
+
+        :param document_number: The document number to filter task mappings.
+        :return: A dictionary with grand total quantity and price.
+        """
+        task_mappings = TaskMapping.objects.filter(opportunity__document_number=document_number)
+        filtered_task_mappings = task_mappings.exclude(task__description__icontains="labor")
+        task_mapping_ids = filtered_task_mappings.values_list("id", flat=True)
+
+        assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids)
+
+        tasks_with_products = {}
+
+        for task in filtered_task_mappings:
+            task_assigned_products = assigned_products.filter(task_mapping_id=task.id)
+
+            total_quantity = sum(product.quantity for product in task_assigned_products)
+            total_price = sum(
+                (
+                    (product.vendor_quoted_cost if product.vendor_quoted_cost is not None else product.standard_cost)
+                    * product.quantity
+                )
+                for product in task_assigned_products
+            )
+
+            tasks_with_products[task.id] = {
+                "total_quantity": total_quantity,
+                "total_price": total_price,
+            }
+
+        # Calculate grand total price and quantity
+        grand_total_price = sum(v["total_price"] for v in tasks_with_products.values())
+        grand_total_quantity = sum(v["total_quantity"] for v in tasks_with_products.values())
+
+        total_data = {
+            "grand_total_price": round(grand_total_price, 2),
+            "grand_total_quantity": round(grand_total_quantity, 2),
+        }
+        return total_data
+
+    @staticmethod
+    def _get_labour_tasks(document_number: str) -> dict:
+        """
+        Retrieve labor tasks and their assigned products for a given document number.
+
+        :param document_number: The document number to filter task mappings.
+        :return: A dictionary containing labor task details, including total quantities, prices, and profit percentages.
+        """
+        task_mappings = TaskMapping.objects.filter(opportunity__document_number=document_number)
+        filtered_task_mappings = task_mappings.filter(task__description__icontains="labor")
+        task_mapping_ids = filtered_task_mappings.values_list("id", flat=True)
+
+        try:
+            assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids).order_by(
+                "sequence"
+            )
+        except Exception as e:
+            LOGGER.error(f"error: {e}")
+            assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids)
+
+        tasks_with_products = {}
+
+        for task in filtered_task_mappings:
+            task_assigned_products = assigned_products.filter(task_mapping_id=task.id)
+
+            total_quantity = sum(product.quantity for product in task_assigned_products)
+            total_price = sum(
+                (
+                    product.vendor_quoted_cost * product.quantity
+                    if product.vendor_quoted_cost
+                    else product.standard_cost * product.quantity
+                )
+                for product in task_assigned_products
+            )
+            total_unit_price = sum(
+                product.vendor_quoted_cost if product.vendor_quoted_cost else product.standard_cost
+                for product in task_assigned_products
+            )
+
+            total_percent = sum(product.gross_profit_percentage for product in task_assigned_products)
+
+            tasks_with_products[task.id] = {
+                "task": task,
+                "assigned_products": task_assigned_products,
+                "total_quantity": round(total_quantity, 2),
+                "total_price": round(total_price, 2),
+                "total_unit_price": round(total_unit_price, 2),
+                "total_percent": round(total_percent, 2),
+            }
+
+        return tasks_with_products
+
+    @staticmethod
+    def _get_labor_task_total(document_number: str) -> dict:
+        """
+        Calculate total quantities and prices for labor tasks associated with a document number.
+
+        :param document_number: The document number to filter task mappings.
+        :return: A dictionary with grand total quantity and price for labor tasks.
+        """
+        task_mappings = TaskMapping.objects.filter(opportunity__document_number=document_number)
+        filtered_task_mappings = task_mappings.filter(task__description__icontains="labor")
+        task_mapping_ids = filtered_task_mappings.values_list("id", flat=True)
+
+        assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids)
+
+        tasks_with_products = {}
+
+        for task in filtered_task_mappings:
+            task_assigned_products = assigned_products.filter(task_mapping_id=task.id)
+
+            total_quantity = sum(product.quantity for product in task_assigned_products)
+            total_price = sum(
+                (
+                    product.vendor_quoted_cost * product.quantity
+                    if product.vendor_quoted_cost * product.quantity
+                    else product.standard_cost
+                )
+                for product in task_assigned_products
+            )
+
+            tasks_with_products[task.id] = {
+                "total_quantity": total_quantity,
+                "total_price": total_price,
+            }
+
+        # Calculate grand total price correctly
+        grand_total_price = sum(v["total_price"] for v in tasks_with_products.values())
+        grand_total_quantity = sum(v["total_quantity"] for v in tasks_with_products.values())
+
+        total_data = {
+            "grand_total_price": round(grand_total_price, 2),
+            "grand_total_quantity": round(grand_total_quantity, 2),
+        }
+        return total_data
+
+
+class TaskMappingTable:
+
+    @staticmethod
+    def generate_table(opportunity):
+        total_tasks = TaskMappingData._get_total_tasks(opportunity.document_number)
+        task_mapping_list = TaskMappingData._get_tasks(opportunity.document_number)
+        task_mapping_labor_list = TaskMappingData._get_labour_tasks(opportunity.document_number)
+        grand_total = TaskMappingData._get_task_total(opportunity.document_number)
+        labor_task_total = TaskMappingData._get_labor_task_total(opportunity.document_number)
+
+        data={
+            "total_tasks" : total_tasks,
+            "task_mapping_list" : task_mapping_list,
+            "task_mapping_labor_list" : task_mapping_labor_list,
+            "grand_total" : grand_total,
+            "labor_task_total" : labor_task_total,
+            "opportunity" : opportunity,
+        }
+        return data
+
+
+class ProposalTable:
+
+    @staticmethod
+    def generate_table(opportunity):
+        """Generate proposal table"""
+        grouped_proposals = ProposalCreationData._get_proposal_creation(opportunity.document_number)
+        proposal_total = ProposalCreationData._get_proposal_totals(opportunity.document_number)
+
+        data = {
+            "grouped_proposals" : grouped_proposals,
+            "proposal_total" : proposal_total,
+            "opportunity": opportunity
+        }
+
+        return data

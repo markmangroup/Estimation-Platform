@@ -9,7 +9,7 @@
           <img src="{% static 'app/img/logos/logo.png' %}" alt="" class="img-fluid" width="100" height="100">
         </div>
         <div class="col-md-6 col-12 text-right">
-          <h2 class="primary text-uppercase">Exhibit A - Project Detail</h2>
+          <h2 class="primary text-uppercase"></h2>
           <p class="pb-3">
             <label class="font-weight-bold form-label" style="">Invoice:</label>
             <input type="text" value="{{ invoice.invoice_number }}" data-id={{ invoice.id }} class="form-control invoice_number" style="width: 200px; float: right;">
@@ -158,15 +158,16 @@
                               <td>
                                 {% if task.task.name %}
                                 <button type="button"
-                                        class="btn btn-danger delete-task-btn"
+                                        class="btn btn-danger delete-task-btn icon"
                                         data-id="{{ data.proposal_ids|get_proposal_id:forloop.counter0 }}"
                                         data-title="{{task.code}}"
+                                        data-type="proposal"
                                         data-url="{% url 'proposal_app:opportunity:task-delete-ajax' %}">
                                     <em class="fa fa-trash"></em>
                                 </button>
 
                                 {% else %}
-                                  <button type="button" class="btn btn-danger delete-task-btn" data-id="{{ data.proposal_ids|get_proposal_id:forloop.counter0 }}" data-title="{{task.code}}" data-url="{% url 'proposal_app:opportunity:task-delete-ajax' %}"><em class="fa fa-trash"></em></button>
+                                  <button type="button" class="btn btn-danger delete-task-btn icon" data-id="{{ data.proposal_ids|get_proposal_id:forloop.counter0 }}" data-title="{{task.code}}" data-type="proposal" data-url="{% url 'proposal_app:opportunity:task-delete-ajax' %}"><em class="fa fa-trash"></em></button>
 
                                 {% endif %}
                               </td>

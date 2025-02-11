@@ -135,9 +135,25 @@
                     'items': JSON.stringify(selectedItems),
                     'csrfmiddlewaretoken': '{{ csrf_token }}'
                 },
+                beforeSend: function() {
+                    $("#assign-prod").modal('hide');
+                    $("#assign-prod .modal-body").html('');
+                    $('#show-loader-task-mapping').css("display", "block");
+                    $('#tableContainer').css("display", "none");
+                },
                 success: function(response) {
-                    // console.log('Server response:', response);
-                    window.location.reload();
+                    $('#tableContainer').html(response.html);
+                    $('#show-loader-task-mapping').css("display", "none");
+                    $('#tableContainer').css("display", "block").fadeIn(1000);
+
+                    $("#enstimate-table").DataTable().ajax.reload(null, false);
+
+                    toastr.success(response.message, 'Success', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-bottom-right',
+                        timeOut: 6000
+                    });                    
                 },
                 error: function(xhr, status, error) {
                     console.error('Error:', error);

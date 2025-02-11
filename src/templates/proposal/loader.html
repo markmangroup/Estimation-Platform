@@ -1,0 +1,44 @@
+<style>
+    .loader-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-top: 5%;
+    }
+
+    .loader {
+        width: 50px;
+        aspect-ratio: 1;
+        --_c: no-repeat radial-gradient(farthest-side, #975aff 92%, #0000);
+        background: 
+        var(--_c) top,
+        var(--_c) left,
+        var(--_c) right,
+        var(--_c) bottom;
+        background-size: 12px 12px;
+        animation: l7 1s infinite;
+    }
+
+    @keyframes l7 {
+        to {
+        transform: rotate(.5turn);
+        }
+    }
+
+    .loading-text {
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: #555;
+    }
+</style>
+
+<div class="loader-wrapper">
+    <div class="loading-text"></div>
+    <div class="loader"></div>
+</div>
+
+<script>
+    var text;
+    $(".loading-text").text(text);
+</script>

@@ -2,14 +2,138 @@ import urllib.parse
 from decimal import Decimal
 from typing import Any, Dict
 
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 
 from apps.constants import LOGGER
-from apps.mixin import CustomViewMixin, ProposalViewMixin, TemplateViewMixin
+from apps.mixin import CustomViewMixin, ProposalViewMixin, TemplateViewMixin, CustomDataTableMixin
 
 from ..models import AssignedProduct, TaskMapping
+
+
+class TaskProductDataView(CustomDataTableMixin):
+
+    def get_queryset(self):
+        document_number = self.kwargs.get("document_number")
+        qs = TaskMapping.objects.filter(opportunity__document_number=document_number).exclude(
+            assign_to__isnull=False,
+            task__description__icontains="labor"
+        )
+        return qs
+
+    # def filter_queryset(self, qs):
+    #     """Return the list of items for this view."""
+    #     if self.search:
+    #         return qs.filter(
+    #             Q(task__internal_id__icontains=self.search)
+    #             | Q(task__name__icontains=self.search)
+    #             | Q(task__description__icontains=self.search)
+    #             | Q(task_description__icontains=self.search)
+    #         )
+    #     return qs
+
+    def _get_code(self, obj):
+        """Get code details."""
+        # Assuming `et` is an attribute of `obj`
+        et = obj
+
+        # Construct the URL dynamically using reverse
+        url = reverse('proposal_app:opportunity:update-estimation-products-ajax', args=[et.id])
+
+        # Now format the HTML with proper values
+        code = f"""
+        <a hx-get="{url}"
+        data-url="{url}"
+        class="htmx-trigger-btn-task-prod"
+        hx-target="#task-content"
+        hx-trigger="click"
+        data-toggle="modal"
+        data-target="#showProduct"
+        data-backdrop="false">
+            <ins>{et.task.name}</ins>
+        </a>
+        """
+        return code
+
+    def _get_description(self, obj):
+        """Generate the HTML for the description with a clickable link."""
+        et = obj  # Or whatever object has the `et` property
+        
+        # Construct the URL dynamically using reverse
+        url = reverse('proposal_app:opportunity:update-estimation-products-ajax', args=[et.id])
+        
+        # Now format the HTML with the proper values
+        description = f"""
+            <a hx-get="{url}"
+            data-url="{url}"
+            class="htmx-trigger-btn-task-prod"
+            hx-target="#task-content"
+            hx-trigger="click"
+            data-toggle="modal"
+            data-target="#showProduct"
+            data-backdrop="false">
+                <ins>{et.task.name} : {et.task.description}</ins>
+            </a>
+        """
+        return description
+    
+    def _labor_gp_percent(self, obj):
+        """Generate the HTML for the labor gp percent."""
+        et = obj
+
+        labor_gp_percent = f"""
+            <input type="text" class="form-control btn-outline-warning labor_gp_percent" value="{et.labor_gp_percent}">
+        """
+        return labor_gp_percent
+
+    def _labor_gp_percent_data(self, obj):
+        return obj.labor_gp_percent
+
+    def _mat_gp_percent(self, obj):
+        """Generate the HTML for the mat gp percent."""
+        et = obj
+        mat_gp_percent = f"""
+            <input type="text" class="form-control btn-outline-warning mat_gp_percent" value="{ et.mat_gp_percent }">"""
+        return mat_gp_percent
+
+    def _mat_gp_percent_data(self, obj):
+        return obj.mat_gp_percent
+
+    def prepare_results(self, qs):
+        """
+        This method formats the queryset into the structure that DataTables expects.
+        Each row of data is a list of values corresponding to the columns in the table.
+        """
+        data = []
+        for item in qs:
+            print("-- queryset --", qs)
+            data.append(
+                {
+                    "code": self._get_code(item),
+                    "description": self._get_description(item),
+                    "labor_cost": item.labor_cost,
+                    "labor_gp_percent": self._labor_gp_percent(item),
+                    "labor_gp": item.labor_gp,
+                    "labor_sell": item.labor_sell,
+                    "mat_cost": item.mat_cost,
+                    "mat_gp_percent": self._mat_gp_percent(item),
+                    "mat_gp": item.mat_gp,
+                    "mat_plus_mu": item.mat_plus_mu,
+                    "sales_tax": item.sales_tax,
+                    "mat_sell": item.mat_sell,
+                    "mat_tax_labor": item.mat_tax_labor,
+                    "comb_gp": item.comb_gp,
+                    "labor_gp_percent_data": self._labor_gp_percent_data(item), # type : ignore
+                    "mat_gp_percent_data" : self._mat_gp_percent_data(item) # type : ignore
+                }
+            )
+        return data
+
+    def get(self, request, *args, **kwargs):
+        context_data = self.get_context_data(request)
+        return JsonResponse(context_data)
 
 
 class GenerateEstimateTable(ProposalViewMixin):

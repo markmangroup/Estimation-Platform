@@ -61,16 +61,16 @@
         <tbody>
           {% for netsuite_data in netsuite_extract_data  %}
             <tr>
-              {% if netsuite_data.task_mapping.task.internal_id %}
-              <td>{{ netsuite_data.task_mapping.task.internal_id }}</td>
+              {% if netsuite_data.internal_id %}
+                <td>{{ netsuite_data.internal_id }}</td>
               {% else %}
-              <td> - </td>
+                <td> - </td>
               {% endif %}
-              <td>{{ netsuite_data.task_mapping.code }}</td>
-              <td>{{ netsuite_data.quantity }}</td>
-              <td>{{ netsuite_data.description }}</td>
-              {% if  netsuite_data.item_code %}
-                <td>{{ netsuite_data.item_code }}</td>
+              <td>{{ netsuite_data.assigned_product.task_mapping.code }}</td>
+              <td>{{ netsuite_data.assigned_product.quantity }}</td>
+              <td>{{ netsuite_data.assigned_product.description }}</td>
+              {% if  netsuite_data.assigned_product.item_code %}
+                <td>{{ netsuite_data.assigned_product.item_code }}</td>
               {% else %}
                 <td> - </td>
               {% endif %}

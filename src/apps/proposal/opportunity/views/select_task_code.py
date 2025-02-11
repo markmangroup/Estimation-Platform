@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.shortcuts import render
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
@@ -7,6 +8,9 @@ from django.urls import reverse
 
 from apps.constants import ERROR_RESPONSE, LOGGER
 from apps.mixin import CustomDataTableMixin, CustomViewMixin, ViewMixin
+from apps.proposal.opportunity.tasks import generate_task_mapping_table
+from apps.proposal.opportunity.views.generate_estimate import GenerateEstimate
+from apps.proposal.opportunity.views.task_mapping import TaskMappingData
 from apps.proposal.task.models import Task
 
 from ..models import Opportunity, SelectTaskCode, TaskMapping
@@ -125,13 +129,19 @@ class TaskManagementView(ViewMixin):
             task_instance = get_object_or_404(Task, name=task_name)
             SelectTaskCode.objects.create(opportunity=opportunity, task=task_instance)
 
-        # messages.success(request, "Tasks added successfully!")
+        data = generate_task_mapping_table(
+            opportunity=opportunity
+        )
+
+        # Render the updated HTML for the task mapping table
+        html = render(request, 'proposal/opportunity/stage/task_mapping/tasks.html', data)
+
         return JsonResponse(
             {
-                "code" : 201,
+                "code": 201,
                 "message": "Tasks added successfully!",
-                "success_url": reverse("proposal_app:opportunity:opportunity-detail", args=(document_number,)),
                 "modal_to_close": "modelSelectTask",
+                "html": html.content.decode('utf-8'),
             },
             status=201,
         )
@@ -166,7 +176,6 @@ class TaskManagementView(ViewMixin):
         :return: Rendered response.
         """
         return render(self.request, self.template_name, context, **response_kwargs)
-
 
 class UpdateDescription(ViewMixin):
     """
@@ -224,12 +233,8 @@ class DeleteSelectedTask(CustomViewMixin):
                 ),
             )
 
-            LOGGER.info(f"-- Select Task Code -- {select_task_code}")
-            LOGGER.info(f"-- Task Mapping Object -- {task_mapping}")
-
             select_task_code.delete()
             task_mapping.delete()
-            LOGGER.info(f"-- Deleted Task In Sync -- ")
 
             self._code = 200
             self._message = "Task Deleted Successfully"
@@ -238,11 +243,21 @@ class DeleteSelectedTask(CustomViewMixin):
             # :: Deprecated ::
             # messages.info(self.request, "Task Deleted Successfully")
 
+            data = generate_task_mapping_table(
+                opportunity=select_task_code.opportunity
+            )
+            html = render(self.request, 'proposal/opportunity/stage/task_mapping/tasks.html', data)
+
+            extra_data = {
+                "html" : html.content.decode('utf-8')
+            }
+
         except Exception as e:
             LOGGER.error(f"Select Task Code Delete Error: {e}")
             self._code = 400
+            extra_data = {}
 
-        return self.generate_response()
+        return self.generate_response(extra_data)
 
     def post(self, request) -> JsonResponse:
         """
