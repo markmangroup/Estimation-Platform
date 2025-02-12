@@ -88,6 +88,7 @@
                     success: function(response) {
 
                         $("#ProposalContainer").html(response.html)
+                        $('#task-mapping-table').html(response.html2);
                         $('#show-loader-proposal-creation').css("display", "none");
                         $('#ProposalContainer').css("display", "block").fadeIn (1000);
 

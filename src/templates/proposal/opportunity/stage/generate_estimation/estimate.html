@@ -1047,6 +1047,7 @@
             'X-CSRFToken': "{{ csrf_token }}",
           },
           success: function(response) {
+            $('#enstimate-table').DataTable().ajax.reload();
             toastr.success(response.message, 'Success', {
               closeButton: true,
               progressBar: true,

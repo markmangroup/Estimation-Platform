@@ -2,11 +2,13 @@ import json
 import urllib.parse
 
 from django.http import JsonResponse
+from django.shortcuts import render
 
 from apps.constants import ERROR_RESPONSE, LOGGER
 from apps.mixin import ViewMixin
 
 from ..models import AssignedProduct, Invoice, TaskMapping
+from .proposal_creation import ProposalTable
 
 
 class AddItemsView(ViewMixin):
@@ -28,9 +30,15 @@ class AddItemsView(ViewMixin):
                 assigned_prod.is_select = True
                 assigned_prod.save()
                 saved = True
-
+            _data = ProposalTable.generate_table(opportunity=assigned_prod.task_mapping.opportunity)
+            _html = render(self.request, "proposal/opportunity/stage/proposal_creation/proposal_task_main.html", _data)
             if saved:
-                return {"status": "success", "message": "Item added successfully"}
+                return {
+                    "message": "Item added successfully.",
+                    "code": 200,
+                    "status": "success",
+                    "_html": _html.content.decode("utf-8"),
+                }
             else:
                 return {"status": "warning", "message": "No item to add"}
         except AssignedProduct.DoesNotExist:
