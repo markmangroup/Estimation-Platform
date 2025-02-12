@@ -207,7 +207,7 @@ class UpdateAssignProdView(ViewMixin):
         try:
             body_unicode = request.body.decode("utf-8")
             data = urllib.parse.parse_qs(body_unicode)
-            document_number = data.get("document_number", [""])[0]
+            # document_number = data.get("document_number", [""])[0]
 
             if data.get("type")[0] == "bulk_update":
                 response = self.bulk_update(data)
@@ -607,14 +607,14 @@ class AddTaskView(ViewMixin):
         data = TaskMappingTable.generate_table(opportunity)
 
         # Render the updated HTML for the task mapping table
-        html = render(request, 'proposal/opportunity/stage/task_mapping/tasks.html', data)
+        html = render(request, "proposal/opportunity/stage/task_mapping/task_table.html", data)
 
         # messages.success(request, "Tasks added successfully!")
         return JsonResponse(
             {
                 "status": "Created",
                 "message": "Task added successfully",
-                "html": html.content.decode('utf-8'),
+                "html": html.content.decode("utf-8"),
             },
             status=201,
         )

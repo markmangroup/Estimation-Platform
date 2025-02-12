@@ -1,16 +1,19 @@
 from collections import defaultdict
 
-from django.contrib import messages
 from django.db.models import Count, Prefetch, Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
-from django.urls import reverse
 
 from apps.constants import ERROR_RESPONSE, LOGGER
 from apps.mixin import ViewMixin
 
-from ..models import (AssignedProduct, Invoice, Opportunity, ProposalCreation,
-                      TaskMapping)
+from ..models import (
+    AssignedProduct,
+    Invoice,
+    Opportunity,
+    ProposalCreation,
+    TaskMapping,
+)
 
 
 class CreateProposalView(ViewMixin):
@@ -78,15 +81,18 @@ class CreateProposalView(ViewMixin):
             ProposalCreation.objects.bulk_create(proposals)
 
             data = ProposalTable.generate_table(opportunity)
+            data2 = TaskMappingTable.generate_table(opportunity)
             # Render the updated HTML for the task mapping table
-            html = render(request, 'proposal/opportunity/stage/proposal_creation/based_on_task.html', data)
+            html = render(request, "proposal/opportunity/stage/proposal_creation/based_on_task.html", data)
+            html2 = render(request, "proposal/opportunity/stage/task_mapping/task_table.html", data2)
 
             return JsonResponse(
                 {
                     "modal_to_close": "modelSelectTask",
                     "message": "Proposal created successfully!",
-                    "html": html.content.decode('utf-8'),
-                    "code" : 201
+                    "html": html.content.decode("utf-8"),
+                    "html2": html2.content.decode("utf-8"),
+                    "code": 201,
                 },
                 status=201,
             )
@@ -121,16 +127,12 @@ class DeleteTaskView(ViewMixin):
 
         else:
             TaskMapping.objects.filter(id=id).delete()
-            data = TaskMappingTable.generate_table(
-                opportunity=opportunity
-            )
+            data = TaskMappingTable.generate_table(opportunity=opportunity)
             # Render the updated HTML for the task mapping table
-            html = render(request, 'proposal/opportunity/stage/task_mapping/tasks.html', data)
+            html = render(request, "proposal/opportunity/stage/task_mapping/tasks.html", data)
 
-        _data = ProposalTable.generate_table(
-            opportunity=opportunity
-        )
-        _html = render(request, 'proposal/opportunity/stage/proposal_creation/based_on_task.html', _data)
+        _data = ProposalTable.generate_table(opportunity=opportunity)
+        _html = render(request, "proposal/opportunity/stage/proposal_creation/proposal_task_main.html", _data)
 
         # messages.info(request, "Deleted Successfully")
         return JsonResponse(
@@ -138,8 +140,8 @@ class DeleteTaskView(ViewMixin):
                 "message": "Deleted Successfully.",
                 "code": 200,
                 "status": "success",
-                "html": "" if task_type=="proposal" else html.content.decode('utf-8') ,
-                "_html": _html.content.decode('utf-8'),
+                "html": "" if task_type == "proposal" else html.content.decode("utf-8"),
+                "_html": _html.content.decode("utf-8"),
             }
         )
 
@@ -326,7 +328,6 @@ class ProposalCreationData:
         }
 
         return total_data
-
 
 
 # NOTE: Add data form handle circular import error
@@ -545,13 +546,13 @@ class TaskMappingTable:
         grand_total = TaskMappingData._get_task_total(opportunity.document_number)
         labor_task_total = TaskMappingData._get_labor_task_total(opportunity.document_number)
 
-        data={
-            "total_tasks" : total_tasks,
-            "task_mapping_list" : task_mapping_list,
-            "task_mapping_labor_list" : task_mapping_labor_list,
-            "grand_total" : grand_total,
-            "labor_task_total" : labor_task_total,
-            "opportunity" : opportunity,
+        data = {
+            "total_tasks": total_tasks,
+            "task_mapping_list": task_mapping_list,
+            "task_mapping_labor_list": task_mapping_labor_list,
+            "grand_total": grand_total,
+            "labor_task_total": labor_task_total,
+            "opportunity": opportunity,
         }
         return data
 
@@ -564,10 +565,6 @@ class ProposalTable:
         grouped_proposals = ProposalCreationData._get_proposal_creation(opportunity.document_number)
         proposal_total = ProposalCreationData._get_proposal_totals(opportunity.document_number)
 
-        data = {
-            "grouped_proposals" : grouped_proposals,
-            "proposal_total" : proposal_total,
-            "opportunity": opportunity
-        }
+        data = {"grouped_proposals": grouped_proposals, "proposal_total": proposal_total, "opportunity": opportunity}
 
         return data

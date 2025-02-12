@@ -41,7 +41,8 @@
     </div>
 
     <div>
-      <table class="table table-striped table-bordered">
+      {% include "proposal/opportunity/stage/task_mapping/task_table.html" %}
+      {% comment %} <table id ="task-mapping-table" class="table table-striped table-bordered">
         <thead>
           <tr>
             <th style="max-width: 30% !important;">Task No</th>
@@ -56,17 +57,17 @@
         </thead>
         <tbody>
 
-          
+
             <!-- Task Start -->
             {% include "proposal/opportunity/stage/task_mapping/task_list.html" %}
             <!-- Task Start -->
 
             <!-- Labor start -->
-            {% include "proposal/opportunity/stage/task_mapping/labor_task_list.html" %}        
+            {% include "proposal/opportunity/stage/task_mapping/labor_task_list.html" %}
             <!--Labor Total -->
 
         </tbody>
-      </table>
+      </table> {% endcomment %}
     </div>
 
   </div>
@@ -116,7 +117,7 @@
                         (event.ctrlKey && (event.key === 'r' || event.key === 'R'))
                     ) {
                         event.preventDefault(); // Prevent the default refresh action
-        
+
                         Swal.fire({
                             icon: 'warning',
                             title: 'Unsaved Changes!',
@@ -133,7 +134,7 @@
                         });
                     }
                 });
-        
+
                 // Warn before leaving the page if there are unsaved changes
                 /* window.addEventListener('beforeunload', function (event) {
                     const message = 'Changes that you made may not be saved.';
@@ -220,43 +221,6 @@
               dropdownAutoWidth : true,
             });
 
-          }
-
-          // Function to generate a new row with a unique ID
-          function generateRow(unique_id, srNo) {
-              return `
-              <tr id="row-template-${unique_id}" class="new_prod">
-                  <td class="d-none"><input type="hidden" class="task_id" value="${task_id}"></td>
-                  <td class="sr-no">${srNo}</td>
-                  <td class="text-nowrap"><input type="text" class="form-control quantity" data-id="quantity-${unique_id}" placeholder="Enter Quantity"></td>
-                  <td class="text-nowrap">
-                      <select data-id="${unique_id}" class="select2-item-code js-example-programmatic form-control">
-                      </select>
-                  </td>
-                  <td>
-                      <select data-id="${unique_id}" class="select2-item-description js-example-programmatic form-control">
-                      </select>
-                  </td>
-                  <td><input id="standardCost${unique_id}" data-task-id="${task_id}" data-id="${unique_id}" type="text" class="form-control standard-cost" placeholder="Enter Standard Cost"></td>
-                  <td><input id="productCost${unique_id}" data-standard-cost="standardCost${unique_id}" data-task-id="${task_id}" data-id="${unique_id}" type="text" class="form-control quoted-cost" placeholder="Enter Quoted Cost" onchange="checkCostEquality('standardCost${unique_id}', 'productCost${unique_id}')" onkeyup="checkCostEquality('standardCost${unique_id}', 'productCost${unique_id}')">
-                  </td>
-                  <td>
-                      <select data-id="${unique_id}" class="select2-vendor vendor form-control">
-                        <option selected disabled>Select Vendor Name</option>
-                      </select>
-                  </td>
-                  <td><input type="text" class="form-control comment" placeholder="Enter Item Note"></td>
-                  <td data-id="${unique_id}" class="total"></td>
-                  <td data-id="${unique_id}" class="sell"></td>
-                  <td data-id="${unique_id}" class="sell-total"></td>
-                  <td data-id="${unique_id}" class="gross"></td>
-                  <td data-id="${unique_id}" class="gross-p"></td>
-                  <td class="d-flex">
-                      <button type="button" data-task-id="${task_id}" class="btn btn-danger mr-2 remove-row-btn"><i class="fa fa-trash"></i></button>
-                      <button type="button" data-id="${task_id}" class="btn btn-primary add-row-btn new-btn"><i class="fa fa-plus"></i></button>
-                  </td>
-              </tr>
-              `;
           }
 
           function UpdateSrNo(tableBody){
@@ -833,9 +797,9 @@
             current_row.remove();
             var Tbody = $(`#tableBody-${task_id}`)
 
-            UpdateSrNo(Tbody);   // Update the serial number after removing the row          
+            UpdateSrNo(Tbody);   // Update the serial number after removing the row
 
-            var addRowButtonExists = Tbody.find('button.add-row-btn:visible').length > 0;          
+            var addRowButtonExists = Tbody.find('button.add-row-btn:visible').length > 0;
 
             console.log("-- Tbody --", Tbody);
 

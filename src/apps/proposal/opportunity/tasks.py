@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from decimal import Decimal
 
 import pandas as pd
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -175,3 +176,13 @@ def generate_task_mapping_table(opportunity):
     }
 
     return data
+
+
+def format_number(number: Decimal) -> str:
+    """
+    Format a number with a thousands separator and 2 decimal places.
+
+    :param number: The number to be formatted.
+    :return: A formatted string with thousands separators and 2 decimal places.
+    """
+    return f"{number:,.2f}"
