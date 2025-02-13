@@ -69,12 +69,12 @@
                   $(`.edi-description[data-task-id=${$id}]`).val(value);
                   console.log('Task Description Updated');
                 }
-                toastr.success(response.message, 'Updated', {
+                /*toastr.success(response.message, 'Updated', {
                   closeButton: true,
                   progressBar: true,
                   positionClass: 'toast-bottom-right',
                   timeOut: 6000
-                });
+                });*/
               } else {
                 toastr.success(response.message, 'Error', {
                   closeButton: true,
@@ -933,7 +933,15 @@
                     success: function(response) {
                         // console.log('API call success:', response);
                         if (response.status == "success"){
-                          window.location.reload();
+                          $('#task-mapping-table').html(response.html);
+                          toastr.success(response.message, 'Success', {
+                            closeButton: true,
+                            progressBar: true,
+                            positionClass: 'toast-bottom-right',
+                            timeOut: 6000
+                          });
+                          //window.location.reload();
+                          $('#enstimate-table').DataTable().ajax.reload();
                         }else if( response.status == "warning"){
                           window.location.reload();
                         }else if( response.status == "error"){
@@ -1247,6 +1255,79 @@
       </script>
 
     <!-- SEARCH end -->
+
+    <!-- Assign Labor for task -->
+    <!-- Feature: Link labor with tasks -->
+    <script>
+      $(document).ready(function() {
+
+        $(".select-labor-task").select2({
+          width: "250px",
+          placeholder: 'Select Tasks',
+          dropdownCssClass: 'wide-dropdown',
+          ajax: {
+            url: function () {
+              return $(this).data("url");
+            },
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    q: params.term
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: data.results
+                };
+            },
+            cache: true
+          }
+        });
+
+        $(".select-labor-task").on("change", function(e){
+
+          var value = $(this).val();
+          var current_task_id = $(this).data("id");
+          var document_number = $(this).data("document");
+          var url = $(this).data("url");
+
+          // Payload data
+          data = {
+            value: value,
+            id: current_task_id,
+            document_number: document_number
+          }
+
+          // Ajax call
+          $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            headers: {
+              'X-CSRFToken': "{{ csrf_token }}",
+            },
+            success: function(response) {
+              toastr.success(response.message, 'Success', {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-bottom-right',
+                timeOut: 6000
+              });
+              estimation_task_table.ajax.reload();
+            },
+            error: function(xhr, status, error) {
+              toastr.error(xhr.responseJSON.message, 'Error', {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-bottom-right',
+                timeOut: 6000
+              });
+            }
+          });
+        });
+      });
+    </script>
 
 {% endblock script %}
 

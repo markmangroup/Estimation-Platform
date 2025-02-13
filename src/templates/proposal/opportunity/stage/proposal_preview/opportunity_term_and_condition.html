@@ -1,0 +1,1508 @@
+{% if opportunity.term_and_condition %}
+<!-- Term & Condition and Pipe term-->
+<table class="table main-table">
+  <tbody>
+    <tr>
+      <td></td>
+      <td class="text-center">
+        (This job proposal will proceed forward when both a
+        <strong>signed contract</strong> and
+        <strong>deposit</strong> have been received.)
+      </td>
+    </tr>
+
+    {% for t in opportunity.term_and_condition.term_and_condition %}
+      <tr class="tac-table tac {% if t.checked %}{% else %}icon{% endif %}">
+        <!-- <td><i class="fa fa-trash danger remove-terms d-icon"></i></td> -->
+        <td><input type="checkbox" name="" {% if t.checked %}checked{% endif %}></td>
+        <td> <input type="text" class="form-control term" data-id="{{ t.id }}" value="{{ t.text }}"/> </td>
+      </tr>
+    {% endfor %}
+
+    <!-- Add new Terms -->
+    <tr class="add-new-term-tr tac icon">
+      <!-- <td><i class="fa fa-trash danger remove-terms"></i></td> -->
+      <td><input type="checkbox" name=""></td>
+      <td> <input type="text" class="form-control term new-terms" placeholder="Write new terms..."/> </td>
+    </tr>
+
+    <tr>
+      <th>*</th>
+      <th>
+        <p class="text-danger">PUMP INSTALLATION TERMS</p>
+      </th>
+    </tr>
+
+    {% for p in opportunity.term_and_condition.pump_installation_terms %}
+      <tr class="pit {% if p.checked %}{% else %}icon{% endif %}">
+        <!-- <td><i class="fa fa-trash danger remove-terms d-icon"></i></td> -->
+        <td><input type="checkbox" name="" {% if p.checked %}checked{% endif %}></td>
+        <td> <input type="text" data-id="{{ p.id }}" class="form-control pump-term" value="{{ p.text }}"/> </td>
+      </tr>
+    {% endfor %}
+
+    <!-- Add New Row -->
+    <tr class="new-pump-tr pit icon">
+      <!-- <td><i class="fa fa-trash danger remove-terms"></i></td> -->
+      <td><input type="checkbox" name=""></td>
+      <td>
+        <input
+          type="text"
+          class="form-control pump-term new-pump-terms"
+          placeholder="Write new pump installation terms..."
+        />
+      </td>
+    </tr>
+
+  </tbody>
+</table>
+
+<!-- Sales term -->
+<div>
+  <hr>
+  <h4 class="text-center">SALES AND APPROVAL AGREEMENT</h4>
+  <table class="table">
+    <tbody>
+      {% for s in opportunity.term_and_condition.sales_agreement %}
+        <tr class="spa {% if s.checked %}{% else %}icon{% endif %}">
+          <!-- <td><input type="checkbox" name="" checked></td> -->
+          <td style="width: 4%;"><input type="checkbox" name="" {% if s.checked %}checked{% endif %}></td>
+          <td> <input type="text" class="form-control sales-agreement" data-id="{{s.id}}" value="{{s.text}}"/></td>
+        </tr>
+      {% endfor %}
+      <!-- Add New Row -->
+      <tr class="new-sales-agreement-tr spa icon">
+        <!-- <td><i class="fa fa-trash danger remove-terms"></i></td> -->
+        <td style="width: 4%;"><input type="checkbox" name=""></td>
+        <td>
+          <input type="text" class="form-control sales-agreement new-sales-agreement" placeholder="Write new sales and approval agreement..."/>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Buyer / Seller -->
+  <div class="row">
+
+    <!-- Buyer -->
+    <div class="col-6">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label>Buyer:</label>
+              {% if invoice.buyer %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap buyer"
+                  placeholder="Enter Buyer"
+                  value="{{ invoice.buyer }}"
+                />
+              {% else %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap buyer"
+                  placeholder="Enter Buyer"
+                />
+              {% endif %}
+
+            </div>
+            <div class="col-6 mb-3">
+              <label>Date:</label>
+              <input
+                type="date"
+                data-id="{{ invoice.id }}"
+                class="form-control text-nowrap buyer-date"
+                value="{{ invoice.buyer_date|date:"Y-m-d" }}"
+              />
+            </div>
+            <div class="col-12 mb-3">
+              {% if invoice.buyer_name %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap buyer-name"
+                  placeholder="Enter Name"
+                  value="{{ invoice.buyer_name }}"
+                />
+              {% else %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap buyer-name"
+                  placeholder="Enter Name"
+                />
+              {% endif %}
+
+            </div>
+
+            <div class="col-12 mb-3">
+
+              {% if invoice.buyer_position %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap buyer-position"
+                  placeholder="Enter Position"
+                  value="{{ invoice.buyer_position }}"
+                />
+              {% else %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap buyer-position"
+                  placeholder="Enter Position"
+                />
+              {% endif %}
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seller -->
+    <div class="col-6">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+
+            <div class="col-6 mb-3">
+              <label>Seller:</label>
+              {% if invoice.seller %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap seller"
+                  placeholder="Enter Buyer"
+                  value="{{ invoice.seller }}"
+                />
+              {% else %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap seller"
+                  placeholder="Enter Buyer"
+                />
+              {% endif %}
+            </div>
+
+            <div class="col-6 mb-3">
+              <label>Date:</label>
+              <input
+                type="date"
+                data-id="{{ invoice.id }}"
+                class="form-control text-nowrap seller-date"
+                value="{{ invoice.seller_date|date:"Y-m-d" }}"
+              />
+            </div>
+
+            <div class="col-12 mb-3">
+              {% if invoice.seller_name %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap seller-name"
+                  placeholder="Enter Name"
+                  value="{{ invoice.seller_name }}"
+                />
+              {% else %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap seller-name"
+                  placeholder="Enter Name"
+                />
+              {% endif %}
+
+            </div>
+
+            <div class="col-12 mb-3">
+              {% if invoice.seller_position %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap seller-position"
+                  placeholder="Enter Position"
+                  value="{{ invoice.seller_position }}"
+                />
+              {% else %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap seller-position"
+                  placeholder="Enter Position"
+                />
+              {% endif %}
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEPOSIT INVOICE -->
+  <div>
+    <hr>
+    <h4 class="text-center">DEPOSIT INVOICE</h4>
+    <strong>Customer: </strong>
+    <input type="text" class="form-control text-nowrap" value="{{ opportunity.customer.name }}" placeholder="Customer Name"
+    disabled>
+    <div class="d-flex justify-content-between my-4" style="gap: 50px">
+      <div class="w-50">
+        <strong class="w-100"> Date :</strong>
+        <span class="ml-3">
+          <input
+            type="date" class="form-control text-nowrap invoice_date" data-id="{{ invoice.id }}"value="{{ invoice.invoice_data|date:"Y-m-d" }}">
+        </span>
+      </div>
+
+      <div class="w-50">
+        <strong class="w-100"> Job :</strong>
+        <span class="ml-3">
+          {% if opportunity.job %}
+            <input
+              type="text"
+              class="form-control text-nowrap job"
+              data-document="{{ opportunity.document_number }}"
+              value="{{ opportunity.job }}"
+            />
+          {% else %}
+            <input
+              type="text"
+              class="form-control text-nowrap job"
+              data-document="{{ opportunity.document_number }}"
+              value=""
+              placeholder="Enter Job"
+            />
+          {% endif %}
+
+        </span>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between my-4" style="gap: 50px">
+      <div class="w-100">
+        <strong>
+          To:
+          {% if invoice.deposit_address %}
+            <input
+              type="text"
+              data-id="{{ invoice.id }}"
+              class="form-control text-nowrap to-address"
+              value="{{ invoice.deposit_address }}"
+              placeholder = "Enter Address"
+            />
+          {% else %}
+            <input
+              type="text"
+              data-id="{{ invoice.id }}"
+              class="form-control text-nowrap to-address"
+              value=""
+              placeholder = "Enter Address"
+            />
+          {% endif %}
+
+        </strong>
+      </div>
+
+      <div class="w-100">
+        <strong class="w-100">
+          Ranch Name:
+          {% if opportunity.ranch_name %}
+            <input type="text" class="form-control text-nowrap ranch" data-document="{{opportunity.document_number}}"
+            value="{{ opportunity.ranch_name }}" placeholder="Enter Ranch Name"/>
+          {% else %}
+            <input type="text" class="form-control text-nowrap ranch" data-document="{{opportunity.document_number}}"
+            value="" placeholder="Enter Ranch Name"/>
+          {% endif %}
+          </strong>
+        <div class="w-100 mt-2">
+          <strong>
+            Job Name:
+            {% if opportunity.job_name %}
+              <input
+                type="text"
+                class="form-control text-nowrap job_name"
+                data-document="{{ opportunity.document_number }}"
+                value="{{ opportunity.job_name }}"
+              />
+            {% else %}
+              <input
+                type="text"
+                class="form-control text-nowrap job_name"
+                data-document="{{ opportunity.document_number }}"
+                value=""
+                placeholder="Enter Job Name"
+              />
+            {% endif %}
+          </strong>
+        </div>
+      </div>
+
+    </div>
+
+    <table class="table">
+      <thead class="thead-light">
+        <th>DESCRIPTION</th>
+        <th></th>
+        <th class="text-right">Amount</th>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>Deposit for:</td>
+          <td></td>
+          <td class="text-right">
+            <input
+              type="text"
+              class="form-control text-nowrap deposit"
+              data-id="{{ invoice.id }}"
+              value="${{ invoice.deposit_amount }}"
+            />
+          </td>
+        </tr>
+        <tr>
+          <td>Job:</td>
+          <td></td>
+          <td class="text-right">
+            <input
+              type="text"
+              class="form-control text-nowrap job"
+              value="{{ opportunity.job }}"
+              disabled
+            />
+          </td>
+        </tr>
+        <tr>
+          <td>Ranch:</td>
+          <td></td>
+          {% if opportunity.ranch_name %}
+            <td class="text-right">
+              <input
+                type="text"
+                class="form-control text-nowrap ranch"
+                placeholder="Enter Ranch"
+                data-document="{{opportunity.document_number}}"
+                value="{{ opportunity.ranch_name }}"
+                disabled
+              />
+            </td>
+          {% else %}
+            <td class="text-right">
+              <input
+                type="text"
+                class="form-control text-nowrap"
+                placeholder="Enter Ranch"
+                value=""
+              />
+            </td>
+          {% endif %}
+        </tr>
+        <tr>
+          <td>Job Name:</td>
+          <td></td>
+          <td class="text-right">
+            <input
+              type="text"
+              class="form-control text-nowrap"
+              value="{{ opportunity.job_name }}"
+              disabled
+            />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table class="table">
+      <tbody>
+        <tr>
+          <th>
+            Contract Terms: As per your contract, this job billing
+            is due upon receipt.
+          </th>
+          <th></th>
+        </tr>
+
+        <tr>
+          <td class="text-right">Remit to:</td>
+          <td class="text-right">
+            {% if invoice.billing_address %}
+              <input type="text" class="form-control text-nowrap address"
+              data-id="{{ invoice.id }}"
+              value="{{ invoice.billing_address }}" placeholder="Enter Address">
+            {% else %}
+              <input type="text" class="form-control text-nowrap address" data-id="{{ invoice.id }}" value="" placeholder="Enter Address">
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td class="text-right">SUBTOTAL</td>
+          <td class="text-right">
+            <input type="text" class="form-control text-nowrap main_total" value="${{ proposal_total.grand_total_price }}"
+            disabled>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="text-right">TAX RATE</td>
+          <td class="text-right">
+            <input type="text"
+            data-id="{{ invoice.id }}"
+            class="form-control text-nowrap tax_rate" value="{{ invoice.tax_rate }}%">
+          </td>
+        </tr>
+
+        <tr>
+          <td class="text-right">SALES TAX</td>
+          <td class="text-right">
+            <input  type="text"
+            data-id="{{ invoice.id }}" class="form-control text-nowrap invoice_sales_tax" value="${{ invoice.sales_tax }}">
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="d-flex justify-content-between">
+              <strong> THANK YOU FOR YOUR BUSINESS! </strong>
+              <p>OTHER</p>
+            </div>
+          </td>
+          <td class="text-right">
+            <input type="text"
+            data-id="{{ invoice.id }}" class="form-control text-nowrap
+            other_tax" placeholder="Enter Other value" value="${{ invoice.other_tax }}">
+          </td>
+        </tr>
+
+        <tr>
+          <th class="text-right">TOTAL</th>
+          <th class="text-right">
+            <input type="text" class="form-control text-nowrap grand_total" value="${{ proposal_total.final_total_price }}" disabled>
+          </th>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <br>
+
+</div>
+
+<!-- Hard coded terms -->
+{% else %}
+<!-- Term & Condition and Pipe term-->
+<table class="table">
+  <tbody>
+    <tr>
+      <td></td>
+      <td class="text-center">
+        (This job proposal will proceed forward when both a
+        <strong>signed contract</strong> and
+        <strong>deposit</strong> have been received.)
+      </td>
+    </tr>
+
+    <tr class="tac">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          class="form-control term"
+          data-id="1"
+          value="This proposal is good for 14 days from presentation date of _______________."
+        />
+      </td>
+    </tr>
+
+    <tr class="tac">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="2"
+          class="form-control term"
+          value="Additional Labor to be Billed for Unforeseen Column Tube and Shaft Condition"
+        />
+      </td>
+    </tr>
+
+    <tr class="tac">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="3"
+          class="form-control term"
+          value="System flushing & start-up is included."
+        />
+      </td>
+    </tr>
+
+    <tr class="tac">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="4"
+          class="form-control term"
+          value="Any alteration or deviation from the contract specifications will become an additional charge over and above the original price."
+        />
+      </td>
+    </tr>
+
+    <tr class="tac">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="5"
+          class="form-control term"
+          value="Sub-surfaces not free of obstructions, obstacles, or unusual conditions of any kind including, by way of example and not limited to high water table, mud, large and/or excessive rock, roots, water, or utility lines will increase the cost of trenching or other installation work."
+        />
+      </td>
+    </tr>
+
+    <tr class="tac">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="6"
+          class="form-control term"
+          value="Laurel Ag & Water is not responsible for the replacement of marking pegs which can be disrupted during installation."
+        />
+      </td>
+    </tr>
+
+    <tr class="tac">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="7"
+          class="form-control term"
+          value="All rocks removed from excavated soil to be placed along the side of the ditch."
+        />
+      </td>
+    </tr>
+
+    <tr class="tac">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="8"
+          class="form-control term"
+          value="Trench cave-in due to unstable ground will require additional labor."
+        />
+      </td>
+    </tr>
+
+    <tr class="tac">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="9"
+          class="form-control term"
+          value="This proposal does not include shading the ditch with sand. Backfill with existing soil."
+        />
+      </td>
+    </tr>
+
+    <tr class="tac">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="10"
+          class="form-control term"
+          value="Repair of the road crossing not included."
+        />
+      </td>
+    </tr>
+
+    <tr class="tac">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="11"
+          class="form-control term"
+          value="Trench compaction not included."
+        />
+      </td>
+    </tr>
+
+    <tr class="tac">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="12"
+          class="form-control term"
+          value="All existing irrigation & utility lines to be located & exposed by the customer."
+        />
+      </td>
+    </tr>
+
+    <tr class="tac">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="13"
+          class="form-control term"
+          value="The customer is responsible for any materials delivered by Laurel Ag & Water, or its suppliers, and stored on the job site. Customer shall indemnify and hold Laurel Ag & Water harmless for any losses or damages to said materials."
+        />
+      </td>
+    </tr>
+
+    <tr class="tac">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          class="form-control term"
+          data-id="14"
+          value="Preliminary Notice to be furnished to Landowner, Contractor, and Lender (if applicable)."
+        />
+      </td>
+    </tr>
+
+    <tr class="tac">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          class="form-control term"
+          data-id="15"
+          value="Any alteration or deviation from the contract specifications will become an additional charge over and above the original price."
+        />
+      </td>
+    </tr>
+
+    <tr class="tac">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          class="form-control term"
+          data-id="16"
+          value="Preliminary Notice to be furnished to Landowner, Contractor, and Lender (if applicable)."
+        />
+      </td>
+    </tr>
+
+    <!-- Add new Terms -->
+    <tr class="tac">
+      <td><input type="checkbox" name=""></td>
+      <td>
+        <input
+          type="text"
+          class="form-control term new-terms"
+          placeholder="Write Here Term & Condition"
+        />
+      </td>
+    </tr>
+
+    <tr>
+      <th>*</th>
+      <th>
+        <p class="text-danger">PUMP INSTALLATION TERMS</p>
+      </th>
+    </tr>
+
+    <tr class="pit">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="1"
+          class="form-control pump-term"
+          value="This proposal does not include utility connection fees."
+        />
+      </td>
+    </tr>
+
+    <tr class="pit">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="2"
+          class="form-control pump-term"
+          value="Concrete pad to be provided by Customer."
+        />
+      </td>
+    </tr>
+
+    <tr class="pit">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="3"
+          class="form-control pump-term"
+          value="Tank plumbing and connection not included."
+        />
+      </td>
+    </tr>
+
+    <tr class="pit">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="4"
+          class="form-control pump-term"
+          value="Labor to remove existing pump and install new pump included."
+        />
+      </td>
+    </tr>
+
+    <tr class="pit">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="5"
+          class="form-control pump-term"
+          value="Labor to install new pump is included."
+        />
+      </td>
+    </tr>
+
+    <tr class="pit">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="6"
+          class="form-control pump-term"
+          value="Verification on well log/pump test is not included."
+        />
+      </td>
+    </tr>
+
+    <tr class="pit">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="7"
+          class="form-control pump-term"
+          value="Customer to provide power to operate system."
+        />
+      </td>
+    </tr>
+
+    <tr class="pit">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="8"
+          class="form-control pump-term"
+          value="This quote is based on connection to an existing pump panel and electrical service."
+        />
+      </td>
+    </tr>
+
+    <tr class="pit">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="9"
+          class="form-control pump-term"
+          value="Proposal does not include any permits if required. Owner/Manager is responsible for obtaining all permits."
+        />
+      </td>
+    </tr>
+
+    <tr class="pit">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="10"
+          class="form-control pump-term"
+          value="This price does not include new electrical service, meter main, permit, or inspection if required."
+        />
+      </td>
+    </tr>
+
+    <tr class="pit">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="11"
+          class="form-control pump-term"
+          value="Cave-in due to unstable ground will require additional labor."
+        />
+      </td>
+    </tr>
+
+    <tr class="pit">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="12"
+          class="form-control pump-term"
+          value="Sub-surfaces not free of obstructions, obstacles, or unusual conditions of any kind including, by way of example and not limited to, high water table, mud, large and/or excessive rock, roots, water, or utility lines will increase the cost of trenching or other installation work."
+        />
+      </td>
+    </tr>
+
+    <tr class="pit">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="13"
+          class="form-control pump-term"
+          value="Not responsible for any issues with the well that may be the result of unknown conditions."
+        />
+      </td>
+    </tr>
+
+    <tr class="pit">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="14"
+          class="form-control pump-term"
+          value="Pump Discharge Modification not included (available at an additional cost)."
+        />
+      </td>
+    </tr>
+
+    <tr class="pit">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="15"
+          class="form-control pump-term"
+          value="Motor reconditioning not included."
+        />
+      </td>
+    </tr>
+
+    <tr class="pit">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="16"
+          class="form-control pump-term"
+          value="Quote based on using existing pump hardware. Anything requiring replacement will be an additional cost to the job."
+        />
+      </td>
+    </tr>
+
+    <tr class="pit">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="17"
+          class="form-control pump-term"
+          value="Preliminary Notice to be furnished to Landowner, Contractor, and Lender (if applicable)."
+        />
+      </td>
+    </tr>
+
+    <tr class="pit">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="18"
+          class="form-control pump-term"
+          value="The customer is responsible for any materials delivered by Laurel Ag & Water, or its suppliers, and stored on the jobsite. Customer shall indemnify and hold Laurel Ag & Water harmless for any losses or damages to said materials."
+        />
+      </td>
+    </tr>
+
+    <tr class="pit">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="19"
+          class="form-control pump-term"
+          value="Laurel Ag & Water is not responsible for theft or vandalism of components or facilities that are under repair (for example; motor, bowls, column pipe and tube & shaft) and are stored at the customer's location. Laurel Ag & Water can transport to our location and store, at the customer's request, for an additional charge."
+        />
+      </td>
+    </tr>
+
+    <tr class="pit">
+      <td><input type="checkbox" name="" checked></td>
+      <td>
+        <input
+          type="text"
+          data-id="20"
+          class="form-control pump-term"
+          value="Customer Responsible for Determination of Flood Plain Requirements at Construction Site."
+        />
+      </td>
+    </tr>
+
+    <!-- Add More -->
+    <tr class="pit">
+      <td><input type="checkbox" name=""></td>
+      <td>
+        <input
+          type="text"
+          class="form-control pump-term new-pump-terms"
+          placeholder="write here pump installation terms..."
+        />
+      </td>
+    </tr>
+
+  </tbody>
+</table>
+
+<!-- Sales term -->
+<div>
+  <hr>
+  <h4 class="text-center">SALES AND APPROVAL AGREEMENT</h4>
+  <table class="table">
+    <tbody>
+
+      <tr class="spa">
+        <td style="width: 4%;"><input type="checkbox" name="" checked></td>
+        <td>
+          <input
+        type="text"
+        class="form-control sales-agreement"
+        data-id="1"
+        value="This Agreement is made and entered on _______________ by and between Laurel Ag & Water (“Seller”) and Martha Waterman, (“Buyer”), (collectively referred to as the “Parties”)."
+        />
+        </td>
+      </tr>
+
+      <tr class="spa">
+        <td style="width: 4%;"><input type="checkbox" name="" checked></td>
+        <td>
+          <input
+        type="text"
+        data-id="2"
+        class="form-control sales-agreement"
+        value="SELLER AGREES TO SELL and Buyer agrees to buy all material and services more fully described in the attached Exhibit A, “Project Detail” (the “Goods”), Job #Existi."
+        />
+        </td>
+      </tr>
+
+      <tr class="spa">
+        <td style="width: 4%;"><input type="checkbox" name="" checked></td>
+        <td>
+          <input
+        type="text"
+        data-id="3"
+        class="form-control sales-agreement"
+        value='BUYER SHALL PAY SELLER $37,498 for the Goods, the “Purchase Price”. Buyer shall make an initial deposit of 30% of the Purchase Price in the amount of $11,249 for Seller to secure materials. Buyer shall make a second installment payment of 30% in the amount of $11,249 upon first delivery of materials. Buyer shall make a third installment payment of 30% in the amount of $11,249 at commencement of infield work. Buyer shall make a final installment payment of 10% in the amount of $3,749 upon successful testing of system. All payments shall be fully applied to the Purchase Price. In addition to the Purchase Price, BUYER AGREES TO PAY for all approved and initialed options in the attached Exhibit A, "Project Detail."'
+        />
+        </td>
+      </tr>
+
+      <tr class="spa">
+        <td style="width: 4%;"><input type="checkbox" name="" checked></td>
+        <td>
+          <input
+        type="text"
+        data-id="4"
+        class="form-control text-nowrap sales-agreement"
+        value="THE BUYER SHALL PAY THE PURCHASE PRICE, less the initial deposit, upon the completion of the job, or upon receipt of Invoice, whichever is first. Buyer agrees to pay 1.5% monthly interest (18% annual rate) on any unpaid balance remaining due more than thirty (30) days. Buyer agrees to pay for any collection or legal expenses incurred by Seller due to late payment or non-payment."
+        />
+        </td>
+      </tr>
+
+      <tr class="spa">
+        <td style="width: 4%;"><input type="checkbox" name="" checked></td>
+        <td>
+          <input
+        type="text"
+        data-id="5"
+        class="form-control text-nowrap sales-agreement"
+        value="SELLER SHALL DELIVER the Goods to Buyer at the following address or parcel number: _______________. At that time, Buyer has the right to inspect the Goods. Buyer must give notice to Seller of any defect, damage or other problems with the Goods. If Buyer does not notify Seller within 48 hours after delivery of the Goods, Buyer shall conclusively be presumed to have inspected and accepted them. Buyer assumes all liability for loss due to acts of God, earthquake, fire, explosion, vandalism, storm, flood, theft or other similar occurrence."
+        />
+        </td>
+      </tr>
+
+      <tr class="spa">
+        <td style="width: 4%;"><input type="checkbox" name="" checked></td>
+        <td>
+          <input
+        type="text"
+        data-id="6"
+        class="form-control text-nowrap sales-agreement"
+        value="PRELIMINARY NOTICE will be furnished to the Landowner, Contractor and Lender."
+        />
+        </td>
+      </tr>
+
+      <tr class="spa">
+        <td style="width: 4%;"><input type="checkbox" name="" checked></td>
+        <td>
+          <input
+        type="text"
+        data-id="7"
+        class="form-control text-nowrap sales-agreement"
+        value="ANY CHANGES OR ADDITIONS made to the original Project Detail including the charges associated with them will subsequently be referred to as “Change Order(s)” and/or “Addition Order(s)” and become part of this Agreement including all of its terms and conditions."
+        />
+        </td>
+      </tr>
+
+      <tr class="spa">
+        <td style="width: 4%;"><input type="checkbox" name="" checked></td>
+        <td>
+          <input
+        type="text"
+        data-id="8"
+        class="form-control text-nowrap sales-agreement"
+        value="BUYER AGREES that the design and specifications as described in the Project Detail are accurate and will be governed by the remaining terms of this Agreement."
+        />
+        </td>
+      </tr>
+
+      <tr class="spa">
+        <td style="width: 4%;"><input type="checkbox" name="" checked></td>
+        <td>
+          <input
+        type="text"
+        data-id="9"
+        class="form-control text-nowrap sales-agreement"
+        value="IN WITNESS WHEREOF, the parties have caused this Agreement to be executed the day and year first above written."
+        />
+        </td>
+      </tr>
+
+      <tr class="new-sales-agreement-tr spa icon">
+        <td style="width: 4%;"><input type="checkbox" name=""></td>
+        <td>
+          <input
+            type="text"
+            class="form-control sales-agreement new-sales-agreement"
+            placeholder="Write new sales and approval agreement..."
+          />
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+
+  <!-- Buyer / Seller -->
+  <div class="row">
+
+    <!-- Buyer -->
+    <div class="col-6">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label>Buyer:</label>
+              {% if invoice.buyer %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap buyer"
+                  placeholder="Enter Buyer"
+                  value="{{ invoice.buyer }}"
+                />
+              {% else %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap buyer"
+                  placeholder="Enter Buyer"
+                />
+              {% endif %}
+
+            </div>
+            <div class="col-6 mb-3">
+              <label>Date:</label>
+              <input
+                type="date"
+                data-id="{{ invoice.id }}"
+                class="form-control text-nowrap buyer-date"
+                value="{{ invoice.buyer_date|date:"Y-m-d" }}"
+              />
+            </div>
+            <div class="col-12 mb-3">
+              {% if invoice.buyer_name %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap buyer-name"
+                  placeholder="Enter Name"
+                  value="{{ invoice.buyer_name }}"
+                />
+              {% else %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap buyer-name"
+                  placeholder="Enter Name"
+                />
+              {% endif %}
+
+            </div>
+            <div class="col-12 mb-3">
+
+              {% if invoice.buyer_position %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap buyer-position"
+                  placeholder="Enter Position"
+                  value="{{ invoice.buyer_position }}"
+                />
+              {% else %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap buyer-position"
+                  placeholder="Enter Position"
+                />
+              {% endif %}
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seller -->
+    <div class="col-6">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label>Seller:</label>
+              {% if invoice.seller %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap seller"
+                  placeholder="Enter Buyer"
+                  value="{{ invoice.seller }}"
+                />
+              {% else %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap seller"
+                  placeholder="Enter Buyer"
+                />
+              {% endif %}
+            </div>
+            <div class="col-6 mb-3">
+              <label>Date:</label>
+              <input
+                type="date"
+                data-id="{{ invoice.id }}"
+                class="form-control text-nowrap seller-date"
+                value="{{ invoice.seller_date|date:"Y-m-d" }}"
+              />
+            </div>
+            <div class="col-12 mb-3">
+              {% if invoice.seller_name %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap seller-name"
+                  placeholder="Enter Name"
+                  value="{{ invoice.seller_name }}"
+                />
+              {% else %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap seller-name"
+                  placeholder="Enter Name"
+                />
+              {% endif %}
+
+            </div>
+            <div class="col-12 mb-3">
+              {% if invoice.seller_position %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap seller-position"
+                  placeholder="Enter Position"
+                  value="{{ invoice.seller_position }}"
+                />
+              {% else %}
+                <input
+                  type="text"
+                  data-id="{{ invoice.id }}"
+                  class="form-control text-nowrap seller-position"
+                  placeholder="Enter Position"
+                />
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEPOSIT INVOICE -->
+  <div>
+    <hr>
+    <h4 class="text-center">DEPOSIT INVOICE</h4>
+    <strong>Customer: </strong>
+    <input type="text" class="form-control text-nowrap" value="{{ opportunity.customer.name }}" placeholder="Customer Name"
+    disabled>
+    <div class="d-flex justify-content-between my-4" style="gap: 50px">
+      <div class="w-50">
+        <strong class="w-100"> Date :</strong>
+        <span class="ml-3">
+          <input
+            type="date" class="form-control text-nowrap invoice_date" data-id="{{ invoice.id }}"value="{{ invoice.invoice_data|date:"Y-m-d" }}">
+        </span>
+      </div>
+
+      <div class="w-50">
+        <strong class="w-100"> Job :</strong>
+        <span class="ml-3">
+          {% if opportunity.job %}
+            <input
+              type="text"
+              class="form-control text-nowrap job"
+              data-document="{{ opportunity.document_number }}"
+              value="{{ opportunity.job }}"
+            />
+          {% else %}
+            <input
+              type="text"
+              class="form-control text-nowrap job"
+              data-document="{{ opportunity.document_number }}"
+              value=""
+              placeholder="Enter Job"
+            />
+          {% endif %}
+
+        </span>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between my-4" style="gap: 50px">
+      <div class="w-100">
+        <strong>
+          To:
+          {% if invoice.deposit_address %}
+            <input
+              type="text"
+              data-id="{{ invoice.id }}"
+              class="form-control text-nowrap to-address"
+              value="{{ invoice.deposit_address }}"
+              placeholder = "Enter Address"
+            />
+          {% else %}
+            <input
+              type="text"
+              data-id="{{ invoice.id }}"
+              class="form-control text-nowrap to-address"
+              value=""
+              placeholder = "Enter Address"
+            />
+          {% endif %}
+
+        </strong>
+      </div>
+
+      <div class="w-100">
+        <strong class="w-100">
+          Ranch Name:
+          {% if opportunity.ranch_name %}
+            <input type="text" class="form-control text-nowrap ranch" data-document="{{opportunity.document_number}}"
+            value="{{ opportunity.ranch_name }}" placeholder="Enter Ranch Name"/>
+          {% else %}
+            <input type="text" class="form-control text-nowrap ranch" data-document="{{opportunity.document_number}}"
+            value="" placeholder="Enter Ranch Name"/>
+          {% endif %}
+          </strong>
+        <div class="w-100 mt-2">
+          <strong>
+            Job Name:
+            {% if opportunity.job_name %}
+              <input
+                type="text"
+                class="form-control text-nowrap job_name"
+                data-document="{{ opportunity.document_number }}"
+                value="{{ opportunity.job_name }}"
+              />
+            {% else %}
+              <input
+                type="text"
+                class="form-control text-nowrap job_name"
+                data-document="{{ opportunity.document_number }}"
+                value=""
+                placeholder="Enter Job Name"
+              />
+            {% endif %}
+          </strong>
+        </div>
+      </div>
+    </div>
+
+    <table class="table">
+      <thead class="thead-light">
+        <th>DESCRIPTION</th>
+        <th></th>
+        <th class="text-right">Amount</th>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>Deposit for:</td>
+          <td></td>
+          <td class="text-right">
+            <input
+              type="text"
+              class="form-control text-nowrap deposit"
+              data-id="{{ invoice.id }}"
+              value="${{ invoice.deposit_amount }}"
+            />
+          </td>
+        </tr>
+        <tr>
+          <td>Job:</td>
+          <td></td>
+          <td class="text-right">
+            <input
+              type="text"
+              class="form-control text-nowrap job"
+              value="{{ opportunity.job }}"
+              disabled
+            />
+          </td>
+        </tr>
+        <tr>
+          <td>Ranch:</td>
+          <td></td>
+          {% if opportunity.ranch_name %}
+            <td class="text-right">
+              <input
+                type="text"
+                class="form-control text-nowrap ranch"
+                placeholder="Enter Ranch"
+                data-document="{{opportunity.document_number}}"
+                value="{{ opportunity.ranch_name }}"
+                disabled
+              />
+            </td>
+          {% else %}
+            <td class="text-right">
+              <input
+                type="text"
+                class="form-control text-nowrap ranch"
+                placeholder="Enter Ranch"
+                value=""
+              />
+            </td>
+          {% endif %}
+        </tr>
+        <tr>
+          <td>Job Name:</td>
+          <td></td>
+          <td class="text-right">
+            <input
+              type="text"
+              class="form-control text-nowrap"
+              value="{{ opportunity.job_name }}"
+              disabled
+            />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table class="table">
+      <tbody>
+        <tr>
+          <th>
+            Contract Terms: As per your contract, this job billing
+            is due upon receipt.
+          </th>
+          <th></th>
+        </tr>
+
+        <tr>
+          <td class="text-right">Remit to:</td>
+          <td class="text-right">
+            {% if invoice.billing_address %}
+              <input type="text" class="form-control text-nowrap address"
+              data-id="{{ invoice.id }}"
+              value="{{ invoice.billing_address }}" placeholder="Enter Address">
+            {% else %}
+              <input type="text" class="form-control text-nowrap address" data-id="{{ invoice.id }}" value="" placeholder="Enter Address">
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td class="text-right">SUBTOTAL</td>
+          <td class="text-right">
+            <input type="text" class="form-control text-nowrap main_total" value="${{ proposal_total.grand_total_price }}"
+            disabled>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="text-right">TAX RATE</td>
+          <td class="text-right">
+            <input type="text"
+            data-id="{{ invoice.id }}"
+            class="form-control text-nowrap tax_rate" value="{{ invoice.tax_rate }}%">
+          </td>
+        </tr>
+
+        <tr>
+          <td class="text-right">SALES TAX</td>
+          <td class="text-right">
+            <input  type="text"
+            data-id="{{ invoice.id }}" class="form-control text-nowrap invoice_sales_tax" value="${{ invoice.sales_tax }}">
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="d-flex justify-content-between">
+              <strong> THANK YOU FOR YOUR BUSINESS! </strong>
+              <p>OTHER</p>
+            </div>
+          </td>
+          <td class="text-right">
+            <input type="text"
+            data-id="{{ invoice.id }}" class="form-control text-nowrap
+            other_tax" placeholder="Enter Other value" value="${{ invoice.other_tax }}">
+          </td>
+        </tr>
+
+        <tr>
+          <th class="text-right">TOTAL</th>
+          <th class="text-right">
+            <input type="text" class="form-control text-nowrap grand_total" value="${{ proposal_total.final_total_price }}" disabled>
+          </th>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <br>
+</div>
+
+<!-- Invoice Items Details ends -->
+{% endif %}
