@@ -253,3 +253,584 @@
     </div>
   </div>
 
+  {% block script %}
+
+  <!-- Htmx -->
+  <script>
+    $(document).on('click', '.htmx-trigger-crate-proposal-btn' , function (e) {
+
+      var url = $(this).data('url');
+      htmx.ajax('GET',
+          url,
+          {
+            target:'#ProposalContent',
+            swap:'innerHTML',
+      }).then(() => {
+          $('#proposalCreatetion').toggleClass('hidden');
+      })
+    });
+  </script>
+
+  <!-- Select 2 -->
+  <script>
+    $(".select2").select2();
+  </script>
+
+  <!-- Delete tasks -->
+  <script>
+    $(document).on('click', '.delete-task-btn', function (e) {
+
+      console.log("clicked................");
+
+      var id = $(this).data("id")
+      var task_name = $(this).data("title")
+      var type = $(this).data("type")
+      var url = $(this).data("url")
+      var delete_ele = $(this)
+
+      if (task_name == "None") {
+        task_name = ""
+      }
+
+      Swal.fire({
+        html: `Are you sure you want to delete <b>${task_name}</b>?`,
+        icon: 'question',
+        showCloseButton: true,
+        showCancelButton: true,
+        confirmButtonColor: "#7442DB",
+        allowOutsideClick: false
+      }).then((result) => {
+
+        if (result.isConfirmed) {
+          // $(this).closest('tr').remove();
+          $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+              "id": id,
+              "type": type,
+              "document_number": "{{ opportunity.document_number }}",
+              "csrfmiddlewaretoken": '{{ csrf_token }}'
+            },
+            success: function (data) {
+              $('#enstimate-table').DataTable().ajax.reload();
+
+              if (type=="proposal"){
+                $("#ProposalContainer").html(data._html)
+              }else{
+                $('#tableContainer').html(data.html);
+                $('#ProposalContainer').html(data._html);
+              }
+
+              // window.location.reload();
+              toastr.info(data.message, 'Delete', {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-bottom-right',
+                timeOut: 6000
+              });
+            }
+          });
+        }else {
+                Swal.fire("Cancel delete", "", "info");
+              }
+      })
+    })
+  </script>
+
+  <!-- Group Name Editable -->
+  <script>
+    $(".grp_name").on("keypress", function(e) {
+      if (e.which === 13) {
+          e.preventDefault();
+          var value = $(this).val();
+          var ids = $(this).data("id");
+          var document = $(this).data("document");
+
+          $.ajax({
+            type: "POST",
+            url: "{% url 'proposal_app:opportunity:group-name-update-ajax' %}",
+            data: {
+              "ids": `${ids}`,
+              "group_name": value,
+              "document": document,
+              "csrfmiddlewaretoken": '{{ csrf_token }}'
+            },
+            success: function (response) {
+              toastr.success(response.message, 'Updated', {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-bottom-right',
+                timeOut: 6000
+              });
+            }
+          });
+      }
+    });
+  </script>
+
+  <!-- Item code for "Add item button"-->
+  <script>
+    $(".select-item-code").select2({
+      placeholder: 'Select Item Code',
+      ajax: {
+          url: function () {
+            return $(this).data("url");
+          },
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+              return {
+                  q: params.term
+              };
+          },
+          processResults: function (data) {
+              return {
+                  results: data.results
+              };
+          },
+          cache: true
+      }
+    });
+  </script>
+
+  <!-- Update row data -->
+  <script>
+    $(document).on('change', '.select-item-code', function(e) {
+      // item code
+      var $input = $(e.target);
+      var id = $input.data("task");
+      var $row = $(this).closest('tr');
+      var value = $input.val();
+      var url = $input.data("url");
+
+      var data = {
+        value: value,
+      }
+
+      $.ajax({
+        url: url,
+        type: 'POST',
+        data: data,
+        headers: {
+          'X-CSRFToken': "{{ csrf_token }}",
+        },
+        success: function(response) {
+          if (response.code == 200) {
+
+            var $description = $row.find('.description');
+            var $quantity = $row.find('.quantity');
+            var $price = $row.find('.price');
+
+            // Update value
+            $description.val(response.description);
+            $quantity.val(response.quantity);
+            $price.val(response.price);
+          }
+        },
+        error: function(xhr, status, error) {
+          // console.log("Error:", error);
+        }
+      });
+
+    });
+  </script>
+
+  <!-- Add dynamic items -->
+  <script>
+    $(".add_items").on('click', function(e){
+        var $id = $(this).data('id');
+        var $task_id = $(this).data('task');
+        var $itemBody = $(`#item-body-${$id}`);
+        var $url = "{% url 'proposal_app:opportunity:task-item-search' 0 %}".replace(0, $id);
+        const uniqueNumber = Math.floor(Date.now() + Math.random() * 1000);
+        var $newRow = `
+            <tr id=${uniqueNumber}>
+                <td class="text-nowrap">
+                    <select class="select-item-code" data-url="${$url}" data-task="${$id}">
+                        <option selected disabled>Select item code</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" class="form-control description" placeholder="Item Description" />
+                </td>
+                <td>
+                    <input type="text" class="form-control quantity" placeholder="Quantity" />
+                </td>
+                <td>
+                    <input type="text" class="form-control price" placeholder="Price" />
+                </td>
+            </tr>
+        `;
+        $itemBody.append($newRow);
+
+        $(".select-item-code").select2({
+          placeholder: 'Select Item Code',
+          ajax: {
+              url: function () {
+                return $(this).data("url");
+              },
+              dataType: 'json',
+              delay: 250,
+              data: function (params) {
+                  return {
+                      q: params.term
+                  };
+              },
+              processResults: function (data) {
+                  return {
+                      results: data.results
+                  };
+              },
+              cache: true
+          }
+        });
+
+        $(document).on('change', '.select-item-code', function(e) {
+
+          // item code
+          var $input = $(e.target);
+          var id = $input.data("id");
+          var $row = $(this).closest('tr');
+          // console.log("$row", $row);
+          var value = $input.val();
+
+          // Payload data
+          var data = {
+            value: value,
+          }
+
+          $.ajax({
+            url: $url,
+            type: 'POST',
+            data: data,
+            headers: {
+              'X-CSRFToken': "{{ csrf_token }}",
+            },
+            success: function(response) {
+              if (response.code == 200) {
+
+                var $description = $row.find('.description');
+                var $quantity = $row.find('.quantity');
+                var $price = $row.find('.price');
+
+                // Update value
+                $description.val(response.description);
+                $quantity.val(response.quantity);
+                $price.val(response.price);
+              }
+            },
+            error: function(xhr, status, error) {
+              // console.log("Error:", error);
+            }
+          });
+
+        });
+
+    });
+  </script>
+
+  <!-- Save button-->
+  <script>
+    $(document).ready(function() {
+      $('.save-btn').click(function() {
+          const taskId = $(this).data('id');
+          // console.log("taskId", taskId)
+
+          const $tbody = $('#item-body-' + taskId);
+          const itemsToSave = [];
+
+          // Iterate through each row in the tbody
+          $tbody.find('tr').each(function() {
+              const itemCode = $(this).find('.select-item-code').val();
+              if (itemCode) {
+                  itemsToSave.push({
+                      taskId: taskId,
+                      itemCode: itemCode,
+                  });
+              }
+          });
+          // console.log(itemsToSave);
+          $.ajax({
+              type: "POST",
+              url: "{% url 'proposal_app:opportunity:add-items-ajax' %}",
+              data: JSON.stringify(itemsToSave),
+              headers: {
+                'X-CSRFToken': "{{ csrf_token }}",
+              },
+              contentType: "application/json",
+              beforeSend: function() {
+                $("#proposalCreatetion").modal('hide');
+                $("#proposalCreatetion .modal-body").html('');
+                $('#show-loader-proposal-creation').css("display", "block");
+                $('#ProposalContainer').css("display", "none");
+              },
+              success: function(response) {
+                if(response.status == "success"){
+                  $("#ProposalContainer").html(response._html)
+                  $('#show-loader-proposal-creation').css("display", "none");
+                  $('#ProposalContainer').css("display", "block").fadeIn (1000);
+
+                  toastr.success(response.message, 'Added', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-bottom-right',
+                    timeOut: 6000
+                  });
+                } else if(response.status == "warning") {
+                  toastr.warning(response.message, 'Warning', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-bottom-right',
+                    timeOut: 6000
+                  });
+                }
+              },
+              error: function(error) {
+                  // Handle error
+                  toastr.Error(error.message, 'Error', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-bottom-right',
+                    timeOut: 6000
+                  });
+              }
+          });
+      });
+    });
+  </script>
+
+  <!-- CheckBox Update -->
+  <script>
+    $(".checkbox").on("click", function(e) {
+
+      $id = $(this).data("id");
+
+      $.ajax({
+        type: "POST",
+        url: "{% url 'proposal_app:opportunity:include-items-ajax' %}",
+        data: JSON.stringify({ "id": $id }),
+        headers: {
+          'X-CSRFToken': "{{ csrf_token }}",
+        },
+        contentType: "application/json",
+        success: function(response) {
+          if(response.status == "success"){
+            toastr.success(response.message, 'Updated', {
+              closeButton: true,
+              progressBar: true,
+              positionClass: 'toast-bottom-right',
+              timeOut: 6000
+            });
+          } else {
+            toastr.error(response.message, 'Error', {
+              closeButton: true,
+              progressBar: true,
+              positionClass: 'toast-bottom-right',
+              timeOut: 6000
+            });
+          }
+        },
+        error: function(error) {
+            // Handle error
+            toastr.Error(error.message, 'Error', {
+              closeButton: true,
+              progressBar: true,
+              positionClass: 'toast-bottom-right',
+              timeOut: 6000
+            });
+        }
+      });
+    })
+  </script>
+
+  <!-- Generate And Save Dynamic Description -->
+  <script>
+    $(document).on("keypress", ".task-description", function(e) {
+        var data = {};
+
+        if (e.which == 13) {
+            e.preventDefault();
+
+            var id = $(this).data("id");
+            var value = $(this).val();
+            const uniqueNumber = Math.floor(Date.now() + Math.random() * 1000);
+
+            var $currentRow = $(this).closest('.description-table tr');
+            var $newRow = `
+              <tr>
+                <td style="width: 100%;"><input type="text" data-id="${id}" class="form-control task-description" value="" placeholder="Write description" data-id="${id}"></td>
+                <td><em class="fa fa-trash fa-lg danger remove-description"></em></td>
+              </tr>
+            `;
+
+            $currentRow.after($newRow);
+            $currentRow.next().find('.task-description').focus();
+
+            // remove rows
+            $(".remove-description").on("click", function(e){
+              e.preventDefault();
+
+                  var row = $(this).closest('tr');
+
+                  // Remove the row from the DOM
+                  if (row.length) {
+                      row.remove();
+                      // console.log("Row removed successfully.");
+                  } else {
+                      console.error("Row not found!");
+                  }
+            });
+
+
+            if (!data[id]) {
+                data[id] = [{}];
+            }
+            var lastEntry = data[id][data[id].length - 1];
+            var newKey = Object.keys(lastEntry).length + 1;
+            lastEntry[newKey] = value;
+        }
+    });
+
+    $(document).ready(function() {
+      function updateDescriptionObject() {
+          var description_jaon = {};
+          $(".task-description").each(function() {
+              var taskId = $(this).data("id");
+              var text = $(this).val();
+
+              if (!description_jaon[taskId]) {
+                  description_jaon[taskId] = [];
+              }
+
+              var nextKey = description_jaon[taskId].length + 1;
+
+              description_jaon[taskId].push({
+                  [nextKey]: text
+              });
+          });
+
+          // Check description data
+          // console.log(description_jaon);
+          return description_jaon;
+      }
+
+      // Handler for adding descriptions
+      $("a[href='#next']").on('click', function(e) {
+          var current_stage_value = $(".current a span.step").text();
+
+          if (current_stage_value == "7") {
+              var description_jaon = updateDescriptionObject();
+              // console.log("description_json", description_jaon)
+
+              $.ajax({
+                  type: "POST",
+                  url: "{% url 'proposal_app:opportunity:add-description-ajax' %}",
+                  data: JSON.stringify(description_jaon),
+                  headers: {
+                      'X-CSRFToken': "{{ csrf_token }}",
+                  },
+                  contentType: "application/json",
+                  success: function(response) {
+                      // console.log("Success!!");
+                      if (response.status == "success") {
+                        window.location.reload();
+                      }
+                  },
+                  error: function(response) {
+                      toastr.error(response.message, 'Error', {
+                          closeButton: true,
+                          progressBar: true,
+                          positionClass: 'toast-bottom-right',
+                          timeOut: 6000
+                      });
+                  }
+              });
+          }
+      });
+
+      // Handler for deleting a description
+      $(document).on('click', '.remove-description', function(e) {
+          e.preventDefault();
+
+          var row = $(this).closest('tr');
+
+          // Remove the row from the DOM
+          if (row.length) {
+              row.remove();
+              // console.log("Row removed successfully.");
+          } else {
+              console.error("Row not found!");
+          }
+
+          // Update the description object after removal
+          var description_jaon = updateDescriptionObject();
+          // console.log("Updated description after deletion:", description_jaon);
+      });
+
+      // Optional: Function to handle save action after deletion
+      function saveDescriptions() {
+          var description_jaon = updateDescriptionObject();
+
+          $.ajax({
+              type: "POST",
+              url: "{% url 'proposal_app:opportunity:add-description-ajax' %}",
+              data: JSON.stringify(description_jaon),
+              headers: {
+                  'X-CSRFToken': "{{ csrf_token }}",
+              },
+              contentType: "application/json",
+              success: function(response) {
+                  if (response.status == "success") {
+                      toastr.success(response.message, 'Saved', {
+                          closeButton: true,
+                          progressBar: true,
+                          positionClass: 'toast-bottom-right',
+                          timeOut: 6000
+                      });
+                      window.location.reload(true);
+                  } else if (response.status == "error") {
+                      toastr.warning(response.message, 'Warning', {
+                          closeButton: true,
+                          progressBar: true,
+                          positionClass: 'toast-bottom-right',
+                          timeOut: 6000
+                      });
+                  }
+              },
+              error: function(response) {
+                  toastr.error(response.message, 'Error', {
+                      closeButton: true,
+                      progressBar: true,
+                      positionClass: 'toast-bottom-right',
+                      timeOut: 6000
+                  });
+              }
+          });
+      }
+
+      // Example usage of the save function after a delete
+      $(document).on('click', '.save-descriptions', function() {
+          saveDescriptions();
+      });
+    });
+  </script>
+
+  <!-- Remove Description -->
+  <script>
+    $(".remove-description").on("click", function(e){
+      e.preventDefault();
+
+          var row = $(this).closest('tr');
+
+          // Remove the row from the DOM
+          if (row.length) {
+              row.remove();
+              // console.log("Row removed successfully.");
+          } else {
+              console.error("Row not found!");
+          }
+    });
+  </script>
+
+{% endblock script %}
