@@ -2,15 +2,21 @@ import urllib.parse
 from decimal import Decimal
 from typing import Any, Dict
 
-from django.db.models import QuerySet, Q
+from django.db.models import Q, QuerySet
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 
 from apps.constants import LOGGER
-from apps.mixin import CustomViewMixin, ProposalViewMixin, TemplateViewMixin, CustomDataTableMixin
+from apps.mixin import (
+    CustomDataTableMixin,
+    CustomViewMixin,
+    ProposalViewMixin,
+    TemplateViewMixin,
+)
 
 from ..models import AssignedProduct, TaskMapping
+from ..tasks import format_number
 
 
 class TaskProductDataView(CustomDataTableMixin):
@@ -18,21 +24,20 @@ class TaskProductDataView(CustomDataTableMixin):
     def get_queryset(self):
         document_number = self.kwargs.get("document_number")
         qs = TaskMapping.objects.filter(opportunity__document_number=document_number).exclude(
-            assign_to__isnull=False,
-            task__description__icontains="labor"
+            assign_to__isnull=False, task__description__icontains="labor"
         )
         return qs
 
-    # def filter_queryset(self, qs):
-    #     """Return the list of items for this view."""
-    #     if self.search:
-    #         return qs.filter(
-    #             Q(task__internal_id__icontains=self.search)
-    #             | Q(task__name__icontains=self.search)
-    #             | Q(task__description__icontains=self.search)
-    #             | Q(task_description__icontains=self.search)
-    #         )
-    #     return qs
+    def filter_queryset(self, qs):
+        """Return the list of items for this view."""
+        if self.search:
+            return qs.filter(
+                Q(task__internal_id__icontains=self.search)
+                | Q(task__name__icontains=self.search)
+                | Q(task__description__icontains=self.search)
+                | Q(task_description__icontains=self.search)
+            )
+        return qs
 
     def _get_code(self, obj):
         """Get code details."""
@@ -40,7 +45,7 @@ class TaskProductDataView(CustomDataTableMixin):
         et = obj
 
         # Construct the URL dynamically using reverse
-        url = reverse('proposal_app:opportunity:update-estimation-products-ajax', args=[et.id])
+        url = reverse("proposal_app:opportunity:update-estimation-products-ajax", args=[et.id])
 
         # Now format the HTML with proper values
         code = f"""
@@ -60,10 +65,10 @@ class TaskProductDataView(CustomDataTableMixin):
     def _get_description(self, obj):
         """Generate the HTML for the description with a clickable link."""
         et = obj  # Or whatever object has the `et` property
-        
+
         # Construct the URL dynamically using reverse
-        url = reverse('proposal_app:opportunity:update-estimation-products-ajax', args=[et.id])
-        
+        url = reverse("proposal_app:opportunity:update-estimation-products-ajax", args=[et.id])
+
         # Now format the HTML with the proper values
         description = f"""
             <a hx-get="{url}"
@@ -78,7 +83,7 @@ class TaskProductDataView(CustomDataTableMixin):
             </a>
         """
         return description
-    
+
     def _labor_gp_percent(self, obj):
         """Generate the HTML for the labor gp percent."""
         et = obj
@@ -113,20 +118,20 @@ class TaskProductDataView(CustomDataTableMixin):
                 {
                     "code": self._get_code(item),
                     "description": self._get_description(item),
-                    "labor_cost": item.labor_cost,
+                    "labor_cost": format_number(item.labor_cost),
                     "labor_gp_percent": self._labor_gp_percent(item),
-                    "labor_gp": item.labor_gp,
-                    "labor_sell": item.labor_sell,
-                    "mat_cost": item.mat_cost,
+                    "labor_gp": format_number(item.labor_gp),
+                    "labor_sell": format_number(item.labor_sell),
+                    "mat_cost": format_number(item.mat_cost),
                     "mat_gp_percent": self._mat_gp_percent(item),
-                    "mat_gp": item.mat_gp,
-                    "mat_plus_mu": item.mat_plus_mu,
-                    "sales_tax": item.sales_tax,
-                    "mat_sell": item.mat_sell,
-                    "mat_tax_labor": item.mat_tax_labor,
+                    "mat_gp": format_number(item.mat_gp),
+                    "mat_plus_mu": format_number(item.mat_plus_mu),
+                    "sales_tax": format_number(item.sales_tax),
+                    "mat_sell": format_number(item.mat_sell),
+                    "mat_tax_labor": format_number(item.mat_tax_labor),
                     "comb_gp": item.comb_gp,
-                    "labor_gp_percent_data": self._labor_gp_percent_data(item), # type : ignore
-                    "mat_gp_percent_data" : self._mat_gp_percent_data(item) # type : ignore
+                    "labor_gp_percent_data": self._labor_gp_percent_data(item),  # type : ignore
+                    "mat_gp_percent_data": self._mat_gp_percent_data(item),  # type : ignore
                 }
             )
         return data
@@ -158,9 +163,9 @@ class GenerateEstimateTable(ProposalViewMixin):
             task__description__icontains="labor"
         )
 
-        context["estimation_table_labor"] = TaskMapping.objects.filter(opportunity__document_number=document_number).filter(
-            task__description__icontains="labor", assign_to__isnull=True
-        )
+        context["estimation_table_labor"] = TaskMapping.objects.filter(
+            opportunity__document_number=document_number
+        ).filter(task__description__icontains="labor", assign_to__isnull=True)
 
         # Calculate totals and add to context
         context["total"] = GenerateEstimate._get_total(document_number)
@@ -368,6 +373,9 @@ class GenerateEstimate:
 
         else:
             totals["total_gp_percent"] = Decimal("0.00")
+
+        for key, value in totals.items():
+            totals[key] = f"{value:,.2f}"
 
         return totals
 

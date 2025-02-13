@@ -295,7 +295,7 @@ class TaskMapping(BaseModel):
 
             return round(total_price, 2)
 
-        elif not self.assign_to and "labor" in self.description.lower():
+        elif not self.assign_to and self.description and "labor" in self.description.lower():
             task_mappings = TaskMapping.objects.filter(
                 opportunity=self.opportunity, task__description__icontains="labor"
             )
@@ -339,9 +339,9 @@ class TaskMapping(BaseModel):
         Calculate `Labor GP $` as the difference between `labor_sell` and `labor_cost`.
         """
         try:
-            labor_sell = float(self.labor_sell)
+            labor_gp = float(self.labor_gp_percent / 100)
             labor_cost = float(self.labor_cost)
-            return round(labor_sell - labor_cost, 2)
+            return round(labor_cost * labor_gp, 2)
         except ValueError:
             return 0
 
@@ -392,7 +392,9 @@ class TaskMapping(BaseModel):
         Calculate `MAT GP $` as the difference between `mat_plus_mu` and `mat_cost`.
         """
         try:
-            return round(self.mat_plus_mu - float(self.mat_cost), 2)
+            mat_cost = float(self.mat_cost)
+            mat_gp_percent = float(self.mat_gp_percent) / 100
+            return round(mat_cost * mat_gp_percent, 2)
         except ValueError:
             return 0
 
@@ -402,7 +404,11 @@ class TaskMapping(BaseModel):
         Calculate `Sales Tax` as 25% of `mat_plus_mu`.
         """
         try:
-            return round(self.mat_plus_mu * 0.25, 2)
+            tax_rate = self.opportunity.tax_rate.strip("%")
+            tax_rate = float(tax_rate)
+
+            return round(self.mat_plus_mu * tax_rate, 2)
+
         except (ValueError, TypeError):
             return 0
 

@@ -188,35 +188,61 @@
             var totalMatSell = 0;
             var totalMatTaxLabor = 0;
             // var totalCombGp = 0;
-
+            function formatNumberForDisplay(number) {
+                return Number(number).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
             // Iterate through each row in the current page of the table
             data.forEach(function(rowData) {
-              totalLaborCost += parseFloat(rowData.labor_cost) || 0;
-              totalLaborGpPercent = parseFloat(rowData.labor_gp_percent_data) || 0;
-              totalLaborGp += parseFloat(rowData.labor_gp) || 0;
-              totalLaborSell += parseFloat(rowData.labor_sell) || 0;
-              totalMatCost += parseFloat(rowData.mat_cost) || 0;
-              totalMatGpPercent = parseFloat(rowData.mat_gp_percent_data) || 0;
-              totalMatGp += parseFloat(rowData.mat_gp) || 0;
-              totalMatPlusMu += parseFloat(rowData.mat_plus_mu) || 0;
-              totalSalesTax += parseFloat(rowData.sales_tax) || 0;
-              totalMatSell += parseFloat(rowData.mat_sell) || 0;
-              totalMatTaxLabor += parseFloat(rowData.mat_tax_labor) || 0;
-              // totalCombGp += parseFloat(rowData.comb_gp) || 0;
+                // Ensure that each value is a valid number before adding
+                let laborCost = parseFloat(rowData.labor_cost.replace(/,/g, '')) || 0;
+                totalLaborCost += laborCost;
+
+                let laborGpPercent = parseFloat(rowData.labor_gp_percent) || 0;
+                totalLaborGpPercent += laborGpPercent;  // Sum labor GP percent
+
+                let laborGp = parseFloat(rowData.labor_gp.replace(/,/g, '')) || 0;
+                totalLaborGp += laborGp;
+
+                let laborSell = parseFloat(rowData.labor_sell.replace(/,/g, '')) || 0;
+                totalLaborSell += laborSell;
+
+                let matCost = parseFloat(rowData.mat_cost.replace(/,/g, '')) || 0;
+                totalMatCost += matCost;
+
+                let matGpPercent = parseFloat(rowData.mat_gp_percent) || 0;
+                totalMatGpPercent += matGpPercent;  // Sum mat GP percent
+
+                let matGp = parseFloat(rowData.mat_gp.replace(/,/g, '')) || 0;
+                totalMatGp += matGp;
+
+                let matPlusMu = parseFloat(rowData.mat_plus_mu.replace(/,/g, '')) || 0;
+                totalMatPlusMu += matPlusMu;
+
+                let salesTax = parseFloat(rowData.sales_tax.replace(/,/g, '')) || 0;
+                totalSalesTax += salesTax;
+
+                let matSell = parseFloat(rowData.mat_sell.replace(/,/g, '')) || 0;
+                totalMatSell += matSell;
+
+                let matTaxLabor = parseFloat(rowData.mat_tax_labor.replace(/,/g, '')) || 0;
+                totalMatTaxLabor += matTaxLabor;
+                // totalCombGp += parseFloat(rowData.comb_gp) || 0;
             });
 
             // Update the footer cells with the calculated totals
-            $('#total_labor_cost').text(`$ ${totalLaborCost.toFixed(2)}`);
-            $('#total_labor_gp_percent').text((totalLaborGpPercent).toFixed(2) + '%');
-            $('#total_labor_gp').text(`$ ${totalLaborGp.toFixed(2)}`);
-            $('#total_labor_sell').text(`$ ${totalLaborSell.toFixed(2)}`);
-            $('#total_mat_cost').text(`$ ${totalMatCost.toFixed(2)}`);
-            $('#total_mat_gp_percent').text((totalMatGpPercent).toFixed(2) + '%');
-            $('#total_mat_gp').text(`$ ${totalMatGp.toFixed(2)}`);
-            $('#total_mat_mu').text(`$ ${totalMatPlusMu.toFixed(2)}`);
-            $('#total_sales_tax').text(`$ ${totalSalesTax.toFixed(2)}`);
-            $('#total_mat_sell').text(`$ ${totalMatSell.toFixed(2)}`);
-            $('#total_mat_tax_labor').text(`$ ${totalMatTaxLabor.toFixed(2)}`);
+            $('#total_labor_cost').text(`$ ${formatNumberForDisplay(totalLaborCost)}`);
+            $('#total_labor_gp_percent').text(`${formatNumberForDisplay(totalLaborGpPercent)}%`);
+            $('#total_labor_gp').text(`$ ${formatNumberForDisplay(totalLaborGp)}`);
+            $('#total_labor_sell').text(`$ ${formatNumberForDisplay(totalLaborSell)}`);
+            $('#total_mat_cost').text(`$ ${formatNumberForDisplay(totalMatCost)}`);
+            $('#total_mat_gp_percent').text(`${formatNumberForDisplay(totalMatGpPercent)}%`);
+            $('#total_mat_gp').text(`$ ${formatNumberForDisplay(totalMatGp)}`);
+            $('#total_mat_mu').text(`$ ${formatNumberForDisplay(totalMatPlusMu)}`);
+            $('#total_sales_tax').text(`$ ${formatNumberForDisplay(totalSalesTax)}`);
+            $('#total_mat_sell').text(`$ ${formatNumberForDisplay(totalMatSell)}`);
+            $('#total_mat_tax_labor').text(`$ ${formatNumberForDisplay(totalMatTaxLabor)}`);
+
+
             // $('#total-comb-gp').text(`$ ${totalCombGp.toFixed(2)}`);
           }
         });

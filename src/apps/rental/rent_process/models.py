@@ -1,14 +1,16 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from laurel.models import BaseModel
-from apps.rental.customer.models import RentalCustomer
+
 from apps.rental.account_manager.models import AccountManager
+from apps.rental.customer.models import RentalCustomer
 from apps.rental.product.models import RentalProduct
+from laurel.models import BaseModel
 
 SHIPPING_CARRIER_CHOICES = [
     ("Internal", _("Internal")),
     ("Hired", _("Hired")),
 ]
+
 
 class Order(BaseModel):
     STAGE_1 = "Pick Up"
@@ -70,7 +72,11 @@ class Order(BaseModel):
         if self.repeat_type == "Weekly":
             total_orders = (self.repeat_end_date - self.repeat_start_date).days // 7
         elif self.repeat_type == "Monthly":
-            total_orders = (self.repeat_end_date.year - self.repeat_start_date.year) * 12 + self.repeat_end_date.month - self.repeat_start_date.month
+            total_orders = (
+                (self.repeat_end_date.year - self.repeat_start_date.year) * 12
+                + self.repeat_end_date.month
+                - self.repeat_start_date.month
+            )
         elif self.repeat_type == "Yearly":
             total_orders = self.repeat_end_date.year - self.repeat_start_date.year
 
@@ -78,9 +84,7 @@ class Order(BaseModel):
 
 
 class OrderItem(BaseModel):
-    order = models.ForeignKey(
-        Order, on_delete=models.CASCADE, related_name="orders", blank=True, null=True
-    )
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="orders", blank=True, null=True)
     product = models.ForeignKey(
         RentalProduct, on_delete=models.CASCADE, related_name="order_products", blank=True, null=True
     )
@@ -109,9 +113,7 @@ class Delivery(BaseModel):
     ]
 
     delivery_id = models.CharField(max_length=255, primary_key=True)
-    order = models.ForeignKey(
-        Order, on_delete=models.CASCADE, related_name="delivery_order", blank=True, null=True
-    )
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="delivery_order", blank=True, null=True)
     product = models.ForeignKey(
         RentalProduct, on_delete=models.CASCADE, related_name="delivery_products", blank=True, null=True
     )
@@ -128,7 +130,9 @@ class Delivery(BaseModel):
     delivery_site = models.CharField(max_length=255)
     po_number = models.CharField(max_length=50)
     shipping_carrier = models.CharField(max_length=20, choices=SHIPPING_CARRIER_CHOICES)
-    delivery_status = models.CharField(_("Delivery Status"), max_length=50, choices=DELIVERY_STATUS_CHOICES, default=STAGE_1)
+    delivery_status = models.CharField(
+        _("Delivery Status"), max_length=50, choices=DELIVERY_STATUS_CHOICES, default=STAGE_1
+    )
 
     def __str__(self):
         return self.delivery_id
@@ -154,18 +158,14 @@ class ReturnDelivery(BaseModel):
 
 class RecurringOrder(BaseModel):
     recurring_order_id = models.CharField(max_length=255, primary_key=True)
-    order = models.ForeignKey(
-        Order, on_delete=models.CASCADE, related_name="recurring_orders", blank=True, null=True
-    )
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="recurring_orders", blank=True, null=True)
 
     def __str__(self):
         return self.recurring_order_id
 
 
 class ReturnOrder(BaseModel):
-    order = models.ForeignKey(
-        Order, on_delete=models.CASCADE, related_name="return_orders", blank=True, null=True
-    )
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="return_orders", blank=True, null=True)
     delivery = models.ForeignKey(
         Delivery, on_delete=models.CASCADE, related_name="delivery_return_orders", blank=True, null=True
     )

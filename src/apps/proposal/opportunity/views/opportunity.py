@@ -28,6 +28,7 @@ from .final_document import FinalDocument
 from .generate_estimate import GenerateEstimate
 from .proposal_creation import ProposalCreationData
 from .task_mapping import TaskMappingData
+from django.shortcuts import render
 
 # Opportunity View Start
 
@@ -424,10 +425,18 @@ class UpdateOpportunityView(ViewMixin):
                 if opportunity_obj.term_and_condition != json_data:
                     opportunity_obj.term_and_condition = json_data
                     opportunity_obj.save()
-                    messages.success(self.request, "Terms updated successfully")
+                    context = {"opportunity": opportunity_obj}
+                    _html = render(
+                        self.request,
+                        "proposal/opportunity/stage/proposal_preview/opportunity_term_and_condition.html",
+                        context,
+                    )
+
                     return {
                         "status": "success",
                         "message": "Terms updated successfully",
+                        "code": 200,
+                        "_html": _html.content.decode("utf-8"),
                     }
                 return {}  # Return empty response
 

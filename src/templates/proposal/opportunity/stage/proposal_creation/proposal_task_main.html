@@ -1,0 +1,836 @@
+<div class="form-group">
+
+    <div id="invoice-template" class="card-body pb-0">
+      <div class="row">
+        <div class="col-4">
+          <div class="row">
+            <p class="font-weight-bold mr-1">Date:</p>
+            <p>May 13, 2024</p>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="row">
+            <p class="font-weight-bold mr-1">Job:</p>
+            {% if opportunity.job %}
+              <p>{{ opportunity.job }}</p>
+            {% else %}
+              <p> - </p>
+            {% endif %}
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="row">
+            <p class="font-weight-bold mr-1">Job Name:</p>
+            {% if opportunity.job_name %}
+              <p>{{opportunity.job_name}}</p>
+            {% else %}
+              <p> - </p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create Proposal Button -->
+    <div class="d-flex justify-content-end mr-3">
+      <button
+        type="button"
+        class="btn bg-light-primary mb-3 mt-2 htmx-trigger-crate-proposal-btn"
+        {% comment %} hx-get="{% url 'proposal_app:opportunity:create-proposal-ajax' opportunity.document_number %}" {% endcomment %}
+        data-url="{% url 'proposal_app:opportunity:create-proposal-ajax' opportunity.document_number %}"
+        hx-target="#ProposalContent"
+        hx-trigger="click"
+        data-toggle="modal"
+        data-target="#proposalCreatetion">
+        <em class="ft-plus font-medium-5"></em> Create Proposal
+      </button>
+    </div>
+
+    <!-- Craete Proposal Modal -->
+    <div
+      class="modal fade text-left"
+      id="proposalCreatetion"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="myModalLabel33"
+      aria-hidden="true"
+      data-backdrop="false">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+              <div id="ProposalContent">
+                  <!-- Form content will be dynamically inserted here by HTMX -->
+              </div>
+          </div>
+      </div>
+    </div>
+
+    </button>
+    <!-- Proposal Creation Table -->
+    <div class="card">
+      <div class="card-content">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table zero-configuration">
+              <thead>
+                <th>Group Name</th>
+                <th class="text-center">Task summary</th>
+              </thead>
+              <tbody>
+                {% load custom_filters %}
+                {% for grp_name, data in grouped_proposals.items %}
+                    <tr>
+                        <td>
+                            <input type="text" class="form-control grp_name" data-document="{{opportunity.document_number}}"  data-id="{{data.proposal_ids}}" value="{{ grp_name }}">
+                        </td>
+                        <td>
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Task Code</th>
+                                        <th>Task Description</th>
+                                        <th>Include Items?</th>
+                                        <th class="text-right">Price</th>
+                                        <th class="text-center">
+                                            <a data-toggle="collapse" href="#collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapse{{ forloop.counter }}" class="card-title">
+                                                <i class="ft-chevron-down font-medium-5"></i>
+                                            </a>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="collapse{{ forloop.counter }}" role="tabpanel" aria-labelledby="headingcollapse{{ forloop.counter }}" class="collapse show">
+
+                                    {% for task, products in data.assigned_products.items %}
+                                      <tr>
+                                          <td>
+                                              {% if task.code %}
+                                                <span class="font-weight-bold task_name">{{ task.code }}</span>
+                                              {% else %}
+                                                <span class="font-weight-bold task_name">{{ task.task.name }}</span>
+                                              {% endif %}
+                                          </td>
+                                          <td>
+                                              {% if task.task.name %}
+                                                  <input type="text" class="form-control" value="{{ task.task.description }}" disabled>
+                                              {% else %}
+                                                  <input type="text" class="form-control" value="{{ task.description }}" disabled>
+                                              {% endif %}
+                                              <div class="table-responsive">
+                                                  <button type="button" class="btn bg-light-primary mt-2 add_items" data-id="{{task.id}}">
+                                                      <i class="fa ft-plus-circle mr-1"></i>Add Items
+                                                  </button>
+                                                  <table class="table table-striped table-bordered mb-0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-center">Item Code</th>
+                                                            <th class="text-center">Item Description</th>
+                                                            <th class="text-center">Quantity</th>
+                                                            <th class="text-center">Price</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="item-body-{{task.id}}">
+                                                        <tr>
+                                                            <td class="text-nowrap">
+                                                              <select class="select-item-code" data-url="{% url 'proposal_app:opportunity:task-item-search' task.id %}" data-task="{{task.id}}" name="" id="">
+                                                                <option selected disabled>Select Item code</option>
+                                                              </select>
+                                                            </td>
+                                                            <td>
+                                                              <input type="text" class="form-control description" value="" placeholder="Item Description" / disabled>
+                                                            </td>
+                                                            <td>
+                                                              <input type="text" class="form-control quantity" class="" value="" placeholder="Quantity" / disabled>
+                                                            </td>
+                                                            <td>
+                                                              <input type="text" class="form-control price" class="price" value="" placeholder="Price" / disabled>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <div class="float-right mb-3 save-div m-0 p-0">
+                                                  <button type="button" data-id="{{task.id}}" class="btn btn-primary save-btn">Save</button>
+                                                </div>
+
+                                                <br>
+                                                <div id="proposal-task-table-div">
+                                                </div>
+                                                  <table id="proposal-creation-task-table" class="table table-striped table-bordered mb-0">
+                                                      <thead>
+                                                          <tr>
+                                                              <th class="text-center">Item Code</th>
+                                                              <th class="text-center">Item Description</th>
+                                                              <th class="text-center">Quantity</th>
+                                                              <th class="text-center">Price</th>
+                                                          </tr>
+                                                      </thead>
+                                                      <tbody>
+
+                                                          {% for p in products %}
+                                                          <tr>
+                                                              {% if p.item_code %}
+                                                                <td class="text-nowrap">{{ p.item_code }}</td>
+                                                              {% else %}
+                                                                <td class="text-nowrap">{{ p.labor_task }}</td>
+                                                              {% endif %}
+                                                              <td>{{ p.description }}</td>
+                                                              <td>{{ p.quantity }}</td>
+                                                              {% if p.standard_cost %}
+                                                                <td>{{ p.standard_cost }}</td>
+                                                              {% else %}
+                                                                <td>{{ p.local_cost }}</td>
+                                                              {% endif %}
+                                                              </td>
+                                                          </tr>
+                                                          {% endfor %}
+                                                      </tbody>
+                                                  </table>
+
+                                                    {% for description in task.extra_description %}
+                                                      {% for key, value in description.items %}
+                                                      <table>
+                                                        <tbody>
+                                                          <tr>
+                                                            <td style="width: 100%;"><input type="text" data-id="{{ task.id }}" class="form-control task-description description-{{ task.id }}" value="{{ value }}" placeholder="Write description"></td>
+                                                            <td><em class="fa fa-trash fa-lg danger remove-description"></em></td>
+                                                          </tr>
+                                                        </tbody>
+                                                      </table>
+                                                      {% endfor %}
+                                                    {% endfor %}
+                                                    <table class="description-table">
+                                                      <tbody>
+                                                        <tr>
+                                                          <td style="width: 100%;"><input type="text" data-id="{{ task.id }}" class="form-control task-description description-{{ task.id }}" value="" placeholder="Write description"></td>
+                                                          <td><em class="fa fa-trash fa-lg danger remove-description"></em></td>
+                                                        </tr>
+                                                      </tbody>
+                                                    </table>
+                                              </div>
+                                          </td>
+                                          <td>
+                                              <div class="custom-control custom-checkbox">
+                                                  <input type="checkbox" data-id="{{ task.id }}" class="custom-control-input checkbox" {% if task.include %}checked{% endif %} name="customCheck{{ task.id }}" id="custom-check-{{ task.id }}" />
+                                                  <label class="custom-control-label" for="custom-check-{{ task.id }}"></label>
+                                              </div>
+                                          </td>
+                                          <td class="text-right">
+                                              <span class="total">{{ data.task_totals|get_item:task|round_value:2 }}</span>
+                                          </td>
+                                          <td>
+                                            {% if task.task.name %}
+                                            <button type="button"
+                                                    class="btn btn-danger delete-task-btn"
+                                                    data-id="{{ data.proposal_ids|get_proposal_id:forloop.counter0 }}"
+                                                    data-title="{{task.code}}"
+                                                    data-type="proposal"
+                                                    data-url="{% url 'proposal_app:opportunity:task-delete-ajax' %}">
+                                                <em class="fa fa-trash"></em>
+                                            </button>
+
+                                            {% else %}
+                                              <button type="button" class="btn btn-danger delete-task-btn" data-id="{{ data.proposal_ids|get_proposal_id:forloop.counter0 }}" data-type="proposal" data-title="{{task.code}}" data-url="{% url 'proposal_app:opportunity:task-delete-ajax' %}"><em class="fa fa-trash"></em></button>
+
+                                            {% endif %}
+                                          </td>
+                                      </tr>
+                                    {% endfor %}
+                                    <tr>
+                                        <th scope="row"></th>
+                                        <th class="text-right"><p>TOTAL ESTIMATE - ITEMS LISTED :</p></th>
+                                        <th></th>
+                                        <th class="text-right">{{ data.main_total|round_value:"2" }}</th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% block script %}
+
+  <!-- Htmx -->
+  <script>
+    $(document).on('click', '.htmx-trigger-crate-proposal-btn' , function (e) {
+
+      var url = $(this).data('url');
+      htmx.ajax('GET',
+          url,
+          {
+            target:'#ProposalContent',
+            swap:'innerHTML',
+      }).then(() => {
+          $('#proposalCreatetion').toggleClass('hidden');
+      })
+    });
+  </script>
+
+  <!-- Select 2 -->
+  <script>
+    $(".select2").select2();
+  </script>
+
+  <!-- Delete tasks -->
+  <script>
+    $(document).on('click', '.delete-task-btn', function (e) {
+
+      console.log("clicked................");
+
+      var id = $(this).data("id")
+      var task_name = $(this).data("title")
+      var type = $(this).data("type")
+      var url = $(this).data("url")
+      var delete_ele = $(this)
+
+      if (task_name == "None") {
+        task_name = ""
+      }
+
+      Swal.fire({
+        html: `Are you sure you want to delete <b>${task_name}</b>?`,
+        icon: 'question',
+        showCloseButton: true,
+        showCancelButton: true,
+        confirmButtonColor: "#7442DB",
+        allowOutsideClick: false
+      }).then((result) => {
+
+        if (result.isConfirmed) {
+          // $(this).closest('tr').remove();
+          $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+              "id": id,
+              "type": type,
+              "document_number": "{{ opportunity.document_number }}",
+              "csrfmiddlewaretoken": '{{ csrf_token }}'
+            },
+            success: function (data) {
+              $('#enstimate-table').DataTable().ajax.reload();
+
+              if (type=="proposal"){
+                $("#ProposalContainer").html(data._html)
+              }else{
+                $('#tableContainer').html(data.html);
+                $('#ProposalContainer').html(data._html);
+              }
+
+              // window.location.reload();
+              toastr.info(data.message, 'Delete', {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-bottom-right',
+                timeOut: 6000
+              });
+            }
+          });
+        }else {
+                Swal.fire("Cancel delete", "", "info");
+              }
+      })
+    })
+  </script>
+
+  <!-- Group Name Editable -->
+  <script>
+    $(".grp_name").on("keypress", function(e) {
+      if (e.which === 13) {
+          e.preventDefault();
+          var value = $(this).val();
+          var ids = $(this).data("id");
+          var document = $(this).data("document");
+
+          $.ajax({
+            type: "POST",
+            url: "{% url 'proposal_app:opportunity:group-name-update-ajax' %}",
+            data: {
+              "ids": `${ids}`,
+              "group_name": value,
+              "document": document,
+              "csrfmiddlewaretoken": '{{ csrf_token }}'
+            },
+            success: function (response) {
+              toastr.success(response.message, 'Updated', {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-bottom-right',
+                timeOut: 6000
+              });
+            }
+          });
+      }
+    });
+  </script>
+
+  <!-- Item code for "Add item button"-->
+  <script>
+    $(".select-item-code").select2({
+      placeholder: 'Select Item Code',
+      ajax: {
+          url: function () {
+            return $(this).data("url");
+          },
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+              return {
+                  q: params.term
+              };
+          },
+          processResults: function (data) {
+              return {
+                  results: data.results
+              };
+          },
+          cache: true
+      }
+    });
+  </script>
+
+  <!-- Update row data -->
+  <script>
+    $(document).on('change', '.select-item-code', function(e) {
+      // item code
+      var $input = $(e.target);
+      var id = $input.data("task");
+      var $row = $(this).closest('tr');
+      var value = $input.val();
+      var url = $input.data("url");
+
+      var data = {
+        value: value,
+      }
+
+      $.ajax({
+        url: url,
+        type: 'POST',
+        data: data,
+        headers: {
+          'X-CSRFToken': "{{ csrf_token }}",
+        },
+        success: function(response) {
+          if (response.code == 200) {
+
+            var $description = $row.find('.description');
+            var $quantity = $row.find('.quantity');
+            var $price = $row.find('.price');
+
+            // Update value
+            $description.val(response.description);
+            $quantity.val(response.quantity);
+            $price.val(response.price);
+          }
+        },
+        error: function(xhr, status, error) {
+          // console.log("Error:", error);
+        }
+      });
+
+    });
+  </script>
+
+  <!-- Add dynamic items -->
+  <script>
+    $(".add_items").on('click', function(e){
+        var $id = $(this).data('id');
+        var $task_id = $(this).data('task');
+        var $itemBody = $(`#item-body-${$id}`);
+        var $url = "{% url 'proposal_app:opportunity:task-item-search' 0 %}".replace(0, $id);
+        const uniqueNumber = Math.floor(Date.now() + Math.random() * 1000);
+        var $newRow = `
+            <tr id=${uniqueNumber}>
+                <td class="text-nowrap">
+                    <select class="select-item-code" data-url="${$url}" data-task="${$id}">
+                        <option selected disabled>Select item code</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" class="form-control description" placeholder="Item Description" />
+                </td>
+                <td>
+                    <input type="text" class="form-control quantity" placeholder="Quantity" />
+                </td>
+                <td>
+                    <input type="text" class="form-control price" placeholder="Price" />
+                </td>
+            </tr>
+        `;
+        $itemBody.append($newRow);
+
+        $(".select-item-code").select2({
+          placeholder: 'Select Item Code',
+          ajax: {
+              url: function () {
+                return $(this).data("url");
+              },
+              dataType: 'json',
+              delay: 250,
+              data: function (params) {
+                  return {
+                      q: params.term
+                  };
+              },
+              processResults: function (data) {
+                  return {
+                      results: data.results
+                  };
+              },
+              cache: true
+          }
+        });
+
+        $(document).on('change', '.select-item-code', function(e) {
+
+          // item code
+          var $input = $(e.target);
+          var id = $input.data("id");
+          var $row = $(this).closest('tr');
+          // console.log("$row", $row);
+          var value = $input.val();
+
+          // Payload data
+          var data = {
+            value: value,
+          }
+
+          $.ajax({
+            url: $url,
+            type: 'POST',
+            data: data,
+            headers: {
+              'X-CSRFToken': "{{ csrf_token }}",
+            },
+            success: function(response) {
+              if (response.code == 200) {
+
+                var $description = $row.find('.description');
+                var $quantity = $row.find('.quantity');
+                var $price = $row.find('.price');
+
+                // Update value
+                $description.val(response.description);
+                $quantity.val(response.quantity);
+                $price.val(response.price);
+              }
+            },
+            error: function(xhr, status, error) {
+              // console.log("Error:", error);
+            }
+          });
+
+        });
+
+    });
+  </script>
+
+  <!-- Save button-->
+  <script>
+    $(document).ready(function() {
+      $('.save-btn').click(function() {
+          const taskId = $(this).data('id');
+          // console.log("taskId", taskId)
+
+          const $tbody = $('#item-body-' + taskId);
+          const itemsToSave = [];
+
+          // Iterate through each row in the tbody
+          $tbody.find('tr').each(function() {
+              const itemCode = $(this).find('.select-item-code').val();
+              if (itemCode) {
+                  itemsToSave.push({
+                      taskId: taskId,
+                      itemCode: itemCode,
+                  });
+              }
+          });
+          // console.log(itemsToSave);
+          $.ajax({
+              type: "POST",
+              url: "{% url 'proposal_app:opportunity:add-items-ajax' %}",
+              data: JSON.stringify(itemsToSave),
+              headers: {
+                'X-CSRFToken': "{{ csrf_token }}",
+              },
+              contentType: "application/json",
+              beforeSend: function() {
+                $("#proposalCreatetion").modal('hide');
+                $("#proposalCreatetion .modal-body").html('');
+                $('#show-loader-proposal-creation').css("display", "block");
+                $('#ProposalContainer').css("display", "none");
+              },
+              success: function(response) {
+                if(response.status == "success"){
+                  $("#ProposalContainer").html(response._html)
+                  $('#show-loader-proposal-creation').css("display", "none");
+                  $('#ProposalContainer').css("display", "block").fadeIn (1000);
+
+                  toastr.success(response.message, 'Added', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-bottom-right',
+                    timeOut: 6000
+                  });
+                } else if(response.status == "warning") {
+                  toastr.warning(response.message, 'Warning', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-bottom-right',
+                    timeOut: 6000
+                  });
+                }
+              },
+              error: function(error) {
+                  // Handle error
+                  toastr.Error(error.message, 'Error', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-bottom-right',
+                    timeOut: 6000
+                  });
+              }
+          });
+      });
+    });
+  </script>
+
+  <!-- CheckBox Update -->
+  <script>
+    $(".checkbox").on("click", function(e) {
+
+      $id = $(this).data("id");
+
+      $.ajax({
+        type: "POST",
+        url: "{% url 'proposal_app:opportunity:include-items-ajax' %}",
+        data: JSON.stringify({ "id": $id }),
+        headers: {
+          'X-CSRFToken': "{{ csrf_token }}",
+        },
+        contentType: "application/json",
+        success: function(response) {
+          if(response.status == "success"){
+            toastr.success(response.message, 'Updated', {
+              closeButton: true,
+              progressBar: true,
+              positionClass: 'toast-bottom-right',
+              timeOut: 6000
+            });
+          } else {
+            toastr.error(response.message, 'Error', {
+              closeButton: true,
+              progressBar: true,
+              positionClass: 'toast-bottom-right',
+              timeOut: 6000
+            });
+          }
+        },
+        error: function(error) {
+            // Handle error
+            toastr.Error(error.message, 'Error', {
+              closeButton: true,
+              progressBar: true,
+              positionClass: 'toast-bottom-right',
+              timeOut: 6000
+            });
+        }
+      });
+    })
+  </script>
+
+  <!-- Generate And Save Dynamic Description -->
+  <script>
+    $(document).on("keypress", ".task-description", function(e) {
+        var data = {};
+
+        if (e.which == 13) {
+            e.preventDefault();
+
+            var id = $(this).data("id");
+            var value = $(this).val();
+            const uniqueNumber = Math.floor(Date.now() + Math.random() * 1000);
+
+            var $currentRow = $(this).closest('.description-table tr');
+            var $newRow = `
+              <tr>
+                <td style="width: 100%;"><input type="text" data-id="${id}" class="form-control task-description" value="" placeholder="Write description" data-id="${id}"></td>
+                <td><em class="fa fa-trash fa-lg danger remove-description"></em></td>
+              </tr>
+            `;
+
+            $currentRow.after($newRow);
+            $currentRow.next().find('.task-description').focus();
+
+            // remove rows
+            $(".remove-description").on("click", function(e){
+              e.preventDefault();
+
+                  var row = $(this).closest('tr');
+
+                  // Remove the row from the DOM
+                  if (row.length) {
+                      row.remove();
+                      // console.log("Row removed successfully.");
+                  } else {
+                      console.error("Row not found!");
+                  }
+            });
+
+
+            if (!data[id]) {
+                data[id] = [{}];
+            }
+            var lastEntry = data[id][data[id].length - 1];
+            var newKey = Object.keys(lastEntry).length + 1;
+            lastEntry[newKey] = value;
+        }
+    });
+
+    $(document).ready(function() {
+      function updateDescriptionObject() {
+          var description_jaon = {};
+          $(".task-description").each(function() {
+              var taskId = $(this).data("id");
+              var text = $(this).val();
+
+              if (!description_jaon[taskId]) {
+                  description_jaon[taskId] = [];
+              }
+
+              var nextKey = description_jaon[taskId].length + 1;
+
+              description_jaon[taskId].push({
+                  [nextKey]: text
+              });
+          });
+
+          // Check description data
+          // console.log(description_jaon);
+          return description_jaon;
+      }
+
+      // Handler for adding descriptions
+      $("a[href='#next']").on('click', function(e) {
+          var current_stage_value = $(".current a span.step").text();
+
+          if (current_stage_value == "7") {
+              var description_jaon = updateDescriptionObject();
+              // console.log("description_json", description_jaon)
+
+              $.ajax({
+                  type: "POST",
+                  url: "{% url 'proposal_app:opportunity:add-description-ajax' %}",
+                  data: JSON.stringify(description_jaon),
+                  headers: {
+                      'X-CSRFToken': "{{ csrf_token }}",
+                  },
+                  contentType: "application/json",
+                  success: function(response) {
+                      // console.log("Success!!");
+                      if (response.status == "success") {
+                        window.location.reload();
+                      }
+                  },
+                  error: function(response) {
+                      toastr.error(response.message, 'Error', {
+                          closeButton: true,
+                          progressBar: true,
+                          positionClass: 'toast-bottom-right',
+                          timeOut: 6000
+                      });
+                  }
+              });
+          }
+      });
+
+      // Handler for deleting a description
+      $(document).on('click', '.remove-description', function(e) {
+          e.preventDefault();
+
+          var row = $(this).closest('tr');
+
+          // Remove the row from the DOM
+          if (row.length) {
+              row.remove();
+              // console.log("Row removed successfully.");
+          } else {
+              console.error("Row not found!");
+          }
+
+          // Update the description object after removal
+          var description_jaon = updateDescriptionObject();
+          // console.log("Updated description after deletion:", description_jaon);
+      });
+
+      // Optional: Function to handle save action after deletion
+      function saveDescriptions() {
+          var description_jaon = updateDescriptionObject();
+
+          $.ajax({
+              type: "POST",
+              url: "{% url 'proposal_app:opportunity:add-description-ajax' %}",
+              data: JSON.stringify(description_jaon),
+              headers: {
+                  'X-CSRFToken': "{{ csrf_token }}",
+              },
+              contentType: "application/json",
+              success: function(response) {
+                  if (response.status == "success") {
+                      toastr.success(response.message, 'Saved', {
+                          closeButton: true,
+                          progressBar: true,
+                          positionClass: 'toast-bottom-right',
+                          timeOut: 6000
+                      });
+                      window.location.reload(true);
+                  } else if (response.status == "error") {
+                      toastr.warning(response.message, 'Warning', {
+                          closeButton: true,
+                          progressBar: true,
+                          positionClass: 'toast-bottom-right',
+                          timeOut: 6000
+                      });
+                  }
+              },
+              error: function(response) {
+                  toastr.error(response.message, 'Error', {
+                      closeButton: true,
+                      progressBar: true,
+                      positionClass: 'toast-bottom-right',
+                      timeOut: 6000
+                  });
+              }
+          });
+      }
+
+      // Example usage of the save function after a delete
+      $(document).on('click', '.save-descriptions', function() {
+          saveDescriptions();
+      });
+    });
+  </script>
+
+  <!-- Remove Description -->
+  <script>
+    $(".remove-description").on("click", function(e){
+      e.preventDefault();
+
+          var row = $(this).closest('tr');
+
+          // Remove the row from the DOM
+          if (row.length) {
+              row.remove();
+              // console.log("Row removed successfully.");
+          } else {
+              console.error("Row not found!");
+          }
+    });
+  </script>
+
+{% endblock script %}

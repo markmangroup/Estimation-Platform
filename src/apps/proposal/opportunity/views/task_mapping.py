@@ -207,7 +207,7 @@ class UpdateAssignProdView(ViewMixin):
         try:
             body_unicode = request.body.decode("utf-8")
             data = urllib.parse.parse_qs(body_unicode)
-            document_number = data.get("document_number", [""])[0]
+            # document_number = data.get("document_number", [""])[0]
 
             if data.get("type")[0] == "bulk_update":
                 response = self.bulk_update(data)
@@ -266,8 +266,9 @@ class AddProdRowView(ViewMixin):
         overall_data_saved = False
 
         for task_id, products in result.items():
-            task_mapping: TaskMapping = TaskMapping.objects.get(id=task_id)
-            if task_mapping:
+            try:
+                task_mapping = TaskMapping.objects.get(id=task_id)
+
                 for product in products:
                     if not product.get("item_code") and not product.get("task_name"):
                         continue
@@ -284,11 +285,31 @@ class AddProdRowView(ViewMixin):
                             return response  # Return warning if any required field is missing
                         overall_data_saved = True
 
-        return (
-            {"status": "success", "message": "Product added successfully"}
-            if overall_data_saved
-            else {"status": "empty", "message": ""}
-        )
+            except TaskMapping.DoesNotExist:
+                return {
+                    "status": "error",
+                    "message": f"Task with ID {task_id} not found.",
+                    "code": 404,
+                }
+
+        if overall_data_saved:
+            try:
+                data = TaskMappingTable.generate_table(task_mapping.opportunity)
+                html = render(self.request, "proposal/opportunity/stage/task_mapping/task_table.html", data)
+                return {
+                    "status": "success",
+                    "message": "Task added successfully",
+                    "html": html.content.decode("utf-8"),
+                }
+            except Exception as e:
+                return {
+                    "status": "error",
+                    "message": f"Something went wrong while generating the task table: {str(e)}",
+                    "code": 500,
+                }
+
+        else:
+            return {"status": "empty", "message": "No data was saved."}
 
     def _save_product(self, task_mapping: TaskMapping, product: dict):
         """
@@ -390,12 +411,20 @@ class AddProdRowView(ViewMixin):
                 return JsonResponse({"status": "empty", "message": "Please enter data"})
 
             response = self.format_data(data)
-            if response["status"] == "success":
-                messages.success(self.request, response["message"])
-            elif response["status"] == "warning":
-                messages.warning(self.request, response["message"])
-            elif response["status"] == "error":
-                messages.error(self.request, response["message"])
+
+            if isinstance(response, dict):
+                status = response.get("status", "error")
+                message = response.get("message", "Something went wrong.")
+            else:
+                status = "error"
+                message = "Unexpected response format"
+
+            if status == "success":
+                messages.success(self.request, message)
+            elif status == "warning":
+                messages.warning(self.request, message)
+            elif status == "error":
+                messages.error(self.request, message)
 
             return JsonResponse(response)
 
@@ -403,6 +432,16 @@ class AddProdRowView(ViewMixin):
             LOGGER.error("Invalid JSON response")
             messages.error(self.request, ERROR_RESPONSE["message"])
             return JsonResponse(ERROR_RESPONSE, status=400)
+
+        except Exception as e:
+            LOGGER.error(f"Unexpected error: {str(e)}")
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": f"An unexpected error occurred: {str(e)}",
+                    "code": 500,
+                }
+            )
 
 
 class AssignTaskLaborView(ViewMixin):
@@ -607,14 +646,14 @@ class AddTaskView(ViewMixin):
         data = TaskMappingTable.generate_table(opportunity)
 
         # Render the updated HTML for the task mapping table
-        html = render(request, 'proposal/opportunity/stage/task_mapping/tasks.html', data)
+        html = render(request, "proposal/opportunity/stage/task_mapping/task_table.html", data)
 
         # messages.success(request, "Tasks added successfully!")
         return JsonResponse(
             {
                 "status": "Created",
                 "message": "Task added successfully",
-                "html": html.content.decode('utf-8'),
+                "html": html.content.decode("utf-8"),
             },
             status=201,
         )
