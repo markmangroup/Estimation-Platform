@@ -1,6 +1,9 @@
 name: Deploy To Dev Web App
 
 on:
+  push:
+    branches:
+      - dev # Deployment to dev web app after merge to dev branch
   workflow_dispatch:
 
 jobs:
