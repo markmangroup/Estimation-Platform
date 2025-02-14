@@ -10,12 +10,13 @@ from django.shortcuts import get_object_or_404, render
 from apps.constants import ERROR_RESPONSE, LOGGER
 from apps.mixin import TemplateViewMixin, ViewMixin
 from apps.proposal.labour_cost.models import LabourCost
-from apps.proposal.opportunity.views.proposal_creation import ProposalCreationData, ProposalTable
+from apps.proposal.opportunity.views.proposal_creation import ProposalCreationData
 from apps.proposal.product.models import Product
 from apps.proposal.task.models import Task
 from apps.proposal.vendor.models import Vendor
 
 from ..models import AssignedProduct, Opportunity, PreliminaryMaterialList, TaskMapping
+
 
 class AssignProdLabor(TemplateViewMixin):
     """
@@ -92,14 +93,14 @@ class AssignProdLabor(TemplateViewMixin):
         data = TaskMappingTable.generate_table(opportunity)
 
         # Render the updated HTML for the task mapping table
-        html = render(request, 'proposal/opportunity/stage/task_mapping/tasks.html', data)
+        html = render(request, "proposal/opportunity/stage/task_mapping/tasks.html", data)
 
         return JsonResponse(
             {
                 "status": "success",
                 "message": f'Product assigned for "{task_name}" successfully!',
                 "created_products": created_products,
-                "html": html.content.decode('utf-8')
+                "html": html.content.decode("utf-8"),
             }
         )
 
@@ -471,7 +472,7 @@ class AssignTaskLaborView(ViewMixin):
             document_number = data["document_number"][0]
 
             current_task = TaskMapping.objects.get(id=current_task_id)
-            _assign_to = current_task.assign_to # old value
+            _assign_to = current_task.assign_to  # old value
             assign_labor_task = TaskMapping.objects.get(id=value)
 
             current_task.assign_to = assign_labor_task.code
@@ -481,7 +482,9 @@ class AssignTaskLaborView(ViewMixin):
             assign_labor_task.save()
 
             if _assign_to:
-                task_mapping_object = TaskMapping.objects.filter(opportunity__document_number=document_number, code=_assign_to).first()
+                task_mapping_object = TaskMapping.objects.filter(
+                    opportunity__document_number=document_number, code=_assign_to
+                ).first()
                 task_mapping_object.is_assign_task = False
                 task_mapping_object.assign_to = ""
                 task_mapping_object.save()
@@ -912,13 +915,13 @@ class TaskMappingTable:
         grand_total = TaskMappingData._get_task_total(opportunity.document_number)
         labor_task_total = TaskMappingData._get_labor_task_total(opportunity.document_number)
 
-        data={
-            "total_tasks" : total_tasks,
-            "task_mapping_list" : task_mapping_list,
-            "task_mapping_labor_list" : task_mapping_labor_list,
-            "grand_total" : grand_total,
-            "labor_task_total" : labor_task_total,
-            "opportunity" : opportunity,
+        data = {
+            "total_tasks": total_tasks,
+            "task_mapping_list": task_mapping_list,
+            "task_mapping_labor_list": task_mapping_labor_list,
+            "grand_total": grand_total,
+            "labor_task_total": labor_task_total,
+            "opportunity": opportunity,
         }
         return data
 
@@ -931,10 +934,6 @@ class ProposalTable:
         grouped_proposals = ProposalCreationData._get_proposal_creation(opportunity.document_number)
         proposal_total = ProposalCreationData._get_proposal_totals(opportunity.document_number)
 
-        data = {
-            "grouped_proposals" : grouped_proposals,
-            "proposal_total" : proposal_total,
-            "opportunity": opportunity
-        }
+        data = {"grouped_proposals": grouped_proposals, "proposal_total": proposal_total, "opportunity": opportunity}
 
         return data

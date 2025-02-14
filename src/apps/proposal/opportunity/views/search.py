@@ -102,7 +102,6 @@ class ItemDescriptionSearchView(ViewMixin):
         else:
             queryset = Product.objects.filter(name__isnull=False).exclude(name="")[:50]
 
-
         results = [{"id": product.id, "text": product.name} for product in queryset]
         results.insert(0, {"id": "Clear", "text": "--------------"})  # Add the "Clear" option at the top of the list
         return JsonResponse({"results": results})

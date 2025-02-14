@@ -1,32 +1,31 @@
 from django import forms
+
 from apps.rental.stock_management.models import StockAdjustment
+
 
 class StockAdjustmentForm(forms.ModelForm):
     class Meta:
         model = StockAdjustment
-        fields = ['quantity', 'reason', 'comment', 'location', 'date']
+        fields = ["quantity", "reason", "comment", "location", "date"]
 
     reason = forms.ChoiceField(choices=StockAdjustment.REASON_CHOICES)
-    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}),required=False)
+    date = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}), required=False)
 
     def clean_rental_product(self):
-        rental_product = self.cleaned_data.get('rental_product')
-        print('rental_product: ', rental_product)
+        rental_product = self.cleaned_data.get("rental_product")
+        print("rental_product: ", rental_product)
         if not rental_product:
             raise forms.ValidationError("Rental product is required.")
         return rental_product
-    
-    
-    
+
+
 class ImportStockAdjustmentForm(forms.Form):
     """
     Form for uploading stock adjustment data files (.xlsx, .xls, .csv).
     """
 
     VALID_EXTENSIONS = {".xlsx", ".xls", ".csv"}
-    REQUIRED_COLUMNS = [
-        "Internal ID", "Location", "Quantity", "Reason", "Date", "Comment"
-    ]
+    REQUIRED_COLUMNS = ["Internal ID", "Location", "Quantity", "Reason", "Date", "Comment"]
 
     csv_file = forms.FileField(widget=forms.FileInput(attrs={"accept": ", ".join(VALID_EXTENSIONS)}))
 

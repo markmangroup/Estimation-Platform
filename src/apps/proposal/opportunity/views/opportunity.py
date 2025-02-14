@@ -3,10 +3,9 @@ import json
 import urllib.parse
 from typing import Any, Dict
 
-from django.contrib import messages
 from django.db.models import Q, QuerySet
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.template.loader import get_template
 from django.urls import reverse
 from django.utils.dateparse import parse_date
@@ -20,6 +19,7 @@ from apps.mixin import (
     TemplateViewMixin,
     ViewMixin,
 )
+from apps.proposal.opportunity.models import TaskMapping
 
 from ..forms import ImportOpportunityCSVForm
 from ..models import Document, Invoice, Opportunity
@@ -28,7 +28,6 @@ from .final_document import FinalDocument
 from .generate_estimate import GenerateEstimate
 from .proposal_creation import ProposalCreationData
 from .task_mapping import TaskMappingData
-from django.shortcuts import render
 
 # Opportunity View Start
 
@@ -393,6 +392,35 @@ class UpdateOpportunityView(ViewMixin):
         """
         setattr(opportunity_obj, field_name, value)
         opportunity_obj.save()
+        if field_name == "tax_rate":
+            value = float(value.replace("%", "").strip())
+
+            task_mapping_labors_objs = TaskMapping.objects.filter(
+                opportunity__document_number=opportunity_obj.document_number
+            ).exclude(task__description__icontains="labor")
+
+            if task_mapping_labors_objs:
+                for task_mapping_labors_obj in task_mapping_labors_objs:
+                    task_mapping_labors_obj.mat_gp_percent = value
+                    task_mapping_labors_obj.labor_gp_percent = value
+                    task_mapping_labors_obj.save()
+
+            estimation_table_labors_objs = TaskMapping.objects.filter(
+                opportunity__document_number=opportunity_obj.document_number
+            ).filter(task__description__icontains="labor", assign_to__isnull=True)
+
+            if estimation_table_labors_objs:
+                for estimation_table_labors_obj in estimation_table_labors_objs:
+                    estimation_table_labors_obj.labor_gp_percent = value
+                    estimation_table_labors_obj.mat_gp_percent = value
+                    estimation_table_labors_obj.save()
+            context = {}
+            context["total"] = GenerateEstimate._get_total(opportunity_obj.document_number)
+            return {
+                "status": "success",
+                "message": f"{field_name.replace('_', ' ').capitalize()} updated successfully",
+                "total": context["total"],
+            }
         return {
             "status": "success",
             "message": f"{field_name.replace('_', ' ').capitalize()} updated successfully",
@@ -412,7 +440,7 @@ class UpdateOpportunityView(ViewMixin):
                 "job_name": "job_name",
                 "project": "project",
                 "ranch": "ranch_name",
-                "tax_rate" : "tax_rate",
+                "tax_rate": "tax_rate",
             }
 
             field_type = data["type"][0]

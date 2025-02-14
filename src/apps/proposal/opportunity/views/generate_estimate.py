@@ -1,5 +1,5 @@
 import urllib.parse
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from typing import Any, Dict
 
 from django.db.models import Q, QuerySet
@@ -41,23 +41,22 @@ class TaskProductDataView(CustomDataTableMixin):
 
     def _get_code(self, obj):
         """Get code details."""
-        # Assuming `et` is an attribute of `obj`
-        et = obj
+        task_name = obj.code if obj.task is None else obj.task.name
 
         # Construct the URL dynamically using reverse
-        url = reverse("proposal_app:opportunity:update-estimation-products-ajax", args=[et.id])
+        url = reverse("proposal_app:opportunity:update-estimation-products-ajax", args=[obj.id])
 
         # Now format the HTML with proper values
         code = f"""
         <a hx-get="{url}"
-        data-url="{url}"
-        class="htmx-trigger-btn-task-prod"
-        hx-target="#task-content"
-        hx-trigger="click"
-        data-toggle="modal"
-        data-target="#showProduct"
-        data-backdrop="false">
-            <ins>{et.task.name}</ins>
+            data-url="{url}"
+            class="htmx-trigger-btn-task-prod"
+            hx-target="#task-content"
+            hx-trigger="click"
+            data-toggle="modal"
+            data-target="#showProduct"
+            data-backdrop="false">
+            <ins>{task_name}</ins>
         </a>
         """
         return code
@@ -65,6 +64,11 @@ class TaskProductDataView(CustomDataTableMixin):
     def _get_description(self, obj):
         """Generate the HTML for the description with a clickable link."""
         et = obj  # Or whatever object has the `et` property
+
+        if et.task is None:
+            task_description = f"{et.code} : {et.description}"
+        else:
+            task_description = f"{et.task.name} : {et.task.description}"
 
         # Construct the URL dynamically using reverse
         url = reverse("proposal_app:opportunity:update-estimation-products-ajax", args=[et.id])
@@ -79,7 +83,7 @@ class TaskProductDataView(CustomDataTableMixin):
             data-toggle="modal"
             data-target="#showProduct"
             data-backdrop="false">
-                <ins>{et.task.name} : {et.task.description}</ins>
+                <ins>{task_description}</ins>
             </a>
         """
         return description
@@ -351,7 +355,11 @@ class GenerateEstimate:
 
         for task in task_mapping_qs:
             totals["total_labor_cost"] += round(Decimal(task.labor_cost or "0.0"), 2)
-            totals["total_labor_gp_percent"] = round(Decimal(task.labor_gp_percent or "0.0"), 2)
+            try:
+                labor_gp_percent = Decimal(task.labor_gp_percent or "0.0")
+            except (ValueError, InvalidOperation):
+                labor_gp_percent = Decimal("0.0")
+            totals["total_labor_gp_percent"] = round(labor_gp_percent, 2)
             totals["total_labor_gp"] += round(Decimal(task.labor_gp or "0.0"), 2)
             totals["total_labor_sell"] += round(Decimal(task.labor_sell or "0.0"), 2)
             totals["total_mat_cost"] += round(Decimal(task.mat_cost or "0.0"), 2)

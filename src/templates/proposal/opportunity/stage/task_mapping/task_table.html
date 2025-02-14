@@ -405,7 +405,6 @@
             // Auto populated description while select item code
             function updateDescription(value, id) {
                 var $select2Element = $(`select[data-id="${id}"].select2-item-description.js-example-programmatic.form-control`);
-
                 // Initialize Select2 if not already initialized
                 if (!$select2Element.hasClass('select2-hidden')) {
                     $select2Element.select2({
@@ -431,6 +430,7 @@
                                     $select2Element.append(newOption);
                                   }
                               });
+                              _initialise_description()
 
                               // Check if there are results and set the first as selected
                               if (data.results.length > 0) {
@@ -538,7 +538,7 @@
                                 var newOption = new Option(item.text, item.id, false, false);
                                 $select2Element.append(newOption);
                             });
-
+                            _initialise_item_code()
                             // Check if there are results and set the first as selected
                             if (data.results.length > 0) {
                               if(value){
@@ -614,7 +614,7 @@
               data = {
                 value: value,
               }
-
+              _initialise_description()
               $.ajax({
                 url: '{% url "proposal_app:opportunity:item-code-search" %}',
                 type: 'POST',

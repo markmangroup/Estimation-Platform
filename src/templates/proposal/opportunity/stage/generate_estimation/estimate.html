@@ -140,8 +140,8 @@
                 <div class="card-body py-0">
                   <div class="media">
                     <div class="media-body info text-left">
-                      <h3 id="total_cost" class="font-large-1 info mb-0">
-                        ${{total.total_cost}}
+                      <h3  class="font-large-1 info mb-0">
+                        $ <span >{{total.total_cost}}</span>
                       </h3>
                       <span>Total Cost</span>
                     </div>
@@ -161,8 +161,10 @@
                 <div class="card-body py-0">
                   <div class="media">
                     <div class="media-body warning text-left">
-                      <h3 id="total_sale" class="font-large-1 warning mb-0">
-                        ${{total.total_sale}}
+                      <h3  class="font-large-1 warning mb-0">
+                        $ <span id="total_sale">
+                          {{total.total_sale}}
+                        </span>
                       </h3>
                       <span>Total Sale</span>
                     </div>
@@ -182,8 +184,8 @@
                 <div class="card-body py-0">
                   <div class="media">
                     <div class="media-body success text-left">
-                      <h3 class="font-large-1 success mb-0 total_gp">
-                        ${{total.total_gp}}
+                      <h3  class="font-large-1 success mb-0 total_gp">
+                        $ <span id="total_gp">{{total.total_gp}}</span>
                       </h3>
                       <span>Total GP</span>
                     </div>
@@ -203,8 +205,8 @@
                 <div class="card-body py-0">
                   <div class="media">
                     <div class="media-body secondary text-left">
-                      <h3 id="total_gp_percent" class="font-large-1 secondary mb-0">
-                        {{total.total_gp_percent|round_value:"2"}}%
+                      <h3  class="font-large-1 secondary mb-0">
+                        <span id="total_gp_percent">{{total.total_gp_percent|round_value:"2"}}%</span>
                       </h3>
                       <span>GP% Indirects</span>
                     </div>
@@ -998,7 +1000,7 @@
   $(document).ready(function() {
     $('#tax-badge').on('click', function() {
       var currentValue = $(this).text().replace('%', ''); // Remove '%' symbol if present
-      
+
       // Remove the 'badge' and 'bg-success' classes from the span
       $(this).removeClass('badge bg-success');
 
@@ -1028,7 +1030,7 @@
 
         newValue = parseFloat(newValue);
         $("#tax-badge").html(newValue.toFixed(2) + '%').addClass('badge bg-success');
-        
+
         // Ajax request start
         console.log("Make ajax call for update tax rate");
         // Before making the ajax call
@@ -1037,7 +1039,7 @@
           "type": "tax_rate",
           "value": newValue.toFixed(2) + '%',
           "document_number": document_number
-        };        
+        };
 
         $.ajax({
           url: '{% url "proposal_app:opportunity:update-opportunity-ajax" %}',
@@ -1054,6 +1056,18 @@
               positionClass: 'toast-bottom-right',
               timeOut: 6000
             });
+
+            $('#total_cost').text(response.total.total_cost);
+            $('#total_sale').text(response.total.total_sale);
+            $('#total_gp').text(response.total.total_gp);
+
+            // Convert total_gp_percent to a number and round it, then append the '%' symbol
+            var totalGpPercent = parseFloat(response.total.total_gp_percent);
+            if (!isNaN(totalGpPercent)) {
+                $('#total_gp_percent').text(totalGpPercent.toFixed(2) + '%');
+            } else {
+                $('#total_gp_percent').text('Invalid value');
+            }
           },
           error: function(error) {
             toastr.error(error.message, 'Error', {

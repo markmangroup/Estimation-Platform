@@ -166,13 +166,13 @@ def generate_task_mapping_table(opportunity):
     grand_total = TaskMappingData._get_task_total(opportunity.document_number)
     labor_task_total = TaskMappingData._get_labor_task_total(opportunity.document_number)
 
-    data={
-        "total_tasks" : total_tasks,
-        "task_mapping_list" : task_mapping_list,
-        "task_mapping_labor_list" : task_mapping_labor_list,
-        "grand_total" : grand_total,
-        "labor_task_total" : labor_task_total,
-        "opportunity" : opportunity,
+    data = {
+        "total_tasks": total_tasks,
+        "task_mapping_list": task_mapping_list,
+        "task_mapping_labor_list": task_mapping_labor_list,
+        "grand_total": grand_total,
+        "labor_task_total": labor_task_total,
+        "opportunity": opportunity,
     }
 
     return data

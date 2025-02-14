@@ -1,5 +1,4 @@
 from django.contrib import messages
-from django.shortcuts import render
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
@@ -129,19 +128,17 @@ class TaskManagementView(ViewMixin):
             task_instance = get_object_or_404(Task, name=task_name)
             SelectTaskCode.objects.create(opportunity=opportunity, task=task_instance)
 
-        data = generate_task_mapping_table(
-            opportunity=opportunity
-        )
+        data = generate_task_mapping_table(opportunity=opportunity)
 
         # Render the updated HTML for the task mapping table
-        html = render(request, 'proposal/opportunity/stage/task_mapping/tasks.html', data)
+        html = render(request, "proposal/opportunity/stage/task_mapping/tasks.html", data)
 
         return JsonResponse(
             {
                 "code": 201,
                 "message": "Tasks added successfully!",
                 "modal_to_close": "modelSelectTask",
-                "html": html.content.decode('utf-8'),
+                "html": html.content.decode("utf-8"),
             },
             status=201,
         )
@@ -176,6 +173,7 @@ class TaskManagementView(ViewMixin):
         :return: Rendered response.
         """
         return render(self.request, self.template_name, context, **response_kwargs)
+
 
 class UpdateDescription(ViewMixin):
     """
@@ -243,14 +241,10 @@ class DeleteSelectedTask(CustomViewMixin):
             # :: Deprecated ::
             # messages.info(self.request, "Task Deleted Successfully")
 
-            data = generate_task_mapping_table(
-                opportunity=select_task_code.opportunity
-            )
-            html = render(self.request, 'proposal/opportunity/stage/task_mapping/tasks.html', data)
+            data = generate_task_mapping_table(opportunity=select_task_code.opportunity)
+            html = render(self.request, "proposal/opportunity/stage/task_mapping/tasks.html", data)
 
-            extra_data = {
-                "html" : html.content.decode('utf-8')
-            }
+            extra_data = {"html": html.content.decode("utf-8")}
 
         except Exception as e:
             LOGGER.error(f"Select Task Code Delete Error: {e}")

@@ -85,7 +85,7 @@ class Opportunity(BaseModel):
     job_name = models.CharField(_("Job Name"), max_length=255, blank=True, null=True)
     ranch_name = models.CharField(_("Ranch Name"), max_length=255, blank=True, null=True)
     project = models.CharField(_("Project"), max_length=255, blank=True, null=True)
-    tax_rate = models.CharField(_("Tax Rate"), default="25.00%",blank=True, null=True)
+    tax_rate = models.CharField(_("Tax Rate"), default="25.00%", blank=True, null=True)
     term_and_condition = models.JSONField(_("Term & Condition"), blank=True, null=True)
 
     def __str__(self):
@@ -288,7 +288,11 @@ class TaskMapping(BaseModel):
                     assigned_products = AssignedProduct.objects.filter(task_mapping_id=task.id)
                     total_quantity += sum(product.quantity for product in assigned_products)
                     total_price += sum(
-                        product.vendor_quoted_cost * product.quantity if product.vendor_quoted_cost else product.standard_cost * product.quantity
+                        (
+                            product.vendor_quoted_cost * product.quantity
+                            if product.vendor_quoted_cost
+                            else product.standard_cost * product.quantity
+                        )
                         for product in assigned_products
                     )
                     total_percent += sum(product.gross_profit_percentage for product in assigned_products)
@@ -310,7 +314,11 @@ class TaskMapping(BaseModel):
                     assigned_products = AssignedProduct.objects.filter(task_mapping_id=task.id)
                     total_quantity += sum(product.quantity for product in assigned_products)
                     total_price += sum(
-                        product.vendor_quoted_cost * product.quantity if product.vendor_quoted_cost else product.standard_cost * product.quantity
+                        (
+                            product.vendor_quoted_cost * product.quantity
+                            if product.vendor_quoted_cost
+                            else product.standard_cost * product.quantity
+                        )
                         for product in assigned_products
                     )
                     total_percent += sum(product.gross_profit_percentage for product in assigned_products)
@@ -364,7 +372,11 @@ class TaskMapping(BaseModel):
 
             total_quantity += sum(product.quantity for product in task_assigned_products)
             total_price += sum(
-                product.vendor_quoted_cost * product.quantity if product.vendor_quoted_cost else product.standard_cost * product.quantity
+                (
+                    product.vendor_quoted_cost * product.quantity
+                    if product.vendor_quoted_cost
+                    else product.standard_cost * product.quantity
+                )
                 for product in task_assigned_products
             )
             total_percent += sum(product.gross_profit_percentage for product in task_assigned_products)

@@ -64,10 +64,9 @@ class FinalDocument:
         for assigned_product in assigned_products:
             code = assigned_product.item_code
             product = Product.objects.filter(
-                    display_name=code,
+                display_name=code,
             ).first()
-            assigned_products_data.append({
-                'assigned_product': assigned_product,
-                'internal_id': product.internal_id if product else "-"
-            })
+            assigned_products_data.append(
+                {"assigned_product": assigned_product, "internal_id": product.internal_id if product else "-"}
+            )
         return assigned_products_data

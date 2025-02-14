@@ -24,9 +24,12 @@
           <p class="mb-1 font-weight-bold">Select Customer</p>
         </div>
         <div class="col-md-2 col-2">
-          <select data-document={{opportunity.document_number}} class="customer-select">
+          <select id="original-customer-name" data-document={{opportunity.document_number}} class="customer-select">
               <option selected disabled>{{ opportunity.customer.name }}</option>
           </select>
+          <span id="print-customer-name" style="display:none">
+            {{ opportunity.customer.name }}
+          </span>
         </div>
         <div class="col-md-4 col-4">
         </div>
