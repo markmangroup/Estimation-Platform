@@ -277,7 +277,7 @@
   </script>
 
   <!-- Delete tasks -->
-  <script>
+  {% comment %} <script>
     $(document).on('click', '.delete-task-btn', function (e) {
 
       console.log("clicked................");
@@ -314,7 +314,7 @@
             },
             success: function (data) {
               $('#enstimate-table').DataTable().ajax.reload();
-
+              $('#selected-task-table').DataTable().ajax.reload();
               if (type=="proposal"){
                 $("#ProposalContainer").html(data._html)
               }else{
@@ -336,7 +336,7 @@
               }
       })
     })
-  </script>
+  </script> {% endcomment %}
 
   <!-- Group Name Editable -->
   <script>

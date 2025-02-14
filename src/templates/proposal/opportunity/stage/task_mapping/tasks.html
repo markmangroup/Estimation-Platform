@@ -107,7 +107,8 @@
 
       $(document).ready(function() {
 
-          function refresh_page(change, text) {
+
+          /*function refresh_page(change, text) {
             if (change) {
                 // Listen for keydown events
                 window.addEventListener('keydown', function (event) {
@@ -135,21 +136,16 @@
                     }
                 });
 
-                // Warn before leaving the page if there are unsaved changes
-                /* window.addEventListener('beforeunload', function (event) {
-                    const message = 'Changes that you made may not be saved.';
-                    event.returnValue = message; // Standard for most browsers
-                    return message; // For older browsers
-                }); */
-            }
-          }
 
-          function generateUniqueId() {
+            }
+          }*/
+
+          /*function generateUniqueId() {
               return "id" + Math.random().toString(16).slice(2);
-          }
+          }*/
 
           // Function for selects
-          function InitSelects(){
+          /*function InitSelects(){
 
             $('.select2-vendor').select2({
               placeholder: 'Select Vendor Name',
@@ -221,18 +217,18 @@
               dropdownAutoWidth : true,
             });
 
-          }
+          }*/
 
-          function UpdateSrNo(tableBody){
+          /*function UpdateSrNo(tableBody){
             var sr_number = -1;
             tableBody.find('tr').each(function() {
               $(this).find('.sr-no').text(sr_number);
               sr_number++;
             });
-          }
+          }*/
 
           // Handle 'Add Row' button click
-          $('.add-row-btn, .add-multi-row-btn').on('click', function(e) {
+          /*$('.add-row-btn, .add-multi-row-btn').on('click', function(e) {
             var unique_id;
             var html;
             var $input = $(e.target);
@@ -334,9 +330,9 @@
                   InitSelects(); // Initialize select2 for the new selects
               }
             }
-          });
+          });*/
 
-          $(document).on('click', '.new-btn', function(e) {
+          /*$(document).on('click', '.new-btn', function(e) {
             e.preventDefault();
 
             var $button = $(this);
@@ -361,13 +357,13 @@
 
             // vendorCostValidation(); // Add validation of vendor quoted cost
             InitSelects(); // Initialize select2 for the new selects
-          });
+          });*/
 
           var item_code_changed = false;
           var item_description_changed = false;
 
           // Auto populated description while select item code
-          function updateDescription(value, id) {
+          /*function updateDescription(value, id) {
               var $select2Element = $(`select[data-id="${id}"].select2-item-description.js-example-programmatic.form-control`);
 
               // Initialize Select2 if not already initialized
@@ -418,10 +414,10 @@
             $select2Element.select2('data', null); // Clear previous data
             $select2Element.select2('open'); // Trigger AJAX without user action
             $select2Element.select2('close'); // Close dropdown immediately after fetching
-          }
+          }*/
 
           // Initialize The Drop Down Value For Description
-          function _initialise_description(){
+          /*function _initialise_description(){
               $(`.select2-item-description`).select2({
                 placeholder: 'Select Item description',
                 width: '250px',
@@ -444,10 +440,10 @@
                 },
                 dropdownAutoWidth: true,
               });
-          }
+          }*/
 
           // Initialize The Drop Down Value For Item Code
-          function _initialise_item_code(){
+          /*function _initialise_item_code(){
             $('.select2-item-code').select2({
               placeholder: 'Select Item Code',
               width: '200px',
@@ -470,10 +466,10 @@
               },
               dropdownAutoWidth : true,
             });
-          }
+          }*/
 
           // Auto populated item code while select item description
-          function updateItemCode(value, id) {
+          /*function updateItemCode(value, id) {
 
             var $select2Element = $(`select[data-id="${id}"].select2-item-code.js-example-programmatic.form-control`);
 
@@ -525,7 +521,7 @@
             $select2Element.select2('data', null); // Clear previous data
             $select2Element.select2('open'); // Trigger AJAX without user action
             $select2Element.select2('close'); // Close dropdown immediately after fetching
-          }
+          }*/
 
           // Function for update value real time.
           function UpdateRealTimeValue(){
@@ -558,7 +554,7 @@
           }
 
           // Set value of selectd item code with on change event
-          $(document).on('select2:select', '.select2-item-code', function(e) {
+          /*$(document).on('select2:select', '.select2-item-code', function(e) {
 
             if (item_description_changed) return; // Prevent triggering if item description is changing
 
@@ -699,10 +695,10 @@
                 item_code_changed = false; // Reset flag after completion
               }
             });
-          });
+          });*/
 
           // Set value of selectd item with with on change event
-          $(document).on('select2:select', '.select2-item-description', function(e) {
+          /*$(document).on('select2:select', '.select2-item-description', function(e) {
 
             if (item_code_changed) return; // Prevent triggering if item code is changing
 
@@ -785,9 +781,9 @@
                 item_description_changed = false; // Reset flag after completion
               }
             });
-          });
+          });*/
 
-          $(document).on('click', '.remove-row-btn', function() {
+          /*$(document).on('click', '.remove-row-btn', function() {
 
             console.log("-- clicked --");
 
@@ -814,10 +810,10 @@
             if (lastPlusButton.length > 0 && !lastPlusButton.is(':visible')) {
               lastPlusButton.show();
             }
-          });
+          });*/
 
           // Handle Save All data on next click
-          $("a[href='#next']").on('click', function() {
+          /*$("a[href='#next']").on('click', function() {
 
             unapplied_change = false;
             var foundElements = $(".steps li").find(".current");
@@ -915,7 +911,7 @@
                   }
               });
             }
-          });
+          });*/
 
       });
     </script>
@@ -1243,7 +1239,7 @@
                                 var newOption = new Option(item.text, item.id, false, false);
                                 $select2Element.append(newOption);
                             });
-
+                            _initialise_labor_task_description()
                             // Check if there are results and set the first as selected
                             if (data.results.length > 0) {
                                 $select2Element.val(data.results[1].id).trigger('change');
@@ -1290,7 +1286,7 @@
                                 var newOption = new Option(item.text, item.id, false, false);
                                 $select2Element.append(newOption);
                             });
-
+                            _initialise_labor_task_name()
                             // Check if there are results and set the first as selected
                             if (data.results.length > 0) {
                                 $select2Element.val(data.results[1].id).trigger('change');
@@ -2115,7 +2111,7 @@
           }
         });
 
-        $(".select-labor-task").on("change", function(e){
+        /*$(".select-labor-task").on("change", function(e){
 
           var value = $(this).val();
           var current_task_id = $(this).data("id");
@@ -2155,7 +2151,7 @@
               });
             }
           });
-        });
+        });*/
       });
     </script>
 

@@ -96,7 +96,7 @@ urlpatterns = [
     ),
     # Generate Estimation
     path(
-        "task-product-data/<str:document_number>/ajax", 
+        "task-product-data/<str:document_number>/ajax",
         generate_estimate.TaskProductDataView.as_view(),
         name="ajax-task-product-data",
     ),

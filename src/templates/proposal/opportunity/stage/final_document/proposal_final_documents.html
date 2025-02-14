@@ -216,8 +216,18 @@
                   display: none !important;
                   border: none;
                 }
+
+                .select2-container,
+            .select2-container--default {
+                display: none !important;
+            }
+                /* Show the print-customer-name span */
+                #print-customer-name {
+                    display: inline !important;
+                }
             </style>
         `;
+
         document.body.insertAdjacentHTML('afterbegin', printStyles);
         document.querySelectorAll('.d-icon').forEach(icon => {
             icon.outerHTML = "*";

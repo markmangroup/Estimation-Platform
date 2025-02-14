@@ -12,6 +12,7 @@ from ..models import (
     Invoice,
     Opportunity,
     ProposalCreation,
+    SelectTaskCode,
     TaskMapping,
 )
 
@@ -126,7 +127,18 @@ class DeleteTaskView(ViewMixin):
             ProposalCreation.objects.filter(id=id).delete()
 
         else:
-            TaskMapping.objects.filter(id=id).delete()
+
+            task_mapping = TaskMapping.objects.filter(id=id).first()
+
+            if task_mapping:
+                task = task_mapping.task
+                task_in_use = SelectTaskCode.objects.filter(
+                    opportunity=task_mapping.opportunity, task__id=task_mapping.task.id
+                ).first()
+                if task_in_use:
+                    task.delete()
+                task_mapping.delete()
+
             data = TaskMappingTable.generate_table(opportunity=opportunity)
             # Render the updated HTML for the task mapping table
             html = render(request, "proposal/opportunity/stage/task_mapping/tasks.html", data)

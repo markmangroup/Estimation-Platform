@@ -1,8 +1,11 @@
 import os
+
 import pandas as pd
 from django.core.files.uploadedfile import InMemoryUploadedFile
+
 from apps.rental.product.models import RentalProduct
 from apps.rental.stock_management.models import StockAdjustment
+
 
 def import_stock_adjustment_from_file(file: InMemoryUploadedFile) -> dict:
     """
@@ -13,14 +16,7 @@ def import_stock_adjustment_from_file(file: InMemoryUploadedFile) -> dict:
             or errors if the columns do not match or records are skipped.
     """
     # Define the expected columns for stock adjustment
-    expected_columns = {
-        "Internal ID",
-        "Location", 
-        "Quantity",
-        "Reason", 
-        "Date",
-        "Comment"
-    }
+    expected_columns = {"Internal ID", "Location", "Quantity", "Reason", "Date", "Comment"}
 
     # Check for empty file
     if file.size == 0:
@@ -42,18 +38,17 @@ def import_stock_adjustment_from_file(file: InMemoryUploadedFile) -> dict:
         return {"error": f"Failed to process the file: {str(e)}."}
 
     # Check if DataFrame is empty or columns don't match
-    print('expected_columns: ', expected_columns)
-    print('df.columns: ', df.columns)
+    print("expected_columns: ", expected_columns)
+    print("df.columns: ", df.columns)
     df.columns = df.columns.str.strip()  # Strip whitespace from column names
-    df.columns = df.columns.str.replace('\n', '')  # Remove newline characters if any
+    df.columns = df.columns.str.replace("\n", "")  # Remove newline characters if any
 
-    
     if df.empty or set(df.columns) != expected_columns:
         return {"error": "The columns do not match or the file is empty."}
 
     df = df.fillna("")  # Fill NaN values with empty strings
     records = df.to_dict(orient="records")
-    print('records: ', records)
+    print("records: ", records)
     context = {"messages": []}
     skipped_records = []
     context["records"] = records
