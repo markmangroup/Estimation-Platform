@@ -23,7 +23,7 @@ def import_warehouse_from_xlsx(file: InMemoryUploadedFile) -> dict:
     skip_warehouse = []
 
     # Define the expected columns
-    expected_columns = ["Warehouse Name", "Address"]
+    expected_columns = ["Location", "Address"]
 
     # Load the data from the file
     try:
@@ -56,7 +56,7 @@ def import_warehouse_from_xlsx(file: InMemoryUploadedFile) -> dict:
     for record in warehouse_list:
         try:
 
-            location = record["Warehouse Name"]
+            location = record["Location"]
             address = record["Address"]
 
             if location:

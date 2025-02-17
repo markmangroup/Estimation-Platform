@@ -48,7 +48,6 @@
                         />
                       </div>
                     </div>
-                    
 
                     <div class="col-6 hide">
                       <label>Revised Quantity</label>
@@ -166,42 +165,41 @@ document.body.addEventListener('htmx:afterRequest', function(event) {
 <!-- Date picker Start -->
 <script type="text/javascript">
     $(document).ready(function() {
-    
+
         var start = moment().subtract(29, 'days');
         var end = moment();
-    
+
         function cb(start, end) {
             $('.reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
         }
-    
+
         $('.reportrange').daterangepicker({
             startDate: start,
             endDate: end,
             ranges: {}
         }, cb);
-    
+
         cb(start, end);
-    
+
     });
 </script>
   <!-- Date picker End -->
-  
+
   <!-- Calculation of stock adjustment Start -->
   <script>
     $(document).ready(function() {
       const currentQuantity = {{stock_adjustment.quantity}};
-  
+
       const $plusInput = $('#PluseQuantity');
       const $minusInput = $('#minusQuantity');
       const $revisedInput = $('#revisedQuantity');
-  
+
       // Function to update plus quantity based on revised quantity
       function updatePlusQuantity() {
         const enteredRevisedQuantity = parseFloat($revisedInput.val()) || 0;
         const newPlusQuantity = Math.max(0, enteredRevisedQuantity - currentQuantity);
         $plusInput.val(newPlusQuantity);
       }
-  
 
       // Function to update minus quantity based on revised quantity
       function updateMinusQuantity() {
@@ -209,7 +207,6 @@ document.body.addEventListener('htmx:afterRequest', function(event) {
         const newMinusQuantity = Math.max(0, currentQuantity - enteredRevisedQuantity);
         $minusInput.val(newMinusQuantity);
       }
-  
 
       // Function to update revised quantity based on plus and minus quantities
       function updateRevisedQuantity() {
@@ -218,23 +215,22 @@ document.body.addEventListener('htmx:afterRequest', function(event) {
         const newRevisedQuantity = currentQuantity + plusQuantity - minusQuantity;
         $revisedInput.val(newRevisedQuantity);
       }
-  
+
       // Event handlers
       $plusInput.on('input', function() {
-        updateRevisedQuantity(); 
-        updateMinusQuantity();   
+        updateRevisedQuantity();
+        updateMinusQuantity();
       });
-  
+
       $minusInput.on('input', function() {
-        updateRevisedQuantity(); 
-        updatePlusQuantity();    
+        updateRevisedQuantity();
+        updatePlusQuantity();
       });
-  
+
       $revisedInput.on('input', function() {
         updatePlusQuantity();    // Update plus quantity when revised quantity changes
         updateMinusQuantity();   // Update minus quantity when revised quantity changes
       });
-  
 
       // Initialize values on page load
       updateRevisedQuantity();
@@ -248,22 +244,21 @@ document.body.addEventListener('htmx:afterRequest', function(event) {
     $(document).ready(function() {
       // Get today's date
       var today = new Date();
-      
+
       // Set the input field to today's date
       var todayStr = today.toISOString().split('T')[0];
       $('.today-date').val(todayStr);
-  
+
       // Get the start and end of the current month
       var startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
       var endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-  
+
       // Format dates as YYYY-MM-DD
       var startOfMonthStr = startOfMonth.toISOString().split('T')[0];
       var endOfMonthStr = endOfMonth.toISOString().split('T')[0];
-  
+
       // Set min and max attributes of the date inputs
       $('.today-date').attr('min', startOfMonthStr);
       $('.today-date').attr('max', endOfMonthStr);
     });
   </script>
-  

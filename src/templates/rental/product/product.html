@@ -2,7 +2,7 @@
 
 <div class="row">
   <div class="col-12">
-    <div class="content-header">Warehouse Product List</div>
+    <div class="content-header">Warehouse Product</div>
   </div>
 </div>
 
@@ -31,7 +31,7 @@
               </div>
             </div>
           </div>
-        </div>  
+        </div>
         <div class="card">
           <div class="card-content">
             <!-- Filters -->
@@ -40,7 +40,7 @@
                 <div class="col">
                   <label for="id_mat_grp" class="form-label font-weight-bold">Equipment Material Group</label>
                   <select class="select2 form-control" id="id_mat_grp" multiple>
-                    {% for i in equipment_material_group|dictsort:"equipment_material_group" %}
+                    {% for i in equipment_material_group %}
                       <option value="{{ i.equipment_material_group }}">{{ i.equipment_material_group }}</option>
                     {% endfor %}
                   </select>
@@ -62,8 +62,8 @@
                   <thead>
                     <tr>
                       <th>Equipment ID</th>
-                      <th>Equipment Name</th>
                       <th>Equipment Material Group</th>
+                      <th>Equipment Name</th>
                       <th>SubType</th>
                     </tr>
                   </thead>
@@ -95,12 +95,12 @@
             type: 'GET',
             data: function(d) {
                 return $.extend({}, d, set_filters());
-            } 
+            }
         },
         columns: [
             { data: 'equipment_id', name: 'equipment_id' },
-            { data: 'equipment_name', name: 'equipment_name' },
             { data: 'equipment_material_group', name: 'equipment_material_group' },
+            { data: 'equipment_name', name: 'equipment_name' },
             { data: 'subtype', name: 'subtype' }
         ]
     });

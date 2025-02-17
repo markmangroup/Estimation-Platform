@@ -22,11 +22,7 @@
 
 <!-- Create Delivery Button Start -->
 <div class="float-right my-2 mt-3">
-  <a href="{% url 'rental:rent_process:create_delivery_modal' order.order_id %}" 
-   class="btn bg-light-primary open-modal" data-backdrop="false" data-toggle="modal" data-target="#show">
-   <i class="ft-plus font-medium-5"></i> Create Delivery
-</a>
-  {% include "rental/rent_process/drag_and_select.html" %}
+  {% include "./drag_and_select.html" %}
 </div>
 <!-- Create Delivery Button End -->
 
@@ -382,40 +378,5 @@
   });
 </script>
 <!-- Print Script End -->
-<script>
-  $(document).ready(function () {
-    $(".open-modal").click(function (e) {
-        e.preventDefault();
-        var url = $(this).attr("href");
-
-        $.get(url, function (data) {
-            $("#show .modal-body");
-            $("#show").modal("show");
-        });
-    });
-});
-</script>
 
 
-<script>
-  $(document).ready(function () {
-    $(".open-modal").click(function (event) {
-      event.preventDefault();
-      let url = $(this).attr("href");
-      console.log('02-12 url: ', url);
-
-      $.ajax({
-        url: url,
-        type: "GET",
-        dataType: "json",
-        success: function (data) {
-          $("#modal-body").html(data.html);
-          $("#show").modal("show");
-        },
-        error: function () {
-          alert("Error loading modal data!");
-        },
-      });
-    });
-  });
-</script>

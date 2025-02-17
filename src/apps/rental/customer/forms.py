@@ -17,8 +17,8 @@ class ImportCustomerCSVForm(forms.Form):
 
     REQUIRED_COLUMNS = [
         "Internal Id",
-        "Customer Id",
-        "Customer Name",
+        "Id",
+        "Name",
         "Sales Rep",
         "Billing Address 1",
         "Billing Address 2",

@@ -25,7 +25,7 @@ class AccountManagerListAjaxView(CustomDataTableMixin):
     def filter_queryset(self, qs):
         """Return the list of items for this view."""
         if self.search:
-            return qs.filter(Q(name__icontains=self.search) | Q(email__icontains=self.search) | Q(manager_id__icontains=self.search))
+            return qs.filter(Q(name__icontains=self.search) | Q(email__icontains=self.search))
         return qs
 
     def prepare_results(self, qs):
@@ -33,7 +33,7 @@ class AccountManagerListAjaxView(CustomDataTableMixin):
         data = []
         for o in qs:
             data.append(
-                {   "manager id": o.manager_id,
+                {
                     "name": o.name,
                     "email": o.email,
                 }
@@ -56,7 +56,6 @@ class AccountManagerCreateFromCSVFormView(FormViewMixin):
         """Handle valid form submissions."""
         csv_file = form.cleaned_data["csv_file"]
         response = import_account_manager_from_xlsx(csv_file)
-        print('response: ', response)
 
         if response and response.get("error"):
             form.add_error("csv_file", response["error"])

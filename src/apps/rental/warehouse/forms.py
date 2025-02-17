@@ -15,7 +15,7 @@ class ImportWarehouseCSVForm(forms.Form):
         )
     )
 
-    REQUIRED_COLUMNS = ["Warehouse Name", "Address"]
+    REQUIRED_COLUMNS = ["Location", "Address"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
