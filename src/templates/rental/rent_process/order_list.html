@@ -12,37 +12,16 @@
         <div class="card-header">
           <ul class="nav nav-tabs mb-2">
             <li class="nav-item">
-              <a
-                class="nav-link active"
-                id="base-tab11"
-                data-toggle="tab"
-                aria-controls="tab1"
-                href="#tab1"
-                aria-expanded="true"
-                >Order</a
-              >
+              <a class="nav-link active" id="base-tab11" data-toggle="tab" aria-controls="tab1" href="#tab1"
+                aria-expanded="true">Order</a>
             </li>
             <li class="nav-item">
-              <a
-                class="nav-link"
-                id="base-tab13"
-                data-toggle="tab"
-                aria-controls="tab3"
-                href="#tab3"
-                aria-expanded="false"
-                >Open Reccuring Order</a
-              >
+              <a class="nav-link" id="base-tab13" data-toggle="tab" aria-controls="tab3" href="#tab3"
+                aria-expanded="false">Open Reccuring Order</a>
             </li>
             <li class="nav-item">
-              <a
-                class="nav-link"
-                id="base-tab12"
-                data-toggle="tab"
-                aria-controls="tab2"
-                href="#tab2"
-                aria-expanded="false"
-                >Open Return Order</a
-              >
+              <a class="nav-link" id="base-tab12" data-toggle="tab" aria-controls="tab2" href="#tab2"
+                aria-expanded="false">Open Return Order</a>
             </li>
           </ul>
         </div>
@@ -60,39 +39,81 @@
                 <div class="float-right mb-3">
                   <div class="row">
                     <!-- Import Order Starts -->
-                    <button type="button" class="btn bg-light-secondary" hx-get="{% url 'rental:rent_process:rental-import-order' %}" hx-target="#modalContent" hx-trigger="click" data-toggle="modal" data-target="#inlineForm">
+                     {% if user.is_superuser %}
+                      <button type="button" class="btn bg-light-success ml-1" data-toggle="modal" data-target="#permissionModel"
+                          hx-get="{% url 'rental:rent_process:order-permission' %}" hx-target="#permission-modal-content">
+                          <i class="fa ft-plus-circle mr-1"></i>Permissions
+                        </button>
+                     {% endif %}
+
+                    <button type="button" class="btn bg-light-secondary ml-1"
+                      hx-get="{% url 'rental:rent_process:rental-import-order' %}" hx-target="#modalContent"
+                      hx-trigger="click" data-toggle="modal" data-target="#inlineForm">
                       <i class="fa ft-briefcase mr-1"></i>Import Order
                     </button>
 
-                    <button type="button" class="btn bg-light-primary ml-1" data-toggle="modal" data-target="#add_product">
+                    <button type="button" class="btn bg-light-primary ml-1" data-toggle="modal" data-target="#createOrder"
+                      hx-get="{% url 'rental:rent_process:order-create' %}"
+                      hx-target="#product-modal-content" >
                       <i class="fa ft-plus-circle mr-1"></i>Create Order
                     </button>
-
-                    <!-- Import Order Modal -->
-                    <div
-                      class="modal fade text-left"
-                      id="inlineForm"
-                      tabindex="-1"
-                      role="dialog"
-                      aria-labelledby="myModalLabel33"
-                      aria-hidden="true"
-                      data-backdrop="false"
-                    >
-                      <div class="modal-dialog modal-dialog-centered" role="document">
+                    
+                    <!-- permission model -->
+                    <div class="float-right">
+                      <div class="modal fade text-left" tabindex="-1" role="dialog" id="permissionModel" aria-labelledby="myModalLabel33" aria-hidden="true" data-backdrop="false">
+                        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                           <div class="modal-content">
-                              <div id="modalContent">
-                                  <!-- Form content will be dynamically inserted here by HTMX -->
-                              </div>
+                            <div class="modal-header">
+                              <h4 class="modal-title">Requiered Permissions</h4>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
+                              </button>
+                            </div>
+                            <div class="modal-body" id="permission-modal-content">
+                            </div>
+                          
                           </div>
+                        </div>
                       </div>
                     </div>
-                    <!-- Import Order Modal -->
+                     <!-- End Permission Model -->
+                    <!-- create order model -->
+                    <div class="card-header">
+                      <div class="float-right">
+                        <div class="modal fade text-left" tabindex="-1" role="dialog" id="createOrder" aria-labelledby="myModalLabel33" aria-hidden="true" data-backdrop="false">
+                          <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h4 class="modal-title">Create Order</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
+                                </button>
+                              </div>
+                              <div class="modal-body" id="product-modal-content">
+                              </div>
+                            
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end create order model -->
 
-                    <!-- Create order -->
-                    {% include "rental/order_create.html" %}
-                    <!-- Create order -->
+                    <!-- Import Order Modal -->
+                    <div class="modal fade text-left" id="inlineForm" tabindex="-1" role="dialog"
+                      aria-labelledby="myModalLabel33" aria-hidden="true" data-backdrop="false">
+                      <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                          <div id="modalContent">
+                            <!-- Form content will be dynamically inserted here by HTMX -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </div>  
+
+                <!-- End Import Order Modal -->
                 <!-- Buttons -->
 
                 <div class="card-body">
@@ -188,7 +209,7 @@
                               </a>
                           </td>
                         </tr>
-
+                      
                         <!-- Row 2 -->
                         <tr>
                           <td class="text-nowrap"><a href="{% url 'rental:order_detail' %}">OR20240600021</a></td>
@@ -213,7 +234,7 @@
                                 </a>
                             </td>
                         </tr>
-
+                        
                         <!-- Row 5 -->
                         <tr>
                           <td class="text-nowrap"><a href="{% url 'rental:order_detail' %}">OR20240600022</a></td>
@@ -238,7 +259,7 @@
                                 </a>
                             </td>
                         </tr>
-
+                        
                         <!-- Row 8 -->
                         <tr>
                           <td class="text-nowrap"><a href="{% url 'rental:order_detail' %}">OR20240600023</a></td>
@@ -263,7 +284,7 @@
                                 </a>
                             </td>
                         </tr>
-
+                        
                         <!-- Row 14 -->
                         <tr>
                           <td class="text-nowrap"><a href="{% url 'rental:order_detail' %}">OR20240600024</a></td>
@@ -288,7 +309,7 @@
                                 </a>
                             </td>
                         </tr>
-
+                        
                         <!-- Row 22 -->
                         <tr>
                           <td class="text-nowrap"><a href="{% url 'rental:order_detail' %}">OR20240600025</a></td>
@@ -313,7 +334,7 @@
                                 </a>
                             </td>
                         </tr>
-
+                        
                         <!-- Row 45 -->
                         <tr>
                           <td class="text-nowrap"><a href="{% url 'rental:order_detail' %}">OR20240600026</a></td>
@@ -338,7 +359,7 @@
                                 </a>
                             </td>
                         </tr>
-
+                        
                         <!-- Row 57 -->
                         <tr>
                           <td class="text-nowrap"><a href="{% url 'rental:order_detail' %}">OR20240600027</a></td>
@@ -363,7 +384,7 @@
                                 </a>
                             </td>
                         </tr>
-
+                        
                         <!-- Row 61 -->
                         <tr>
                           <td class="text-nowrap"><a href="{% url 'rental:order_detail' %}">OR20240600028</a></td>
@@ -388,7 +409,7 @@
                                 </a>
                             </td>
                         </tr>
-
+                        
                         <!-- Row 64 -->
                         <tr>
                           <td class="text-nowrap"><a href="{% url 'rental:order_detail' %}">OR20240600029</a></td>
@@ -413,7 +434,7 @@
                                 </a>
                             </td>
                         </tr>
-
+                        
                         <!-- Row 65 -->
                         <tr>
                           <td class="text-nowrap"><a href="{% url 'rental:order_detail' %}">OR20240600030</a></td>
@@ -438,7 +459,7 @@
                                 </a>
                             </td>
                         </tr>
-
+                        
                         <!-- Row 68 -->
                         <tr>
                           <td class="text-nowrap"><a href="{% url 'rental:order_detail' %}">OR20240600031</a></td>
@@ -463,7 +484,7 @@
                                 </a>
                             </td>
                         </tr>
-
+                        
                         <!-- Row 69 -->
                         <tr>
                           <td class="text-nowrap"><a href="{% url 'rental:order_detail' %}">OR20240600032</a></td>
@@ -488,7 +509,7 @@
                                 </a>
                             </td>
                         </tr>
-
+                        
                         <!-- Row 77 -->
                         <tr>
                           <td class="text-nowrap"><a href="{% url 'rental:order_detail' %}">OR20240600033</a></td>
@@ -513,7 +534,7 @@
                                 </a>
                             </td>
                         </tr>
-
+                        
                         <!-- Row 86 -->
                         <tr>
                           <td class="text-nowrap"><a href="{% url 'rental:order_detail' %}">OR20240600034</a></td>
@@ -538,7 +559,7 @@
                                 </a>
                             </td>
                         </tr>
-
+                        
                         <!-- Row 88 -->
                         <tr>
                           <td class="text-nowrap"><a href="{% url 'rental:order_detail' %}">OR20240600035</a></td>
@@ -563,7 +584,7 @@
                                 </a>
                             </td>
                         </tr>
-
+                        
                         <!-- Row 90 -->
                         <tr>
                           <td class="text-nowrap"><a href="{% url 'rental:order_detail' %}">OR20240600036</a></td>
@@ -588,7 +609,7 @@
                                 </a>
                             </td>
                         </tr>
-
+                        
                         <!-- Row 91 -->
                         <tr>
                           <td class="text-nowrap"><a href="{% url 'rental:order_detail' %}">OR20240600037</a></td>
@@ -613,7 +634,7 @@
                                 </a>
                             </td>
                         </tr>
-
+                        
                         <!-- Row 96 -->
                         <tr>
                           <td class="text-nowrap"><a href="{% url 'rental:order_detail' %}">OR20240600038</a></td>
@@ -638,7 +659,7 @@
                                 </a>
                             </td>
                         </tr>
-
+            
                     </tbody>
                     </table>
                   </div>
@@ -646,6 +667,7 @@
               </div>
             </div>
           </div>
+
 
           <div class="tab-pane" id="tab3" aria-labelledby="base-tab13">
             <div class="card">
@@ -657,7 +679,7 @@
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
-                    <table class="table table-striped table-bordered zero-configuration">
+                    <table class="table table-striped table-bordered" id="recurring-order" style="width:100%;">
                       <thead>
                         <tr>
                           <th>ORIGINAL ORDER ID</th>
@@ -670,696 +692,10 @@
                           <th>RECURRING END</th>
                           <th>NUMBER OF ORDERS</th>
                           <th>ACTIONS</th>
-
-                          {% comment %} <th>Customer</th>
-                          <th>Orignal ID</th>
-                          <th>ID</th>
-                          <th>Location</th>
-                          <th>No of Products</th>
-                          <th>Amount</th>
-                          <th>Type</th>
-                          <th>Recurrence Start</th>
-                          <th>Recurrence End</th>
-                          <th>Number Of Order</th>
-                          <th>Actions</th> {% endcomment %}
                         </tr>
                       </thead>
                       <tbody>
-                        <!-- Row 1 -->
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240700045</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20260700045</a></td>
-                          <td class="text-nowrap">Saint-Gobain</td>
-                          <td class="text-right">$1500.00</td>
-                          {% comment %} <td class="text-nowrap">01/04/2024</td> {% endcomment %}
-                          <td class="text-nowrap">JAMES SMITH</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">31/12</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
 
-                        <!-- Row 2 -->
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240700045</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20270700045</a></td>
-                          <td class="text-nowrap">Wavin</td>
-                          <td class="text-right">$1200.00</td>
-                          {% comment %} <td class="text-nowrap">02/07/2024</td> {% endcomment %}
-                          <td class="text-nowrap">MARY JOHNSON</td>
-                          <td class="text-nowrap">Monthly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">30/09</td>
-                          <td>2</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-
-                        <!-- Row 3 -->
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240700050</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20240700050</a></td>
-                          <td class="text-nowrap">Uponor</td>
-                          <td class="text-right">$900.00</td>
-                          {% comment %} <td class="text-nowrap">03/01/2024</td> {% endcomment %}
-                          <td class="text-nowrap">ROBERT WILLIAMS</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">15/05</td>
-                          <td class="text-nowrap">31/10</td>
-                          <td>3</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240700051</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20260700051</a></td>
-                          <td class="text-nowrap">Uponor</td>
-                          <td class="text-nowrap">$1800.00</td>
-                          {% comment %} <td class="text-nowrap">03/01/2024</td> {% endcomment %}
-                          <td class="text-nowrap">PATRICIA BROWN</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">15/05</td>
-                          <td class="text-nowrap">31/10</td>
-                          <td>3</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-
-                        <!-- Row 4 -->
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240700051</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20270700051</a></td>
-                          <td class="text-nowrap">Georg Fischer</td>
-                          <td class="text-right">$1800.00</td>
-                          {% comment %} <td class="text-nowrap">04/10/2024</td> {% endcomment %}
-                          <td class="text-nowrap">MICHAEL JONES</td>
-                          <td class="text-nowrap">Monthly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">30/11</td>
-                          <td>4</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-
-                        <!-- Row 5 -->
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240700051</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20280700051</a></td>
-                          <td class="text-nowrap">Mueller Water Products</td>
-                          <td class="text-right">$2250.00</td>
-                          {% comment %} <td class="text-nowrap">05/05/2024</td> {% endcomment %}
-                          <td class="text-nowrap">LINDA GARCIA</td>
-                          <td class="text-nowrap">Weekly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">31/12</td>
-                          <td>2</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-
-                        <!-- Row 6 -->
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240700052</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20260700052</a></td>
-                          <td class="text-nowrap">JM Eagle</td>
-                          <td class="text-right">$3000.00</td>
-                          {% comment %} <td class="text-nowrap">06/01/2024</td> {% endcomment %}
-                          <td class="text-nowrap">WILLIAM MARTINEZ</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">15/05</td>
-                          <td class="text-nowrap">30/09</td>
-                          <td>2</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240700052</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20270700052</a></td>
-                          <td class="text-nowrap">JM Eagle</td>
-                          <td class="text-right">$1500.00</td>
-                          {% comment %} <td class="text-nowrap">06/01/2024</td> {% endcomment %}
-                          <td class="text-nowrap">ELIZABETH HERNANDEZ</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">15/05</td>
-                          <td class="text-nowrap">30/09</td>
-                          <td>2</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240700053</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20270700053</a></td>
-                          <td class="text-nowrap">JM Eagle</td>
-                          <td class="text-right">$3000.00</td>
-                          {% comment %} <td class="text-nowrap">06/01/2024</td> {% endcomment %}
-                          <td class="text-nowrap">DAVID MILLER</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">15/05</td>
-                          <td class="text-nowrap">30/09</td>
-                          <td>2</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <!-- Row 7 -->
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240700053</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20280700053</a></td>
-                          <td class="text-nowrap">Aalberts</td>
-                          <td class="text-right">$7550.00</td>
-                          {% comment %} <td class="text-nowrap">07/09/2024</td> {% endcomment %}
-                          <td class="text-nowrap">SUSAN DAVIS</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">31/10</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <!-- Row 7/2 -->
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240700054</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20260700054</a></td>
-                          <td class="text-nowrap">Aalberts</td>
-                          <td class="text-right">$15100.00</td>
-                          {% comment %} <td class="text-nowrap">07/09/2024</td> {% endcomment %}
-                          <td class="text-nowrap">MARY JOHNSON</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">31/10</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <!-- Row 8 -->
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240700054</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20270700054</a></td>
-                          <td class="text-nowrap">Tenaris</td>
-                          <td class="text-right">$2700.00</td>
-                          {% comment %} <td class="text-nowrap">08/11/2024</td> {% endcomment %}
-                          <td class="text-nowrap">ROBERT WILLIAMS</td>
-                          <td class="text-nowrap">Monthly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">30/11</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240700054</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20280700054</a></td>
-                          <td class="text-nowrap">Tenaris</td>
-                          <td class="text-right">$2700.00</td>
-                          {% comment %} <td class="text-nowrap">08/11/2024</td> {% endcomment %}
-                          <td class="text-nowrap">PATRICIA BROWN</td>
-                          <td class="text-nowrap">Monthly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">30/11</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-
-                        <!-- Row 9 -->
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240700054</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20290700054</a></td>
-                          <td class="text-nowrap">Valmont Industries</td>
-                          <td class="text-right">$3300.00</td>
-                          {% comment %} <td class="text-nowrap">09/02/2024</td> {% endcomment %}
-                          <td class="text-nowrap">MICHAEL JONES</td>
-                          <td class="text-nowrap">Monthly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">31/12</td>
-                          <td>3</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240300055</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20260300055</a></td>
-                          <td class="text-nowrap">Valmont Industries</td>
-                          <td class="text-right">$3300.00</td>
-                          {% comment %} <td class="text-nowrap">09/02/2024</td> {% endcomment %}
-                          <td class="text-nowrap">LINDA GARCIA</td>
-                          <td class="text-nowrap">Weekly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">31/12</td>
-                          <td>3</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240300055</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20270300055</a></td>
-                          <td class="text-nowrap">Valmont Industries</td>
-                          <td class="text-right">$3300.00</td>
-                          {% comment %} <td class="text-nowrap">09/02/2024</td> {% endcomment %}
-                          <td class="text-nowrap">WILLIAM MARTINEZ</td>
-                          <td class="text-nowrap">Weekly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">31/12</td>
-                          <td>3</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <!-- Row 10 -->
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240300055</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20280300055</a></td>
-                          <td class="text-nowrap">China Lesso Group</td>
-                          <td class="text-right">$3750.00</td>
-                          {% comment %} <td class="text-nowrap">10/08/2024</td> {% endcomment %}
-                          <td class="text-nowrap">ELIZABETH HERNANDEZ</td>
-                          <td class="text-nowrap">Monthly</td>
-                          <td class="text-nowrap">15/05</td>
-                          <td class="text-nowrap">30/09</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-
-                        <!-- Row 11 -->
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240300055</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20290300055</a></td>
-                          <td class="text-nowrap">McWane</td>
-                          <td class="text-right">$4500.00</td>
-                          {% comment %} <td class="text-nowrap">11/04/2024</td> {% endcomment %}
-                          <td class="text-nowrap">DAVID MILLER</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">31/12</td>
-                          <td>2</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-
-                        <!-- Row 12 -->
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240300057</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20240300057</a></td>
-                          <td class="text-nowrap">Mueller Industries</td>
-                          <td class="text-right">$2700.00</td>
-                          {% comment %} <td class="text-nowrap">12/12/2024</td> {% endcomment %}
-                          <td class="text-nowrap">SUSAN DAVIS</td>
-                          <td class="text-nowrap">Monthly</td>
-                          <td class="text-nowrap">15/05</td>
-                          <td class="text-nowrap">30/11</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240300058</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20260300058</a></td>
-                          <td class="text-nowrap">Mueller Industries</td>
-                          <td class="text-right">$2700.00</td>
-                          {% comment %} <td class="text-nowrap">12/12/2024</td> {% endcomment %}
-                          <td class="text-nowrap">JAMES SMITH</td>
-                          <td class="text-nowrap">Monthly</td>
-                          <td class="text-nowrap">15/05</td>
-                          <td class="text-nowrap">30/11</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-
-                        <!-- Row 13 -->
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240300058</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20270300058</a></td>
-                          <td class="text-nowrap">Nord Stream AG</td>
-                          <td class="text-right">$1800.00</td>
-                          {% comment %} <td class="text-nowrap">13/10/2024</td> {% endcomment %}
-                          <td class="text-nowrap">MARY JOHNSON</td>
-                          <td class="text-nowrap">Monthly</td>
-                          <td class="text-nowrap">15/05</td>
-                          <td class="text-nowrap">30/11</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20240300058</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20280300058</a></td>
-                          <td class="text-nowrap">Nord Stream AG</td>
-                          <td class="text-right">$1800.00</td>
-                          {% comment %} <td class="text-nowrap">13/10/2024</td> {% endcomment %}
-                          <td class="text-nowrap">ROBERT WILLIAMS</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">15/05</td>
-                          <td class="text-nowrap">30/11</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <!-- Row 14 -->
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20241100060</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20241100060</a></td>
-                          <td class="text-nowrap">Shanghai Baosteel Group</td>
-                          <td class="text-right">$4200.00</td>
-                          {% comment %} <td class="text-nowrap">14/03/2024</td> {% endcomment %}
-                          <td class="text-nowrap">ROBERT WILLIAMS</td>
-                          <td class="text-nowrap">Yearly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">31/12</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-
-                        <!-- Row 15 -->
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20241100060</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20261100060</a></td>
-                          <td class="text-nowrap">Nord Stream AG</td>
-                          <td class="text-right">$3150.00</td>
-                          {% comment %} <td class="text-nowrap">15/04/2024</td> {% endcomment %}
-                          <td class="text-nowrap">Jhon Joy</td>
-                          <td class="text-nowrap">Monthly</td>
-                          <td class="text-nowrap">15/05</td>
-                          <td class="text-nowrap">31/10</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20241100060</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20271100060</a></td>
-                          <td class="text-nowrap">Nord Stream AG</td>
-                          <td class="text-right">$3150.00</td>
-                          {% comment %} <td class="text-nowrap">15/04/2024</td> {% endcomment %}
-                          <td class="text-nowrap">Jhon Joy</td>
-                          <td class="text-nowrap">Monthly</td>
-                          <td class="text-nowrap">15/05</td>
-                          <td class="text-nowrap">31/10</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-
-                        <!-- Row 16 -->
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20241100060</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20281100060</a></td>
-                          <td class="text-nowrap">Wavin</td>
-                          <td class="text-right">$2400.00</td>
-                          {% comment %} <td class="text-nowrap">16/12/2024</td> {% endcomment %}
-                          <td class="text-nowrap">Jhon Joy</td>
-                          <td class="text-nowrap">Monthly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">31/12</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20241100060</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20291100060</a></td>
-                          <td class="text-nowrap">Wavin</td>
-                          <td class="text-right">$2400.00</td>
-                          {% comment %} <td class="text-nowrap">16/12/2024</td> {% endcomment %}
-                          <td class="text-nowrap">London</td>
-                          <td class="text-nowrap">Weekly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">31/12</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20241200175</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20241200175</a></td>
-                          <td class="text-nowrap">Wavin</td>
-                          <td class="text-right">$2400.00</td>
-                          {% comment %} <td class="text-nowrap">16/12/2024</td> {% endcomment %}
-                          <td class="text-nowrap">London</td>
-                          <td class="text-nowrap">Weekly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">31/12</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <!-- Row 17 -->
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20241200175</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20291200175</a></td>
-                          <td class="text-nowrap">Uponor</td>
-                          <td class="text-right">$1950.00</td>
-                          {% comment %} <td class="text-nowrap">17/05/2024</td> {% endcomment %}
-                          <td class="text-nowrap">Helsinki</td>
-                          <td class="text-nowrap">Weekly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">30/11</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-
-                        <!-- Row 18 -->
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20241200221</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20241200221</a></td>
-                          <td class="text-nowrap">McWane</td>
-                          <td class="text-right">$3600.00</td>
-                          {% comment %} <td class="text-nowrap">18/06/2024</td> {% endcomment %}
-                          <td class="text-nowrap">Dallas</td>
-                          <td class="text-nowrap">Weekly</td>
-                          <td class="text-nowrap">15/05</td>
-                          <td class="text-nowrap">30/11</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-
-                        <!-- Row 19 -->
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20241200221</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20261200221</a></td>
-                          <td class="text-nowrap">Tenaris</td>
-                          <td class="text-right">$1350.00</td>
-                          {% comment %} <td class="text-nowrap">19/04/2024</td> {% endcomment %}
-                          <td class="text-nowrap">Milan</td>
-                          <td class="text-nowrap">Weekly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">30/09</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
-
-                        <!-- Row 20 -->
-                        <tr>
-                          <td><a href="{% url 'rental:order_overview' %}">O20241200223</a></td>
-                          <td><a href="{% url 'rental:order_detail' %}">OR20281200223</a></td>
-                          <td class="text-nowrap">Shanghai Baosteel Group</td>
-                          <td class="text-right">$3900.00</td>
-                          {% comment %} <td class="text-nowrap">20/01/2024</td> {% endcomment %}
-                          <td class="text-nowrap">Beijing</td>
-                          <td class="text-nowrap">Weekly</td>
-                          <td class="text-nowrap">01/05</td>
-                          <td class="text-nowrap">31/12</td>
-                          <td>5</td>
-                          <td>
-                            <a href="#" data-toggle="modal" data-target="#update_recurring_order">
-                              <i class="ft-edit font-medium-3 mr-2"></i>
-                            </a>
-                            <a href="javascript:;" class="danger p-0">
-                              <i class="ft-trash-2 font-medium-3"></i>
-                            </a>
-                          </td>
-                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -1376,152 +712,104 @@
 
 
 <!-- Update Return Order Start -->
-<div class="modal fade text-left" id="update_return_order" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true" data-backdrop="false">
+<div class="modal fade text-left" id="update_return_order" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33"
+  aria-hidden="true" data-backdrop="false">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-          <h4 class="modal-title" id="myModalLabel5">R-PROJ016968: Update Return Order</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
-          </button>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel5">R-PROJ016968: Update Return Order</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
+        </button>
       </div>
       <div class="modal-body">
-          <div class="row">
-            <div class="col-6 mb-2">
-              <label for="" class="form-label">Start Date</label>
-              <input type="date" class="form-control" value="2024-02-12">
-            </div>
-            <div class="col-6 mb-2">
-              <label for="" class="form-label">End Date</label>
-              <input type="date" class="form-control" value="2024-10-29">
-            </div>
-            {% comment %} <div class="col-6 mb-2">
-                <label for="" class="form-label">Customer</label>
-                <input type="text" class="form-control" value="Aalberts" disabled>
-            </div>
-            <div class="col-6 mb-2">
-              <label for="orderDate" class="form-label">Order Date</label>
-              <input type="date" id="orderDate" class="form-control" value="2024-09-07" disabled>
-            </div>
-            <div class="col-6 mb-2">
-              <label for="" class="form-label">Location</label>
-              <input type="text" class="form-control" value="Utrecht" disabled>
-            </div>
-            <div class="col-6 mb-2">
-              <label for="" class="form-label">No Of Product</label>
-              <input type="text" class="form-control" value="5" disabled>
-            </div>
-            <div class="col-6 mb-2">
-              <label for="" class="form-label">Amount</label>
-              <input type="text" class="form-control" value="7550" disabled>
-            </div> {% endcomment %}
+        <div class="row">
+          <div class="col-6 mb-2">
+            <label for="" class="form-label">Start Date</label>
+            <input type="date" class="form-control" value="2024-02-12">
+          </div>
+          <div class="col-6 mb-2">
+            <label for="" class="form-label">End Date</label>
+            <input type="date" class="form-control" value="2024-10-29">
+          </div>
+          {% comment %} <div class="col-6 mb-2">
+            <label for="" class="form-label">Customer</label>
+            <input type="text" class="form-control" value="Aalberts" disabled>
+          </div>
+          <div class="col-6 mb-2">
+            <label for="orderDate" class="form-label">Order Date</label>
+            <input type="date" id="orderDate" class="form-control" value="2024-09-07" disabled>
+          </div>
+          <div class="col-6 mb-2">
+            <label for="" class="form-label">Location</label>
+            <input type="text" class="form-control" value="Utrecht" disabled>
+          </div>
+          <div class="col-6 mb-2">
+            <label for="" class="form-label">No Of Product</label>
+            <input type="text" class="form-control" value="5" disabled>
+          </div>
+          <div class="col-6 mb-2">
+            <label for="" class="form-label">Amount</label>
+            <input type="text" class="form-control" value="7550" disabled>
+          </div> {% endcomment %}
 
-          </div>
+        </div>
       </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Cancel</button>
-              <button type="button" class="btn btn-success">Complete</button>
-          </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Cancel</button>
+        <button type="button" class="btn btn-success">Complete</button>
       </div>
+    </div>
   </div>
 </div>
 <!-- Update Return Order End -->
 
 <!-- Rental Stage Start -->
-<div class="modal fade text-left" id="rental_stage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true" data-backdrop="false">
+<div class="modal fade text-left" id="rental_stage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33"
+  aria-hidden="true" data-backdrop="false">
   <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-          <h4 class="modal-title" id="myModalLabel5">PROJ016968 : Rental Stage</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
-          </button>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel5">PROJ016968 : Rental Stage</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
+        </button>
       </div>
       <div class="modal-body">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>IDs</th>
-                <th>Stages</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>PROJ016968 1/2</td>
-                <td><span class="badge bg-light-primary">Check Out</span></td>
-              </tr>
-              <tr>
-                <td>PROJ016968 2/2</td>
-                <td><span class="badge bg-light-warning">Pick UP</span></td>
-              </tr>
-            </tbody>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>IDs</th>
+              <th>Stages</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>PROJ016968 1/2</td>
+              <td><span class="badge bg-light-primary">Check Out</span></td>
+            </tr>
+            <tr>
+              <td>PROJ016968 2/2</td>
+              <td><span class="badge bg-light-warning">Pick UP</span></td>
+            </tr>
+          </tbody>
 
 
-          </table>
+        </table>
       </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Close</button>
-          </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Close</button>
       </div>
+    </div>
   </div>
 </div>
 <!-- Rental Stage End -->
 
 <!-- Update Recurring Order -->
-<div class="modal fade text-left" id="update_recurring_order" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true" data-backdrop="false">
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-          <h4 class="modal-title" id="myModalLabel5">DIL-1 : PickUp Ticket Detail</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
-          </button>
-      </div>
-      <div class="modal-body">
-          <div class="row">
-            <div class="col-6 mb-2">
-                <label for="" class="form-label">Customer</label>
-                <input type="text" class="form-control" value="Aalberts" disabled>
-            </div>
-            <div class="col-6 mb-2">
-              <label for="orderDate" class="form-label">Order Date</label>
-              <input type="date" id="orderDate" class="form-control" value="2024-09-07" disabled>
-            </div>
-            <div class="col-6 mb-2">
-              <label for="" class="form-label">Location</label>
-              <input type="text" class="form-control" value="Utrecht" disabled>
-            </div>
-            <div class="col-6 mb-2">
-              <label for="" class="form-label">No Of Product</label>
-              <input type="text" class="form-control" value="5" disabled>
-            </div>
-            <div class="col-6 mb-2">
-              <label for="" class="form-label">Amount</label>
-              <input type="text" class="form-control" value="7550" disabled>
-            </div>
-            <div class="col-6 mb-2">
-              <label for="" class="form-label">Type</label>
-              <select name="" id="" class="select2 form-control">
-                <option disabled selected>Yearly</option>
-                <option value="Monthly">Monthly</option>
-                <option value="Quarterly">Quarterly</option>
-              </select>
-            </div>
-            <div class="col-6 mb-2">
-              <label for="" class="form-label font-weight-bold">Rental Period </label>
-              <div class="reportrange form-control">
-                <i class="fa fa-calendar"></i>&nbsp;
-                <span></span> <i class="fa fa-caret-down"></i>
-              </div>
-            </div>
+<div class="modal fade text-left" id="update_recurring_order" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel33" aria-hidden="true" data-backdrop="false">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document" id="update_recurring_order_body">
 
-          </div>
-      </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Cancel</button>
-              <button type="button" class="btn btn-success">Complete</button>
-          </div>
-      </div>
   </div>
 </div>
 <!-- Update Recurring Order -->
@@ -1543,31 +831,31 @@
     }
 
     document.querySelectorAll('.nav-link').forEach(function (tab) {
-        tab.addEventListener("click", function (event) {
-            var tabId = event.target.getAttribute("aria-controls");
-            var newUrl = new URL(window.location.href);
+      tab.addEventListener("click", function (event) {
+        var tabId = event.target.getAttribute("aria-controls");
+        var newUrl = new URL(window.location.href);
 
-            if (tabId === "tab3") {
-                newUrl.searchParams.set("tab", "recurring_order");
-            } else if (tabId === "tab2") {
-                newUrl.searchParams.set("tab", "return_order");
-            } else {
-                newUrl.searchParams.set("tab", "order");
-            }
+        if (tabId === "tab3") {
+          newUrl.searchParams.set("tab", "recurring_order");
+        } else if (tabId === "tab2") {
+          newUrl.searchParams.set("tab", "return_order");
+        } else {
+          newUrl.searchParams.set("tab", "order");
+        }
 
-            window.history.pushState({}, "", newUrl);
-        });
+        window.history.pushState({}, "", newUrl);
+      });
     });
-});
+  });
 </script>
 <script>
 
-  targets = [1,2,-3]
+  targets = [1, 2, -3]
   table_id = "#order-list";
   url = "{% url 'rental:rent_process:order-list-ajax' %}";
   columns = [
     { data: 'order_id', name: 'order_id' },
-    { data: 'delivery_id', name: 'delivery_id'},
+    { data: 'delivery_id', name: 'delivery_id' },
     { data: 'status', name: 'status' },
     { data: 'customer', name: 'customer' },
     { data: 'order_amount', name: 'rent_amount' },
@@ -1583,3 +871,139 @@
 <script src="{% static 'app/js/jquery.min.js' %}"></script>
 <script src="{% static 'vendors/js/datatable/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'vendors/js/datatable/dataTables.bootstrap4.min.js' %}"></script>
+
+<script>
+  var table_task = initializeDataTable();
+
+  function initializeDataTable() {
+    return $('#recurring-order').DataTable({
+      processing: true,
+      columnDefs: [
+        { orderable: false, targets: [-1, -2] },
+      ],
+      serverSide: true,
+      destroy: true,
+      ajax: {
+        url: "{% url 'rental:rent_process:recurring-order-ajax' %}",
+        type: 'GET',
+      },
+      columns: [
+        { data: 'order_id', name: 'order__order_id' },
+        { data: 'recurring_order_id', name: 'recurring_order_id' },
+        { data: 'customer', name: 'order__customer__name' },
+        { data: 'order_amount', name: 'order__rent_amount' },
+        { data: 'account_manager', name: 'order__account_manager__name' },
+        { data: 'recurring_type', name: 'order__recurring_type' },
+        { data: 'repeat_start_date', name: 'order__repeat_start_date' },
+        { data: 'repeat_end_date', name: 'order__repeat_end_date' },
+        { data: 'number_of_orders', name: 'number_of_orders' },
+        { data: 'actions', name: 'actions', orderable: false, searchable: false }
+      ],
+
+    });
+  }
+</script>
+
+
+<!-- showing an proper message after storing in local and reload tha page  -->
+<script>
+  $(document).on('click', '.rent-process-delete-btn', function (e) {
+    var id = $(this).data("id")
+    var user_name = $(this).data("title")
+    if (user_name == "None") {
+      user_name = ""
+    }
+    var url = $(this).data("url")
+    var delete_ele = $(this)
+
+    Swal.fire({
+      html: `Are you sure you want to delete <b>${user_name}</b>?`,
+      icon: 'question',
+      showCloseButton: true,
+      showCancelButton: true,
+      confirmButtonColor: "#7442DB",
+
+    }).then((result) => {
+
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        $.ajax({
+          type: "POST",
+          url: url,
+          data: {
+            "id": id,
+            "csrfmiddlewaretoken": '{{ csrf_token }}'
+          },
+          success: function (data) {
+            if (data.code === "200") {
+              localStorage.setItem('toastr_message', JSON.stringify({
+                type: 'info',
+                message: data.message,
+                title: 'Deleted'
+              }));
+
+              window.location.reload();
+            } else if (data.code === "404") {
+              localStorage.setItem('toastr_message', JSON.stringify({
+                type: 'error',
+                message: data.message,
+                title: 'Error'
+              }));
+
+              window.location.reload();
+            }
+          },
+          error: function (xhr, status, error) {
+            Swal.fire("Error", "Unable to process the request. Please try again.", "error");
+          }
+        });
+      } else {
+        Swal.fire("Cancel delete", "", "info");
+      }
+    })
+  })
+  document.addEventListener('DOMContentLoaded', function () {
+    // Check if there's a toastr message in localStorage
+    const toastrData = localStorage.getItem('toastr_message');
+
+    if (toastrData) {
+      const { type, message, title } = JSON.parse(toastrData);
+
+      // Show toastr based on the type
+      if (type === 'info') {
+        toastr.info(message, title, {
+          closeButton: true,
+          progressBar: true,
+          positionClass: 'toast-bottom-right',
+          timeOut: 6000
+        });
+      } else if (type === 'error') {
+        toastr.error(message, title, {
+          closeButton: true,
+          progressBar: true,
+          positionClass: 'toast-bottom-right',
+          timeOut: 6000
+        });
+      }
+
+      // Clear the toastr message from localStorage
+      localStorage.removeItem('toastr_message');
+    }
+  });
+</script>
+
+<!-- swap the form in to the model -->
+<script>
+  $(document).on('click', '.htmx-trigger-btn', function (e) {
+    url = $(this).data("url")
+    console.log('url: ', url);
+    htmx.ajax('GET',
+      url,
+      {
+        target: '#update_recurring_order_body',
+        swap: 'innerHTML',
+      }).then(() => {
+        $('#update_recurring_order').toggleClass('hidden');
+      })
+  })
+</script>

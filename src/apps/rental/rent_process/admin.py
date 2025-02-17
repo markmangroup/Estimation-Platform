@@ -7,11 +7,23 @@ from apps.rental.rent_process.models import (
     RecurringOrder,
     ReturnDelivery,
     ReturnOrder,
+    OrderFormPermissionModel,
 )
 
-admin.site.register(Order)
+class OrderItemInline(admin.TabularInline):
+    model = OrderItem
+    extra = 1  # Kitne extra empty rows show karni hain
+
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ("order_id", "customer", "order_status", "rental_start_date", "rental_end_date")
+    search_fields = ("order_id", "customer__name")
+    list_filter = ("order_status", "repeat_type")
+    inlines = [OrderItemInline]
+
+admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderItem)
 admin.site.register(Delivery)
 admin.site.register(ReturnDelivery)
 admin.site.register(RecurringOrder)
 admin.site.register(ReturnOrder)
+admin.site.register(OrderFormPermissionModel)

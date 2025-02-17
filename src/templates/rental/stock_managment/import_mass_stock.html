@@ -1,6 +1,6 @@
 {% load static %}
 
-<form hx-post="{% url 'rental:stock_management:import-mass_stock' %}"  enctype="multipart/form-data" novalidate>
+<form hx-post="{% url 'rental:stock_management:import-mass_stock' %}"  enctype="multipart/form-data" novalidate> 
 {% csrf_token %}
 <div class="modal-body">
     <label>Upload File </label>
@@ -45,7 +45,7 @@
                     <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body">            
                     {% include "rental/stock_managment/confirmation_mass_stock.html" %}
             </div>
             <div class="modal-footer">
@@ -75,11 +75,11 @@
         if (evt.detail.xhr.status === 200) {
 
             var response = JSON.parse(evt.detail.xhr.response);
-            console.log(response);
+            console.log(response);  
             if (response.status === 'success') {
                 $loader.hide();
                 evt.detail.shouldSwap = false;
-
+                
                 // Check for skipped records and show SweetAlert if any
                 if (response.skipped_records && response.skipped_records.length > 0) {
                     // Show SweetAlert with skipped records info
@@ -111,6 +111,7 @@
 <script>
     document.getElementById("save-mass-update").addEventListener("click", function() {
         var recordsToSave = [];
+    
 
         $("#mass_change .modal-body tr").each(function() {
             var record = {
@@ -125,6 +126,7 @@
                 recordsToSave.push(record);
             }
         });
+    
 
         $.ajax({
             url: "{% url 'rental:stock_management:save_mass_stock_adjustments' %}",
