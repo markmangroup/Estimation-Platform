@@ -231,12 +231,18 @@ class DeleteSelectedTask(CustomViewMixin):
                 ),
             )
 
+            LOGGER.info(f"-- Select Task Code -- {select_task_code}")
+            LOGGER.info(f"-- Task Mapping Object -- {task_mapping}")
+
             select_task_code.delete()
             task_mapping.delete()
+            LOGGER.info(f"-- Deleted Task In Sync -- ")
 
-            self._code = 200
-            self._message = "Task Deleted Successfully"
-            self._status = "success"
+            # :: Deprecated ::
+            # self._code = 200
+            # self._message = "Task Deleted Successfully"
+            # self._status = "success"
+            messages.info(self.request, "Task Deleted Successfully")
 
             # :: Deprecated ::
             # messages.info(self.request, "Task Deleted Successfully")

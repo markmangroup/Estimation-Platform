@@ -26,6 +26,7 @@
               {% endfor %}
             </select>
           </div>
+          
 
           <div class="col-3">
             <label for="equipment_material_group" class="form-label font-weight-bold">Equipment Material Group</label>
@@ -35,6 +36,7 @@
               {% endfor %}
             </select>
           </div>
+          
 
           <div class="col-3">
             <label for="equipment_name" class="form-label font-weight-bold">Equipment Name</label>
@@ -44,6 +46,7 @@
               {% endfor %}
             </select>
           </div>
+          
 
           <div class="col-3">
             <label for="location" class="form-label font-weight-bold">Location</label>
@@ -54,6 +57,7 @@
             </select>
           </div>
 
+          <!-- Filters End -->    
           <!-- Filters End -->
       </div>
   </div>
@@ -87,7 +91,7 @@
                         <div class="modal-content">
                           <div class="modal-header">
                               <h4 class="modal-title" id="myModalLabel5">
-                                Import Order
+                                Import Order 
                               </h4>
                               <button
                                 type="button"
@@ -101,12 +105,12 @@
                               </button>
                           </div>
                           <div class="modal-body" id="stock-massform">
-
+                          
                           </div>
-
+                          
                         </div>
                       </div>
-                    </div>
+                    </div> 
                     <!-- Import Order Modal -->
                 </div>
               </div>
@@ -137,9 +141,9 @@
     </div>
 
     <div id="stockform">
-
+      
     </div>
-
+    
   </div>
 </section>
 
@@ -156,7 +160,7 @@
 
 <script>
 
- $(document).ready(function() {
+ $(document).ready(function() { 
       $("#stock_management_list").DataTable({
           autoWidth: false,
           order: [[0, 'asc']],
@@ -167,7 +171,7 @@
             type: 'GET',
             data: function(d) {
                 return $.extend({}, d, set_filters());
-            }
+            } 
           },
           columns : [
             { data: 'equipment_id', name: 'rental_product__equipment_id'},
@@ -178,7 +182,7 @@
             { data: 'actions', name: 'actions', orderable: false, searchable: false }
         ],
       });
-
+  
       function set_filters() {
           return {
             equipment_id: $("#equipment_id").val(),
@@ -188,13 +192,13 @@
           };
       }
   });
-
+  
   $('#equipment_id, #equipment_material_group, #equipment_name, #location').on("change", function() {
     $("#stock_management_list").DataTable().ajax.reload();
-  });
-
+  }); 
+  
   </script>
-
+  
 <!-- Download CSV formate Script Start -->
 <script>
   function DownloadProductsInCSV(id, fileName) {
@@ -243,22 +247,22 @@
 <!-- Date picker Start -->
 <script type="text/javascript">
   $(document).ready(function() {
-
+  
       var start = moment().subtract(29, 'days');
       var end = moment();
-
+  
       function cb(start, end) {
           $('.reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
       }
-
+  
       $('.reportrange').daterangepicker({
           startDate: start,
           endDate: end,
           ranges: {}
       }, cb);
-
+  
       cb(start, end);
-
+  
   });
 </script>
 <!-- Date picker End -->
@@ -296,13 +300,13 @@
 
     // Event handlers
     $plusInput.on('input', function() {
-      updateRevisedQuantity();
-      updateMinusQuantity();
+      updateRevisedQuantity(); 
+      updateMinusQuantity();   
     });
 
     $minusInput.on('input', function() {
-      updateRevisedQuantity();
-      updatePlusQuantity();
+      updateRevisedQuantity(); 
+      updatePlusQuantity();    
     });
 
     $revisedInput.on('input', function() {
@@ -322,7 +326,7 @@
   $(document).ready(function() {
     // Get today's date
     var today = new Date();
-
+    
     // Set the input field to today's date
     var todayStr = today.toISOString().split('T')[0];
     $('.today-date').val(todayStr);
