@@ -1,14 +1,13 @@
-from datetime import datetime
 import os
+from datetime import datetime
 
 import pandas as pd
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.utils.timezone import now
+
 from apps.constants import LOGGER
-from apps.rental.product.models import RentalProduct
-from apps.rental.rent_process.models import Delivery, Order, OrderItem
-from apps.rental.customer.models import RentalCustomer
 from apps.rental.account_manager.models import AccountManager
+from apps.rental.customer.models import RentalCustomer
+from apps.rental.rent_process.models import Delivery, Order
 
 
 def convert_date(date_str):
@@ -17,7 +16,7 @@ def convert_date(date_str):
         return None
     try:
         return datetime.strptime(date_str, "%d/%m/%Y").strftime("%Y-%m-%d")
-    except Exception as e:
+    except ValueError:
         return None
 
 
@@ -30,10 +29,8 @@ def import_order_from_file(file: InMemoryUploadedFile) -> dict:
             or errors if the columns do not match or records are skipped.
     """
     expected_columns = {
+        "Order ID",
         "Customer",
-        "Product",
-        "Quentity",
-        "Per Unit Price",
         "Order Amount",
         "Account Manager",
         "Start Date",
@@ -66,9 +63,18 @@ def import_order_from_file(file: InMemoryUploadedFile) -> dict:
     skipped_records = []
 
     for record in records:
-        product = record.get("Product")
-        quentity = record.get("Quentity")
-        per_unit_price = record.get("Per Unit Price")
+        order_id = record.get("Order ID")
+        if not isinstance(order_id, (int, str)):
+            skipped_records.append(record)
+            context["messages"].append(f"Invalid 'Order ID' in record: {record}. Must be an integer.")
+            continue
+
+        try:
+            order_id = int(order_id)
+        except ValueError:
+            skipped_records.append(record)
+            context["messages"].append(f"Invalid 'Order ID' in record: {record}. Must be an integer.")
+            continue
 
         rent_amount = record["Order Amount"].replace("$", "").replace(",", "").strip()
         try:
@@ -80,57 +86,33 @@ def import_order_from_file(file: InMemoryUploadedFile) -> dict:
 
         customer = RentalCustomer.objects.filter(customer_id=record["Customer"]).first()
         account_manager = AccountManager.objects.filter(email=record["Account Manager"]).first()
-        skip_product = RentalProduct.objects.filter(equipment_id=product).first()
 
-        if not all([customer, account_manager, skip_product]):
+        if not customer or not account_manager:
             skipped_records.append(record)
-            missing_entities = []
-            
-            if not customer:
-                missing_entities.append("Customer")
-            if not account_manager:
-                missing_entities.append("Account Manager")
-            if not skip_product:
-                missing_entities.append("Rental Product")
-            context["messages"].append(
-                f"{', '.join(missing_entities)} not found for Order ID: {customer}. Skipping record."
-            )
+            missing_entity = "Customer" if not customer else "Account Manager"
+            context["messages"].append(f"{missing_entity} not found for Order ID: {order_id}. Skipping record.")
             continue
 
         order_data = {
+            "order_id": order_id,
             "customer": customer,
             "account_manager": account_manager,
             "rent_amount": rent_amount,
-            "rental_start_date": convert_date(record["Start Date"]),
-            "rental_end_date": convert_date(record["End Date"]),
+            "repeat_start_date": convert_date(record["Start Date"]),
+            "repeat_end_date": convert_date(record["End Date"]),
             "repeat_type": record["Reccurence Type"],
         }
+        print(f"Processing Order Data: {order_data}")
 
         try:
             order, created = Order.objects.update_or_create(
-                customer=customer,
+                order_id=order_id,
                 defaults=order_data,
             )
             action = "Created" if created else "Updated"
-            context["messages"].append(f"{action} product with Order ID: {order.order_id}")
-
-            # Create OrderItem for each product in the record
-            if product and quentity and per_unit_price:
-                try:
-                    rental_product = RentalProduct.objects.get(equipment_id=product)
-                    order_item, _ = OrderItem.objects.update_or_create(  # Tuple unpacking
-                        order=order,
-                        product=rental_product,
-                        defaults={
-                            "quantity": int(quentity),
-                            "per_unit_price": float(per_unit_price),
-                        }
-                    )
-                    context["messages"].append(f"Created OrderItem for Order ID: {order.order_id} and Product: {product}")
-                except RentalProduct.DoesNotExist:
-                    skipped_records.append(record)
-                    context["messages"].append(f"Product '{product}' not found for Order ID: {order.order_id}. Skipping OrderItem creation.")
+            context["messages"].append(f"{action} product with Order ID: {order_id}")
         except Exception as e:
+            print(f"Error: {e}")
             skipped_records.append(record)
             context["messages"].append(f"Error processing record: {record}. Error: {str(e)}")
 
@@ -139,17 +121,3 @@ def import_order_from_file(file: InMemoryUploadedFile) -> dict:
 
     context["skipped_records"] = skipped_records
     return context
-
-def generate_delivery_id(order, delivery_type="DEL"):
-    """
-    Generate a unique delivery_id for a new delivery.
-    
-    Format:
-    - Delivery: 'O20240200018-1'
-    - Return Delivery: 'O20240200018-R1'
-    """
-    order_prefix = f"O{now().strftime('%Y%m')}{str(order.id).zfill(5)}"
-    count = Delivery.objects.filter(order=order).count() + 1
-    suffix = f"-R{count}" if delivery_type == "RET" else f"-{count}"
-    
-    return f"{order_prefix}{suffix}"

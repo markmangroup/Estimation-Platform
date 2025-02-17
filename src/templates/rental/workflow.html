@@ -28,7 +28,7 @@
                 <div class="table-responsive">
                   <table class="table table-striped table-bordered">
                     <tbody>
-
+                      
                       <!-- Create Order -->
                       <tr>
                         <th scope="row">Create Order</th>
@@ -92,7 +92,7 @@
                           </select>
                           <span id="warningMessage" class="warning-message"><i class="ft-alert-triangle"></i> This persons does not have access, <a> <br> <small style="color: cadetblue;">Give Access?</small> <i class="ft-check success"></i></a> <a><i class="ft-x danger"></i></a></span>
                         </td>
-
+                        
                       </tr>
 
                       <!-- Pick Up -->
@@ -126,7 +126,7 @@
                           </select>
                         </td>
                       </tr>
-
+                      
                       <!-- Check Out -->
                       <tr>
                         <th scope="row">Check out</th>
@@ -158,7 +158,7 @@
                           </select>
                         </td>
                       </tr>
-
+                      
                       <!-- Delivery -->
                       <tr>
                         <th scope="row">Deliveries</th>
@@ -190,7 +190,7 @@
                           </select>
                         </td>
                       </tr>
-
+                      
                       <!-- Create Return Order -->
                       <tr>
                         <th scope="row">Create Return Order</th>
@@ -376,7 +376,7 @@
     multiple: true,
   }).on("change", function(event){
     var value = $(this).val();
-
+    
     if(value.length == 0){
       showWarningMessage('none');
     }

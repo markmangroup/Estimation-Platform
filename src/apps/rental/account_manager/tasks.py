@@ -18,7 +18,7 @@ def import_account_manager_from_xlsx(file: InMemoryUploadedFile) -> dict:
     skip_account_manager = []
 
     # Define the expected columns
-    expected_columns = ["Manager id","Account Manager Name", "Email"]
+    expected_columns = ["Name", "Email"]
 
     # Load the data from the file
     try:
@@ -51,13 +51,11 @@ def import_account_manager_from_xlsx(file: InMemoryUploadedFile) -> dict:
     for record in account_manager_list:
         try:
 
-            manager_id = record["Manager id"]
-            name = record["Account Manager Name"]
+            name = record["Name"]
             email = record["Email"]
 
             if email:
                 account_manager, created = AccountManager.objects.update_or_create(
-                    manager_id=manager_id,
                     email=email,
                     defaults={"name": name},
                 )

@@ -11,6 +11,3 @@ venv/
 # Ignore Python cache directories
 __pycache__/
 staticfiles/
-
-# Media files
-media/

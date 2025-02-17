@@ -9,7 +9,6 @@ class RentalCustomer(BaseModel):
 
     internal_id = models.IntegerField(_("Internal ID"), unique=True)
     customer_id = models.CharField(_("ID"), max_length=255, unique=True)
-    customer_email = models.EmailField(_("Rental Cutomer Email"))
     name = models.CharField(_("Customer Name"), max_length=255)
     sales_rep = models.CharField(_("Sales Rep."), max_length=255, blank=True, null=True)
     billing_address_1 = models.TextField(_("Billing Address 1"), blank=True, null=True)

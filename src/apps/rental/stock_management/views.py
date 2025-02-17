@@ -1,19 +1,24 @@
 import datetime
 import json
+
 from django import forms
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from django.db.models import Q
+from django.template.loader import get_template, render_to_string
 from django.urls import reverse
 from django.views import View
-from apps.mixin import CustomDataTableMixin, FormViewMixin, UpdateViewMixin, WarehouseViewMixin
+
+from apps.mixin import (
+    CustomDataTableMixin,
+    FormViewMixin,
+    UpdateViewMixin,
+    WarehouseViewMixin,
+)
 from apps.rental.product.models import RentalProduct
-from apps.rental.stock_management import tasks
-from apps.rental.stock_management import forms
+from apps.rental.stock_management import forms, tasks
 from apps.rental.stock_management.forms import StockAdjustmentForm
 from apps.rental.stock_management.models import StockAdjustment
-from django.template.loader import get_template
-from django.template.loader import render_to_string
 
 
 # Create your views here.

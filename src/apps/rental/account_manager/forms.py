@@ -15,7 +15,7 @@ class ImportAccountManagerCSVForm(forms.Form):
         )
     )
 
-    REQUIRED_COLUMNS = ["Manager id","Account Manager Name", "Email"]
+    REQUIRED_COLUMNS = ["Name", "Email"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
