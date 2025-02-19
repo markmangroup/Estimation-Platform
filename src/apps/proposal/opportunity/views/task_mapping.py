@@ -72,7 +72,7 @@ class AssignProdLabor(TemplateViewMixin):
                     quantity=prod_obj.combined_quantities_from_both_import,
                     item_code=prod_obj.item_number,
                     description=prod_obj.description,
-                    standard_cost=2,
+                    standard_cost=0,
                     is_assign=True,
                 )
                 assigned_product.save()
@@ -635,6 +635,9 @@ class AddTaskView(ViewMixin):
 
         opportunity = get_object_or_404(Opportunity, document_number=document_number)
 
+        available_tasks = TaskMapping.objects.filter(
+            opportunity=opportunity
+        )
         for task_name in tasks:
             task_instance = get_object_or_404(Task, name=task_name)
             if description:
@@ -642,9 +645,21 @@ class AddTaskView(ViewMixin):
             else:
                 task_description = task_instance.description
 
-            TaskMapping.objects.create(
-                opportunity=opportunity, task=task_instance, code=task_instance.name, description=task_description
-            )
+            task_mapping_data = {
+                "opportunity": opportunity,
+                "task": task_instance,
+                "code": task_instance.name,
+                "description": task_description,
+            }
+
+            if available_tasks.exists():
+                first_task = available_tasks.first()
+                task_mapping_data.update({
+                    "labor_gp_percent": first_task.labor_gp_percent,
+                    "mat_gp_percent": first_task.mat_gp_percent,
+                })
+
+            TaskMapping.objects.create(**task_mapping_data)
 
         data = TaskMappingTable.generate_table(opportunity)
 

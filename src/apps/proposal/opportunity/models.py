@@ -330,13 +330,17 @@ class TaskMapping(BaseModel):
     def labor_sell(self):
         """
         Calculate `Labor sell` based on `labor_cost` and `labor_gp_percent`.
+
+        NOTE:
+            Formula : labor_cost + (labor_cost * (labor_gp_percent / 100))
         """
         if self.labor_cost is not None and self.labor_gp_percent is not None:
             try:
                 labor_cost = float(self.labor_cost)
                 labor_gp_percent = float(self.labor_gp_percent) / 100
-                if (1 - labor_gp_percent) != 0:
-                    return round(labor_cost / (1 - labor_gp_percent), 2)
+                # if (1 - labor_gp_percent) != 0:
+                    # return round(labor_cost / (1 - labor_gp_percent), 2)
+                return round(labor_cost + (labor_cost * (labor_gp_percent)), 2)
             except (ValueError, ZeroDivisionError):
                 return 0
         return 0
@@ -387,13 +391,17 @@ class TaskMapping(BaseModel):
     def mat_plus_mu(self):
         """
         Calculate `MAT + Mu` based on `mat_cost` and `mat_gp_percent`.
+
+        NOTE:
+            Formula: mat_plus_mu = mat_cost + (mat_cost * (mat_gp_percent / 100))
         """
         if self.mat_gp_percent is not None:
             try:
                 mat_cost = float(self.mat_cost)
                 mat_gp_percent = float(self.mat_gp_percent) / 100
-                if (1 - mat_gp_percent) != 0:
-                    return round(mat_cost / (1 - mat_gp_percent), 2)
+                # if (1 - mat_gp_percent) != 0:
+                #     return round(mat_cost / (1 - mat_gp_percent), 2)
+                return round(mat_cost + (mat_cost * (mat_gp_percent)))
             except (ValueError, ZeroDivisionError):
                 return 0
         return 0
@@ -414,12 +422,16 @@ class TaskMapping(BaseModel):
     def sales_tax(self):
         """
         Calculate `Sales Tax` as 25% of `mat_plus_mu`.
+
+        NOTE:
+            Formula: mat_plus_mu * (tax_rate / 100)
         """
         try:
             tax_rate = self.opportunity.tax_rate.strip("%")
             tax_rate = float(tax_rate)
 
-            return round(self.mat_plus_mu * tax_rate, 2)
+            # return round(self.mat_plus_mu * tax_rate, 2)
+            return round(self.mat_plus_mu * (tax_rate / 100), 2)
 
         except (ValueError, TypeError):
             return 0
@@ -438,9 +450,12 @@ class TaskMapping(BaseModel):
     def mat_tax_labor(self):
         """
         Calculate `MAT, TAX, LABOR` as the sum of `mat_sell` and `labor_sell`.
+
+        NOTE:
+            Formula: mat_sell + labor_sell + sales_tax
         """
         try:
-            return round(self.mat_sell + self.labor_sell, 2)
+            return round(self.mat_sell + self.labor_sell + self.sales_tax, 2)
         except (ValueError, TypeError):
             return 0
 
@@ -448,11 +463,15 @@ class TaskMapping(BaseModel):
     def comb_gp(self):
         """
         Calculate `COMB GP %` as the ratio of total GP to total cost.
+
+        NOTE:
+            Formula: (mat_sell + labor_sell) / (mat_cost + labor_cost) * 100
         """
         try:
-            total_gp = self.mat_gp + self.labor_gp
-            total_cost = self.labor_sell + self.mat_plus_mu
-            return round((total_gp / total_cost) * 100, 2) if total_cost != 0 else 0
+            # total_gp = self.mat_gp + self.labor_gp
+            # total_cost = self.labor_sell + self.mat_plus_mu
+            # return round((total_gp / total_cost) * 100, 2) if total_cost != 0 else 0
+            return round((self.mat_sell + self.labor_sell) / (self.mat_cost + self.labor_cost) * 100 , 2)
         except (ValueError, ZeroDivisionError):
             return 0
 

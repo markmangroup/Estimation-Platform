@@ -363,7 +363,7 @@ class GenerateEstimate:
             totals["total_labor_gp"] += round(Decimal(task.labor_gp or "0.0"), 2)
             totals["total_labor_sell"] += round(Decimal(task.labor_sell or "0.0"), 2)
             totals["total_mat_cost"] += round(Decimal(task.mat_cost or "0.0"), 2)
-            totals["total_mat_gp_percent"] = round(Decimal(task.mat_gp_percent or "0.0"), 2)
+            totals["total_mat_gp_percent"] = round(Decimal(task.mat_gp_percent if task.mat_gp_percent else "0.0"), 2)
             totals["total_mat_gp"] += round(Decimal(task.mat_gp or "0.0"), 2)
             totals["total_mat_mu"] += round(Decimal(task.mat_plus_mu or "0.0"), 2)
             totals["total_sales_tax"] += round(Decimal(task.sales_tax or "0.0"), 2)
@@ -489,13 +489,15 @@ class TotalGPBreakdown(TemplateViewMixin):
         totals = {
             "total_sale": Decimal("0.00"),
             "total_cost": Decimal("0.00"),
+            "total_mat_gp": Decimal("0.00"),
+            "total_labor_gp": Decimal("0.00"),
         }
 
         for task in task_mapping_qs:
-            totals["total_sale"] += Decimal(task.labor_sell or "0.0") + Decimal(task.mat_sell or "0.0")
-            totals["total_cost"] += Decimal(task.labor_cost or "0.0") + Decimal(task.mat_cost or "0.0")
+            totals["total_mat_gp"] += Decimal(task.mat_gp or "0.0")
+            totals["total_labor_gp"] += Decimal(task.labor_gp or "0.0")
 
-        totals["total_gp"] = totals["total_sale"] - totals["total_cost"]
+        totals["total_gp"] = totals["total_mat_gp"] - totals["total_labor_gp"]
 
         return totals
 
