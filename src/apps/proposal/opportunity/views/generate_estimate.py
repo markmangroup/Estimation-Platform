@@ -374,7 +374,7 @@ class GenerateEstimate:
 
         totals["total_cost"] = totals["total_labor_cost"] + totals["total_mat_cost"]
         totals["total_sale"] = totals["total_labor_sell"] + totals["total_mat_sell"]
-        totals["total_gp"] = totals["total_sale"] - totals["total_cost"]
+        totals["total_gp"] = totals["total_mat_gp"] + totals["total_labor_gp"]
 
         if totals["total_sale"] != 0:
             totals["total_gp_percent"] = (totals["total_gp"] / totals["total_sale"]) * 100
@@ -497,7 +497,7 @@ class TotalGPBreakdown(TemplateViewMixin):
             totals["total_mat_gp"] += Decimal(task.mat_gp or "0.0")
             totals["total_labor_gp"] += Decimal(task.labor_gp or "0.0")
 
-        totals["total_gp"] = totals["total_mat_gp"] - totals["total_labor_gp"]
+        totals["total_gp"] = totals["total_mat_gp"] + totals["total_labor_gp"]
 
         return totals
 
