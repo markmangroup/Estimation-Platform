@@ -390,37 +390,38 @@ class UpdateOpportunityView(ViewMixin):
         :param value: New value for the field.
         :returns: updated field success message
         """
-        opportunity_obj.save()
+        setattr(opportunity_obj, field_name, value)
         if field_name == "tax_rate":
             value = float(value.replace("%", "").strip())
-            setattr(opportunity_obj, field_name, value)
 
-            # task_mapping_labors_objs = TaskMapping.objects.filter(
-            #     opportunity__document_number=opportunity_obj.document_number
-            # ).exclude(task__description__icontains="labor")
+            # # task_mapping_labors_objs = TaskMapping.objects.filter(
+            # #     opportunity__document_number=opportunity_obj.document_number
+            # # ).exclude(task__description__icontains="labor")
 
-            # if task_mapping_labors_objs:
-            #     for task_mapping_labors_obj in task_mapping_labors_objs:
-            #         task_mapping_labors_obj.mat_gp_percent = value
-            #         task_mapping_labors_obj.labor_gp_percent = value
-            #         task_mapping_labors_obj.save()
+            # # if task_mapping_labors_objs:
+            # #     for task_mapping_labors_obj in task_mapping_labors_objs:
+            # #         task_mapping_labors_obj.mat_gp_percent = value
+            # #         task_mapping_labors_obj.labor_gp_percent = value
+            # #         task_mapping_labors_obj.save()
 
-            # estimation_table_labors_objs = TaskMapping.objects.filter(
-            #     opportunity__document_number=opportunity_obj.document_number
-            # ).filter(task__description__icontains="labor", assign_to__isnull=True)
+            # # estimation_table_labors_objs = TaskMapping.objects.filter(
+            # #     opportunity__document_number=opportunity_obj.document_number
+            # # ).filter(task__description__icontains="labor", assign_to__isnull=True)
 
-            # if estimation_table_labors_objs:
-            #     for estimation_table_labors_obj in estimation_table_labors_objs:
-            #         estimation_table_labors_obj.labor_gp_percent = value
-            #         estimation_table_labors_obj.mat_gp_percent = value
-            #         estimation_table_labors_obj.save()
-            context = {}
-            context["total"] = GenerateEstimate._get_total(opportunity_obj.document_number)
-            return {
-                "status": "success",
-                "message": f"{field_name.replace('_', ' ').capitalize()} updated successfully",
-                "total": context["total"],
-            }
+            # # if estimation_table_labors_objs:
+            # #     for estimation_table_labors_obj in estimation_table_labors_objs:
+            # #         estimation_table_labors_obj.labor_gp_percent = value
+            # #         estimation_table_labors_obj.mat_gp_percent = value
+            # #         estimation_table_labors_obj.save()
+            # context = {}
+            # context["total"] = GenerateEstimate._get_total(opportunity_obj.document_number)
+            # return {
+            #     "status": "success",
+            #     "message": f"{field_name.replace('_', ' ').capitalize()} updated successfully",
+            #     "total": context["total"],
+            # }
+
+        opportunity_obj.save()
         return {
             "status": "success",
             "message": f"{field_name.replace('_', ' ').capitalize()} updated successfully",
