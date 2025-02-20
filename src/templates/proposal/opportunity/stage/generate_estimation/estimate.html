@@ -678,14 +678,25 @@
     // Update overall totals after modifying the row
     updateOverallTotals();
   }); */
-
+  document.addEventListener("input", function (event) {
+    if (event.target.classList.contains("labor_gp_percent") || event.target.classList.contains("mat_gp_percent")) {
+        let value = event.target.value;
+        value = value.replace(/[^0-9.]/g, "");
+        let floatValue = parseFloat(value);
+        if (floatValue > 9999.99) {
+            event.target.value = value.slice(0, -1);
+        }
+    }
+});
   // New Version Code
   $('#enstimate-table').on("input", ".labor_gp_percent, .mat_gp_percent, .s_and_h", function(e) {
     // Find the row of the element that was changed
     var $row = $(this).closest("tr");
+    console.log('02-20 $row: ', $row);
 
     // Get the updated values for the row
     var laborGpPercent = parseFloat($row.find(".labor_gp_percent").val());
+    console.log('02-20------------- laborGpPercent: ', laborGpPercent);
 
     // Check if the value is empty or invalid, and set it to 0 if so
     if (laborGpPercent === "" || isNaN(laborGpPercent)) {
@@ -858,7 +869,7 @@
       $("#total_acre").text(`${(isNaN(totalAcre) ? 0 : totalAcre).toFixed(2)}`);
 
       $("#total_cost").text(`$ ${total_cost.toFixed(2)}`);
-      $("#total_sale").text(`$ ${total_sale.toFixed(2)}`);
+      $("#total_sale").text(`${total_sale.toFixed(2)}`);
       $(".total_gp").text(`$ ${total_gp.toFixed(2)}`);
       $("#total_gp_percent").text(`${total_gp_percent.toFixed(2)}%`);
   }
@@ -873,7 +884,7 @@
       var laborGpPercent = $row.find(".labor_gp_percent").val();
       var matGpPercent = $row.find(".mat_gp_percent").val();
       var s_and_h = $row.find(".s_and_h").val();
-
+      
       if ($input.hasClass("labor_gp_percent")){
           data = {
             task_mapping_id: taskMappingId,

@@ -66,13 +66,14 @@ class AssignProdLabor(TemplateViewMixin):
                 prod_obj = PreliminaryMaterialList.objects.get(
                     opportunity__document_number=document_number, item_number=internal_id
                 )
+                prod = Product.objects.filter(display_name=prod_obj.item_number).first()
 
                 assigned_product = AssignedProduct(
                     task_mapping=task_mapping_obj,
                     quantity=prod_obj.combined_quantities_from_both_import,
                     item_code=prod_obj.item_number,
                     description=prod_obj.description,
-                    standard_cost=0,
+                    standard_cost= prod.std_cost if prod else 0,
                     is_assign=True,
                 )
                 assigned_product.save()
@@ -635,9 +636,7 @@ class AddTaskView(ViewMixin):
 
         opportunity = get_object_or_404(Opportunity, document_number=document_number)
 
-        available_tasks = TaskMapping.objects.filter(
-            opportunity=opportunity
-        )
+        available_tasks = TaskMapping.objects.filter(opportunity=opportunity)
         for task_name in tasks:
             task_instance = get_object_or_404(Task, name=task_name)
             if description:
@@ -654,10 +653,12 @@ class AddTaskView(ViewMixin):
 
             if available_tasks.exists():
                 first_task = available_tasks.first()
-                task_mapping_data.update({
-                    "labor_gp_percent": first_task.labor_gp_percent,
-                    "mat_gp_percent": first_task.mat_gp_percent,
-                })
+                task_mapping_data.update(
+                    {
+                        "labor_gp_percent": first_task.labor_gp_percent,
+                        "mat_gp_percent": first_task.mat_gp_percent,
+                    }
+                )
 
             TaskMapping.objects.create(**task_mapping_data)
 

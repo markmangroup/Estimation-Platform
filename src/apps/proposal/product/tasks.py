@@ -82,7 +82,7 @@ def import_product_from_file(file: InMemoryUploadedFile) -> dict:
             "description": record["Description"],
             "primary_units_type": record["Primary Units Type"],
             "primary_stock_unit": record["Primary Stock Unit"],
-            "std_cost": record["Std Cost"],
+            "std_cost": record["Std Cost"] if record["Std Cost"] else 0 ,
             "preferred_vendor": record["Preferred Vendor"],
             "type": record["Type"],
             "name": record["Name"],

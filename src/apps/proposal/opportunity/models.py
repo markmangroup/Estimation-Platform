@@ -302,7 +302,7 @@ class TaskMapping(BaseModel):
         elif not self.assign_to and self.description and "labor" in self.description.lower():
             task_mappings = TaskMapping.objects.filter(
                 opportunity=self.opportunity, task__description__icontains="labor"
-            )
+            ).filter(models.Q(id=self.id) | models.Q(code=self.code))
 
             # Initialize total calculations
             total_quantity = 0
@@ -339,7 +339,7 @@ class TaskMapping(BaseModel):
                 labor_cost = float(self.labor_cost)
                 labor_gp_percent = float(self.labor_gp_percent) / 100
                 # if (1 - labor_gp_percent) != 0:
-                    # return round(labor_cost / (1 - labor_gp_percent), 2)
+                # return round(labor_cost / (1 - labor_gp_percent), 2)
                 return round(labor_cost + (labor_cost * (labor_gp_percent)), 2)
             except (ValueError, ZeroDivisionError):
                 return 0
@@ -471,7 +471,7 @@ class TaskMapping(BaseModel):
             # total_gp = self.mat_gp + self.labor_gp
             # total_cost = self.labor_sell + self.mat_plus_mu
             # return round((total_gp / total_cost) * 100, 2) if total_cost != 0 else 0
-            return round((self.mat_sell + self.labor_sell) / (self.mat_cost + self.labor_cost) * 100 , 2)
+            return round((self.mat_sell + self.labor_sell) / (self.mat_cost + self.labor_cost) * 100, 2)
         except (ValueError, ZeroDivisionError):
             return 0
 
