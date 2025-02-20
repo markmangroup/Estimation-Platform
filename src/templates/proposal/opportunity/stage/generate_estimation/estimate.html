@@ -79,8 +79,8 @@
                   <tr>
                     <td><b>Tax:</b></td>
                     <td>
-                      <span class="badge bg-success users-view-status"
-                        >2.250%</span
+                      <span class="badge bg-success users-view-status" id="tax-badge"
+                        >{{ opportunity.tax_rate }}</span
                       >
                     </td>
                   </tr>
@@ -140,8 +140,8 @@
                 <div class="card-body py-0">
                   <div class="media">
                     <div class="media-body info text-left">
-                      <h3 id="total_cost" class="font-large-1 info mb-0">
-                        ${{total.total_cost}}
+                      <h3  class="font-large-1 info mb-0">
+                        $ <span >{{total.total_cost}}</span>
                       </h3>
                       <span>Total Cost</span>
                     </div>
@@ -161,8 +161,10 @@
                 <div class="card-body py-0">
                   <div class="media">
                     <div class="media-body warning text-left">
-                      <h3 id="total_sale" class="font-large-1 warning mb-0">
-                        ${{total.total_sale}}
+                      <h3  class="font-large-1 warning mb-0">
+                        $ <span id="total_sale">
+                          {{total.total_sale}}
+                        </span>
                       </h3>
                       <span>Total Sale</span>
                     </div>
@@ -182,8 +184,8 @@
                 <div class="card-body py-0">
                   <div class="media">
                     <div class="media-body success text-left">
-                      <h3 class="font-large-1 success mb-0 total_gp">
-                        ${{total.total_gp}}
+                      <h3  class="font-large-1 success mb-0 total_gp">
+                        $ <span id="total_gp">{{total.total_gp}}</span>
                       </h3>
                       <span>Total GP</span>
                     </div>
@@ -203,8 +205,8 @@
                 <div class="card-body py-0">
                   <div class="media">
                     <div class="media-body secondary text-left">
-                      <h3 id="total_gp_percent" class="font-large-1 secondary mb-0">
-                        {{total.total_gp_percent|round_value:"2"}}%
+                      <h3  class="font-large-1 secondary mb-0">
+                        <span id="total_gp_percent">{{total.total_gp_percent|round_value:"2"}}%</span>
                       </h3>
                       <span>GP% Indirects</span>
                     </div>
@@ -237,7 +239,7 @@
           <div class="card-body">
             <div style="max-height: 550px; overflow-y: auto">
               <div class="table-responsive">
-                <table class="table table-bordered custom-configuration" id="enstimate-table" style="width: 100% !important;">
+                {% comment %} <table class="table table-bordered custom-configuration" id="enstimate-table" style="width: 100% !important;">
                   <thead>
                       <tr style="border: 1px solid red">
                         <th colspan="2"></th>
@@ -406,6 +408,53 @@
                     </tr>
                   </tfoot>
 
+                </table> {% endcomment %}
+                <table id="enstimate-table" class="table table-bordered" style="width: 100% !important;">
+                  <thead>
+                    <tr style="border: 1px solid red">
+                      <th colspan="2"></th>
+                      <th colspan="5" class="align-top">Labor</th>
+                      <th colspan="5" class="align-top">Materials</th>
+                      <th colspan="2" class="align-top">Summary Info</th>
+                    </tr>
+                    <tr class="bg-white" style="z-index: 10">
+                      <th> Task Code </th>
+                      <th> Bid Item Description </th>
+                      <th>LABOR COST</th>
+                      <th>LABOR GP%</th>
+                      <th>LABOR GP $</th>
+                      <th>LABOR SELL</th>
+                      <th>MAT. COST</th>
+                      <th>MAT.GP%</th>
+                      <th>MAT. GP $</th>
+                      <th>MAT. + MU</th>
+                      <th>SALES TAX</th>
+                      <th>MAT. SELL</th>
+                      <th>MAT, TAX, LABOR</th>
+                      <th>COMB GP%</th>
+                    </tr>
+                  </thead>
+                  <tbody class="align-center">
+                    <!-- The rows will be populated via DataTables -->
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <th></th>
+                      <th></th>
+                      <th id="total_labor_cost"></th>
+                      <th id="total_labor_gp_percent"></th>
+                      <th id="total_labor_gp"></th>
+                      <th id="total_labor_sell"></th>
+                      <th id="total_mat_cost"></th>
+                      <th id="total_mat_gp_percent"></th>
+                      <th id="total_mat_gp"></th>
+                      <th id="total_mat_mu"></th>
+                      <th id="total_sales_tax"></th>
+                      <th id="total_mat_sell"></th>
+                      <th id="total_mat_tax_labor"></th>
+                      <th></th>
+                    </tr>
+                  </tfoot>
                 </table>
               </div>
 
@@ -453,6 +502,7 @@
   </div>
 
 <!-- Breakdown Modal [Total sale]-->
+
 <div class="modal fade text-left" id="total-sale-breakdown" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" aria-hidden="true">
     <div class="modal-dialog modal-md modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -464,6 +514,7 @@
   </div>
 
 <!-- Breakdown Modal [Total GP]-->
+
 <div class="modal fade text-left" id="total-gp-breakdown" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" aria-hidden="true">
   <div class="modal-dialog modal-md modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -475,6 +526,7 @@
   </div>
 
 <!-- Breakdown Modal [Total GP %]-->
+
 <div class="modal fade text-left" id="total-gp-per-breakdown" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" aria-hidden="true">
   <div class="modal-dialog modal-md modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -486,6 +538,7 @@
   </div>
 
 {% block script %}
+
 
 <script>
   $(document).on('click', '.htmx-trigger-btn-task-prod' , function (e) {
@@ -625,14 +678,25 @@
     // Update overall totals after modifying the row
     updateOverallTotals();
   }); */
-
+  document.addEventListener("input", function (event) {
+    if (event.target.classList.contains("labor_gp_percent") || event.target.classList.contains("mat_gp_percent")) {
+        let value = event.target.value;
+        value = value.replace(/[^0-9.]/g, "");
+        let floatValue = parseFloat(value);
+        if (floatValue > 9999.99) {
+            event.target.value = value.slice(0, -1);
+        }
+    }
+});
   // New Version Code
-  $(".labor_gp_percent, .mat_gp_percent, .s_and_h").on("input", function(e) {
+  $('#enstimate-table').on("input", ".labor_gp_percent, .mat_gp_percent, .s_and_h", function(e) {
     // Find the row of the element that was changed
     var $row = $(this).closest("tr");
+    console.log('02-20 $row: ', $row);
 
     // Get the updated values for the row
     var laborGpPercent = parseFloat($row.find(".labor_gp_percent").val());
+    console.log('02-20------------- laborGpPercent: ', laborGpPercent);
 
     // Check if the value is empty or invalid, and set it to 0 if so
     if (laborGpPercent === "" || isNaN(laborGpPercent)) {
@@ -662,7 +726,7 @@
     $(".s_and_h").val(s_and_h);
 
     // Loop through each row to update calculations for all rows
-    $("table tbody tr").each(function() {
+    $("#enstimate-table tbody tr").each(function() {
       var $row = $(this);
 
       // Get the values for this row
@@ -712,9 +776,10 @@
       if (denominator === 0) {
         combGp = 0;  // Set to 0 if the denominator is zero
       } else {
-        combGp = ((laborGpPercent * 100) + (matGpPercent * 100)) / (laborSell + matPlusMu);
+        var totalGp = matGp + laborGp;
+        combGp = ((totalGp / denominator) * 100);
       }
-      $row.find(".comb_gp").text(combGp.toFixed(3));
+      $row.find(".comb_gp").text(combGp.toFixed(2));
 
       // Calculate $/Acre
       var acre = matTaxLabor / matGpPercent;
@@ -744,17 +809,20 @@
       var totalLaborGpPercent = 0;
       var totalMatGpPercent = 0;
 
+      var laborGpPercent = parseFloat($(".labor_gp_percent").val()) || 0;
+      var matGpPercent = parseFloat($(".mat_gp_percent").val()) || 0;
+
+      console.log("-- laborGpPercent --", laborGpPercent);
+
       // Loop through all rows and accumulate totals
       $("table tbody tr").each(function() {
           var $row = $(this);
 
           var laborCost = parseFloat($row.find(".labor_cost").text()) || 0;
           var laborGp = parseFloat($row.find(".labor_gp").text()) || 0;
-          var laborGpPercent = parseFloat($row.find(".labor_gp_percent").val()) || 0;
           var laborSell = parseFloat($row.find(".labor_sell").text()) || 0;
           var matCost = parseFloat($row.find(".mat_cost").text()) || 0;
           var matGp = parseFloat($row.find(".mat_gp").text()) || 0;
-          var matGpPercent = parseFloat($row.find(".mat_gp_percent").val()) || 0;
           var matPlusMu = parseFloat($row.find(".mat_plus_mu").text()) || 0;
           var salesTax = parseFloat($row.find(".sales_tax").text()) || 0;
           var matSell = parseFloat($row.find(".mat_sell").text()) || 0;
@@ -765,11 +833,11 @@
 
           totalLaborCost += laborCost;
           totalLaborGp += laborGp;
-          totalLaborGpPercent += laborGpPercent;
+          totalLaborGpPercent = laborGpPercent;
           totalLaborSell += laborSell;
           totalMatCost += matCost;
           totalMatGp += matGp;
-          totalMatGpPercent += matGpPercent;
+          totalMatGpPercent = matGpPercent;
           totalMatPlusMu += matPlusMu;
           totalSalesTax += salesTax;
           totalMatSell += matSell;
@@ -786,7 +854,7 @@
 
       // Update totals in <tfoot>
       $("#total_labor_cost").text(`$ ${totalLaborCost.toFixed(2)}`);
-      $("#total_labor_gp_percent").text(`${totalLaborGpPercent.toFixed(2)}%`);
+      $("#total_labor_gp_percent").text(`${totalLaborGpPercent.toFixed()}%`);
       $("#total_labor_gp").text(`$ ${totalLaborGp.toFixed(2)}`);
       $("#total_labor_sell").text(`$ ${totalLaborSell.toFixed(2)}`);
       $("#total_mat_cost").text(`$ ${totalMatCost.toFixed(2)}`);
@@ -801,14 +869,13 @@
       $("#total_acre").text(`${(isNaN(totalAcre) ? 0 : totalAcre).toFixed(2)}`);
 
       $("#total_cost").text(`$ ${total_cost.toFixed(2)}`);
-      $("#total_sale").text(`$ ${total_sale.toFixed(2)}`);
+      $("#total_sale").text(`${total_sale.toFixed(2)}`);
       $(".total_gp").text(`$ ${total_gp.toFixed(2)}`);
       $("#total_gp_percent").text(`${total_gp_percent.toFixed(2)}%`);
   }
 
   // Save changed value.
-  $(".labor_gp_percent, .mat_gp_percent, .s_and_h").on("change", function(e){
-
+  $('#enstimate-table').on("change", ".labor_gp_percent, .mat_gp_percent, .s_and_h", function(e) {
       var $row = $(this).closest("tr");
       var $input = $(e.target);
       var document_number = "{{ opportunity.document_number }}"
@@ -817,7 +884,7 @@
       var laborGpPercent = $row.find(".labor_gp_percent").val();
       var matGpPercent = $row.find(".mat_gp_percent").val();
       var s_and_h = $row.find(".s_and_h").val();
-
+      
       if ($input.hasClass("labor_gp_percent")){
           data = {
             task_mapping_id: taskMappingId,
@@ -855,6 +922,7 @@
               positionClass: 'toast-bottom-right',
               timeOut: 6000
             });
+            estimation_task_table.ajax.reload();
           } else if (response.code == "400"){
             toastr.error(response.message, 'Error', {
               closeButton: true,
@@ -937,6 +1005,94 @@
         });
       }
 
+    });
+  });
+
+  $(document).ready(function() {
+    $('#tax-badge').on('click', function() {
+      var currentValue = $(this).text().replace('%', ''); // Remove '%' symbol if present
+
+      // Remove the 'badge' and 'bg-success' classes from the span
+      $(this).removeClass('badge bg-success');
+
+      var input = $('<input>', {
+        type: 'text',
+        value: currentValue,
+        class: 'form-control', // Optional styling class for the input field
+        blur: saveTaxValue,
+        keydown: function(e) {
+          if (e.key === 'Enter') {
+            saveTaxValue();
+          }
+        }
+      });
+
+      // Replace the span with the input field
+      $(this).html(input);
+      input.focus();
+
+      function saveTaxValue() {
+        var newValue = input.val().trim();
+
+        if (!newValue.match(/^\d+(\.\d+)?$/)) {
+          alert('Please enter a valid number (e.g., 1 or 1.9)');
+          return;
+        }
+
+        newValue = parseFloat(newValue);
+        $("#tax-badge").html(newValue.toFixed(2) + '%').addClass('badge bg-success');
+
+        // Ajax request start
+        console.log("Make ajax call for update tax rate");
+        // Before making the ajax call
+        var document_number = "{{ opportunity.document_number }}";
+        var data = {
+          "type": "tax_rate",
+          "value": newValue.toFixed(2) + '%',
+          "document_number": document_number
+        };
+
+        $.ajax({
+          url: '{% url "proposal_app:opportunity:update-opportunity-ajax" %}',
+          type: 'POST',
+          data: data,
+          headers: {
+            'X-CSRFToken': "{{ csrf_token }}",
+          },
+          success: function(response) {
+            $('#enstimate-table').DataTable().ajax.reload();
+            toastr.success(response.message, 'Success', {
+              closeButton: true,
+              progressBar: true,
+              positionClass: 'toast-bottom-right',
+              timeOut: 6000
+            });
+
+            $('#total_cost').text(response.total.total_cost);
+            $('#total_sale').text(response.total.total_sale);
+            $('#total_gp').text(response.total.total_gp);
+
+            // Convert total_gp_percent to a number and round it, then append the '%' symbol
+            var totalGpPercent = parseFloat(response.total.total_gp_percent);
+            if (!isNaN(totalGpPercent)) {
+                $('#total_gp_percent').text(totalGpPercent.toFixed(2) + '%');
+            } else {
+                $('#total_gp_percent').text('Invalid value');
+            }
+          },
+          error: function(error) {
+            toastr.error(error.message, 'Error', {
+              closeButton: true,
+              progressBar: true,
+              positionClass: 'toast-bottom-right',
+              timeOut: 6000
+            });
+          }
+        });
+        console.log("Ajax request completed for update tax rate");
+        // Ajax request end
+
+      }
     });
   });
 

@@ -4,6 +4,8 @@ Final Document Stage Views
 
 from django.db.models import QuerySet
 
+from apps.proposal.product.models import Product
+
 from ..models import AssignedProduct, TaskMapping
 
 
@@ -58,4 +60,13 @@ class FinalDocument:
         task_mapping_objs = TaskMapping.objects.filter(opportunity__document_number=document_number)
 
         assigned_products = AssignedProduct.objects.filter(task_mapping__in=task_mapping_objs)
-        return list(assigned_products)
+        assigned_products_data = []
+        for assigned_product in assigned_products:
+            code = assigned_product.item_code
+            product = Product.objects.filter(
+                display_name=code,
+            ).first()
+            assigned_products_data.append(
+                {"assigned_product": assigned_product, "internal_id": product.internal_id if product else "-"}
+            )
+        return assigned_products_data

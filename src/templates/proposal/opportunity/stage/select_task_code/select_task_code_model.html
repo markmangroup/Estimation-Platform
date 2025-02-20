@@ -95,12 +95,16 @@
                   $("#selectTaskModal").modal('hide');
                   $("#selectTaskModal .modal-body").html('');
 
+                  $('#tableContainer').html(response.html);
+
                   toastr.success(response.message, 'Success', {
                     closeButton: true,
                     progressBar: true,
                     positionClass: 'toast-bottom-right',
                     timeOut: 6000
                   });
+
+                  estimation_task_table.ajax.reload(null, false);
 
               },
               error: function(xhr, status, error) {

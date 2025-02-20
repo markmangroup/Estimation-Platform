@@ -17,9 +17,12 @@
         <td>EA</td>
         <td class="mapping-total-price-{{t_id}}">${{ t_info.total_unit_price }}</td>
         <td>
-            <a data-toggle="collapse" href="#collapse{{ t_id }}" aria-expanded="true" aria-controls="collapse{{ t_id }}" class="card-title">
-                <em class="ft-chevron-down font-medium-5"></em>
-            </a>
+            <div class="tasks-mapping-collapse">
+                <a data-toggle="collapse" href="#collapse{{ t_id }}" aria-expanded="true" aria-controls="collapse{{ t_id }}" class="card-title">
+                    <em class="ft-chevron-down font-medium-5"></em>
+                </a>
+                <span class="text-danger delete-task-btn" data-id="{{ t_id }}" data-title="{{t_info.task.code}}" data-type="task_mapping" data-url="{% url 'proposal_app:opportunity:task-delete-ajax' %}"><em class="fa fa-trash"></em></span>
+            </div>
         </td>
     </tr>
 {% else %}
@@ -38,9 +41,12 @@
         <td>EA</td>
         <td class="mapping-total-price-{{t_id}}">${{ t_info.total_unit_price }}</td>
         <td>
-            <a data-toggle="collapse" href="#collapse{{ t_id }}" aria-expanded="true" aria-controls="collapse{{ t_id }}" class="card-title">
-                <em class="ft-chevron-down font-medium-5"></em>
-            </a>
+            <div class="tasks-mapping-collapse">
+                <a data-toggle="collapse" href="#collapse{{ t_id }}" aria-expanded="true" aria-controls="collapse{{ t_id }}" class="card-title">
+                    <em class="ft-chevron-down font-medium-5"></em>
+                </a>
+                <span class="text-danger delete-task-btn" data-id="{{ t_id }}" data-title="{{t_info.task.task.name}}" data-type="task_mapping" data-url="{% url 'proposal_app:opportunity:task-delete-ajax' %}"><em class="fa fa-trash"></em></span>
+            </div>
         </td>
     </tr>
 {% endif %}

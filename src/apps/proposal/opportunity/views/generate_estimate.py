@@ -1,15 +1,148 @@
 import urllib.parse
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from typing import Any, Dict
 
-from django.db.models import QuerySet
+from django.db.models import Q, QuerySet
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 
 from apps.constants import LOGGER
-from apps.mixin import CustomViewMixin, ProposalViewMixin, TemplateViewMixin
+from apps.mixin import (
+    CustomDataTableMixin,
+    CustomViewMixin,
+    ProposalViewMixin,
+    TemplateViewMixin,
+)
 
 from ..models import AssignedProduct, TaskMapping
+from ..tasks import format_number
+
+
+class TaskProductDataView(CustomDataTableMixin):
+
+    def get_queryset(self):
+        document_number = self.kwargs.get("document_number")
+        qs = TaskMapping.objects.filter(opportunity__document_number=document_number).exclude(
+            assign_to__isnull=False, task__description__icontains="labor"
+        )
+        return qs
+
+    def filter_queryset(self, qs):
+        """Return the list of items for this view."""
+        if self.search:
+            return qs.filter(
+                Q(task__internal_id__icontains=self.search)
+                | Q(task__name__icontains=self.search)
+                | Q(task__description__icontains=self.search)
+                | Q(task_description__icontains=self.search)
+            )
+        return qs
+
+    def _get_code(self, obj):
+        """Get code details."""
+        task_name = obj.code if obj.task is None else obj.task.name
+
+        # Construct the URL dynamically using reverse
+        url = reverse("proposal_app:opportunity:update-estimation-products-ajax", args=[obj.id])
+
+        # Now format the HTML with proper values
+        code = f"""
+        <a hx-get="{url}"
+            data-url="{url}"
+            class="htmx-trigger-btn-task-prod"
+            hx-target="#task-content"
+            hx-trigger="click"
+            data-toggle="modal"
+            data-target="#showProduct"
+            data-backdrop="false">
+            <ins>{task_name}</ins>
+        </a>
+        """
+        return code
+
+    def _get_description(self, obj):
+        """Generate the HTML for the description with a clickable link."""
+        et = obj  # Or whatever object has the `et` property
+
+        if et.task is None:
+            task_description = f"{et.code} : {et.description}"
+        else:
+            task_description = f"{et.task.name} : {et.task.description}"
+
+        # Construct the URL dynamically using reverse
+        url = reverse("proposal_app:opportunity:update-estimation-products-ajax", args=[et.id])
+
+        # Now format the HTML with the proper values
+        description = f"""
+            <a hx-get="{url}"
+            data-url="{url}"
+            class="htmx-trigger-btn-task-prod"
+            hx-target="#task-content"
+            hx-trigger="click"
+            data-toggle="modal"
+            data-target="#showProduct"
+            data-backdrop="false">
+                <ins>{task_description}</ins>
+            </a>
+        """
+        return description
+
+    def _labor_gp_percent(self, obj):
+        """Generate the HTML for the labor gp percent."""
+        et = obj
+
+        labor_gp_percent = f"""
+            <input type="text" class="form-control btn-outline-warning labor_gp_percent" value="{et.labor_gp_percent}">
+        """
+        return labor_gp_percent
+
+    def _labor_gp_percent_data(self, obj):
+        return obj.labor_gp_percent
+
+    def _mat_gp_percent(self, obj):
+        """Generate the HTML for the mat gp percent."""
+        et = obj
+        mat_gp_percent = f"""
+            <input type="text" class="form-control btn-outline-warning mat_gp_percent" value="{ et.mat_gp_percent }">"""
+        return mat_gp_percent
+
+    def _mat_gp_percent_data(self, obj):
+        return obj.mat_gp_percent
+
+    def prepare_results(self, qs):
+        """
+        This method formats the queryset into the structure that DataTables expects.
+        Each row of data is a list of values corresponding to the columns in the table.
+        """
+        data = []
+        for item in qs:
+            print("-- queryset --", qs)
+            data.append(
+                {
+                    "code": self._get_code(item),
+                    "description": self._get_description(item),
+                    "labor_cost": format_number(item.labor_cost),
+                    "labor_gp_percent": self._labor_gp_percent(item),
+                    "labor_gp": format_number(item.labor_gp),
+                    "labor_sell": format_number(item.labor_sell),
+                    "mat_cost": format_number(item.mat_cost),
+                    "mat_gp_percent": self._mat_gp_percent(item),
+                    "mat_gp": format_number(item.mat_gp),
+                    "mat_plus_mu": format_number(item.mat_plus_mu),
+                    "sales_tax": format_number(item.sales_tax),
+                    "mat_sell": format_number(item.mat_sell),
+                    "mat_tax_labor": format_number(item.mat_tax_labor),
+                    "comb_gp": item.comb_gp,
+                    "labor_gp_percent_data": self._labor_gp_percent_data(item),  # type : ignore
+                    "mat_gp_percent_data": self._mat_gp_percent_data(item),  # type : ignore
+                }
+            )
+        return data
+
+    def get(self, request, *args, **kwargs):
+        context_data = self.get_context_data(request)
+        return JsonResponse(context_data)
 
 
 class GenerateEstimateTable(ProposalViewMixin):
@@ -34,9 +167,9 @@ class GenerateEstimateTable(ProposalViewMixin):
             task__description__icontains="labor"
         )
 
-        context["estimation_table_labor"] = TaskMapping.objects.filter(opportunity__document_number=document_number).filter(
-            task__description__icontains="labor", assign_to__isnull=True
-        )
+        context["estimation_table_labor"] = TaskMapping.objects.filter(
+            opportunity__document_number=document_number
+        ).filter(task__description__icontains="labor", assign_to__isnull=True)
 
         # Calculate totals and add to context
         context["total"] = GenerateEstimate._get_total(document_number)
@@ -222,11 +355,15 @@ class GenerateEstimate:
 
         for task in task_mapping_qs:
             totals["total_labor_cost"] += round(Decimal(task.labor_cost or "0.0"), 2)
-            totals["total_labor_gp_percent"] = round(Decimal(task.labor_gp_percent or "0.0"), 2)
+            try:
+                labor_gp_percent = Decimal(task.labor_gp_percent or "0.0")
+            except (ValueError, InvalidOperation):
+                labor_gp_percent = Decimal("0.0")
+            totals["total_labor_gp_percent"] = round(labor_gp_percent, 2)
             totals["total_labor_gp"] += round(Decimal(task.labor_gp or "0.0"), 2)
             totals["total_labor_sell"] += round(Decimal(task.labor_sell or "0.0"), 2)
             totals["total_mat_cost"] += round(Decimal(task.mat_cost or "0.0"), 2)
-            totals["total_mat_gp_percent"] = round(Decimal(task.mat_gp_percent or "0.0"), 2)
+            totals["total_mat_gp_percent"] = round(Decimal(task.mat_gp_percent if task.mat_gp_percent else "0.0"), 2)
             totals["total_mat_gp"] += round(Decimal(task.mat_gp or "0.0"), 2)
             totals["total_mat_mu"] += round(Decimal(task.mat_plus_mu or "0.0"), 2)
             totals["total_sales_tax"] += round(Decimal(task.sales_tax or "0.0"), 2)
@@ -237,13 +374,16 @@ class GenerateEstimate:
 
         totals["total_cost"] = totals["total_labor_cost"] + totals["total_mat_cost"]
         totals["total_sale"] = totals["total_labor_sell"] + totals["total_mat_sell"]
-        totals["total_gp"] = totals["total_sale"] - totals["total_cost"]
+        totals["total_gp"] = totals["total_mat_gp"] + totals["total_labor_gp"]
 
         if totals["total_sale"] != 0:
             totals["total_gp_percent"] = (totals["total_gp"] / totals["total_sale"]) * 100
 
         else:
             totals["total_gp_percent"] = Decimal("0.00")
+
+        for key, value in totals.items():
+            totals[key] = f"{value:,.2f}"
 
         return totals
 
@@ -349,13 +489,15 @@ class TotalGPBreakdown(TemplateViewMixin):
         totals = {
             "total_sale": Decimal("0.00"),
             "total_cost": Decimal("0.00"),
+            "total_mat_gp": Decimal("0.00"),
+            "total_labor_gp": Decimal("0.00"),
         }
 
         for task in task_mapping_qs:
-            totals["total_sale"] += Decimal(task.labor_sell or "0.0") + Decimal(task.mat_sell or "0.0")
-            totals["total_cost"] += Decimal(task.labor_cost or "0.0") + Decimal(task.mat_cost or "0.0")
+            totals["total_mat_gp"] += Decimal(task.mat_gp or "0.0")
+            totals["total_labor_gp"] += Decimal(task.labor_gp or "0.0")
 
-        totals["total_gp"] = totals["total_sale"] - totals["total_cost"]
+        totals["total_gp"] = totals["total_mat_gp"] + totals["total_labor_gp"]
 
         return totals
 

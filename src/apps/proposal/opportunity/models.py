@@ -85,6 +85,7 @@ class Opportunity(BaseModel):
     job_name = models.CharField(_("Job Name"), max_length=255, blank=True, null=True)
     ranch_name = models.CharField(_("Ranch Name"), max_length=255, blank=True, null=True)
     project = models.CharField(_("Project"), max_length=255, blank=True, null=True)
+    tax_rate = models.CharField(_("Tax Rate"), default="25.00%", blank=True, null=True)
     term_and_condition = models.JSONField(_("Term & Condition"), blank=True, null=True)
 
     def __str__(self):
@@ -287,17 +288,21 @@ class TaskMapping(BaseModel):
                     assigned_products = AssignedProduct.objects.filter(task_mapping_id=task.id)
                     total_quantity += sum(product.quantity for product in assigned_products)
                     total_price += sum(
-                        product.vendor_quoted_cost * product.quantity if product.vendor_quoted_cost else product.standard_cost * product.quantity
+                        (
+                            product.vendor_quoted_cost * product.quantity
+                            if product.vendor_quoted_cost
+                            else product.standard_cost * product.quantity
+                        )
                         for product in assigned_products
                     )
                     total_percent += sum(product.gross_profit_percentage for product in assigned_products)
 
             return round(total_price, 2)
 
-        elif not self.assign_to:
+        elif not self.assign_to and self.description and "labor" in self.description.lower():
             task_mappings = TaskMapping.objects.filter(
                 opportunity=self.opportunity, task__description__icontains="labor"
-            )
+            ).filter(models.Q(id=self.id) | models.Q(code=self.code))
 
             # Initialize total calculations
             total_quantity = 0
@@ -309,7 +314,11 @@ class TaskMapping(BaseModel):
                     assigned_products = AssignedProduct.objects.filter(task_mapping_id=task.id)
                     total_quantity += sum(product.quantity for product in assigned_products)
                     total_price += sum(
-                        product.vendor_quoted_cost * product.quantity if product.vendor_quoted_cost else product.standard_cost * product.quantity
+                        (
+                            product.vendor_quoted_cost * product.quantity
+                            if product.vendor_quoted_cost
+                            else product.standard_cost * product.quantity
+                        )
                         for product in assigned_products
                     )
                     total_percent += sum(product.gross_profit_percentage for product in assigned_products)
@@ -321,13 +330,17 @@ class TaskMapping(BaseModel):
     def labor_sell(self):
         """
         Calculate `Labor sell` based on `labor_cost` and `labor_gp_percent`.
+
+        NOTE:
+            Formula : labor_cost + (labor_cost * (labor_gp_percent / 100))
         """
         if self.labor_cost is not None and self.labor_gp_percent is not None:
             try:
                 labor_cost = float(self.labor_cost)
                 labor_gp_percent = float(self.labor_gp_percent) / 100
-                if (1 - labor_gp_percent) != 0:
-                    return round(labor_cost / (1 - labor_gp_percent), 2)
+                # if (1 - labor_gp_percent) != 0:
+                # return round(labor_cost / (1 - labor_gp_percent), 2)
+                return round(labor_cost + (labor_cost * (labor_gp_percent)), 2)
             except (ValueError, ZeroDivisionError):
                 return 0
         return 0
@@ -338,9 +351,9 @@ class TaskMapping(BaseModel):
         Calculate `Labor GP $` as the difference between `labor_sell` and `labor_cost`.
         """
         try:
-            labor_sell = float(self.labor_sell)
+            labor_gp = float(self.labor_gp_percent / 100)
             labor_cost = float(self.labor_cost)
-            return round(labor_sell - labor_cost, 2)
+            return round(labor_cost * labor_gp, 2)
         except ValueError:
             return 0
 
@@ -363,7 +376,11 @@ class TaskMapping(BaseModel):
 
             total_quantity += sum(product.quantity for product in task_assigned_products)
             total_price += sum(
-                product.vendor_quoted_cost * product.quantity if product.vendor_quoted_cost else product.standard_cost * product.quantity
+                (
+                    product.vendor_quoted_cost * product.quantity
+                    if product.vendor_quoted_cost
+                    else product.standard_cost * product.quantity
+                )
                 for product in task_assigned_products
             )
             total_percent += sum(product.gross_profit_percentage for product in task_assigned_products)
@@ -374,13 +391,17 @@ class TaskMapping(BaseModel):
     def mat_plus_mu(self):
         """
         Calculate `MAT + Mu` based on `mat_cost` and `mat_gp_percent`.
+
+        NOTE:
+            Formula: mat_plus_mu = mat_cost + (mat_cost * (mat_gp_percent / 100))
         """
         if self.mat_gp_percent is not None:
             try:
                 mat_cost = float(self.mat_cost)
                 mat_gp_percent = float(self.mat_gp_percent) / 100
-                if (1 - mat_gp_percent) != 0:
-                    return round(mat_cost / (1 - mat_gp_percent), 2)
+                # if (1 - mat_gp_percent) != 0:
+                #     return round(mat_cost / (1 - mat_gp_percent), 2)
+                return round(mat_cost + (mat_cost * (mat_gp_percent)))
             except (ValueError, ZeroDivisionError):
                 return 0
         return 0
@@ -391,7 +412,9 @@ class TaskMapping(BaseModel):
         Calculate `MAT GP $` as the difference between `mat_plus_mu` and `mat_cost`.
         """
         try:
-            return round(self.mat_plus_mu - float(self.mat_cost), 2)
+            mat_cost = float(self.mat_cost)
+            mat_gp_percent = float(self.mat_gp_percent) / 100
+            return round(mat_cost * mat_gp_percent, 2)
         except ValueError:
             return 0
 
@@ -399,9 +422,17 @@ class TaskMapping(BaseModel):
     def sales_tax(self):
         """
         Calculate `Sales Tax` as 25% of `mat_plus_mu`.
+
+        NOTE:
+            Formula: mat_plus_mu * (tax_rate / 100)
         """
         try:
-            return round(self.mat_plus_mu * 0.25, 2)
+            tax_rate = self.opportunity.tax_rate.strip("%")
+            tax_rate = float(tax_rate)
+
+            # return round(self.mat_plus_mu * tax_rate, 2)
+            return round(self.mat_plus_mu * (tax_rate / 100), 2)
+
         except (ValueError, TypeError):
             return 0
 
@@ -419,9 +450,12 @@ class TaskMapping(BaseModel):
     def mat_tax_labor(self):
         """
         Calculate `MAT, TAX, LABOR` as the sum of `mat_sell` and `labor_sell`.
+
+        NOTE:
+            Formula: mat_sell + labor_sell + sales_tax
         """
         try:
-            return round(self.mat_sell + self.labor_sell, 2)
+            return round(self.mat_sell + self.labor_sell + self.sales_tax, 2)
         except (ValueError, TypeError):
             return 0
 
@@ -429,11 +463,15 @@ class TaskMapping(BaseModel):
     def comb_gp(self):
         """
         Calculate `COMB GP %` as the ratio of total GP to total cost.
+
+        NOTE:
+            Formula: (mat_sell + labor_sell) / (mat_cost + labor_cost) * 100
         """
         try:
-            total_gp = self.mat_gp + self.labor_gp
-            total_cost = self.labor_sell + self.mat_plus_mu
-            return round((total_gp / total_cost) * 100, 2) if total_cost != 0 else 0
+            # total_gp = self.mat_gp + self.labor_gp
+            # total_cost = self.labor_sell + self.mat_plus_mu
+            # return round((total_gp / total_cost) * 100, 2) if total_cost != 0 else 0
+            return round((self.mat_sell + self.labor_sell) / (self.mat_cost + self.labor_cost) * 100, 2)
         except (ValueError, ZeroDivisionError):
             return 0
 

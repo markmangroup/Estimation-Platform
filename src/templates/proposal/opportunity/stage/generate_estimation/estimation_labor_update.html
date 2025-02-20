@@ -157,6 +157,7 @@
             data: {
                 type: 'bulk_update',
                 rows: rowsData,
+                document_number: "{{ document_number }}"
             },
             headers: {
                 'X-CSRFToken': "{{ csrf_token }}",

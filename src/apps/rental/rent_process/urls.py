@@ -10,7 +10,15 @@ urlpatterns = [
     path("order/list/ajax", views.OrderListAjaxView.as_view(), name="order-list-ajax"),
     # path("recurring-order/ajax", views.RecurringOrderListAjaxView.as_view(), name="recurring-order-ajax"),
     # path("return-order/ajax", views.ReturnOrderListAjaxView.as_view(), name="return-order-ajax"),
-    path("order/<str:order_id>/detail",views.OrderDetailview.as_view(),name="order-detail",),
-    path("delivery/<str:delivery_id>/detail",views.DeliveryDetailview.as_view(),name="delivery-detail",),
+    path(
+        "order/<str:order_id>/detail",
+        views.OrderDetailview.as_view(),
+        name="order-detail",
+    ),
+    path(
+        "delivery/<str:delivery_id>/detail",
+        views.DeliveryDetailview.as_view(),
+        name="delivery-detail",
+    ),
     # path("reccuring-order/<str:recurring_order_id>/detail",views.RecurringOrderDetail.as_view(),name="reccuring-order-detail",),
 ]

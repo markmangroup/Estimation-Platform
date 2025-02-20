@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404, render
 from apps.constants import ERROR_RESPONSE, LOGGER
 from apps.mixin import TemplateViewMixin, ViewMixin
 from apps.proposal.labour_cost.models import LabourCost
+from apps.proposal.opportunity.views.proposal_creation import ProposalCreationData
 from apps.proposal.product.models import Product
 from apps.proposal.task.models import Task
 from apps.proposal.vendor.models import Vendor
@@ -65,13 +66,14 @@ class AssignProdLabor(TemplateViewMixin):
                 prod_obj = PreliminaryMaterialList.objects.get(
                     opportunity__document_number=document_number, item_number=internal_id
                 )
+                prod = Product.objects.filter(display_name=prod_obj.item_number).first()
 
                 assigned_product = AssignedProduct(
                     task_mapping=task_mapping_obj,
                     quantity=prod_obj.combined_quantities_from_both_import,
                     item_code=prod_obj.item_number,
                     description=prod_obj.description,
-                    standard_cost=2,
+                    standard_cost= prod.std_cost if prod else 0,
                     is_assign=True,
                 )
                 assigned_product.save()
@@ -87,9 +89,21 @@ class AssignProdLabor(TemplateViewMixin):
             return JsonResponse({"status": "error", "errors": errors}, status=404)
 
         task_name = task_mapping_obj.code or task_mapping_obj.task.name
-        messages.success(self.request, f'Product assigned for "{task_name}" successfully!')
+        # messages.success(self.request, f'Product assigned for "{task_name}" successfully!')
+        opportunity = get_object_or_404(Opportunity, document_number=document_number)
+        data = TaskMappingTable.generate_table(opportunity)
 
-        return JsonResponse({"status": "success", "created_products": created_products})
+        # Render the updated HTML for the task mapping table
+        html = render(request, "proposal/opportunity/stage/task_mapping/tasks.html", data)
+
+        return JsonResponse(
+            {
+                "status": "success",
+                "message": f'Product assigned for "{task_name}" successfully!',
+                "created_products": created_products,
+                "html": html.content.decode("utf-8"),
+            }
+        )
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -195,11 +209,21 @@ class UpdateAssignProdView(ViewMixin):
         try:
             body_unicode = request.body.decode("utf-8")
             data = urllib.parse.parse_qs(body_unicode)
+            # document_number = data.get("document_number", [""])[0]
 
             if data.get("type")[0] == "bulk_update":
                 response = self.bulk_update(data)
             else:
                 response = self.update_fields(data)
+
+            # TODO: This view used for task mapping and proposal creation
+            # opportunity = get_object_or_404(Opportunity, document_number=document_number)
+            # data = ProposalTable.generate_table(opportunity)
+
+            # Render the updated HTML for the task mapping table
+            # html = render(request, 'proposal/opportunity/stage/proposal_creation/based_on_task.html', data)
+
+            # response["html"] = html.content.decode('utf-8')
 
             return JsonResponse(response)
 
@@ -244,8 +268,9 @@ class AddProdRowView(ViewMixin):
         overall_data_saved = False
 
         for task_id, products in result.items():
-            task_mapping: TaskMapping = TaskMapping.objects.get(id=task_id)
-            if task_mapping:
+            try:
+                task_mapping = TaskMapping.objects.get(id=task_id)
+
                 for product in products:
                     if not product.get("item_code") and not product.get("task_name"):
                         continue
@@ -262,11 +287,31 @@ class AddProdRowView(ViewMixin):
                             return response  # Return warning if any required field is missing
                         overall_data_saved = True
 
-        return (
-            {"status": "success", "message": "Product added successfully"}
-            if overall_data_saved
-            else {"status": "empty", "message": ""}
-        )
+            except TaskMapping.DoesNotExist:
+                return {
+                    "status": "error",
+                    "message": f"Task with ID {task_id} not found.",
+                    "code": 404,
+                }
+
+        if overall_data_saved:
+            try:
+                data = TaskMappingTable.generate_table(task_mapping.opportunity)
+                html = render(self.request, "proposal/opportunity/stage/task_mapping/task_table.html", data)
+                return {
+                    "status": "success",
+                    "message": "Task added successfully",
+                    "html": html.content.decode("utf-8"),
+                }
+            except Exception as e:
+                return {
+                    "status": "error",
+                    "message": f"Something went wrong while generating the task table: {str(e)}",
+                    "code": 500,
+                }
+
+        else:
+            return {"status": "empty", "message": "No data was saved."}
 
     def _save_product(self, task_mapping: TaskMapping, product: dict):
         """
@@ -368,12 +413,20 @@ class AddProdRowView(ViewMixin):
                 return JsonResponse({"status": "empty", "message": "Please enter data"})
 
             response = self.format_data(data)
-            if response["status"] == "success":
-                messages.success(self.request, response["message"])
-            elif response["status"] == "warning":
-                messages.warning(self.request, response["message"])
-            elif response["status"] == "error":
-                messages.error(self.request, response["message"])
+
+            if isinstance(response, dict):
+                status = response.get("status", "error")
+                message = response.get("message", "Something went wrong.")
+            else:
+                status = "error"
+                message = "Unexpected response format"
+
+            if status == "success":
+                messages.success(self.request, message)
+            elif status == "warning":
+                messages.warning(self.request, message)
+            elif status == "error":
+                messages.error(self.request, message)
 
             return JsonResponse(response)
 
@@ -381,6 +434,16 @@ class AddProdRowView(ViewMixin):
             LOGGER.error("Invalid JSON response")
             messages.error(self.request, ERROR_RESPONSE["message"])
             return JsonResponse(ERROR_RESPONSE, status=400)
+
+        except Exception as e:
+            LOGGER.error(f"Unexpected error: {str(e)}")
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": f"An unexpected error occurred: {str(e)}",
+                    "code": 500,
+                }
+            )
 
 
 class AssignTaskLaborView(ViewMixin):
@@ -410,7 +473,7 @@ class AssignTaskLaborView(ViewMixin):
             document_number = data["document_number"][0]
 
             current_task = TaskMapping.objects.get(id=current_task_id)
-            _assign_to = current_task.assign_to # old value
+            _assign_to = current_task.assign_to  # old value
             assign_labor_task = TaskMapping.objects.get(id=value)
 
             current_task.assign_to = assign_labor_task.code
@@ -420,7 +483,9 @@ class AssignTaskLaborView(ViewMixin):
             assign_labor_task.save()
 
             if _assign_to:
-                task_mapping_object = TaskMapping.objects.filter(opportunity__document_number=document_number, code=_assign_to).first()
+                task_mapping_object = TaskMapping.objects.filter(
+                    opportunity__document_number=document_number, code=_assign_to
+                ).first()
                 task_mapping_object.is_assign_task = False
                 task_mapping_object.assign_to = ""
                 task_mapping_object.save()
@@ -571,6 +636,7 @@ class AddTaskView(ViewMixin):
 
         opportunity = get_object_or_404(Opportunity, document_number=document_number)
 
+        available_tasks = TaskMapping.objects.filter(opportunity=opportunity)
         for task_name in tasks:
             task_instance = get_object_or_404(Task, name=task_name)
             if description:
@@ -578,15 +644,35 @@ class AddTaskView(ViewMixin):
             else:
                 task_description = task_instance.description
 
-            TaskMapping.objects.create(
-                opportunity=opportunity, task=task_instance, code=task_instance.name, description=task_description
-            )
+            task_mapping_data = {
+                "opportunity": opportunity,
+                "task": task_instance,
+                "code": task_instance.name,
+                "description": task_description,
+            }
 
-        messages.success(request, "Tasks added successfully!")
+            if available_tasks.exists():
+                first_task = available_tasks.first()
+                task_mapping_data.update(
+                    {
+                        "labor_gp_percent": first_task.labor_gp_percent,
+                        "mat_gp_percent": first_task.mat_gp_percent,
+                    }
+                )
+
+            TaskMapping.objects.create(**task_mapping_data)
+
+        data = TaskMappingTable.generate_table(opportunity)
+
+        # Render the updated HTML for the task mapping table
+        html = render(request, "proposal/opportunity/stage/task_mapping/task_table.html", data)
+
+        # messages.success(request, "Tasks added successfully!")
         return JsonResponse(
             {
                 "status": "Created",
                 "message": "Task added successfully",
+                "html": html.content.decode("utf-8"),
             },
             status=201,
         )
@@ -833,3 +919,37 @@ class UpdateSequenceView(ViewMixin):
 
         except Exception:
             return JsonResponse({"status": "error", "message": ERROR_RESPONSE}, status=400)
+
+
+class TaskMappingTable:
+
+    @staticmethod
+    def generate_table(opportunity):
+        total_tasks = TaskMappingData._get_total_tasks(opportunity.document_number)
+        task_mapping_list = TaskMappingData._get_tasks(opportunity.document_number)
+        task_mapping_labor_list = TaskMappingData._get_labour_tasks(opportunity.document_number)
+        grand_total = TaskMappingData._get_task_total(opportunity.document_number)
+        labor_task_total = TaskMappingData._get_labor_task_total(opportunity.document_number)
+
+        data = {
+            "total_tasks": total_tasks,
+            "task_mapping_list": task_mapping_list,
+            "task_mapping_labor_list": task_mapping_labor_list,
+            "grand_total": grand_total,
+            "labor_task_total": labor_task_total,
+            "opportunity": opportunity,
+        }
+        return data
+
+
+class ProposalTable:
+
+    @staticmethod
+    def generate_table(opportunity):
+        """Generate proposal table"""
+        grouped_proposals = ProposalCreationData._get_proposal_creation(opportunity.document_number)
+        proposal_total = ProposalCreationData._get_proposal_totals(opportunity.document_number)
+
+        data = {"grouped_proposals": grouped_proposals, "proposal_total": proposal_total, "opportunity": opportunity}
+
+        return data

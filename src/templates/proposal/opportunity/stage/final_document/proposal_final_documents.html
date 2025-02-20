@@ -55,22 +55,22 @@
             <th>Task</th>
             <th>Quantity</th>
             <th>Description</th>
-            <th>PartNumber</th>
+            <th>Item code</th>
           </tr>
         </thead>
         <tbody>
           {% for netsuite_data in netsuite_extract_data  %}
             <tr>
-              {% if netsuite_data.task_mapping.task.internal_id %}
-              <td>{{ netsuite_data.task_mapping.task.internal_id }}</td>
+              {% if netsuite_data.internal_id %}
+                <td>{{ netsuite_data.internal_id }}</td>
               {% else %}
-              <td> - </td>
+                <td> - </td>
               {% endif %}
-              <td>{{ netsuite_data.task_mapping.code }}</td>
-              <td>{{ netsuite_data.quantity }}</td>
-              <td>{{ netsuite_data.description }}</td>
-              {% if  netsuite_data.item_code %}
-                <td>{{ netsuite_data.item_code }}</td>
+              <td>{{ netsuite_data.assigned_product.task_mapping.code }}</td>
+              <td>{{ netsuite_data.assigned_product.quantity }}</td>
+              <td>{{ netsuite_data.assigned_product.description }}</td>
+              {% if  netsuite_data.assigned_product.item_code %}
+                <td>{{ netsuite_data.assigned_product.item_code }}</td>
               {% else %}
                 <td> - </td>
               {% endif %}
@@ -212,12 +212,26 @@
                   display: none !important;
                 }
 
+                .form-control {
+                  border: none !important;
+                }
+
                 input[type="checkbox"] {
                   display: none !important;
                   border: none;
                 }
+
+                .select2-container,
+            .select2-container--default {
+                display: none !important;
+            }
+                /* Show the print-customer-name span */
+                #print-customer-name {
+                    display: inline !important;
+                }
             </style>
         `;
+
         document.body.insertAdjacentHTML('afterbegin', printStyles);
         document.querySelectorAll('.d-icon').forEach(icon => {
             icon.outerHTML = "*";

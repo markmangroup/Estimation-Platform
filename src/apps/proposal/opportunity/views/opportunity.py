@@ -3,10 +3,9 @@ import json
 import urllib.parse
 from typing import Any, Dict
 
-from django.contrib import messages
 from django.db.models import Q, QuerySet
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.template.loader import get_template
 from django.urls import reverse
 from django.utils.dateparse import parse_date
@@ -20,6 +19,7 @@ from apps.mixin import (
     TemplateViewMixin,
     ViewMixin,
 )
+from apps.proposal.opportunity.models import TaskMapping
 
 from ..forms import ImportOpportunityCSVForm
 from ..models import Document, Invoice, Opportunity
@@ -391,6 +391,36 @@ class UpdateOpportunityView(ViewMixin):
         :returns: updated field success message
         """
         setattr(opportunity_obj, field_name, value)
+        if field_name == "tax_rate":
+            value = float(value.replace("%", "").strip())
+
+            # # task_mapping_labors_objs = TaskMapping.objects.filter(
+            # #     opportunity__document_number=opportunity_obj.document_number
+            # # ).exclude(task__description__icontains="labor")
+
+            # # if task_mapping_labors_objs:
+            # #     for task_mapping_labors_obj in task_mapping_labors_objs:
+            # #         task_mapping_labors_obj.mat_gp_percent = value
+            # #         task_mapping_labors_obj.labor_gp_percent = value
+            # #         task_mapping_labors_obj.save()
+
+            # # estimation_table_labors_objs = TaskMapping.objects.filter(
+            # #     opportunity__document_number=opportunity_obj.document_number
+            # # ).filter(task__description__icontains="labor", assign_to__isnull=True)
+
+            # # if estimation_table_labors_objs:
+            # #     for estimation_table_labors_obj in estimation_table_labors_objs:
+            # #         estimation_table_labors_obj.labor_gp_percent = value
+            # #         estimation_table_labors_obj.mat_gp_percent = value
+            # #         estimation_table_labors_obj.save()
+            # context = {}
+            # context["total"] = GenerateEstimate._get_total(opportunity_obj.document_number)
+            # return {
+            #     "status": "success",
+            #     "message": f"{field_name.replace('_', ' ').capitalize()} updated successfully",
+            #     "total": context["total"],
+            # }
+
         opportunity_obj.save()
         return {
             "status": "success",
@@ -411,10 +441,12 @@ class UpdateOpportunityView(ViewMixin):
                 "job_name": "job_name",
                 "project": "project",
                 "ranch": "ranch_name",
+                "tax_rate": "tax_rate",
             }
 
             field_type = data["type"][0]
             if field_type in field_mapping:
+                print(data["value"][0])
                 return self._update_field(opportunity_obj, field_mapping[field_type], data["value"][0])
 
             if field_type == "term_and_condition":
@@ -422,10 +454,18 @@ class UpdateOpportunityView(ViewMixin):
                 if opportunity_obj.term_and_condition != json_data:
                     opportunity_obj.term_and_condition = json_data
                     opportunity_obj.save()
-                    messages.success(self.request, "Terms updated successfully")
+                    context = {"opportunity": opportunity_obj}
+                    _html = render(
+                        self.request,
+                        "proposal/opportunity/stage/proposal_preview/opportunity_term_and_condition.html",
+                        context,
+                    )
+
                     return {
                         "status": "success",
                         "message": "Terms updated successfully",
+                        "code": 200,
+                        "_html": _html.content.decode("utf-8"),
                     }
                 return {}  # Return empty response
 

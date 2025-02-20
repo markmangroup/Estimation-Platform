@@ -68,7 +68,16 @@
                border-width: 0 0 1px 0;
                border-radius: 20px;
             }
-         </style>
+
+         .tasks-mapping-collapse{
+            display: flex;
+            justify-content: space-evenly;
+            }
+
+            .tasks-mapping-collapse:hover{
+            cursor: pointer;
+            }
+      </style>
    </head>
    <!-- END : Head-->
    <!-- BEGIN : Body-->
@@ -172,6 +181,14 @@
       {% block script %}
 
       {% endblock script %}
+
+      <!-- NOTE: Comment this while developing -->
+      <script>
+         window.onload = function() {
+            console.clear(); // Clear the console after refresh
+            console.error = function() {}; // Disable all console.error calls
+         };
+      </script>
    </body>
 </html>
 
