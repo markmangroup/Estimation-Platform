@@ -201,7 +201,7 @@
     function printContent(id) {
         var content = document.getElementById(id).innerHTML; // Get the content to print
         var originalDocument = document.body.innerHTML;
-
+        var originalTitle = "{{document_number}}";
         document.body.innerHTML = content; // Temporarily replace the document's body content
 
         // Hide icons and any other elements that shouldn't appear in print
@@ -239,10 +239,12 @@
 
         function afterPrint() { // Function to handle after printing
             document.body.innerHTML = originalDocument;
+            document.title = originalTitle;
             window.location.reload();
         }
 
         const observer = new MutationObserver(() => { // Create a MutationObserver to wait for content changes
+            document.title = originalTitle
             window.print();
             observer.disconnect();
         });

@@ -58,9 +58,9 @@
 </table>
 
 <!-- Sales term -->
-<div>
-  <hr>
+<div style="padding-top: 20px;">
   <h4 class="text-center">SALES AND APPROVAL AGREEMENT</h4>
+  <hr>
   <table class="table">
     <tbody>
       {% for s in opportunity.term_and_condition.sales_agreement %}
@@ -246,9 +246,9 @@
   </div>
 
   <!-- DEPOSIT INVOICE -->
-  <div>
-    <hr>
+  <div style="page-break-before: always; padding-top: 40px;">
     <h4 class="text-center">DEPOSIT INVOICE</h4>
+    <hr>
     <strong>Customer: </strong>
     <input type="text" class="form-control text-nowrap" value="{{ opportunity.customer.name }}" placeholder="Customer Name"
     disabled>
@@ -1503,6 +1503,5 @@
   </div>
   <br>
 </div>
-
 <!-- Invoice Items Details ends -->
 {% endif %}
