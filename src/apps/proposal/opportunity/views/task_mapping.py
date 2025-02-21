@@ -109,10 +109,23 @@ class AssignProdLabor(TemplateViewMixin):
         context = super().get_context_data(**kwargs)
         document_number = self.kwargs["document_number"]
         task_mapping_id = self.kwargs["task_id"]
+        
+        products = self._get_products_data(task_mapping_id, document_number)
 
-        context["products"] = self._get_products_data(task_mapping_id, document_number)
+        valid_products = []
+        non_valid_products = []
+
+        for product in products:
+            if Product.objects.filter(display_name=product.item_number).exists():
+                valid_products.append(product)
+            else:
+                non_valid_products.append(product)
+
+        context["valid_products"] = valid_products
+        context["non_valid_products"] = non_valid_products
         context["document_number"] = document_number
         context["task_id"] = task_mapping_id
+        context["products"] = products
         return context
 
 
