@@ -333,10 +333,7 @@ class GenerateEstimate:
         :param document_number: The unique identifier for the opportunity.
         :return: A dictionary with total labor and material costs, and total cost.
         """
-        task_mapping_qs = TaskMapping.objects.filter(opportunity__document_number=document_number).exclude(
-            description__icontains="labor"
-        )
-
+        task_mapping_qs = TaskMapping.objects.filter(opportunity__document_number=document_number)
         totals = {
             "total_labor_cost": Decimal("0.00"),
             "total_labor_gp_percent": Decimal("0.00"),
