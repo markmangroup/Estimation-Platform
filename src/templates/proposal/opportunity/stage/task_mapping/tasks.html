@@ -915,6 +915,21 @@
 
       });
     </script>
+    
+    <script>
+      $(document).ready(function () {
+        $(".tasks-mapping-collapse a").click(function () {
+            let icon = $(this).find("em");
+              setTimeout(() => {
+                if ($(this).attr("aria-expanded") === "true") {
+                    icon.removeClass("ft-chevron-down").addClass("ft-chevron-up");
+                } else {
+                    icon.removeClass("ft-chevron-up").addClass("ft-chevron-down");
+                }
+            }, 100);
+        });
+    });
+    </script>
 
     <!-- Add dynamic labor task row -->
     <script>

@@ -58,6 +58,11 @@ class UploadCADFile(ViewMixin):
                 continue
 
             quantity, description, item_number = row
+                        
+            try:
+                quantity = float(quantity)
+            except ValueError:
+                quantity = 0 
 
             # Append the values to the corresponding lists in the dictionary
             data["Quantity"].append(float(quantity))

@@ -354,6 +354,7 @@ class OpportunityDetail(ProposalDetailViewMixin):
         context["stage"] = opportunity.estimation_stage
 
         # Task Mapping
+        context['document_number']=document_number
         context["total_tasks"] = TaskMappingData._get_total_tasks(document_number)
         context["task_mapping_list"] = TaskMappingData._get_tasks(document_number)
         context["task_mapping_labor_list"] = TaskMappingData._get_labour_tasks(document_number)
