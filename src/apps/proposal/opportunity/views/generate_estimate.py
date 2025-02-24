@@ -116,12 +116,8 @@ class TaskProductDataView(CustomDataTableMixin):
         Each row of data is a list of values corresponding to the columns in the table.
         """
         data = []
-        has_frt_task = False  # Flag to check if 'FRT' task already exists
         for item in qs:
-
-            if 'Freight' in self._get_description(item):
-                has_frt_task = True
-
+            print("-- queryset --", qs)
             data.append(
                 {
                     "code": self._get_code(item),
@@ -142,26 +138,6 @@ class TaskProductDataView(CustomDataTableMixin):
                     "mat_gp_percent_data": self._mat_gp_percent_data(item),  # type : ignore
                 }
             )
-        
-        if not has_frt_task:
-            data.append({
-                    "code": "FRT",
-                    "description": "FRT: Freight",
-                    "labor_cost": "",
-                    "labor_gp_percent": "",
-                    "labor_gp": "",
-                    "labor_sell": "",
-                    "mat_cost": "",
-                    "mat_gp_percent": "",
-                    "mat_gp": "",
-                    "mat_plus_mu": "",
-                    "sales_tax": "",
-                    "mat_sell": "",
-                    "mat_tax_labor": "",
-                    "comb_gp": "",
-                    "labor_gp_percent_data": "",  # type : ignore
-                    "mat_gp_percent_data": "",  # type : ignore
-            })
         return data
 
     def get(self, request, *args, **kwargs):
@@ -357,7 +333,10 @@ class GenerateEstimate:
         :param document_number: The unique identifier for the opportunity.
         :return: A dictionary with total labor and material costs, and total cost.
         """
-        task_mapping_qs = TaskMapping.objects.filter(opportunity__document_number=document_number)
+        task_mapping_qs = TaskMapping.objects.filter(opportunity__document_number=document_number).exclude(
+            description__icontains="labor"
+        )
+
         totals = {
             "total_labor_cost": Decimal("0.00"),
             "total_labor_gp_percent": Decimal("0.00"),

@@ -21,33 +21,16 @@
                     <th>Item Number</th>
                 </tr>
             </thead>
-             <tbody>
-                {% for p in valid_products %}
-                    <tr class="checkbox-tr">
-                        <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
-                        <td>{{p.combined_quantities_from_both_import}}</td>
-                        <td>{{p.description}}</td>
-                        <td>{{p.item_number}}</td>
-                    </tr>
-                {% endfor %}
-        
-                {% if non_valid_products %}
-                    <tr>
-                        <td colspan="4" style="background-color:rgb(233, 233, 233); text-align: center; font-weight: bold;">
-                            Non Valid Products
-                        </td>
-                    </tr>
-                {% endif %}
-        
-                {% for p in non_valid_products %}
-                    <tr class="checkbox-tr">
-                        <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
-                        <td>{{p.combined_quantities_from_both_import}}</td>
-                        <td>{{p.description}}</td>
-                        <td>{{p.item_number}}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>  
+            <tbody>
+            {% for p in products %}
+                <tr class="checkbox-tr">
+                    <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                    <td>{{p.combined_quantities_from_both_import}}</td>
+                    <td>{{p.description}}</td>
+                    <td>{{p.item_number}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
         </table>
     </div>
 </div>
@@ -100,43 +83,6 @@
 <script>
     $(document).ready(function() {
 
-        $("#save-button").click(function() {
-            console.log('02-21 selec=====tedItems: ');
-            var selectedItems = getSelectedCheckboxes();
-            console.log('02-21 selectedItems: ', selectedItems);
-
-            $.ajax({
-                type: "POST",
-                url: "/proposal/assign-prod-labor/{{document_number}}/{{task_id}}",
-                data: {
-                    'items': JSON.stringify(selectedItems),
-                    'csrfmiddlewaretoken': '{{ csrf_token }}'
-                },
-                beforeSend: function() {
-                    $("#assign-prod").modal('hide');
-                    $("#assign-prod .modal-body").html('');
-                    $('#show-loader-task-mapping').css("display", "block");
-                    $('#tableContainer').css("display", "none");
-                },
-                success: function(response) {
-                    $('#tableContainer').html(response.html);
-                    $('#show-loader-task-mapping').css("display", "none");
-                    $('#tableContainer').css("display", "block").fadeIn(1000);
-
-                    $("#enstimate-table").DataTable().ajax.reload(null, false);
-
-                    toastr.success(response.message, 'Success', {
-                        closeButton: true,
-                        progressBar: true,
-                        positionClass: 'toast-bottom-right',
-                        timeOut: 6000
-                    });
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                }
-            });
-        });
 
         $('.assign_prod').DataTable({
             "lengthChange": false,
@@ -177,6 +123,42 @@
             }
 
         });
+
+
+        $("#save-button").click(function() {
+            var selectedItems = getSelectedCheckboxes();
+
+            $.ajax({
+                type: "POST",
+                url: "/proposal/assign-prod-labor/{{document_number}}/{{task_id}}",
+                data: {
+                    'items': JSON.stringify(selectedItems),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                beforeSend: function() {
+                    $("#assign-prod").modal('hide');
+                    $("#assign-prod .modal-body").html('');
+                    $('#show-loader-task-mapping').css("display", "block");
+                    $('#tableContainer').css("display", "none");
+                },
+                success: function(response) {
+                    $('#tableContainer').html(response.html);
+                    $('#show-loader-task-mapping').css("display", "none");
+                    $('#tableContainer').css("display", "block").fadeIn(1000);
+
+                    $("#enstimate-table").DataTable().ajax.reload(null, false);
+
+                    toastr.success(response.message, 'Success', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-bottom-right',
+                        timeOut: 6000
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
     });
 </script>
-    

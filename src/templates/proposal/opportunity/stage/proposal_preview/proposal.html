@@ -716,21 +716,19 @@
 
         $('.spa').each(function() {
           var checkbox = $(this).find('input[type="checkbox"]');
-          var textarea = $(this).find('.sales-agreement');
-          
-          if (textarea.length > 0) {
-              var term_id = textarea.data('id');
-              var term_value = textarea.val().trim();
+          if (checkbox.length > 0) {
+              var term_id = $(this).find('.sales-agreement').data('id');
+              var term_value = $(this).find('.sales-agreement').val();
 
-              if (term_value !== "") {
+              if (term_value !== "" && term_value !== null) {
                   terms.sales_agreement.push({
                       "id": term_id,
                       "text": term_value,
-                      "checked": checkbox.is(':checked')
+                      "checked": checkbox.is(':checked') // Sets true if checked, false otherwise
                   });
               }
           }
-      });
+        });
 
         var document_number = "{{ opportunity.document_number }}";
 
@@ -841,7 +839,7 @@
             <tr class="spa">
                 <td><input type="checkbox" name=""></td>
                 <td>
-                    <textarea type="text" rows="3" class="form-control sales-agreement new-sales-agreement" placeholder="Write new sales and approval agreement..." ></textarea>
+                    <input type="text" class="form-control sales-agreement new-sales-agreement" placeholder="Write new sales and approval agreement..." />
                 </td>
             </tr>
         `;

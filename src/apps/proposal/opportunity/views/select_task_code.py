@@ -80,8 +80,7 @@ class SelectedTaskListAjaxView(CustomDataTableMixin):
                     "action": self._get_actions(o),
                 }
             )
-        return sorted(data, key=lambda x: x["task__name"])
-
+        return data
 
     def get(self, request, *args, **kwargs):
         context_data = self.get_context_data(request)

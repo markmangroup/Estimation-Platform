@@ -134,7 +134,7 @@
                         <tr class="tr-{{t_id}}" data-row-id="{{ap.id}}">
                             <td class="sr-no">{{ forloop.counter }}</td>
                             <td>
-                                <input type="text" data-id="{{ap.id}}" class="form-control quantity" value="{{ap.quantity|floatformat:0|default:''}}" data-task-id="{{t_id}}" placeholder="Enter Quantity">
+                                <input type="text" data-id="{{ap.id}}" class="form-control quantity" value="{{ap.quantity|default:''}}" data-task-id="{{t_id}}" placeholder="Enter Quantity">
                             </td>
                             <td>{{ ap.item_code }}</td>
                             <td>{{ ap.description|default:'-' }}</td>
