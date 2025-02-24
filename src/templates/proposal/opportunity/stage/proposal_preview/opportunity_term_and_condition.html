@@ -58,28 +58,30 @@
 </table>
 
 <!-- Sales term -->
-<div style="padding-top: 20px;">
-  <h4 class="text-center">SALES AND APPROVAL AGREEMENT</h4>
-  <hr>
-  <table class="table">
+<div style="page-break-before: always;padding-top: 20px;">
+  <h4 class="text-center">SALES AND APPROVAL AGREEMENT </h4>
+<table class="table">
     <tbody>
-      {% for s in opportunity.term_and_condition.sales_agreement %}
+        {% for s in opportunity.term_and_condition.sales_agreement %}
         <tr class="spa {% if s.checked %}{% else %}icon{% endif %}">
-          <!-- <td><input type="checkbox" name="" checked></td> -->
-          <td style="width: 4%;"><input type="checkbox" name="" {% if s.checked %}checked{% endif %}></td>
-          <td> <input type="text" class="form-control sales-agreement" data-id="{{s.id}}" value="{{s.text}}"/></td>
+            <td style="width: 4%;">
+                <input type="checkbox" name="" {% if s.checked %}checked{% endif %}>
+            </td>
+            <td>
+                <textarea class="form-control sales-agreement" data-id="{{ s.id }}" oninput="autoResize(this)" style="overflow:hidden">{{ s.text }}</textarea>
+            </td>
         </tr>
-      {% endfor %}
-      <!-- Add New Row -->
-      <tr class="new-sales-agreement-tr spa icon">
-        <!-- <td><i class="fa fa-trash danger remove-terms"></i></td> -->
-        <td style="width: 4%;"><input type="checkbox" name=""></td>
-        <td>
-          <input type="text" class="form-control sales-agreement new-sales-agreement" placeholder="Write new sales and approval agreement..."/>
-        </td>
-      </tr>
+        {% endfor %}
+        <!-- Add New Row -->
+        <tr class="new-sales-agreement-tr spa icon">
+            <td style="width: 4%;"><input type="checkbox" name=""></td>
+            <td>
+                <textarea class="form-control sales-agreement new-sales-agreement" rows="3" placeholder="Write new sales and approval agreement..."></textarea>
+            </td>
+        </tr>
     </tbody>
-  </table>
+</table>
+
 
   <!-- Buyer / Seller -->
   <div class="row">
@@ -974,7 +976,7 @@
 </table>
 
 <!-- Sales term -->
-<div>
+<div style="page-break-before: always;padding-top: 20px;">
   <hr>
   <h4 class="text-center">SALES AND APPROVAL AGREEMENT</h4>
   <table class="table">
@@ -983,122 +985,39 @@
       <tr class="spa">
         <td style="width: 4%;"><input type="checkbox" name="" checked></td>
         <td>
-          <input
-        type="text"
-        class="form-control sales-agreement"
-        data-id="1"
-        value="This Agreement is made and entered on _______________ by and between Laurel Ag & Water (“Seller”) and Martha Waterman, (“Buyer”), (collectively referred to as the “Parties”)."
-        />
+          <textarea class="form-control sales-agreement" id="combined-agreements" rows="10">
+            This Agreement is made and entered on _______________ by and between Laurel Ag & Water (“Seller”) and Martha Waterman, (“Buyer”), (collectively referred to as the “Parties”).
+            
+            SELLER AGREES TO SELL and Buyer agrees to buy all material and services more fully described in the attached Exhibit A, “Project Detail” (the “Goods”), Job #Existi.
+            
+            BUYER SHALL PAY SELLER $37,498 for the Goods, the “Purchase Price”. Buyer shall make an initial deposit of 30% of the Purchase Price in the amount of $11,249 for Seller to secure materials. Buyer shall make a second installment payment of 30% in the amount of $11,249 upon first delivery of materials. Buyer shall make a third installment payment of 30% in the amount of $11,249 at commencement of infield work. Buyer shall make a final installment payment of 10% in the amount of $3,749 upon successful testing of system. All payments shall be fully applied to the Purchase Price. In addition to the Purchase Price, BUYER AGREES TO PAY for all approved and initialed options in the attached Exhibit A, "Project Detail."
+            
+            THE BUYER SHALL PAY THE PURCHASE PRICE, less the initial deposit, upon the completion of the job, or upon receipt of Invoice, whichever is first. Buyer agrees to pay 1.5% monthly interest (18% annual rate) on any unpaid balance remaining due more than thirty (30) days. Buyer agrees to pay for any collection or legal expenses incurred by Seller due to late payment or non-payment.
+            
+            SELLER SHALL DELIVER the Goods to Buyer at the following address or parcel number: _______________. At that time, Buyer has the right to inspect the Goods. Buyer must give notice to Seller of any defect, damage or other problems with the Goods. If Buyer does not notify Seller within 48 hours after delivery of the Goods, Buyer shall conclusively be presumed to have inspected and accepted them. Buyer assumes all liability for loss due to acts of God, earthquake, fire, explosion, vandalism, storm, flood, theft or other similar occurrence.
+            
+            PRELIMINARY NOTICE will be furnished to the Landowner, Contractor and Lender.
+            
+            ANY CHANGES OR ADDITIONS made to the original Project Detail including the charges associated with them will subsequently be referred to as “Change Order(s)” and/or “Addition Order(s)” and become part of this Agreement including all of its terms and conditions.
+            
+            BUYER AGREES that the design and specifications as described in the Project Detail are accurate and will be governed by the remaining terms of this Agreement.
+            
+            IN WITNESS WHEREOF, the parties have caused this Agreement to be executed the day and year first above written.
+              </textarea>
         </td>
       </tr>
-
-      <tr class="spa">
-        <td style="width: 4%;"><input type="checkbox" name="" checked></td>
-        <td>
-          <input
-        type="text"
-        data-id="2"
-        class="form-control sales-agreement"
-        value="SELLER AGREES TO SELL and Buyer agrees to buy all material and services more fully described in the attached Exhibit A, “Project Detail” (the “Goods”), Job #Existi."
-        />
-        </td>
-      </tr>
-
-      <tr class="spa">
-        <td style="width: 4%;"><input type="checkbox" name="" checked></td>
-        <td>
-          <input
-        type="text"
-        data-id="3"
-        class="form-control sales-agreement"
-        value='BUYER SHALL PAY SELLER $37,498 for the Goods, the “Purchase Price”. Buyer shall make an initial deposit of 30% of the Purchase Price in the amount of $11,249 for Seller to secure materials. Buyer shall make a second installment payment of 30% in the amount of $11,249 upon first delivery of materials. Buyer shall make a third installment payment of 30% in the amount of $11,249 at commencement of infield work. Buyer shall make a final installment payment of 10% in the amount of $3,749 upon successful testing of system. All payments shall be fully applied to the Purchase Price. In addition to the Purchase Price, BUYER AGREES TO PAY for all approved and initialed options in the attached Exhibit A, "Project Detail."'
-        />
-        </td>
-      </tr>
-
-      <tr class="spa">
-        <td style="width: 4%;"><input type="checkbox" name="" checked></td>
-        <td>
-          <input
-        type="text"
-        data-id="4"
-        class="form-control text-nowrap sales-agreement"
-        value="THE BUYER SHALL PAY THE PURCHASE PRICE, less the initial deposit, upon the completion of the job, or upon receipt of Invoice, whichever is first. Buyer agrees to pay 1.5% monthly interest (18% annual rate) on any unpaid balance remaining due more than thirty (30) days. Buyer agrees to pay for any collection or legal expenses incurred by Seller due to late payment or non-payment."
-        />
-        </td>
-      </tr>
-
-      <tr class="spa">
-        <td style="width: 4%;"><input type="checkbox" name="" checked></td>
-        <td>
-          <input
-        type="text"
-        data-id="5"
-        class="form-control text-nowrap sales-agreement"
-        value="SELLER SHALL DELIVER the Goods to Buyer at the following address or parcel number: _______________. At that time, Buyer has the right to inspect the Goods. Buyer must give notice to Seller of any defect, damage or other problems with the Goods. If Buyer does not notify Seller within 48 hours after delivery of the Goods, Buyer shall conclusively be presumed to have inspected and accepted them. Buyer assumes all liability for loss due to acts of God, earthquake, fire, explosion, vandalism, storm, flood, theft or other similar occurrence."
-        />
-        </td>
-      </tr>
-
-      <tr class="spa">
-        <td style="width: 4%;"><input type="checkbox" name="" checked></td>
-        <td>
-          <input
-        type="text"
-        data-id="6"
-        class="form-control text-nowrap sales-agreement"
-        value="PRELIMINARY NOTICE will be furnished to the Landowner, Contractor and Lender."
-        />
-        </td>
-      </tr>
-
-      <tr class="spa">
-        <td style="width: 4%;"><input type="checkbox" name="" checked></td>
-        <td>
-          <input
-        type="text"
-        data-id="7"
-        class="form-control text-nowrap sales-agreement"
-        value="ANY CHANGES OR ADDITIONS made to the original Project Detail including the charges associated with them will subsequently be referred to as “Change Order(s)” and/or “Addition Order(s)” and become part of this Agreement including all of its terms and conditions."
-        />
-        </td>
-      </tr>
-
-      <tr class="spa">
-        <td style="width: 4%;"><input type="checkbox" name="" checked></td>
-        <td>
-          <input
-        type="text"
-        data-id="8"
-        class="form-control text-nowrap sales-agreement"
-        value="BUYER AGREES that the design and specifications as described in the Project Detail are accurate and will be governed by the remaining terms of this Agreement."
-        />
-        </td>
-      </tr>
-
-      <tr class="spa">
-        <td style="width: 4%;"><input type="checkbox" name="" checked></td>
-        <td>
-          <input
-        type="text"
-        data-id="9"
-        class="form-control text-nowrap sales-agreement"
-        value="IN WITNESS WHEREOF, the parties have caused this Agreement to be executed the day and year first above written."
-        />
-        </td>
-      </tr>
-
       <tr class="new-sales-agreement-tr spa icon">
         <td style="width: 4%;"><input type="checkbox" name=""></td>
         <td>
-          <input
+          <textarea
             type="text"
             class="form-control sales-agreement new-sales-agreement"
             placeholder="Write new sales and approval agreement..."
-          />
+          ></textarea>
         </td>
       </tr>
 
+    
     </tbody>
   </table>
 
@@ -1260,7 +1179,7 @@
   </div>
 
   <!-- DEPOSIT INVOICE -->
-  <div>
+  <div style="page-break-before: always;padding-top: 20px;">
     <hr>
     <h4 class="text-center">DEPOSIT INVOICE</h4>
     <strong>Customer: </strong>

@@ -261,4 +261,20 @@
         }, 1000);
     }
   </script>
+  <script>
+    function autoResize(textarea) {
+        textarea.style.height = "auto";
+        textarea.style.height = (textarea.scrollHeight * 1.5) + "px";
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".sales-agreement",".new-sales-agreement").forEach(function (textarea) {
+            autoResize(textarea);
+            textarea.addEventListener("input", function () {
+                autoResize(this);
+            });
+        });
+    });
+
+</script>
 {% endblock script %}
