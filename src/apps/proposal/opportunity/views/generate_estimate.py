@@ -26,7 +26,7 @@ class TaskProductDataView(CustomDataTableMixin):
         qs = TaskMapping.objects.filter(opportunity__document_number=document_number).exclude(
             assign_to__isnull=False, task__description__icontains="labor"
         )
-        return qs
+        return qs.exclude(task__description__icontains="Freight")
 
     def filter_queryset(self, qs):
         """Return the list of items for this view."""
@@ -109,6 +109,33 @@ class TaskProductDataView(CustomDataTableMixin):
 
     def _mat_gp_percent_data(self, obj):
         return obj.mat_gp_percent
+    
+    def frt_total(self, obj):
+        task_mappings = TaskMapping.objects.filter(opportunity__document_number=obj.opportunity.document_number)
+        filtered_task_mappings = task_mappings.filter(
+            task__description__icontains="Freight"
+        )
+        task_mapping_ids = task_mappings.values_list("id", flat=True)
+        try:
+            assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids).order_by(
+                "sequence"
+            )
+        except Exception as e:
+            LOGGER.error(f"Exception : {e}")
+            assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids)
+        total_price = 0  
+        for task in filtered_task_mappings:
+            task_assigned_products = assigned_products.filter(task_mapping_id=task.id)
+
+            total_price += sum(
+                (
+                    product.vendor_quoted_cost * product.quantity
+                    if product.vendor_quoted_cost
+                    else product.standard_cost * product.quantity
+                )
+                for product in task_assigned_products
+            )
+        return total_price
 
     def prepare_results(self, qs):
         """
@@ -117,8 +144,9 @@ class TaskProductDataView(CustomDataTableMixin):
         """
         data = []
         has_frt_task = False  # Flag to check if 'FRT' task already exists
-        for item in qs:
 
+        for item in qs:
+            
             if 'Freight' in self._get_description(item):
                 has_frt_task = True
 
@@ -143,25 +171,27 @@ class TaskProductDataView(CustomDataTableMixin):
                 }
             )
         
-        if not has_frt_task:
-            data.append({
-                    "code": "FRT",
-                    "description": "FRT: Freight",
-                    "labor_cost": "",
-                    "labor_gp_percent": "",
-                    "labor_gp": "",
-                    "labor_sell": "",
-                    "mat_cost": "",
-                    "mat_gp_percent": "",
-                    "mat_gp": "",
-                    "mat_plus_mu": "",
-                    "sales_tax": "",
-                    "mat_sell": "",
-                    "mat_tax_labor": "",
-                    "comb_gp": "",
-                    "labor_gp_percent_data": "",  # type : ignore
-                    "mat_gp_percent_data": "",  # type : ignore
-            })
+        # if not has_frt_task:
+        data.append({
+            "code": "FRT",
+            "description": "FRT: Freight",
+            "labor_cost": "",
+            "labor_gp_percent": "",
+            "labor_gp": "",
+            "labor_sell": "",
+            "mat_cost": "",
+            "mat_gp_percent": "",
+            "mat_gp": "",
+            "mat_plus_mu": "",
+            "sales_tax": "",
+            "mat_sell": "",
+            "mat_tax_labor": "",
+            "comb_gp": "",
+            "labor_gp_percent_data": "",  # type : ignore
+            "mat_gp_percent_data": "",  # type : ignore
+            "frt_total": self.frt_total(item),
+            # "is_freight": "Freight" in (item.task.description if item.task else ""),            
+        })
         return data
 
     def get(self, request, *args, **kwargs):
