@@ -150,6 +150,8 @@ class TaskProductDataView(CustomDataTableMixin):
             if 'Freight' in self._get_description(item):
                 has_frt_task = True
 
+        for item in qs:
+            print("-- queryset --", qs)
             data.append(
                 {
                     "code": self._get_code(item),

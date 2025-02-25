@@ -19,9 +19,12 @@ class RentalProductListView(WarehouseViewMixin):
 
         context = super().get_context_data(*args, **kwargs)
         equipment_material_group = RentalProduct.objects.values("equipment_material_group").distinct()
+        equipment_material_group = sorted(
+            equipment_material_group, 
+            key=lambda x: (not x['equipment_material_group'].isdigit(), x['equipment_material_group'] if not x['equipment_material_group'].isdigit() else int(x['equipment_material_group']))
+        )
         equipment_name = RentalProduct.objects.values("equipment_name").distinct()
-
-        context["equipment_material_group"] = list(equipment_material_group)
+        context["equipment_material_group"] = equipment_material_group
         context["equipment_name"] = list(equipment_name)
         return context
 
