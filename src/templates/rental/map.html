@@ -33,7 +33,7 @@
     const CustomerDetail = "{% url 'rental:customer_detail' %}"
 
     // List Warehouse coordinates
-    const warehouse = [ 
+    const warehouse = [
         { lat: 35.39580115188971, lng: -119.14463375865422, name: "Bakersfield", address: "123 Main St, Bakersfield, CA 93301"},
         { lat: 39.187611407547266, lng: -121.99771378920418, name: "Colusa", address: "456 Market St, Colusa, CA 95932"},
         { lat: 39.90926300585871, lng: -122.19822254499798, name: "Corning", address: "789 Oak St, Corning, CA 96021" },
@@ -44,7 +44,7 @@
         { lat: 35.27130656247793, lng: -119.11068637400149, name: "Old River", address: "505 Willow St, Old River, CA 93263" },
         { lat: 32.69999087183313, lng: -114.51258941826562, name: "Yuma", address: "606 Palm St, Yuma, AZ 85364" },
     ];
-    
+
     // List Customer coordinates
     const customers = [
         { lat: 38.12522521172127, lng: -122.25152284670179, name: "Brooke Marchy", address: "789 Redwood Dr, Santa Rosa, CA 95401", product: { name: "High-Speed Drill", url: "{% url 'rental:warehouse_products' %}" } },
@@ -58,5 +58,5 @@
         { lat: 32.23287843422204, lng: -110.95902038944466, name: "Joseph Turner", address: "404 Palm Dr, Tucson, AZ 85701", product: { name: "Band Saw", url: "{% url 'rental:warehouse_products' %}" } },
         { lat: 35.64173022063601, lng: -120.78421400097423, name: "Lochlan Buckingham", address: "505 Maple Ave, San Luis Obispo, CA 93401", product: { name: "Surface Grinder", url: "{% url 'rental:warehouse_products' %}" } },
     ];
-    
+
 </script>

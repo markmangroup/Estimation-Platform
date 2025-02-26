@@ -51,7 +51,8 @@
                 >
                   <thead>
                     <tr>
-                      <th>Account Managers</th>
+                      <th>Manager id</th>
+                      <th>Account Manager Name</th>
                       <th>Email Address</th>
                     </tr>
                   </thead>
@@ -75,6 +76,7 @@
   table_id = "#account-manager";
   url = '{% url "rental:account_manager:account-manager-list-ajax" %}';
   columns = [
+    { data: 'manager id', name: 'manager_id'},
     { data: 'name', name: 'name'},
     { data: 'email', name: 'email' }
   ]

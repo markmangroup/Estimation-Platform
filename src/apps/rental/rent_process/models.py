@@ -1,10 +1,11 @@
+from datetime import datetime
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
-from apps.rental.account_manager.models import AccountManager
-from apps.rental.customer.models import RentalCustomer
-from apps.rental.product.models import RentalProduct
 from laurel.models import BaseModel
+from apps.rental.customer.models import RentalCustomer
+from apps.rental.account_manager.models import AccountManager
+from apps.rental.product.models import RentalProduct
+from django.utils.timezone import now
 
 SHIPPING_CARRIER_CHOICES = [
     ("Internal", _("Internal")),
@@ -68,19 +69,44 @@ class Order(BaseModel):
         return f"Order {self.order_id}"
 
     def calculate_total_repeat_orders(self):
-        total_orders = 0
+        total_orders = 1
         if self.repeat_type == "Weekly":
-            total_orders = (self.repeat_end_date - self.repeat_start_date).days // 7
+            total_days = (self.repeat_end_date - self.repeat_start_date).days
+            if total_days < 7:
+                total_orders = 1
+            else:
+                total_orders = total_days // 7 + 1
         elif self.repeat_type == "Monthly":
-            total_orders = (
-                (self.repeat_end_date.year - self.repeat_start_date.year) * 12
-                + self.repeat_end_date.month
-                - self.repeat_start_date.month
-            )
+            if self.repeat_end_date.year == self.repeat_start_date.year and self.repeat_end_date.month == self.repeat_start_date.month:
+                total_orders = 1
+            else:
+                total_orders = (self.repeat_end_date.year - self.repeat_start_date.year) * 12 + self.repeat_end_date.month - self.repeat_start_date.month + 1
+
         elif self.repeat_type == "Yearly":
-            total_orders = self.repeat_end_date.year - self.repeat_start_date.year
+            total_orders = self.repeat_end_date.year - self.repeat_start_date.year + 1
 
         return total_orders
+    
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = self._generate_order_id()
+        super().save(*args, **kwargs)
+        
+    def _generate_order_id(self):
+        if isinstance(self.rental_start_date, str):
+            self.rental_start_date = datetime.strptime(self.rental_start_date, "%Y-%m-%d")
+        year_month = self.rental_start_date.strftime("%Y%m") if self.rental_start_date else now().strftime("%Y%m")
+        prefix = "OR" if self.recurring_order else "OR"
+
+        last_order = Order.objects.filter(order_id__startswith=prefix + year_month).order_by("-order_id").first()
+
+        if last_order:
+            last_seq = int(last_order.order_id[-5:])
+            new_seq = f"{last_seq + 1:05d}"
+        else:
+            new_seq = "00001"
+
+        return f"{prefix}{year_month}{new_seq}"
 
 
 class OrderItem(BaseModel):
@@ -118,17 +144,17 @@ class Delivery(BaseModel):
         RentalProduct, on_delete=models.CASCADE, related_name="delivery_products", blank=True, null=True
     )
     delivery_qty = models.IntegerField()
-    contract_start_date = models.DateField()
-    contract_end_date = models.DateField()
-    delivery_date = models.DateField()
-    pickup_date = models.DateField()
-    check_out_date = models.DateField()
-    check_in_date = models.DateField()
-    removal_date = models.DateField()
-    inspection_date = models.DateField()
+    contract_start_date = models.DateField(blank=True, null=True)
+    contract_end_date = models.DateField(blank=True, null=True)
+    delivery_date = models.DateField(blank=True, null=True)
+    pickup_date = models.DateField(blank=True, null=True)
+    check_out_date = models.DateField(blank=True, null=True)
+    check_in_date = models.DateField(blank=True, null=True)
+    removal_date = models.DateField(blank=True, null=True)
+    inspection_date = models.DateField(blank=True, null=True)
     pickup_site = models.CharField(max_length=255)
     delivery_site = models.CharField(max_length=255)
-    po_number = models.CharField(max_length=50)
+    po_number = models.CharField(max_length=50,blank=True, null=True)
     shipping_carrier = models.CharField(max_length=20, choices=SHIPPING_CARRIER_CHOICES)
     delivery_status = models.CharField(
         _("Delivery Status"), max_length=50, choices=DELIVERY_STATUS_CHOICES, default=STAGE_1
@@ -172,3 +198,30 @@ class ReturnOrder(BaseModel):
 
     def __str__(self):
         return f"Return Order {self.order.order_id} - {self.delivery.delivery_id}"
+
+class OrderFormPermissionModel(models.Model):
+    customer = models.BooleanField(default=True)
+    account_manager = models.BooleanField(default=True)
+    link_netsuite = models.BooleanField(default=False)
+    region = models.BooleanField(default=False)
+    pick_up_location = models.BooleanField(default=False)
+    delivery_location = models.BooleanField(default=False)
+    water_source = models.BooleanField(default=False)
+    crop = models.BooleanField(default=False)
+    rent_amount = models.BooleanField(default=False)
+    rental_period = models.BooleanField(default=False)
+    recurring_order = models.BooleanField(default=False)
+    repeat_type = models.BooleanField(default=True)
+    repeat_value = models.BooleanField(default=False)
+    repeat_start_date = models.BooleanField(default=False)
+    repeat_end_date = models.BooleanField(default=False)
+    rental_period = models.BooleanField(default=False)
+    customer_email = models.BooleanField(default=True)
+    rent_per_month = models.BooleanField(default=False)
+    equipment_id = models.BooleanField(default=False)
+    equipment_name = models.BooleanField(default=False)
+    quantity = models.BooleanField(default=False)
+    per_unit_price = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"OrderData {self.id}"

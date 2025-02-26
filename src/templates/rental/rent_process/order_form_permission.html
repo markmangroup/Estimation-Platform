@@ -1,0 +1,69 @@
+{% load crispy_forms_tags %}
+<form method="post" hx-post="{% url 'rental:rent_process:order-permission' %}" enctype="multipart/form-data" id="sample">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="modal-footer">
+        <input type="reset" class="btn bg-light-secondary" data-dismiss="modal" value="Close">
+        <button type="submit" class="btn btn-primary">Apply Permission</button>
+    </div>
+</form>
+<script>
+document.body.addEventListener('htmx:beforeSwap', function(evt) {
+    if(evt.detail.xhr.status === 200){
+        if(evt.detail.requestConfig.verb != 'get')
+        {
+            evt.detail.shouldSwap = false;
+            window.location.reload();
+        }
+    }
+});
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var isMouseDown = false;
+        var isChecked = false;
+
+        document.querySelectorAll(".checkboxinput").forEach(function (checkbox) {
+            var label = checkbox.closest(".form-check").querySelector(".form-check-label");
+
+            checkbox.addEventListener("mousedown", function (e) {
+                isMouseDown = true;
+                isChecked = !checkbox.checked;
+                checkbox.checked = isChecked;
+                updateLabelBackground(checkbox, label);
+                e.preventDefault();
+            });
+
+            checkbox.closest(".form-check").addEventListener("mouseover", function () {
+                if (isMouseDown) {
+                    var cb = this.querySelector(".checkboxinput");
+                    cb.checked = isChecked;
+                    updateLabelBackground(cb, this.querySelector(".form-check-label"));
+                }
+            });
+
+            // Pehle se selected checkboxes ka background reset kar do
+            updateLabelBackground(checkbox, label);
+        });
+
+        document.addEventListener("mouseup", function () {
+            isMouseDown = false;
+        });
+
+        // Label select hone par blue background na aaye
+        document.querySelectorAll(".form-check-label").forEach(function (label) {
+            label.addEventListener("mousedown", function (e) {
+                e.preventDefault();
+            });
+        });
+
+        function updateLabelBackground(checkbox, label) {
+            if (checkbox.checked) {
+                label.style.backgroundColor = "transparent"; // Blue background hata diya
+            } else {
+                label.style.backgroundColor = "transparent"; // Ensure reset
+            }
+        }
+    });
+</script>
+
