@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='accountmanager',
             name='manager_id',
-            field=models.CharField(unique=True, verbose_name='Manager ID')
+            field=models.CharField(max_length=255, null=True, blank=True, verbose_name='Manager ID')
         ),
     ]
