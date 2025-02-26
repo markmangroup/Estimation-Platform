@@ -1,11 +1,26 @@
 {% load static %}
 {% if delete_url %}
-    <a href="#" id="confirm-link" class="" title="Rental Stage">
-        <i class="ft-trash-2 font-medium-3 mr-1" style="color: rgb(255, 98, 98);"></i>
+<a href="javascript:;" 
+    data-title="{{ title }}" 
+    data-url="{{ delete_url }}" 
+    data-id="{% if o.recurring_order_id %}{{ o.recurring_order_id }}{% else %}{{ o.order_id }}{% endif %}" 
+    class="danger p-0 {{ class }}" 
+    title="Delete">
+    <i class="ft-trash-2 font-medium-3 mr-1"></i>
+</a>
+{% endif %}
+{% if edit_url %}
+    <a data-url="{{edit_url}}" hx-get="{{edit_url}}" data-toggle="modal" data-target="{{data_target}}" hx-swap="innerHTML" hx-target="{{hx_target}}" class="primary htmx-trigger-btn" title="Edit"> 
+        <i class="ft-edit font-medium-3 mr-1"></i>
     </a>
 {% endif %}
+{% if return_edit_url %}
+<a data-url="{{edit_url}}" hx-get="{{edit_url}}" data-toggle="modal" data-target="{{data_target}}" hx-swap="innerHTML" hx-target="{{hx_target}}" class="success htmx-trigger-btn" title="Edit"> 
+    <i class="ft-edit font-medium-3 mr-1"></i>
+</a>
+{% endif %}
 {% if process_url %}
-    <a class="warning" href="{% url 'rental:order_detail' %}">
+    <a href="{{process_url}}" class="warning" > 
         <i class="ft-truck font-medium-3 mr-1"></i>
     </a>
 {% endif %}
@@ -13,9 +28,4 @@
     <a href="" class="success" data-toggle="modal" data-target="#TimeLine">
         <i class="ft-bar-chart font-medium-3 mr-1"></i>
     </a>
-{% endif %}
-{% if edit_url %}
-<a href="" class="primary" data-toggle="modal" data-target="#TimeLine">
-    <i class="ft-edit font-medium-3 mr-2"></i>
-</a>
 {% endif %}

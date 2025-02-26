@@ -1,7 +1,6 @@
 from django.db import models
-
-from apps.rental.product.models import RentalProduct
 from laurel.models import BaseModel
+from apps.rental.product.models import RentalProduct
 
 
 class StockAdjustment(BaseModel):
