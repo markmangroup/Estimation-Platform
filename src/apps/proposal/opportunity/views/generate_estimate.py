@@ -26,7 +26,7 @@ class TaskProductDataView(CustomDataTableMixin):
         qs = TaskMapping.objects.filter(opportunity__document_number=document_number).exclude(
             assign_to__isnull=False, task__description__icontains="labor"
         )
-        return qs.exclude(task__description__icontains="Freight")
+        return qs.exclude(code__icontains="Freight")
 
     def filter_queryset(self, qs):
         """Return the list of items for this view."""
@@ -111,31 +111,37 @@ class TaskProductDataView(CustomDataTableMixin):
         return obj.mat_gp_percent
     
     def frt_total(self, obj):
+        if not obj or not hasattr(obj, "opportunity") or not obj.opportunity:
+            return 0
+
         task_mappings = TaskMapping.objects.filter(opportunity__document_number=obj.opportunity.document_number)
-        filtered_task_mappings = task_mappings.filter(
-            task__description__icontains="Freight"
-        )
-        task_mapping_ids = task_mappings.values_list("id", flat=True)
+        
+        if task_mappings.exists():
+            filtered_task_mappings = task_mappings.filter(task__description__icontains="Freight")
+            task_mapping_ids = task_mappings.values_list("id", flat=True)
+        else:
+            return 0
+
         try:
-            assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids).order_by(
-                "sequence"
-            )
+            assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids).order_by("sequence")
         except Exception as e:
             LOGGER.error(f"Exception : {e}")
             assigned_products = AssignedProduct.objects.filter(task_mapping_id__in=task_mapping_ids)
+
         total_price = 0  
         for task in filtered_task_mappings:
             task_assigned_products = assigned_products.filter(task_mapping_id=task.id)
-
             total_price += sum(
-                (
+                (   
                     product.vendor_quoted_cost * product.quantity
                     if product.vendor_quoted_cost
                     else product.standard_cost * product.quantity
                 )
                 for product in task_assigned_products
             )
+        
         return total_price
+
 
     def prepare_results(self, qs):
         """
@@ -143,13 +149,11 @@ class TaskProductDataView(CustomDataTableMixin):
         Each row of data is a list of values corresponding to the columns in the table.
         """
         data = []
-        has_frt_task = False  # Flag to check if 'FRT' task already exists
+        items_list = []
 
         for item in qs:
+            items_list.append(item)
             
-            if 'Freight' in self._get_description(item):
-                has_frt_task = True
-
             data.append(
                 {
                     "code": self._get_code(item),
@@ -171,7 +175,7 @@ class TaskProductDataView(CustomDataTableMixin):
                 }
             )
         
-        # if not has_frt_task:
+        last_item = items_list[-1] if items_list else None
         data.append({
             "code": "FRT",
             "description": "FRT: Freight",
@@ -189,7 +193,7 @@ class TaskProductDataView(CustomDataTableMixin):
             "comb_gp": "",
             "labor_gp_percent_data": "",  # type : ignore
             "mat_gp_percent_data": "",  # type : ignore
-            "frt_total": self.frt_total(item),
+            "frt_total": self.frt_total(last_item),
             # "is_freight": "Freight" in (item.task.description if item.task else ""),            
         })
         return data
@@ -403,7 +407,7 @@ class GenerateEstimate:
             "total_mat_tax_labor": Decimal("0.00"),
             "total_comb_gp": Decimal("0.00"),
         }
-
+        total_cost = Decimal("0.00")
         for task in task_mapping_qs:
             totals["total_labor_cost"] += round(Decimal(task.labor_cost or "0.0"), 2)
             try:
@@ -422,13 +426,15 @@ class GenerateEstimate:
             totals["total_mat_sell"] += round(Decimal(task.mat_sell or "0.0"), 2)
             totals["total_mat_tax_labor"] += round(Decimal(task.mat_tax_labor or "0.0"), 2)
             totals["total_comb_gp"] += round(Decimal(task.comb_gp or "0.0"), 2)
-
+            total_cost += Decimal(task.labor_cost or "0.0") + Decimal(task.mat_cost or "0.0")
+            
         totals["total_cost"] = totals["total_labor_cost"] + totals["total_mat_cost"]
         totals["total_sale"] = totals["total_labor_sell"] + totals["total_mat_sell"]
         totals["total_gp"] = totals["total_mat_gp"] + totals["total_labor_gp"]
+        totals["total_gp_per"] = totals["total_sale"] - total_cost  
 
         if totals["total_sale"] != 0:
-            totals["total_gp_percent"] = (totals["total_gp"] / totals["total_sale"]) * 100
+            totals["total_gp_percent"] = (totals["total_gp_per"] / totals["total_sale"]) * 100
 
         else:
             totals["total_gp_percent"] = Decimal("0.00")
