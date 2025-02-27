@@ -24,9 +24,10 @@ class TaskProductDataView(CustomDataTableMixin):
     def get_queryset(self):
         document_number = self.kwargs.get("document_number")
         qs = TaskMapping.objects.filter(opportunity__document_number=document_number).exclude(
-            assign_to__isnull=False, task__description__icontains="labor"
+            Q(assign_to__isnull=False, task__description__icontains="labor") | 
+            Q(task__description__icontains="Freight")
         )
-        return qs.exclude(code__icontains="Freight")
+        return qs.exclude(code__icontains="FRT")
 
     def filter_queryset(self, qs):
         """Return the list of items for this view."""
@@ -434,7 +435,7 @@ class GenerateEstimate:
         totals["total_gp_per"] = totals["total_sale"] - total_cost  
 
         if totals["total_sale"] != 0:
-            totals["total_gp_percent"] = (totals["total_gp_per"] / totals["total_sale"]) * 100
+            totals["total_gp_percent"] = (totals["total_gp"] / totals["total_sale"]) * 100
 
         else:
             totals["total_gp_percent"] = Decimal("0.00")
@@ -592,13 +593,18 @@ class TotalGPPerBreakdown(TemplateViewMixin):
         totals = {
             "total_gp": Decimal("0.00"),
             "total_sell": Decimal("0.00"),
+            "total_mat_gp": Decimal("0.00"),
+            "total_labor_gp": Decimal("0.00"),
         }
 
         for task in task_mapping_qs:
             totals["total_sell"] += Decimal(task.labor_sell or "0.0") + Decimal(task.mat_sell or "0.0")
             total_cost += Decimal(task.labor_cost or "0.0") + Decimal(task.mat_cost or "0.0")
+            totals["total_mat_gp"] += Decimal(task.mat_gp or "0.0")
+            totals["total_labor_gp"] += Decimal(task.labor_gp or "0.0")
 
-        totals["total_gp"] = totals["total_sell"] - total_cost
+        totals["total_gp"] = totals["total_mat_gp"] + totals["total_labor_gp"]
+        totals["total_gp_per"] = totals["total_sell"] - total_cost
         try:
             totals["total_gp_percent"] = (totals["total_gp"] / totals["total_sell"]) * 100
 
