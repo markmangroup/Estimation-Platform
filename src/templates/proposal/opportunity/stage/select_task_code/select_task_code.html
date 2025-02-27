@@ -116,7 +116,16 @@
             { data : "mat_tax_labor", name : "mat_tax_labor"  },
             { data : "comb_gp", name : "comb_gp"  }
           ],
-          rowCallback: function(row, data, index) {
+          rowCallback: function(row, data, index) {  
+            if (data.code === "FRT") {
+              $(row).find('td:eq(12), td:eq(13), td:eq(14)').remove();  
+              $(row).find('td:eq(11)').attr('colspan', 3).css({
+                  "text-align": "center",
+                  "background-color": "#f0f0f0",
+                  "font-weight": "bold"
+              }).text(data.frt_total);
+          }
+          
             if (data.description && data.description.toLowerCase().includes('labor')) {
                 $(row).addClass('selected-estimate-row');
             }

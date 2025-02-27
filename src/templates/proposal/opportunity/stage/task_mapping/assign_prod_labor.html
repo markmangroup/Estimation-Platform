@@ -162,12 +162,13 @@
             });
             return selectedItems;
         }
-
-        $(".select-checkbox").click(function(){
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $(".select-checkbox").click(function () {
             var isChecked = $(this).is(':checked');
-
-            // console.log(isChecked);
-
+            
             if (isChecked){
                 $(".row-checkbox").prop('checked', false);
                 $(".select-checkbox").prop('checked', false);
@@ -175,8 +176,6 @@
                 $(".row-checkbox").prop('checked', true);
                 $(".select-checkbox").prop('checked', true);
             }
-
         });
     });
 </script>
-    

@@ -1,0 +1,373 @@
+<form id="deliveryForm">
+  {% csrf_token %}
+    <div class="row mb-3 px-2">
+      <input type="hidden"  value={{order.order_id}} name="order" class="form-control">
+      <input type="hidden" name="order_create_at" value="{{ order.created_at|date:'Y-m-d' }}">
+
+        <div class="col-6 mb-3">
+          <label for="" class="form-label">Pick Up Date</label>
+          <input type="date" name="pickup_date" class="form-control">
+        </div>
+        <div class="col-6 mb-3">
+          <label for="" class="form-label">Delivery Date</label>
+          <input type="date" name="delivery_date"  class="form-control">
+        </div>
+        <div class="col-6 mb-3">
+          <label for="" class="form-label">Shipping Carrier</label>
+          <select name="shipping_carrier" class="select2 form-control shipping">
+            <option disabled selected>Select Shipping Carrier</option>
+            <option value="Internal">Internal</option>
+            <option value="Hired">Hired</option>
+          </select>
+        </div>
+        <div class="col-6 mb-3" id="poField" style="display: none;">
+          <label for="poNumber" class="form-label">Enter PO</label>
+          <input type="text" name="po_number" id="poNumber" class="form-control">
+        </div>
+        <div class="col-6 mb-3">
+          <label for="" class="form-label">Pick Up Site</label>
+          <input type="text" name="pickup_site"  id="pickupSite" value="425 Webster Street" class="form-control">
+          {% comment %} <select name="" class="select2 form-control pickupSite" id="">
+            <option disabled selected>Select Option</option>
+            <option value="Internal">Internal</option>
+            <option value="Customer">Customer</option>
+          </select> {% endcomment %}
+        </div>
+        <div class="col-6 mb-3">
+          <label for="locationInput" class="form-label">Delivery Site</label>
+          <input type="text" id="locationInput" name="delivery_site" id="deliverySite"  value="US Irrigation - Old RIver Road - Old" class="form-control">
+          <a id="mapLink" href="#" target="_blank"  class="showonmap">Show on Map</a>
+        </div>
+        <div class="col-6 mb-3" id="internalFields" style="display: none;">
+          <label for="warehouseLocation" class="form-label">Warehouse Location</label>
+          <select id="" class="select2 form-control warehouseLocation">
+            <option disabled selected>Select Location</option>
+            <option value="Bakersfield">Bakersfield</option>
+            <option value="Brawley">Brawley</option>
+            <option value="Colusa">Colusa</option>
+            <option value="Corning">Corning</option>
+          </select>
+        </div>
+        
+        <div class="col-6" id="customerFields" style="display: none;">
+          <label for="selectName" class="form-label">Customer Location</label>
+          <select class="select2 form-control customerLocation" id="selectName">
+              <option disabled selected>Select Location</option>
+              <option value="ORD-1" data-description="John Dio">ORD-1</option>
+              <option value="ORD-2" data-description="John Weak">ORD-2</option>
+              <option value="ORD-3" data-description="Bruce Wayne">ORD-3</option>
+              <option value="ORD-4" data-description="Tony Stark">ORD-4</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="table-responsive px-2">
+        <table id="sample" class="table table-bordered table-striped">
+          <thead>
+              <tr>
+                <th><input name="checkbox" id="selectAll" type="checkbox" class="row-checkbox" /></th>
+                <th>Material name</th>
+                  <th>Requested Qty</th>
+                  <th>Quantity</th>
+                </tr>
+              </thead>
+              
+              <tbody>
+              {% for item in order_items %}
+                <tr>
+                  <td>
+                    <input name="checkbox" name="selected_products" value="{{ item.order_item.id }}" type="checkbox" class="row-checkbox">
+                  </td>
+                  <td>{{ item.order_item.product.equipment_name }}</td>
+                  <td>{{ item.remaining_qty }}</td>
+                <td>
+                    <input type="number" class="form-control" name="quantity_{{ item.order_item.id }}" placeholder="Enter Qty">
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4" class="text-center">No items found!</td>
+              </tr>
+              {% endfor %}
+            </tbody> 
+          </table>
+        </div>  
+
+      <div class="modal-footer">
+        <button
+        type="button"
+        class="btn bg-light-secondary"
+        data-dismiss="modal"
+        >
+        Close
+      </button>
+      <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+</form>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    var isMouseDown = false,
+    isHighlighted;
+    
+    $("#sample input:checkbox").mousedown(function(e) {
+      e.preventDefault(); // Prevent checkbox click
+    });
+    
+      $("#sample tr")
+      .mousedown(function(e) {
+          if ($(e.target).is('input')) {
+            return;
+          }
+          
+          isMouseDown = true;
+          $(this).toggleClass("highlighted");
+          isHighlighted = $(this).hasClass("highlighted");
+          $(this).find("input:checkbox").prop("checked", isHighlighted);
+          return false; // prevent text selection
+        })
+        .mouseover(function() {
+          if (isMouseDown) {
+            $(this).toggleClass("highlighted", isHighlighted);
+            $(this).find("input:checkbox").prop("checked", isHighlighted);
+          }
+        })
+        .bind("selectstart", function() {
+          return false;
+        });
+  
+      $(document)
+        .mouseup(function() {
+          isMouseDown = false;
+        });
+    });
+</script>
+  
+  <!-- Js for dropdown of create delivery -->
+  <script>
+    $(document).ready(function() {
+      $('.pickupSite').on('change', function() {
+        var selectedValue = $(this).val();
+        
+        if (selectedValue === 'Internal') {
+          $('#internalFields').show();
+          $('#customerFields').hide();
+        } else if (selectedValue === 'Customer') {
+          $('#internalFields').hide();
+          $('#customerFields').show();
+        } else {
+          $('#internalFields').hide();
+          $('#customerFields').hide();
+        }
+      });
+    });
+  </script>
+  
+  <!-- Shipping Carrier -->
+  <script>
+    $(document).ready(function() {
+      $('.shipping').change(function() {
+        if ($(this).val() === 'Hired') {
+          $('#poField').show();
+        } else {
+          $('#poField').hide();
+        }
+      });
+    });
+  </script>
+  
+  <!-- PO number validation -->
+  <script>
+    $(document).ready(function() {
+      const po_field = $('#poNumber');
+      function checkField() {
+        if (po_field.val() === "") {
+          po_field.css('border', '1px solid red');
+        } else {
+          po_field.css('border', '1px solid #75787d');
+        }
+      }
+      checkField();
+      po_field.on('input', checkField);
+    });
+  </script> 
+
+<script>
+  function updateMapLink() {
+    var location = document.getElementById('locationInput').value;
+    var encodedLocation = encodeURIComponent(location);
+    var mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`;
+    var mapLink = document.getElementById('mapLink');
+    mapLink.href = mapUrl;
+
+    mapLink.textContent = `Show on Map`;
+  }
+  document.getElementById('locationInput').addEventListener('input', updateMapLink);
+
+  updateMapLink();
+</script>
+<script>
+  document.getElementById("selectAll").addEventListener("change", function () {
+    let checkboxes = document.querySelectorAll(".row-checkbox");
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = this.checked;
+    });
+  });
+
+  $(document).ready(function() {
+      $(".shipping").change(function() {
+          let selectedValue = $(this).val();
+          if (selectedValue === "Hired") {
+              $("#poField").show();
+          } else {
+              $("#poField").hide();
+              $("#poNumber").val("");
+              $("#poError").remove();
+          }
+      });
+
+      $("input[name='delivery_date'], input[name='pickup_date']").change(function() {
+          validateDates();
+      });
+      
+      $("input[name='pickup_date']").change(function() {
+        let pickupDateInput = $("input[name='pickup_date']");
+        let pickupDate = new Date(pickupDateInput.val());
+        let orderCreateDate = new Date($("input[name='order_create_at']").val());
+    
+        $("#pickupError").remove();
+    
+        if (pickupDate < orderCreateDate) {
+            pickupDateInput.after('<span id="pickupError" class="error-message text-danger">Pickup Date cannot be earlier than the Order Creation Date.</span>');
+        }
+    });
+
+      function validateDates() {
+          let pickupDateInput = $("input[name='pickup_date']");
+          let deliveryDateInput = $("input[name='delivery_date']");
+          let pickupDate = new Date(pickupDateInput.val());
+          let deliveryDate = new Date(deliveryDateInput.val());
+
+          $("#dateError, #pickupError, #deliveryError").remove();
+          let isValid = true;
+
+          if (!pickupDateInput.val()) {
+              pickupDateInput.after('<span id="pickupError" class="error-message text-danger">Pickup Date is required.</span>');
+              isValid = false;
+          }
+
+          if (!deliveryDateInput.val()) {
+              deliveryDateInput.after('<span id="deliveryError" class="error-message text-danger">Delivery Date is required.</span>');
+              isValid = false;
+          }
+
+          if (pickupDate && deliveryDate && deliveryDate < pickupDate) {
+              deliveryDateInput.after('<span id="dateError" class="error-message text-danger">Delivery Date must be greater than Pickup Date.</span>');
+              isValid = false;
+          }
+
+          return isValid;
+      }
+    
+      $("#deliveryForm").submit(function(event) {
+          event.preventDefault();
+
+          let shippingCarrier = $(".shipping").val();
+          let poNumber = $("#poNumber").val().trim();
+          let isValid = true;
+          
+          $(".error-message").remove();
+          $("#poError, #dateError, #productError, #quantityError").remove();
+
+          if (!shippingCarrier) {
+              $(".shipping").after('<span class="error-message text-danger">Please select a shipping carrier.</span>');
+              isValid = false;
+          }
+
+          if (shippingCarrier === "Hired" && poNumber === "") {
+              $("#poNumber").after('<span id="poError" class="error-message text-danger">PO Number is required.</span>');
+              isValid = false;
+          }
+
+          if (!validateDates()) {
+              isValid = false;
+          }
+
+          let productsList = [];
+          let hasValidProduct = false;
+
+          $(".row-checkbox:checked").each(function() {
+              let productId = $(this).val();
+              let quantityInput = $("input[name='quantity_" + productId + "']");
+              let quantity = parseInt(quantityInput.val(), 10) || 0;
+              let requestedQty = parseInt(quantityInput.closest("tr").find("td:nth-child(3)").text(), 10) || 0;
+
+              if (quantity > 0) {
+                  if (quantity > requestedQty) {
+                      quantityInput.after('<span class="error-message text-danger">Quantity cannot exceed requested quantity.</span>');
+                      isValid = false;
+                  } else {
+                      productsList.push({ productId: productId, quantity: quantity });
+                      hasValidProduct = true;
+                  }
+              }
+          });
+
+          if (!hasValidProduct) {
+              $("#sample").before('<span id="productError" class="error-message text-danger">At least one product with valid quantity is required.</span>');
+              isValid = false;
+          }
+
+          if (!isValid) {
+              return;
+          }
+
+          let formData = new FormData();
+          formData.append("csrfmiddlewaretoken", getCSRFToken());
+
+          $("#deliveryForm").find("input, select").each(function() {
+              if ($(this).attr("type") !== "checkbox") {
+                  formData.append($(this).attr("name"), $(this).val());
+              }
+          });
+
+          formData.append("products", JSON.stringify(productsList));
+          console.log("Validated productsList:", productsList);
+          $.ajax({
+              type: "POST",
+              url: "{% url 'rental:rent_process:create_delivery' %}",
+              data: formData,
+              processData: false,
+              contentType: false,
+              dataType: "json",
+              success: function(response) {
+                  toastr.success("Delivery Created Successfully!", "Success",{
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-bottom-right',
+                    timeOut: 1000
+                  });
+                  let modal = document.getElementById("show");
+                  modal.classList.remove("show");
+                  modal.style.display = "none";
+              },
+              error: function(xhr) {
+                  $(".error-message").remove();
+                  if (xhr.responseJSON && xhr.responseJSON.errors) {
+                      var errors = xhr.responseJSON.errors;
+                      for (var field in errors) {
+                          var errorMsg = errors[field][0].message;
+                          var inputField = $("[name='" + field + "']");
+                          inputField.after('<span class="error-message text-danger">' + errorMsg + '</span>');
+                      }
+                  } else {
+                      alert("Something went wrong. Please try again.");
+                  }
+              }
+          });
+      });
+      function getCSRFToken() {
+          return document.querySelector('[name=csrfmiddlewaretoken]').value;
+      }
+  });
+</script>

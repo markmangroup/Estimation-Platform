@@ -9,6 +9,7 @@ class AccountManager(BaseModel):
 
     name = models.CharField(_("Account Manager Name"), max_length=255)
     email = models.EmailField(_("Account Manager Email"))
+    manager_id = models.CharField(_("Manager ID"), max_length=255, null=True, blank=True)
 
     def __str__(self) -> str:
         return f"{self.name} - {self.email}"

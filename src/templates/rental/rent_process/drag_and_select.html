@@ -1,0 +1,192 @@
+{% load static %}
+ <div
+  class="modal fade text-left"
+  id="show"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel5"
+  aria-hidden="true"
+  data-backdrop="false"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel5">Create Delivery</h4>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true"s
+            ><i class="ft-x font-medium-2 text-bold-700"></i
+          ></span>
+        </button>
+      </div>
+      <div class="modal-body">
+       
+      </div>
+      <div id="modal-body">
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- drag and select feature -->
+<script>
+  $(document).ready(function() {
+    var isMouseDown = false,
+      isHighlighted;
+
+    $("#sample input:checkbox").mousedown(function(e) {
+      e.preventDefault(); // Prevent checkbox click
+    });
+
+    $("#sample tr")
+      .mousedown(function(e) {
+        // Ignore mouse events on input fields
+        if ($(e.target).is('input')) {
+          return;
+        }
+
+        isMouseDown = true;
+        $(this).toggleClass("highlighted");
+        isHighlighted = $(this).hasClass("highlighted");
+        $(this).find("input:checkbox").prop("checked", isHighlighted);
+        return false; // prevent text selection
+      })
+      .mouseover(function() {
+        if (isMouseDown) {
+          $(this).toggleClass("highlighted", isHighlighted);
+          $(this).find("input:checkbox").prop("checked", isHighlighted);
+        }
+      })
+      .bind("selectstart", function() {
+        return false;
+      });
+
+    $(document)
+      .mouseup(function() {
+        isMouseDown = false;
+      });
+  });
+</script>
+
+<!-- Js for dropdown of create delivery -->
+<script>
+  $(document).ready(function() {
+    $('.pickupSite').on('change', function() {
+      var selectedValue = $(this).val();
+      
+      if (selectedValue === 'Internal') {
+        $('#internalFields').show();
+        $('#customerFields').hide();
+      } else if (selectedValue === 'Customer') {
+        $('#internalFields').hide();
+        $('#customerFields').show();
+      } else {
+        $('#internalFields').hide();
+        $('#customerFields').hide();
+      }
+    });
+  });
+</script>
+
+<!-- Shipping Carrier -->
+<script>
+  $(document).ready(function() {
+    $('.shipping').change(function() {
+      if ($(this).val() === 'Hired') {
+        $('#poField').show();
+      } else {
+        $('#poField').hide();
+      }
+    });
+  });
+</script>
+
+<!-- PO number validation -->
+<script>
+  $(document).ready(function() {
+    const po_field = $('#poNumber');
+    function checkField() {
+      if (po_field.val() === "") {
+        po_field.css('border', '1px solid red');
+      } else {
+        po_field.css('border', '1px solid #75787d');
+      }
+    }
+    checkField();
+    po_field.on('input', checkField);
+  });
+</script> 
+
+<!-- Return Shipping Carrier -->
+<script>
+  $(document).ready(function() {
+    $('.Returnshipping').change(function() {
+      if ($(this).val() === 'Hired') {
+        $('#ReturnpoField').show();
+      } else {
+        $('#ReturnpoField').hide();
+      }
+    });
+  });
+</script>
+
+<!-- Js for dropdown of create delivery -->
+<script>
+  $(document).ready(function() {
+    const po_field = $('#ReturnpoNumber');
+    function checkField() {
+      if (po_field.val() === "") {
+        po_field.css('border', '1px solid red');
+      } else {
+        po_field.css('border', '1px solid #75787d');
+      }
+    }
+    checkField();
+    po_field.on('input', checkField);
+  });
+</script> 
+
+<script>
+  $(document).ready(function() {
+      // Initialize Select2 on the select element
+      $('#selectName').select2({
+          width: '100%',
+          matcher: function(params, data) {
+              // If there are no search terms, return all options
+              if ($.trim(params.term) === '') {
+                  return data;
+              }
+              
+              // Check if the option text or description contains the search term
+              var text = data.text ? data.text.toUpperCase() : '';
+              var description = $(data.element).data('description') ? $(data.element).data('description').toUpperCase() : '';
+              var searchTerm = params.term.toUpperCase();
+              
+              if (text.indexOf(searchTerm) > -1 || description.indexOf(searchTerm) > -1) {
+                  return data;
+              }
+              return null;
+          }
+      });
+  });
+</script>
+<script>
+  function updateMapLink() {
+    var location = document.getElementById('locationInput').value;
+    var encodedLocation = encodeURIComponent(location);
+    var mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`;
+    var mapLink = document.getElementById('mapLink');
+    mapLink.href = mapUrl;
+
+    mapLink.textContent = `Show on Map`;
+  }
+  document.getElementById('locationInput').addEventListener('input', updateMapLink);
+
+  updateMapLink();
+</script>
