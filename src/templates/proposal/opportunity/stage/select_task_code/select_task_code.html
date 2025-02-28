@@ -123,7 +123,7 @@
                   "text-align": "center",
                   "background-color": "#f0f0f0",
                   "font-weight": "bold"
-              }).text(data.frt_total);
+              }).text(data.frt_total.toFixed(2));
           }
           
             if (data.description && data.description.toLowerCase().includes('labor')) {
@@ -209,7 +209,7 @@
                 /*let laborGpPercent = parseFloat(rowData.labor_gp_percent) || 0;
                 totalLaborGpPercent += laborGpPercent;  // Sum labor GP percent*/
                 totalLaborGpPercent = rowData.labor_gp_percent_data
-
+                
                 let laborGp = parseFloat(rowData.labor_gp.replace(/,/g, '')) || 0;
                 totalLaborGp += laborGp;
 
@@ -413,7 +413,7 @@
 		var delete_ele = $(this)
 
 		Swal.fire({
-			html: `Are you sure you want to delete <b>${title}</b>?`,
+			html: `Are you sure you want to remove <b>${title}</b>?`,
 			icon: 'question',
 			showCloseButton: true,
 			showCancelButton: true,

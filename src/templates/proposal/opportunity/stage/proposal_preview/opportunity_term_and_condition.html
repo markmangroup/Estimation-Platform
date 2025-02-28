@@ -1,6 +1,3 @@
-#combined-agreements{
-  white-space: normal;
-}
 {% if opportunity.term_and_condition %}
 <!-- Term & Condition and Pipe term-->
 <table class="table main-table">
@@ -13,7 +10,6 @@
         <strong>deposit</strong> have been received.)
       </td>
     </tr>
-
     {% for t in opportunity.term_and_condition.term_and_condition %}
       <tr class="tac-table tac {% if t.checked %}{% else %}icon{% endif %}">
         <!-- <td><i class="fa fa-trash danger remove-terms d-icon"></i></td> -->
@@ -988,7 +984,7 @@
       <tr class="spa">
         <td style="width: 4%;"><input type="checkbox" name="" checked></td>
         <td>
-          <textarea class="form-control sales-agreement" id="combined-agreements" rows="10" >
+          <textarea class="form-control sales-agreement" rows="10" >
 This Agreement is made and entered on _______________ by and between Laurel Ag & Water (“Seller”) and Martha Waterman, (“Buyer”), (collectively referred to as the “Parties”).
             
 SELLER AGREES TO SELL and Buyer agrees to buy all material and services more fully described in the attached Exhibit A, “Project Detail” (the “Goods”), Job #Existi.
