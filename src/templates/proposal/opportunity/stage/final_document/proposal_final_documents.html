@@ -206,31 +206,53 @@
 
         // Hide icons and any other elements that shouldn't appear in print
         var printStyles = `
-            <style>
-                /* Hide all icons */
-                .icon {
+          <style>
+              /* Hide all icons */
+              .icon {
                   display: none !important;
-                }
-
-                .form-control {
+              }
+              .form-control {
                   border: none !important;
-                }
-
-                input[type="checkbox"] {
+              }
+              input[type="checkbox"] {
                   display: none !important;
                   border: none;
-                }
+              }
+              .select2-container,
+              .select2-container--default {
+                  display: none !important;
+              }
+              /* Show the print-customer-name span */
+              #print-customer-name {
+                  display: inline !important;
+              }
+              /* Print ke liye alignment fix */
+              @media print {
+                  .form-group {
+                      display: flex;
+                      justify-content: flex-end;
+                      align-items: center;
+                      gap: 10px;
+                  }
+                  .job_name_label {
+                      min-width: 120px;
+                      text-align: right;
+                      font-weight: bold;
+                  }
+                  .job_name {
+                      width: 200px !important;
+                  }
+              }
+              @media print {
+              textarea.sales-agreement {
+                  height: auto !important;
+                  min-height: 800px !important;
+                  white-space: pre-wrap;
+              }
+          }
+          </style>
+      `;
 
-                .select2-container,
-            .select2-container--default {
-                display: none !important;
-            }
-                /* Show the print-customer-name span */
-                #print-customer-name {
-                    display: inline !important;
-                }
-            </style>
-        `;
 
         document.body.insertAdjacentHTML('afterbegin', printStyles);
         document.querySelectorAll('.d-icon').forEach(icon => {
@@ -261,20 +283,23 @@
         }, 1000);
     }
   </script>
-  <script>
-    function autoResize(textarea) {
-        textarea.style.height = "auto";
-        textarea.style.height = (textarea.scrollHeight * 1.5) + "px";
-    }
 
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll(".sales-agreement",".new-sales-agreement").forEach(function (textarea) {
-            autoResize(textarea);
-            textarea.addEventListener("input", function () {
-                autoResize(this);
-            });
-        });
-    });
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".sales-agreement").forEach(function (textarea) {
+      autoResize(textarea);
+  });
+});
 
+document.addEventListener("beforeprint", function () {
+  document.querySelectorAll(".sales-agreement").forEach(function (textarea) {
+      textarea.style.height = (textarea.scrollHeight * 1.5) + "px";
+  });
+});
+
+function autoResize(textarea) {
+  textarea.style.height = "auto";
+  textarea.style.height = (textarea.scrollHeight * 1.5) + "px";
+}
 </script>
 {% endblock script %}

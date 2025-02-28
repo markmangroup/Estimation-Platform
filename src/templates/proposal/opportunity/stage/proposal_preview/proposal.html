@@ -43,13 +43,13 @@
             <input type="text" value="{{ opportunity.job }}" data-id="{{ opportunity.id }}" data-document="{{ opportunity.document_number }}" class="form-control job" style="width: 200px; float: right;">
           </p>
           <p>
-            <label class="font-weight-bold form-label">Job Name:</label>
+            <label class="font-weight-bold form-label job_name_label">Job Name:</label>
             {% if opportunity.job_name %}
               <input type="text" value="{{ opportunity.job_name }}" data-id="{{ opportunity.id }}"
-                data-document="{{ opportunity.document_number }}" class="form-control job_name" style="width: 400px; float: right;">
+                data-document="{{ opportunity.document_number }}" class="form-control job_name" style="width: 200px; float: right;">
             {% else %}
               <input type="text" value="" data-id="{{ opportunity.id }}"
-                data-document="{{ opportunity.document_number }}" class="form-control job_name" placeholder="Enter Job Name" style="width: 400px; float: right;">
+                data-document="{{ opportunity.document_number }}" class="form-control job_name" placeholder="Enter Job Name" style="width: 200px; float: right;">
             {% endif %}
 
           </p>
