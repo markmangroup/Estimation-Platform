@@ -99,7 +99,7 @@ class TaskProductDataView(CustomDataTableMixin):
         return labor_gp_percent
 
     def _labor_gp_percent_data(self, obj):
-        return obj.labor_gp_percent
+        return obj.labor_gp_percent if obj.labor_gp_percent else 0
 
     def _mat_gp_percent(self, obj):
         """Generate the HTML for the mat gp percent."""
@@ -109,7 +109,7 @@ class TaskProductDataView(CustomDataTableMixin):
         return mat_gp_percent
 
     def _mat_gp_percent_data(self, obj):
-        return obj.mat_gp_percent
+        return obj.mat_gp_percent if obj.mat_gp_percent else 0
     
     def frt_total(self, obj):
         if not obj or not hasattr(obj, "opportunity") or not obj.opportunity:
@@ -152,6 +152,7 @@ class TaskProductDataView(CustomDataTableMixin):
         data = []
         items_list = []
 
+        item = False
         for item in qs:
             items_list.append(item)
             
@@ -192,8 +193,8 @@ class TaskProductDataView(CustomDataTableMixin):
             "mat_sell": "",
             "mat_tax_labor": "",
             "comb_gp": "",
-            "labor_gp_percent_data": "",  # type : ignore
-            "mat_gp_percent_data": "",  # type : ignore
+            "labor_gp_percent_data": self._labor_gp_percent_data(item) if item else 0,  # type : ignore
+            "mat_gp_percent_data": self._mat_gp_percent_data(item) if item else 0,  # type : ignore
             "frt_total": self.frt_total(last_item),
             # "is_freight": "Freight" in (item.task.description if item.task else ""),            
         })
@@ -392,7 +393,8 @@ class GenerateEstimate:
         :param document_number: The unique identifier for the opportunity.
         :return: A dictionary with total labor and material costs, and total cost.
         """
-        task_mapping_qs = TaskMapping.objects.filter(opportunity__document_number=document_number)
+        task_mapping_qs = TaskMapping.objects.filter(opportunity__document_number=document_number).exclude(Q(code__icontains="FRT") | Q(task__description__icontains="freight"))
+        
         totals = {
             "total_labor_cost": Decimal("0.00"),
             "total_labor_gp_percent": Decimal("0.00"),
@@ -461,7 +463,7 @@ class TotalCostBreakdown(TemplateViewMixin):
         :param document_number: The unique identifier for the opportunity.
         :return: A dictionary with total labor and material costs, and total cost.
         """
-        task_mapping_qs = TaskMapping.objects.filter(opportunity__document_number=document_number)
+        task_mapping_qs = TaskMapping.objects.filter(opportunity__document_number=document_number).exclude(Q(code__icontains="FRT") | Q(task__description__icontains="freight"))
         totals = {
             "total_labor_cost": Decimal("0.00"),
             "total_mat_cost": Decimal("0.00"),
@@ -502,7 +504,7 @@ class TotalSaleBreakdown(TemplateViewMixin):
         :param document_number: The unique identifier for the opportunity.
         :return: A dictionary with total labor sales, material sales, and overall total sales.
         """
-        task_mapping_qs = TaskMapping.objects.filter(opportunity__document_number=document_number)
+        task_mapping_qs = TaskMapping.objects.filter(opportunity__document_number=document_number).exclude(Q(code__icontains="FRT") | Q(task__description__icontains="freight"))
         totals = {
             "total_labor_sale": Decimal("0.00"),
             "total_mat_sale": Decimal("0.00"),
@@ -542,7 +544,8 @@ class TotalGPBreakdown(TemplateViewMixin):
         :param document_number: The unique identifier for the opportunity.
         :return: A dictionary with total labor GP, material GP, and overall total GP.
         """
-        task_mapping_qs = TaskMapping.objects.filter(opportunity__document_number=document_number)
+        task_mapping_qs = TaskMapping.objects.filter(opportunity__document_number=document_number).exclude(Q(code__icontains="FRT") | Q(task__description__icontains="freight"))
+        print('task_mapping_qs: ||||TotalGPBreakdown|||||||||| ', task_mapping_qs)
 
         totals = {
             "total_sale": Decimal("0.00"),
@@ -587,7 +590,8 @@ class TotalGPPerBreakdown(TemplateViewMixin):
         :return: A dictionary with total labor GP%, material GP%, combined GP%, and overall GP%.
         :raises ZeroDivisionError: if the value not divided by the number.
         """
-        task_mapping_qs = TaskMapping.objects.filter(opportunity__document_number=document_number)
+        task_mapping_qs = TaskMapping.objects.filter(opportunity__document_number=document_number).exclude(Q(code__icontains="FRT") | Q(task__description__icontains="freight"))
+        print('task_mapping_qs:-------------------- ', task_mapping_qs)
 
         total_cost = 0
         totals = {
@@ -605,11 +609,15 @@ class TotalGPPerBreakdown(TemplateViewMixin):
 
         totals["total_gp"] = totals["total_mat_gp"] + totals["total_labor_gp"]
         totals["total_gp_per"] = totals["total_sell"] - total_cost
+        
         try:
-            totals["total_gp_percent"] = (totals["total_gp"] / totals["total_sell"]) * 100
+            if totals["total_sell"] == Decimal("0.00"):
+                totals["total_gp_percent"] = Decimal("0.00")
+            else:
+                totals["total_gp_percent"] = (totals["total_gp"] / totals["total_sell"]) * 100
 
-        except ZeroDivisionError:
-            totals["total_gp_percent"] = 0
+        except (ZeroDivisionError, InvalidOperation):
+            totals["total_gp_percent"] = Decimal("0.00")
 
         return totals
 
