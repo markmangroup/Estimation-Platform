@@ -1,0 +1,40 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<div class="modal-content">
+  <div class="modal-header">
+      <h4 class="modal-title" id="myModalLabel5">DIL-1 : PickUp Ticket Detail</h4>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
+      </button>
+  </div>
+  <div class="modal-body">
+    <form method="post" hx-post="{% url 'rental:rent_process:return-order-edit' return_order.order.order_id %}"
+      hx-target="#update_return_order_body" hx-swap="innerHTML">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-md-6">
+          {{ form.rental_start_date|as_crispy_field }}
+        </div>
+        <div class="col-md-6">
+          {{ form.rental_end_date|as_crispy_field }}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Cancel</button>
+        <button type="submit" class="btn btn-success">Complete</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.body.addEventListener('htmx:beforeSwap', function(evt) {
+    if(evt.detail.xhr.status === 200){
+        if(evt.detail.requestConfig.verb != 'get')
+        {
+            evt.detail.shouldSwap = false;
+            window.location.reload();
+        }
+    }
+  });
+</script>

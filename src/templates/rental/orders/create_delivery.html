@@ -1,235 +1,106 @@
 {% load static %}
+<style>
+  .checkout-qty {
+      width: 100px;
+  }
 
+  / Custom striped table effect /
+  .table-striped tbody tr:nth-of-type(odd) {
+      background-color: rgba(0, 0, 0, 0.05) !important;
+  }
+
+  .table-dark.table-striped tbody tr:nth-of-type(odd) {
+      background-color: #342E49 !important;
+  }
+
+  / Ensure table borders and spacing /
+  .table-bordered {
+      border: 1px solid #ddd;
+  }
+
+  .table-bordered th, .table-bordered td {
+      border: 1px solid #ddd;
+      padding: 8px;
+  }
+
+  .table {
+      width: 100%;
+      border-collapse: collapse;
+  }
+</style>
 <link rel="stylesheet" href="{% static 'vendors/css/sweetalert2.min.css' %}">
-
-<!-- Add Button -->
-<!-- <div class="text-right my-2 mt-3">
-        <a
-        href="#"
-        role="menuitem"
-        class="btn bg-light-primary"
-        data-backdrop="false" data-toggle="modal" data-target="#create_delivery"
-        >
-        <em class="ft-plus font-medium-5"></em> Create Delivery
-        </a>
-</div> -->
+<div class="card-header">
+  <ul class="nav nav-tabs mb-2">
+    <li class="nav-item">
+      <a class="nav-link active font-weight-bold fs-5" id="base-tab11" data-toggle="tab" aria-controls="tab1" href="#order-detail"
+        aria-expanded="true">Delivery Tab</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link overview font-weight-bold fs-5" id="base-tab13" data-toggle="tab" aria-controls="tab3" href="#order-overview"
+      data-url="{% url 'rental:rent_process:overview_model' order.order_id %}"
+        aria-expanded="false">Order Overview</a>
+    </li>
+  </ul>
+</div>
 
 <!-- Print Button Start -->
 <div class="float-left my-2 mt-3">
   <button type="button" class="btn btn-primary print-button" data-table-id="table1">Print</button>
 </div>
 <!-- Print Button End -->
-
 <!-- Create Delivery Button Start -->
 <div class="float-right my-2 mt-3">
-  <a href="{% url 'rental:rent_process:create_delivery_modal' order.order_id %}" 
-   class="btn bg-light-primary open-modal" data-backdrop="false" data-toggle="modal" data-target="#show">
-   <i class="ft-plus font-medium-5"></i> Create Delivery
-</a>
+  <a href="{% url 'rental:rent_process:create_delivery_modal' order.order_id %}"
+    class="btn bg-light-primary open-modal" data-backdrop="false" data-toggle="modal" data-target="#show">
+    <i class="ft-plus font-medium-5"></i> Create Delivery
+  </a>
   {% include "rental/rent_process/drag_and_select.html" %}
 </div>
 <!-- Create Delivery Button End -->
-
-<!-- New Table View Start -->
-<div>
-  <table id="table1" class="table table-striped table-bordered print-table">
-    <thead>
-      <tr>
-        <th style="max-width:100px">Delivery ID</th>
-        <th style="max-width:100px">Total Quantity</th>
-        <th style="max-width:100px">Contract Start Date</th>
-        <th style="max-width:100px">Delivery Date</th>
-        <th style="max-width:100px">Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!--Main Row 1 -->
-      <tr>
-        <td>O20240200018-1</td>
-        <td>28</td>
-        <td>2 Apr, 2024</td>
-        <td>3 Apr, 2024</td>
-        <td>
-          <a href="" data-backdrop="false" data-toggle="modal" data-target="#" title="Edit">
-            <i class="ft-edit font-medium-3 mr-2"></i>
-          </a>
-          <a href="" data-backdrop="false" data-toggle="modal" data-target="#" title="Remove">
-            <i class="fa fa-times font-medium-3 mr-2"></i>
-          </a>
-        </td>
-
-      </tr>
-      <tr id="collapse11" role="tabpanel" aria-labelledby="headingCollapse11">
-
-        <td>
-        </td>
-
-        <!-- Inner table Start -->
-        <td colspan="100">
-          </div>
-          <div class="table-responsive">
-            <table id="tableBody" class="table table-striped table-bordered">
-              <thead>
-                <tr class="text-center">
-                  <th colspan="4" class="align-top">Items Information</th>
-                </tr>
-                <tr>
-                  <th>Sr No</th>
-                  <th>Internal Id</th>
-                  <th class="text-nowrap">Items</th>
-                  <th>Quantity</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>20315</td>
-                    <td class="text-nowrap">Rental: 10" Plain Coupler</td>
-                    <td class="text-nowrap">14</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>20314</td>
-                    <td class="text-nowrap">Rental: 10" Tapped Coupler</td>
-                    <td class="text-nowrap">14</td>
-                  </tr>
-              </tbody>
-
-            </table>
-          </div>
-
-        </td>
-        <!-- Inner table End -->
-      </tr>
-
-      <!--Main Row 2 -->
-      <tr>
-        <td>O20240200018-2</td>
-        <td>28</td>
-        <td>2 Apr, 2024</td>
-        <td>3 Apr, 2024</td>
-        <td>
-          <a href="" data-backdrop="false" data-toggle="modal" data-target="#update_retrun_delivert" title="Edit">
-            <i class="ft-edit font-medium-3 mr-2"></i>
-          </a>
-          <a href="" data-backdrop="false" data-toggle="modal" data-target="#" title="Remove">
-            <i class="fa fa-times font-medium-3 mr-2"></i>
-          </a>
-        </td>
-
-      </tr>
-      <tr id="collapse111" role="tabpanel" aria-labelledby="headingCollapse111">
-
-        <td>
-        </td>
-
-        <!-- Inner table Start -->
-        <td colspan="100">
-          </div>
-          <div class="table-responsive">
-            <table id="tableBody" class="table table-striped table-bordered">
-              <thead>
-                <tr class="text-center">
-                  <th colspan="4" class="align-top">Items Information</th>
-                </tr>
-                <tr>
-                  <th>Sr No</th>
-                  <th>Internal Id</th>
-                  <th class="text-nowrap">Items</th>
-                  <th>Quantity</th>
-                </tr>
-              </thead>
-
-              {% comment %} <tbody>
-                  <tr>
-                    <td>1 </td>
-                    <td>20313</td>
-                    <td class="text-nowrap">Rental: 10" X 40' Yelomine Mainline</td>
-                    <td class="text-nowrap">28</td>
-                  </tr>
-              </tbody> {% endcomment %}
-              <tr>
-                <td>1 </td>
-                <td>20313</td>
-                <td class="text-nowrap">Rental: 10" Tapped Coupler</td>
-                <td class="text-nowrap">28  </td>
-              </tr>
-            </table>
-          </div>
-
-        </td>
-        <!-- Inner table End -->
-
-      </tr>
-    </tbody>
-  </table>
+<div class="tab-content">
+  <div class="tab-pane" id="order-overview" aria-labelledby="base-tab13">
+    {% include "rental/rent_process/order_detail_overview.html" %}
 </div>
-<!-- New Table View End -->
 
-<!-- Old Table View  Start -->
-<!-- <div class="table-responsive mt-2">
-    <table class="table table-stripted file-export">
-        <thead>
-            <th>Delivery ID</th>
-            <th>Material Name</th>
-            <th>Quantity</th>
-            <th>Pickup Date</th>
-            <th>Delivery Date</th>
-        </thead>
-        <tbody>
-            <tr>
-                <td>DLI-1</td>
-                <td>
-                  <p>
-                    Rental: 10" Plain Coupler,<br>
-                    Rental: 10" Tapped Coupler
-                  </p>
-                </td>
-                <td>
-                  <p>
-                    14,<br>
-                    14
-                  </p>
-                </td>
-                <td>2 Apr, 2024</td>
-                <td>3 Apr, 2024</td>
-            </tr>
 
-            <tr>
-                <td>DLI-2</td>
-                <td>
-                  <p>Rental: 10" X 40' Yelomine Mainline</p>
-                </td>
-                <td>
-                  <p>28</p>
-                </td>
-                <td>2 Apr, 2024</td>
-                <td>3 Apr, 2024</td>
-            </tr>
+  <div class="tab-pane active" id="order-detail" aria-labelledby="base-tab11">
 
-        </tbody>
-    </table>
-</div> -->
-<!-- Old Table View  End -->
+    <div>
+      <div class="mt-5">
+        <table id="createdelivery" class="table table-bordered" style="width:100% !important;">
+          <thead>
+              <tr>
+                  <th>Delivery ID</th>
+                  <th>Total Quantity</th>
+                  <th>Contract Start Date</th>
+                  <th>Delivery Date</th>
+                  <th>Action</th>
+              </tr>
+          </thead>
+          <tbody></tbody>
+      </table>
+    </div>
+
+
+</div>
+</div>
 
 <!-- Create Delivery model Start -->
-<div class="modal fade text-left" id="create_delivery" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" aria-hidden="true">
+<div class="modal fade text-left" id="create_delivery" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5"
+  aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title" id="myModalLabel5">Create Delivery</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true"
-            ><i class="ft-x font-medium-2 text-bold-700"></i
-          ></span>
+          <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
         </button>
       </div>
       <div class="modal-body">
         <section id="multiple-select2">
           <div class="card">
             <div class="card-content">
-            <div class="card-body">
+              <div class="card-body">
                 <div class="row">
                   <div class="col-6">
                     <label for="" class="form-label">PickUp Date</label>
@@ -256,7 +127,8 @@
                                 <option selected disabled>Select Material Name</option>
                                 <option value="Air Vent Assembly">Air Vent Assembly</option>
                                 <option value="Air Vent Installation">Air Vent Installation</option>
-                                <option value="Automation: Backflush, Clock, Injector">Automation: Backflush, Clock, Injector</option>
+                                <option value="Automation: Backflush, Clock, Injector">Automation: Backflush, Clock,
+                                  Injector</option>
                               </select>
                             </td>
                             <td class="text-center">3</td>
@@ -266,7 +138,8 @@
                             </td>
                             <td class="d-flex">
                               <button class="btn btn-danger mr-2"><i class="fa fa-trash"></i></button>
-                              <button type="button" class="btn btn-primary" onclick="CopyTableRow()"><i class="fa fa-plus"></i></button>
+                              <button type="button" class="btn btn-primary" onclick="CopyTableRow()"><i
+                                  class="fa fa-plus"></i></button>
                             </td>
                           </tr>
                         </tbody>
@@ -274,30 +147,18 @@
                       </table>
                     </div>
                   </div>
+                </div>
               </div>
-            </div>
             </div>
           </div>
         </section>
       </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn bg-light-secondary"
-          data-dismiss="modal"
-        >
+        <button type="button" class="btn bg-light-secondary" data-dismiss="modal">
           Close
         </button>
-        <button
-          id="addProductRow"
-          type="button"
-          class="btn bg-light-primary"
-          data-backdrop="false"
-          data-toggle="modal"
-          data-target="#addProduct"
-          onclick="copyLaborRow()"
-          data-dismiss="modal"
-        >
+        <button id="addProductRow" type="button" class="btn bg-light-primary" data-backdrop="false" data-toggle="modal"
+          data-target="#addProduct" onclick="copyLaborRow()" data-dismiss="modal">
           <em class="ft-plus font-medium-5"></em> Add
         </button>
       </div>
@@ -395,6 +256,67 @@
     });
 });
 </script>
+<script>
+  $(document).ready(function () {
+    if ($.fn.dataTable.isDataTable('#createdelivery')) {
+        $('#createdelivery').DataTable().clear().destroy();
+    }
+    var order_obj_id = "{{order.order_id}}"
+    var url = "{% url 'rental:rent_process:create_delivery_list_ajax' order_id='ORDER_ID' %}".replace('ORDER_ID', order_obj_id);
+
+    let table = $("#createdelivery").DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: url,
+            type: "GET",
+        },
+        columns: [
+            { data: "delivery_id" },
+            { data: "total_qty" },
+            { data: "contract_start_date" },
+            { data: "delivery_date" },
+
+        ],
+        rowCallback: function (row, data, index) {
+          if (data.products) {
+              let totalQtyCell = $(row).find('td:eq(1)'); // Total Quantity Column
+              let checkoutCell = $(row).find('td:eq(2)'); // Checkout Date Column
+              let deliveryCell = $(row).find('td:eq(3)'); // Delivery Date Column
+              let actionsCell = $(row).find('td:eq(4)'); // Actions Column
+
+              totalQtyCell.attr('colspan', 4).css({ "vertical-align": "top" });
+              let summaryRow = `
+                 <table class="table table-striped table-bordered">
+                    <tbody>
+                        <tr>
+                            <td style="width: 27.2%;">${data.total_qty}</td>
+                            <td style="width: 35.3%;">${data.contract_start_date}</td>
+                            <td style="width: 26.1%;">${data.delivery_date}</td>
+                            <td style="width: 27.7%;">${data.actions}</td>
+                        </tr>
+                    </tbody>
+                </table>
+              `;
+              totalQtyCell.html(`
+                  ${summaryRow}
+                  <div>${data.products}</div>
+              `);
+
+              checkoutCell.hide();
+              deliveryCell.hide();
+              actionsCell.hide();
+          }
+      }
+
+    });
+    setInterval(function () {
+        table.ajax.reload(null, false);
+    }, 60000);
+});
+
+</script>
+
 
 
 <script>
@@ -416,6 +338,110 @@
           alert("Error loading modal data!");
         },
       });
+    });
+  });
+</script>
+<script>
+  $(document).ready(function () {
+    $(".overview").click(function (event) {
+      event.preventDefault();
+      let url = $(this).attr("data-url");
+      console.log('02-12 url: ', url);
+
+      $.ajax({
+        url: url,
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+          $("#order-overview").html(data.html);
+        },
+        error: function () {
+          alert("Error loading modal data!");
+        },
+      });
+    });
+  });
+</script>
+<script>
+  $(document).ready(function() {
+
+    var stageMapping = {
+      1 : "Create Delivery",
+      2 : "Pick Up Ticket",
+      3 : "Check Out",
+      4 : "Delivered To Customer",
+      5 : "Create Return Delivery",
+      6 : "Return Pick Up Ticket",
+      7 : "Check In",
+      8 : "Inspection Completed"
+    };
+
+    $('.steps a').on('click', function(event) {
+      event.preventDefault();
+      var stepNumber = $(this).find('.step').text();
+      var stageKey = stageMapping[stepNumber];
+      var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?stage=" + stageKey;
+      history.pushState({ path: newUrl }, '', newUrl);
+      $("#deliveryTable").DataTable().ajax.reload(null, false);
+    });
+
+    $("a[href='#next']").on("click", function(e) {
+      var foundElements = $(".steps li").find(".current");
+      if (foundElements){
+        value = $(".current a span.step").text();
+
+        var stageKey = stageMapping[value];
+        const url = new URL(window.location.href);
+
+        url.searchParams.set('stage', stageKey);
+        window.history.pushState({}, '', url);
+        $("#deliveryTable").DataTable().ajax.reload(null, false);
+
+        $.ajax({
+          url: '{% url "rental:rent_process:update-stages" %}',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            order_id: "{{order_obj.order_id}}",
+            stage: `STAGE_${value}`,
+          }),
+          headers: {
+              'X-CSRFToken': "{{ csrf_token }}",
+          },
+          success: function(response) {
+              if (response.error) {
+                // console.log("Error!!",response.error);
+              } else {
+                  // console.log("");
+              }
+          },
+          error: function(xhr, status, error) {
+              console.error('Error:', error);
+          }
+        });
+      }
+      else{
+        // console.log("Not found elements:");
+      }
+    });
+
+    $("a[href='#previous']").on("click", function(e) {
+      // console.log("Previous Clicked");
+
+      var foundElements = $(".steps li").find(".current");
+      $("#deliveryTable").DataTable().ajax.reload(null, false);
+      if (foundElements){
+        value = $(".current a span.step").text();
+
+        var stageKey = stageMapping[value];
+        const url = new URL(window.location.href);
+
+        url.searchParams.set('stage', stageKey);
+        window.history.pushState({}, '', url);
+      }
+      else{
+        // console.log("Not found elements:");
+      }
     });
   });
 </script>

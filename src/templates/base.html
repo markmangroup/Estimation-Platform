@@ -116,7 +116,7 @@
       <script src="{% static 'app/js/customizer.min.js' %}"></script>
       <script src="{% static 'app/js/scroll-top.min.js' %}"></script>
       <!-- BEGIN PAGE LEVEL JS-->
-      <script src="{% static 'app/js/form-wizard.min.js' %}"></script>
+      {% comment %} <script src="{% static 'app/js/form-wizard.min.js' %}"></script> {% endcomment %}
       <!-- END PAGE LEVEL JS-->
       <script src="{% static 'vendors/js/select2.full.min.js' %}"></script>
       <!-- BEGIN: Custom CSS-->
@@ -189,6 +189,19 @@
             console.error = function() {}; // Disable all console.error calls
          };
       </script>
+      
+      {% block extra_js %}
+         {% if "rental_order.html" in template_name or "stage_2_file_upload.html" in template_name %}
+            <script src="{% static 'vendors/js/datatable/buttons.print.min.js' %}"></script>
+            <script src="{% static 'vendors/js/datatable/dataTables.buttons.min.js' %}"></script>
+            <script src="{% static 'vendors/js/datatable/jquery.dataTables.min.js' %}"></script>
+            <script src="{% static 'vendors/js/datatable/dataTables.bootstrap4.min.js' %}"></script>
+            <script src="{% static 'app/js/data-tables/datatables-init.js' %}"></script>
+         {% endif %}
+         {{ block.super }}
+      {% endblock %}
+   
+
    </body>
 </html>
 
