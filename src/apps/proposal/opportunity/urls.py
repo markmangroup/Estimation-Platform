@@ -158,6 +158,8 @@ urlpatterns = [
         proposal_creation.UpdateGroupName.as_view(),
         name="group-name-update-ajax",
     ),
+    path('render-proposal-table/<str:document_number>/', proposal_creation.RenderProposalTableView.as_view(), name='render-proposal-table'),
+
     # Proposal Preview
     path(
         "add-items/ajax",

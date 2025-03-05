@@ -382,3 +382,4 @@ class UpdateInvoiceView(ViewMixin):
         except Exception as e:
             LOGGER.error(f"[UpdateInvoiceView][post]: {e}")
             return JsonResponse(ERROR_RESPONSE, status=400)
+

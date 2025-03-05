@@ -1,10 +1,10 @@
 from collections import defaultdict
 
-from django.contrib import messages
 from django.db.models import Count, Prefetch, Q
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
+from django.template.loader import render_to_string
 from apps.constants import ERROR_RESPONSE, LOGGER
 from apps.mixin import ViewMixin
 
@@ -581,3 +581,12 @@ class ProposalTable:
         data = {"grouped_proposals": grouped_proposals, "proposal_total": proposal_total, "opportunity": opportunity}
 
         return data
+    
+class RenderProposalTableView(ViewMixin):
+    def get(self, request, document_number, *args, **kwargs):
+        opportunity = get_object_or_404(Opportunity, document_number=document_number)
+        data = ProposalTable.generate_table(opportunity)
+
+        html = render_to_string("proposal/opportunity/stage/proposal_preview/proposal_priview_table.html", data, request=request)
+
+        return JsonResponse({"html": html})
