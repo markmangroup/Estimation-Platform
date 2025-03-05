@@ -92,3 +92,9 @@
     </button>
   </div>
 {% endblock page_content%}
+
+{% block script %}
+  {% if "rental_order.html" in template_name %}
+    <script src="{% static 'app/js/rental-form-wizard.min.js' %}"></script>
+  {% endif %}
+{% endblock script %}

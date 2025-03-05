@@ -1,0 +1,155 @@
+<style>
+    .modal-dialog {
+        cursor: move;
+    }
+</style>
+<div id="myModal" class="modal fade" role="dialog" data-backdrop='false'>
+    <div class="modal-dialog modal-dialog-centereds">
+        <div class="modal-content">
+            <div class="modal-body">
+                <label for="" class="form-label">Search Pick Up Site & Delivery Site Locations</label>
+                <input id="searchInput" class="form-control mb-3" type="text" placeholder="Search Location">
+                <div id="map" style="height: 400px; width: 100%;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="saveLocations">Save Locations</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBfimrFLSTYP3EjNsQsZCkh46hv9r07_H4&libraries=places&callback=initMap" async defer></script>
+<script>
+    $(document).ready(function(){
+        $("#myModal .modal-dialog").draggable({
+            handle: ".modal-content"
+        });
+    });
+</script>
+<script>
+    let map, marker, geocoder, pickupAutocomplete, deliveryAutocomplete, searchAutocomplete;
+    let pickupLocation, deliveryLocation;
+    let isPickupLocationSelected = false;
+    function initMap() {
+        geocoder = new google.maps.Geocoder();
+
+        const defaultLocation = { lat: 40.7128, lng: -74.0060 };
+
+        map = new google.maps.Map(document.getElementById("map"), {
+            center: defaultLocation,
+            zoom: 12,
+        });
+
+        marker = new google.maps.Marker({
+            map: map,
+            position: defaultLocation,
+            draggable: true,
+        });
+
+        initAutocomplete();
+
+        map.addListener("click", (event) => {
+            const clickedLocation = event.latLng;
+            marker.setPosition(clickedLocation);
+
+            if (!pickupLocation || !isPickupLocationSelected) {
+                pickupLocation = clickedLocation;
+                updateAddress(pickupLocation, "pickupSite");
+                isPickupLocationSelected = true;
+            } else {
+                deliveryLocation = clickedLocation;
+                updateAddress(deliveryLocation, "locationInput");
+                isPickupLocationSelected = false;
+
+            }
+        });
+
+        marker.addListener("dragend", () => {
+            if (pickupLocation) {
+                updateAddress(marker.getPosition(), "pickupSite");
+            } else {
+                updateAddress(marker.getPosition(), "locationInput");
+            }
+        });
+    }
+
+    function initAutocomplete() {
+        const pickupInput = document.getElementById("pickupSite");
+        const deliveryInput = document.getElementById("locationInput");
+        const searchInput = document.getElementById("searchInput");
+
+        pickupAutocomplete = new google.maps.places.Autocomplete(pickupInput);
+        deliveryAutocomplete = new google.maps.places.Autocomplete(deliveryInput);
+        searchAutocomplete = new google.maps.places.Autocomplete(searchInput);
+
+        pickupAutocomplete.addListener("place_changed", function () {
+            const place = pickupAutocomplete.getPlace();
+            if (!place.geometry) return;
+            map.setCenter(place.geometry.location);
+            marker.setPosition(place.geometry.location);
+            pickupLocation = place.geometry.location;
+            isPickupLocationSelected = true;
+        });
+
+        deliveryAutocomplete.addListener("place_changed", function () {
+            const place = deliveryAutocomplete.getPlace();
+            if (!place.geometry) return;
+            map.setCenter(place.geometry.location);
+            marker.setPosition(place.geometry.location);
+            deliveryLocation = place.geometry.location;
+        });
+
+        searchAutocomplete.addListener("place_changed", function () {
+            const place = searchAutocomplete.getPlace();
+            if (!place.geometry) return;
+            map.setCenter(place.geometry.location);
+            marker.setPosition(place.geometry.location);
+            if (!pickupLocation) {
+                pickupLocation = place.geometry.location;
+                updateAddress(pickupLocation, "pickupSite");
+            } else {
+                deliveryLocation = place.geometry.location;
+                updateAddress(deliveryLocation, "locationInput");
+            }
+        });
+    }
+
+    function updateAddress(latLng, inputId) {
+        geocoder.geocode({ location: latLng }, (results, status) => {
+            if (status === "OK" && results[0]) {
+                document.getElementById(inputId).value = results[0].formatted_address;
+            } else {
+                console.error("Geocoder failed: ", status);
+            }
+        });
+    }
+
+    document.getElementById("saveLocations").addEventListener("click", function () {
+        if (pickupLocation && deliveryLocation) {
+            document.getElementById("pickupSite").value = pickupLocation.toString();
+            document.getElementById("locationInput").value = deliveryLocation.toString();
+            $('#myModal').modal('hide');
+        } else {
+            alert("Please select both Pickup and Delivery locations.");
+        }
+    });
+
+    $('#myModal').on('shown.bs.modal', function () {
+        $('#pickupSite, #locationInput, #searchInput').on('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+            }
+        });
+    });
+
+    $('#myModal').on('hidden.bs.modal', function () {
+        if (pickupLocation) {
+            updateAddress(pickupLocation, "pickupSite");
+        }
+        if (deliveryLocation) {
+            updateAddress(deliveryLocation, "locationInput");
+        }
+    });
+</script>

@@ -615,13 +615,9 @@
 
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    let dropdowns = document.querySelectorAll(".disable-first-option");
-
-    dropdowns.forEach(function (dropdown) {
-      if (dropdown.options.length > 0) {
-        dropdown.options[0].disabled = true;
-      }
+  $(document).ready(function () {
+    $(".disable-first-option").each(function () {
+      $(this).find("option:first").prop("disabled", true);
     });
   });
 </script>

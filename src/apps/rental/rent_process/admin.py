@@ -8,6 +8,7 @@ from apps.rental.rent_process.models import (
     ReturnDelivery,
     ReturnOrder,
     OrderFormPermissionModel,
+    Document,
 )
 
 class OrderItemInline(admin.TabularInline):
@@ -27,3 +28,4 @@ admin.site.register(ReturnDelivery)
 admin.site.register(RecurringOrder)
 admin.site.register(ReturnOrder)
 admin.site.register(OrderFormPermissionModel)
+admin.site.register(Document)

@@ -1,0 +1,788 @@
+{% load static %}
+<div class="timeline-target">
+   <div class="modal-header">
+      <h4 class="modal-title">{{time_line.delivery_id}} Order History</h4>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true"><i class="ft-x font-medium-2 text-bold-700"></i></span>
+      </button>
+   </div>
+   <div class="modal-body">
+      <!--Vertical Timeline Starts-->
+      <section id="vertical-timeline-center" class="timeline-center timeline-wrapper col-sm-10 col-12 offset-sm-1">
+         {% if deliveries.first.delivery_status == "Pick Up Ticket" %}
+            <ul class="timeline">
+              <li class="timeline-line"></li>
+              <li class="timeline-item">
+                <div class="timeline-badge">
+                    <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="right" title="Pre-Processing">
+                    <i class="ft-aperture primary"></i>
+                    </span>
+                </div>
+                <div class="timeline-card card shadow-z-1">
+                    <div class="card-header pt-0">
+                      <h4 class="mb-0 card-title">
+                          <span class="cursor-pointer">Delivery Create</span>
+                      </h4>
+                      <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3">{{ deliveries.first.created_at|date:"jS F, Y" }}</span>
+                      </div>
+                    </div>
+                    <div class="card-content"></div>
+                </div>
+              </li>
+            </ul>
+            <ul class="timeline">
+                <li class="timeline-line"></li>
+                <li class="timeline-item">
+                  <div class="timeline-badge">
+                      <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="right" title="Pre-Processing">
+                        <i class="ft-aperture primary"></i>
+                      </span>
+                  </div>
+                  <div class="timeline-card card shadow-z-1">
+                      <div class="card-header pt-0">
+                        <h4 class="mb-0 card-title">
+                            <span class="cursor-pointer">Pick Up Ticket Create</span>
+                        </h4>
+                        <div class="card-subtitle text-muted mt-0">
+                           <span class="font-small-3">{{ deliveries.first.pickup_date|date:"jS F, Y" }}</span>
+                        </div>
+                      </div>
+                      <div class="card-content"></div>
+                  </div>
+                </li>
+            </ul>
+          {% endif %}
+          {% if deliveries.first.delivery_status == "Check Out" %}
+          <ul class="timeline">
+            <li class="timeline-line"></li>
+            <li class="timeline-item">
+              <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="right" title="Pre-Processing">
+                  <i class="ft-aperture primary"></i>
+                  </span>
+              </div>
+              <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                    <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Delivery Create</span>
+                    </h4>
+                    <div class="card-subtitle text-muted mt-0">
+                     <span class="font-small-3">{{ deliveries.first.created_at|date:"jS F, Y" }}</span>
+                    </div>
+                  </div>
+                  <div class="card-content"></div>
+              </div>
+            </li>
+          </ul>
+          <ul class="timeline">
+              <li class="timeline-line"></li>
+              <li class="timeline-item">
+                <div class="timeline-badge">
+                    <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="right" title="Pre-Processing">
+                      <i class="ft-aperture primary"></i>
+                    </span>
+                </div>
+                <div class="timeline-card card shadow-z-1">
+                    <div class="card-header pt-0">
+                      <h4 class="mb-0 card-title">
+                          <span class="cursor-pointer">Pick Up Ticket Create</span>
+                      </h4>
+                      <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3">{{ deliveries.first.pickup_date|date:"jS F, Y" }}</span>
+                      </div>
+                    </div>
+                    <div class="card-content"></div>
+                </div>
+              </li>
+          </ul>
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <span></span>
+            <li class="timeline-item">
+               <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="left"
+                     title="In Transit-Outbound">
+                  <i class="ft-refresh-cw primary"></i>
+                  </span>
+               </div>
+               <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                     <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Check Out</span>
+                     </h4>
+                     <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3">{{ deliveries.first.check_out_date|date:"jS F, Y" }}</span>
+                     </div>
+                  </div>
+               </div>
+            </li>
+         </ul>
+         {% endif %}
+         {% if deliveries.first.delivery_status == "Delivered To Customer" %}
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <li class="timeline-item">
+              <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="right" title="Pre-Processing">
+                  <i class="ft-aperture primary"></i>
+                  </span>
+              </div>
+              <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                    <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Delivery Create</span>
+                    </h4>
+                    <div class="card-subtitle text-muted mt-0">
+                     <span class="font-small-3">{{ deliveries.first.created_at|date:"jS F, Y" }}</span>
+                    </div>
+                  </div>
+                  <div class="card-content"></div>
+              </div>
+            </li>
+          </ul>
+          <ul class="timeline">
+              <li class="timeline-line"></li>
+              <li class="timeline-item">
+                <div class="timeline-badge">
+                    <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="right" title="Pre-Processing">
+                      <i class="ft-aperture primary"></i>
+                    </span>
+                </div>
+                <div class="timeline-card card shadow-z-1">
+                    <div class="card-header pt-0">
+                      <h4 class="mb-0 card-title">
+                          <span class="cursor-pointer">Pick Up Ticket Create</span>
+                      </h4>
+                      <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3">{{ deliveries.first.pickup_date|date:"jS F, Y" }}</span>
+                      </div>
+                    </div>
+                    <div class="card-content"></div>
+                </div>
+              </li>
+          </ul>
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <span></span>
+            <li class="timeline-item">
+               <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="left"
+                     title="In Transit-Outbound">
+                  <i class="ft-refresh-cw primary"></i>
+                  </span>
+               </div>
+               <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                     <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Check Out</span>
+                     </h4>
+                     <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3">{{ deliveries.first.check_out_date|date:"jS F, Y" }}</span>
+                     </div>
+                  </div>
+               </div>
+            </li>
+         </ul>
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <li class="timeline-item">
+               <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="right"
+                     title="Customer Delivery">
+                  <i class="ft-truck primary"></i>
+                  </span>
+               </div>
+               <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                     <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Customer Delivery</span>
+                     </h4>
+                     <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3">{{ deliveries.first.delivery_date|date:"jS F, Y" }}</span>
+                     </div>
+                  </div>
+                  <div class="card-content"></div>
+               </div>
+            </li>
+         </ul>
+         {% endif %}
+         {% if deliveries.first.delivery_status == "Create Return Delivery" %}
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <li class="timeline-item">
+              <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="right" title="Pre-Processing">
+                  <i class="ft-aperture primary"></i>
+                  </span>
+              </div>
+              <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                    <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Delivery Create</span>
+                    </h4>
+                    <div class="card-subtitle text-muted mt-0">
+                     <span class="font-small-3">{{ deliveries.first.created_at|date:"jS F, Y" }}</span>
+                    </div>
+                  </div>
+                  <div class="card-content"></div>
+              </div>
+            </li>
+          </ul>
+          <ul class="timeline">
+              <li class="timeline-line"></li>
+              <li class="timeline-item">
+                <div class="timeline-badge">
+                    <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="right" title="Pre-Processing">
+                      <i class="ft-aperture primary"></i>
+                    </span>
+                </div>
+                <div class="timeline-card card shadow-z-1">
+                    <div class="card-header pt-0">
+                      <h4 class="mb-0 card-title">
+                          <span class="cursor-pointer">Pick Up Ticket Create</span>
+                      </h4>
+                      <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3">{{ deliveries.first.pickup_date|date:"jS F, Y" }}</span>
+                      </div>
+                    </div>
+                    <div class="card-content"></div>
+                </div>
+              </li>
+          </ul>
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <span></span>
+            <li class="timeline-item">
+               <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="left"
+                     title="In Transit-Outbound">
+                  <i class="ft-refresh-cw primary"></i>
+                  </span>
+               </div>
+               <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                     <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Check Out</span>
+                     </h4>
+                     <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3">{{ deliveries.first.check_out_date|date:"jS F, Y" }}</span>
+                     </div>
+                  </div>
+               </div>
+            </li>
+         </ul>
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <li class="timeline-item">
+               <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="right"
+                     title="Customer Delivery">
+                  <i class="ft-truck primary"></i>
+                  </span>
+               </div>
+               <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                     <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Customer Delivery</span>
+                     </h4>
+                     <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3">{{ deliveries.first.delivery_date|date:"jS F, Y" }}</span>
+                     </div>
+                  </div>
+                  <div class="card-content"></div>
+               </div>
+            </li>
+         </ul>
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <span></span>
+            <li class="timeline-item">
+               <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="left"
+                     title="Final Pick-up and Inspection">
+                  <i class="ft-zoom-in primary"></i>
+                  </span>
+               </div>
+               <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                     <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Return Delivery Create</span>
+                     </h4>
+                     <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3">{{ deliveries.first.created_at|date:"jS F, Y" }}</span>
+                     </div>
+                  </div>
+               </div>
+            </li>
+         </ul>
+         {% endif %}
+         {% if deliveries.first.delivery_status == "Return Pick Up Ticket" %}
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <li class="timeline-item">
+              <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="right" title="Pre-Processing">
+                  <i class="ft-aperture primary"></i>
+                  </span>
+              </div>
+              <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                    <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Delivery Create</span>
+                    </h4>
+                    <div class="card-subtitle text-muted mt-0">
+                     <span class="font-small-3">{{ deliveries.first.created_at|date:"jS F, Y" }}</span>
+                    </div>
+                  </div>
+                  <div class="card-content"></div>
+              </div>
+            </li>
+          </ul>
+          <ul class="timeline">
+              <li class="timeline-line"></li>
+              <li class="timeline-item">
+                <div class="timeline-badge">
+                    <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="right" title="Pre-Processing">
+                      <i class="ft-aperture primary"></i>
+                    </span>
+                </div>
+                <div class="timeline-card card shadow-z-1">
+                    <div class="card-header pt-0">
+                      <h4 class="mb-0 card-title">
+                          <span class="cursor-pointer">Pick Up Ticket Create</span>
+                      </h4>
+                      <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3">{{ deliveries.first.pickup_date|date:"jS F, Y" }}</span>
+                      </div>
+                    </div>
+                    <div class="card-content"></div>
+                </div>
+              </li>
+          </ul>
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <span></span>
+            <li class="timeline-item">
+               <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="left"
+                     title="In Transit-Outbound">
+                  <i class="ft-refresh-cw primary"></i>
+                  </span>
+               </div>
+               <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                     <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Check Out</span>
+                     </h4>
+                     <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3">{{ deliveries.first.check_out_date|date:"jS F, Y" }}</span>
+                     </div>
+                  </div>
+               </div>
+            </li>
+         </ul>
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <li class="timeline-item">
+               <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="right"
+                     title="Customer Delivery">
+                  <i class="ft-truck primary"></i>
+                  </span>
+               </div>
+               <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                     <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Customer Delivery</span>
+                     </h4>
+                     <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3">{{ deliveries.first.delivery_date|date:"jS F, Y" }}</span>
+                     </div>
+                  </div>
+                  <div class="card-content"></div>
+               </div>
+            </li>
+         </ul>
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <span></span>
+            <li class="timeline-item">
+               <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="left"
+                     title="Final Pick-up and Inspection">
+                  <i class="ft-zoom-in primary"></i>
+                  </span>
+               </div>
+               <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                     <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Return Delivery Create</span>
+                     </h4>
+                     <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3"></span>
+                     </div>
+                  </div>
+               </div>
+            </li>
+         </ul>
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <span></span>
+            <li class="timeline-item">
+               <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="left"
+                     title="Final Pick-up and Inspection">
+                  <i class="ft-zoom-in primary"></i>
+                  </span>
+               </div>
+               <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                     <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Return Pick-up Ticket Create</span>
+                     </h4>
+                     <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3"></span>
+                     </div>
+                  </div>
+               </div>
+            </li>
+         </ul>
+         {% endif %}
+         {% if deliveries.first.delivery_status == "Check In" %}
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <li class="timeline-item">
+              <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="right" title="Pre-Processing">
+                  <i class="ft-aperture primary"></i>
+                  </span>
+              </div>
+              <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                    <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Delivery Create</span>
+                    </h4>
+                    <div class="card-subtitle text-muted mt-0">
+                     <span class="font-small-3">{{ deliveries.first.created_at|date:"jS F, Y" }}</span>
+                    </div>
+                  </div>
+                  <div class="card-content"></div>
+              </div>
+            </li>
+          </ul>
+          <ul class="timeline">
+              <li class="timeline-line"></li>
+              <li class="timeline-item">
+                <div class="timeline-badge">
+                    <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="right" title="Pre-Processing">
+                      <i class="ft-aperture primary"></i>
+                    </span>
+                </div>
+                <div class="timeline-card card shadow-z-1">
+                    <div class="card-header pt-0">
+                      <h4 class="mb-0 card-title">
+                          <span class="cursor-pointer">Pick Up Ticket Create</span>
+                      </h4>
+                      <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3">{{ deliveries.first.pickup_date|date:"jS F, Y" }}</span>
+                      </div>
+                    </div>
+                    <div class="card-content"></div>
+                </div>
+              </li>
+          </ul>
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <span></span>
+            <li class="timeline-item">
+               <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="left"
+                     title="In Transit-Outbound">
+                  <i class="ft-refresh-cw primary"></i>
+                  </span>
+               </div>
+               <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                     <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Check Out</span>
+                     </h4>
+                     <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3">{{ deliveries.first.check_out_date|date:"jS F, Y" }}</span>
+                     </div>
+                  </div>
+               </div>
+            </li>
+         </ul>
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <li class="timeline-item">
+               <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="right"
+                     title="Customer Delivery">
+                  <i class="ft-truck primary"></i>
+                  </span>
+               </div>
+               <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                     <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Customer Delivery</span>
+                     </h4>
+                     <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3">{{ deliveries.first.delivery_date|date:"jS F, Y" }}</span>
+                     </div>
+                  </div>
+                  <div class="card-content"></div>
+               </div>
+            </li>
+         </ul>
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <span></span>
+            <li class="timeline-item">
+               <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="left"
+                     title="Final Pick-up and Inspection">
+                  <i class="ft-zoom-in primary"></i>
+                  </span>
+               </div>
+               <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                     <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Return Delivery Create</span>
+                     </h4>
+                     <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3"></span>
+                     </div>
+                  </div>
+               </div>
+            </li>
+         </ul>
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <span></span>
+            <li class="timeline-item">
+               <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="left"
+                     title="Final Pick-up and Inspection">
+                  <i class="ft-zoom-in primary"></i>
+                  </span>
+               </div>
+               <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                     <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Return Pick-up Ticket Create</span>
+                     </h4>
+                     <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3"></span>
+                     </div>
+                  </div>
+               </div>
+            </li>
+         </ul>
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <li class="timeline-item">
+               <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="right"
+                     title="In Transit - Inbound">
+                  <i class="ft-refresh-ccw primary"></i>
+                  </span>
+               </div>
+               <div class="timeline-card card shadow-z-1">  
+                  <div class="card-header pt-0">
+                     <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Check In</span>
+                     </h4>
+                     <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3">{{ deliveries.first.check_in_date|date:"j F, Y \a\t g.i A" }}</span>
+                     </div>
+                  </div>
+                  <div class="card-content"></div>
+               </div>
+            </li>
+         </ul>
+         {% endif %}
+         {% if deliveries.first.delivery_status == "Inspection Completed" %}
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <li class="timeline-item">
+              <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="right" title="Pre-Processing">
+                  <i class="ft-aperture primary"></i>
+                  </span>
+              </div>
+              <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                    <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Delivery Create</span>
+                    </h4>
+                    <div class="card-subtitle text-muted mt-0">
+                     <span class="font-small-3">{{ deliveries.first.created_at|date:"jS F, Y" }}</span>
+                    </div>
+                  </div>
+                  <div class="card-content"></div>
+              </div>
+            </li>
+          </ul>
+          <ul class="timeline">
+              <li class="timeline-line"></li>
+              <li class="timeline-item">
+                <div class="timeline-badge">
+                    <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="right" title="Pre-Processing">
+                      <i class="ft-aperture primary"></i>
+                    </span>
+                </div>
+                <div class="timeline-card card shadow-z-1">
+                    <div class="card-header pt-0">
+                      <h4 class="mb-0 card-title">
+                          <span class="cursor-pointer">Pick Up Ticket Create</span>
+                      </h4>
+                      <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3">{{ deliveries.first.pickup_date|date:"jS F, Y" }}</span>
+                      </div>
+                    </div>
+                    <div class="card-content"></div>
+                </div>
+              </li>
+          </ul>
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <span></span>
+            <li class="timeline-item">
+               <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="left"
+                     title="In Transit-Outbound">
+                  <i class="ft-refresh-cw primary"></i>
+                  </span>
+               </div>
+               <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                     <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Check Out</span>
+                     </h4>
+                     <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3">{{ deliveries.first.check_out_date|date:"jS F, Y" }}</span>
+                     </div>
+                  </div>
+               </div>
+            </li>
+         </ul>
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <li class="timeline-item">
+               <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="right"
+                     title="Customer Delivery">
+                  <i class="ft-truck primary"></i>
+                  </span>
+               </div>
+               <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                     <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Customer Delivery</span>
+                     </h4>
+                     <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3">{{ deliveries.first.delivery_date|date:"jS F, Y" }}</span>
+                     </div>
+                  </div>
+                  <div class="card-content"></div>
+               </div>
+            </li>
+         </ul>
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <span></span>
+            <li class="timeline-item">
+               <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="left"
+                     title="Final Pick-up and Inspection">
+                  <i class="ft-zoom-in primary"></i>
+                  </span>
+               </div>
+               <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                     <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Return Delivery Create</span>
+                     </h4>
+                     <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3"></span>
+                     </div>
+                  </div>
+               </div>
+            </li>
+         </ul>
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <span></span>
+            <li class="timeline-item">
+               <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="left"
+                     title="Final Pick-up and Inspection">
+                  <i class="ft-zoom-in primary"></i>
+                  </span>
+               </div>
+               <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                     <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Return Pick-up Ticket Create</span>
+                     </h4>
+                     <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3"></span>
+                     </div>
+                  </div>
+               </div>
+            </li>
+         </ul>
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <li class="timeline-item">
+               <div class="timeline-badge">
+                  <span class="bg-primary bg-lighten-4" data-toggle="tooltip" data-placement="right"
+                     title="In Transit - Inbound">
+                  <i class="ft-refresh-ccw primary"></i>
+                  </span>
+               </div>
+               <div class="timeline-card card shadow-z-1">
+                  <div class="card-header pt-0">
+                     <h4 class="mb-0 card-title">
+                        <span class="cursor-pointer">Check In</span>
+                     </h4>
+                     <div class="card-subtitle text-muted mt-0">
+                        <span class="font-small-3">{{ deliveries.first.check_in_date|date:"j F, Y \a\t g.i A" }}</span>
+                     </div>
+                  </div>
+                  <div class="card-content"></div>
+               </div>
+            </li>
+         </ul>
+         <ul class="timeline">
+            <li class="timeline-line"></li>
+            <span></span>
+            <li class="timeline-item">
+              <div class="timeline-badge">
+                <span
+                  class="bg-primary bg-lighten-4"
+                  data-toggle="tooltip"
+                  data-placement="left"
+                  title="Warehouse Storage"
+                >
+                  <i class="ft-home primary"></i>
+                </span>
+              </div>
+              <div class="timeline-card card shadow-z-1">
+                <div class="card-header pt-0">
+                  <h4 class="mb-0 card-title">
+                    <span class="cursor-pointer">Inspection Completed</span>
+                  </h4>
+                  <div class="card-subtitle text-muted mt-0">
+                    <span class="font-small-3"></span>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+         {% endif %}
+      </section>
+   </div>
+</div>

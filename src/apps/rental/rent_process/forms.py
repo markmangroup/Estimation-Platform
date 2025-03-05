@@ -141,14 +141,12 @@ class OrderForm(forms.ModelForm):
     rental_start_date = forms.DateField(widget=forms.HiddenInput())
     rental_end_date = forms.DateField(widget=forms.HiddenInput())
 
-    customer = forms.ModelChoiceField(
-        queryset=RentalCustomer.objects.all(),
-        empty_label="Select a value",
+    customer = forms.ChoiceField(
+        choices=[("", "Select a value")] + [(c.id, c.name) for c in RentalCustomer.objects.only('id', 'name')],
         widget=forms.Select(attrs={"class": "form-control disable-first-option"})
     )
-    account_manager = forms.ModelChoiceField(
-        queryset=AccountManager.objects.all(),
-        empty_label="Select a value",
+    account_manager = forms.ChoiceField(
+        choices=[("", "Select a value")] + [(a.id, a.name) for a in AccountManager.objects.only('id', 'name')],
         widget=forms.Select(attrs={"class": "form-control disable-first-option"})
     )
     repeat_type = forms.ChoiceField(
@@ -189,6 +187,18 @@ class OrderForm(forms.ModelForm):
             "repeat_end_date": forms.DateInput(attrs={"class": "form-control", "type": "date", "id": "endDate", "style": "width: 150px;"}),
         }
 
+    def clean_customer(self):
+        customer_id = self.cleaned_data["customer"]
+        if customer_id:
+            return RentalCustomer.objects.get(id=int(customer_id))
+        return None
+    
+    def clean_account_manager(self):
+        account_manager = self.cleaned_data["account_manager"]
+        if account_manager:
+            return AccountManager.objects.get(id=int(account_manager))
+        return None
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
@@ -290,3 +300,39 @@ class OrderFormPermissionForm(forms.ModelForm):
             for field in self.readonly_fields:
                 cleaned_data[field] = getattr(self.instance, field)
         return cleaned_data
+
+
+
+class ReturnOrderEditForm(forms.ModelForm):
+    rental_start_date = forms.DateField(
+        label="Start Date",
+        widget=forms.DateInput(attrs={"type": "date"}), required=False
+    )
+    rental_end_date = forms.DateField(
+        label="End Date",
+        widget=forms.DateInput(attrs={"type": "date"}), required=False
+    )
+
+    class Meta:
+        model = ReturnOrder
+        fields = []
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.order:
+            self.fields["rental_start_date"].initial = self.instance.order.rental_start_date
+            self.fields["rental_end_date"].initial = self.instance.order.rental_end_date
+
+
+class UploadDocumentForm(forms.ModelForm):
+    """
+    Upload a documents file
+    """
+
+    class Meta:
+        model = Document
+        fields = ["document"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["document"].required = False

@@ -1,0 +1,171 @@
+<!-- After Stage -->
+<div class="form-group">
+    <div class="row">
+      <div class="col-12">
+        <label for="stage_4_file-upload" class="btn btn-secondary mt-3">
+          <input id="stage_4_file-upload" type="file" style="display: none" />
+          Attach Documents
+        </label>
+        <br>
+        <span id="stage_4_file-name" class="ml-3"></span>
+      </div>
+      <div class="col-12">
+        <textarea rows="5" class="form-control square" id="stage_4_comment" placeholder="Add a comment" name="comment3"></textarea>
+      </div>
+      <button id="stage_4_file-save" class="btn btn-outline-success ml-3">Save</button>
+    </div>
+  </div>
+
+  <!-- Loader HTML -->
+  <div id="loader-container" class="stage_4_loader-container" style="display: none;">
+    <div id="loader">
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <p>Document Upload...</p>
+    </div>
+  </div>
+
+  <div class="table-responsive mt-3">
+    <table id="stage_4_document" class="table table-striped table-bordered" style="width:100%;">
+      <thead>
+        <tr class="text-center">
+          <th style="width: 25% !important">Documents</th>
+          <th style="width: 25% !important">Created at</th>
+          <th>Comments</th>
+        </tr>
+      </thead>
+    </table>
+  </div>
+
+  <!-- Attach Document -->
+<script>
+  $(document).ready(function() {
+    var table_id = "#stage_4_document";
+    var fileInput = $('#stage_4_file-upload');
+    var fileNameElement = $('#stage_4_file-name');
+    var fileSaveButton = $('#stage_4_file-save');
+    var commentInput = $('#stage_4_comment');
+
+    // Initially hide save button
+    fileSaveButton.hide();
+
+    // Handle file selection
+    fileInput.on('change', function() {
+        var file = this.files[0];
+        if (file) {
+            fileNameElement.text(file.name);
+            fileSaveButton.show();
+        } else {
+            fileNameElement.text('No file selected');
+            fileSaveButton.hide();
+        }
+    });
+
+    // Handle comment input
+    commentInput.on('input', function() {
+        if ($(this).val().trim() !== '') {
+            fileSaveButton.show();
+        } else {
+            fileSaveButton.hide();
+        }
+    });
+
+    // Remove any existing click events before adding a new one
+    fileSaveButton.off('click').on('click', function(event) {
+        event.preventDefault();
+
+        var file = fileInput[0].files[0];
+        var comment = commentInput.val();
+        var order_order_id = "{{ order.order_id }}";
+        var stage = "Delivered To Customer";
+
+        if (!file && comment.trim() === '') {
+            toastr.error("Please attach a document or enter a comment before saving.");
+            return;
+        }
+
+        var formData = new FormData();
+        formData.append('document', file);
+        formData.append('order_order_id', order_order_id);
+        formData.append('comment', comment);
+        formData.append('stage', stage);
+
+        // Show loader
+        $('.stage_4_loader-container').show();
+
+        $.ajax({
+            url: '{% url "rental:rent_process:upload-document" %}',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRFToken': "{{ csrf_token }}",
+            },
+            success: function(response) {
+                fileInput.val('');
+                fileNameElement.text('');
+                commentInput.val('');
+                fileSaveButton.hide();
+
+                toastr.success("Document Uploaded Successfully!", 'Success', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-bottom-right',
+                    timeOut: 6000
+                });
+
+                stage_4_initializeDataTable(); // Reload table after success
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error:', textStatus, errorThrown);
+                toastr.error("Failed to upload document.");
+            },
+            complete: function() {
+                $('.stage_4_loader-container').hide();
+            }
+        });
+    });
+
+    // Initialize DataTable function
+    function stage_4_initializeDataTable() {
+        var currentStage = "Delivered To Customer";
+        var order_order_id = "{{ order.order_id }}";
+
+        if ($.fn.DataTable.isDataTable(table_id)) {
+            $(table_id).DataTable().destroy();
+        }
+
+      if (!$.fn.DataTable.isDataTable(table_id)) {
+        $(table_id).DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{% url 'rental:rent_process:ajax-document-list' order.order_id 'stage' %}".replace('stage', currentStage),
+                type: 'GET',
+                dataSrc: function(json) {
+                    console.log("AJAX Response:", json);
+                    return json.data;
+                }
+            },
+            columns: [
+                { data: 'document', name: 'document' },
+                { data: 'created_at', name: 'created_at' },
+                { data: 'comment', name: 'comment' },
+            ],
+        });
+      } else {
+        $(table_id).DataTable().ajax.reload(null, false); 
+    }
+    }
+
+    stage_4_initializeDataTable();
+
+    $("a[href='#next'], a[href='#previous']").on("click", function(e) {
+        e.preventDefault();
+        setTimeout(stage_4_initializeDataTable, 500);
+    });
+});
+
+</script>
