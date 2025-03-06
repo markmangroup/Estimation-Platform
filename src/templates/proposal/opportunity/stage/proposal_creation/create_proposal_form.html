@@ -86,7 +86,7 @@
                         $('#ProposalContainer').css("display", "none");
                     },
                     success: function(response) {
-
+                        fetchProposalPriviewTable("{{document_number}}");
                         $("#ProposalContainer").html(response.html)
                         $('#task-mapping-table').html(response.html2);
                         $('#show-loader-proposal-creation').css("display", "none");
@@ -120,3 +120,21 @@
         });
     });
 </script>
+<script>
+    function fetchProposalPriviewTable(document_number) {
+        $.ajax({
+            url: '{% url "proposal_app:opportunity:render-proposal-table" document_number %}',
+            type: 'GET',
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+                $("#invoice-items-details").html(response.html);
+                console.log("Table rendered successfully");
+            },
+            error: function(response) {
+                console.log("Table render failed");
+            }
+        });
+    }
+</script>    

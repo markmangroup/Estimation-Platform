@@ -1,0 +1,183 @@
+<div id="invoice-items-details">
+    <div class="row">
+      <div class="table-responsive col-12">
+        <table class="table table-bordered mt-3">
+          <thead>
+            <th>Group Name</th>
+            <th class="text-center">Task Summary</th>
+          </thead>
+          <tbody>
+            {% load custom_filters %}
+            {% for grp_name, data in grouped_proposals.items %}
+              <tr>
+                <th scope="row">
+                  <input type="text" class="form-control grp_name" data-document="{{opportunity.document_number}}" data-id="{{data.proposal_ids}}" value="{{ grp_name }}">
+                </th>
+                <td>
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Task Code</th>
+                        <th>Task Description</th>
+                        <th class="text-right">Total</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for task, products in data.assigned_products.items %}
+                        <tr>
+
+                          <th scope="row">
+                              <input type="text" data-id="{{ task.id }}" class="form-control task_code" value="{{task.code}}">
+                          </th>
+                          <td>
+                            <p>
+                              <input type="text" data-id="{{ task.id }}" class="form-control task_description" value="{{ task.description }}">
+                            </p>
+                            {% if task.include %}
+                              <div class="table-responsive">
+                                <table class="table table-bordered">
+                                  <thead>
+                                    <tr class="text-center">
+                                      <th>Item Code</th>
+                                      <th>Item Description</th>
+                                      <th>Quantity</th>
+                                      <th>Price</th>
+                                      <th>Total</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                      {% for p in products %}
+                                        <tr class="tr-{{task.id}}">
+                                          <td>
+                                            {% if p.item_code %}
+                                              <input type="text" data-id="{{p.id}}" class="form-control prod_item_code" value="{{ p.item_code }}"/>
+                                            {% else %}
+                                              <input type="text" data-id="{{p.id}}" class="form-control prod_labor_task" value="{{ p.labor_task }}"/>
+                                            {% endif %}
+                                          </td>
+                                          <td>
+                                            <input type="text" data-id="{{p.id}}" class="form-control prod_description" value="{{ p.description }}"/>
+                                          </td>
+                                          <td>
+                                            <input type="text" data-id="{{p.id}}" data-task-id={{task.id}} class="form-control prod_quantity" value="{{ p.quantity }}"/>
+                                          </td>
+                                          <td>
+                                            {% if p.standard_cost %}
+                                              <input type="text" data-id="{{p.id}}" data-task-id={{task.id}} class="form-control prod_cost" value="${{ p.standard_cost }}"/>
+                                            {% else %}
+                                              <input type="text" data-id="{{p.id}}" data-task-id={{task.id}} class="form-control prod_local_cost" value="${{ p.local_cost }}"/>
+                                            {% endif %}
+                                          </td>
+                                          <td>
+                                            {% if p.standard_cost %}
+                                              <input  type="text" data-id="{{p.id}}" class="form-control prod_total" value="${{ p.standard_cost|multiply:p.quantity|round_value:2 }}" disabled>
+                                            {% else %}
+                                              <input  type="text" data-id="{{p.id}}" class="form-control prod_total" value="${{ p.local_cost|multiply:p.quantity|round_value:2 }}" disabled>
+                                            {% endif %}
+                                          </td>
+                                        </tr>
+                                      {% endfor %}
+                                  </tbody>
+                                </table>
+                              </div>
+                            {% endif %}
+
+                            {% for description in task.extra_description %}
+                                {% for key, value in description.items %}
+                                  <p class="text-muted">
+                                    <input type="text"
+                                      class="form-control"
+                                      value="{{ value }}"
+                                      placeholder="write description"
+                                      disabled>
+                                  </p>
+                                {% endfor %}
+                            {% endfor %}
+                          </td>
+                          <td class="text-right">
+                            <input type="text" class="form-control task_total_price_{{task.id}}" value="${{ data.task_totals|get_item:task|round_value:2 }}" disabled>
+                          </td>
+                          <td>
+                            {% if task.task.name %}
+                            <button type="button"
+                                    class="btn btn-danger delete-task-btn icon"
+                                    data-id="{{ data.proposal_ids|get_proposal_id:forloop.counter0 }}"
+                                    data-title="{{task.code}}"
+                                    data-type="proposal"
+                                    data-url="{% url 'proposal_app:opportunity:task-delete-ajax' %}">
+                                <em class="fa fa-trash"></em>
+                            </button>
+
+                            {% else %}
+                              <button type="button" class="btn btn-danger delete-task-btn icon" data-id="{{ data.proposal_ids|get_proposal_id:forloop.counter0 }}" data-title="{{task.code}}" data-type="proposal" data-url="{% url 'proposal_app:opportunity:task-delete-ajax' %}"><em class="fa fa-trash"></em></button>
+
+                            {% endif %}
+                          </td>
+
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+
+                  </table>
+                </td>
+              </tr>
+            {% endfor %}
+
+          </tbody>
+        </table>
+
+        <table class="table mt-2">
+          <p class="font-weight-bold">Options</p>
+          <tbody>
+            <tr>
+              <th scope="row">Approve & Initial</th>
+              <th>Task</th>
+              <th>Task Description</th>
+              <th class="text-right">Totals</th>
+            </tr>
+
+            {% for grp_name, data in grouped_proposals.items %}
+              {% for task, products in data.assigned_products.items %}
+                <tr>
+                  <td scope="row">
+                    {% if task.approve %}
+                      <input type="text" data-id="{{ task.id }}" class="form-control approve" value="{{ task.approve }}" />
+                    {% else %}
+                      <input type="text" data-id="{{ task.id }}" class="form-control approve" value="Yes / No" />
+                    {% endif %}
+
+                  </td>
+                  <td>
+                    <input type="text" class="form-control" value="{{task.code}}" disabled>
+                  </td>
+                  <td>
+                    <input type="text" class="form-control" value="{{ task.description }}" disabled>
+                  </td>
+                  <td class="text-right">
+                    <input type="text" class="form-control totals task_total_price_{{task.id}}" value="${{ data.task_totals|get_item:task|round_value:2 }}" disabled>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% endfor %}
+
+            <tr>
+              <th scope="row"></th>
+              <th scope="row"></th>
+              <th class="text-right">
+                <p>TOTAL OPTIONS - ITEMS LISTED :</p>
+              </th>
+              <th class="text-right">
+                <input type="text" class="form-control main_total" value="${{ proposal_total.grand_total_price }}" disabled>
+              </th>
+            </tr>
+          </tbody>
+        </table>
+
+        <div id="opportunity-term-and-condition">
+          {% include "proposal/opportunity/stage/proposal_preview/opportunity_term_and_condition.html" %}
+        </div>
+
+      </div>
+    </div>
+  </div>
