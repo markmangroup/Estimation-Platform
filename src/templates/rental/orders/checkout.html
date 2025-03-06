@@ -253,7 +253,7 @@
 
 </script>
 <script>
-  var check_out_status_url = "{% url 'rental:rent_process:change_delivery_checkout_status' %}";
+  {% comment %} var update_delivery_stock_url = "{% url 'rental:rent_process:update_delivery_stock' %}"; {% endcomment %}
   var csrf_token = "{{ csrf_token }}";
   
   $(document).ready(function () {
@@ -444,7 +444,7 @@ $(document).on("change", ".checkout-date", function () {
 
 <script>
 var update_quantity_url = "{% url 'rental:rent_process:update_quantity' %}";
-function sendQuantityAjaxRequest(changedQuantities) {
+{% comment %} function sendQuantityAjaxRequest(changedQuantities) {
     return new Promise((resolve) => {
         if (changedQuantities.length === 0) {
             /*Swal.fire({
@@ -467,6 +467,7 @@ function sendQuantityAjaxRequest(changedQuantities) {
             dataType: "json",
             success: function (response) {
                 resolve(true); // AJAX success, return true
+
             },
             error: function (error) {
                 Swal.fire({
@@ -535,5 +536,87 @@ function sendQuantityUpdateAjax() {
             sendQuantityAjaxRequest(changedQuantities).then(resolve);
         }
     });
-}
+} {% endcomment %}
+</script>
+<script>
+    $(document).ready(function () {
+        // Global status change
+        $("#global-select-template-checkout").on("change", function () {
+            var selectedValue = $(this).val();
+            var order_obj_id = "{{ order.order_id }}";
+    
+            if (selectedValue === "Check Out") {
+                $.ajax({
+                    url: "{% url 'rental:rent_process:change_delivery_checkout_status' %}",
+                    type: "POST",
+                    headers: {
+                        'X-CSRFToken': "{{ csrf_token }}",
+                    },
+                    data: JSON.stringify({
+                        global_status_change: true,
+                        order_id: order_obj_id
+                    }),
+                    contentType: "application/json",
+                    success: function (response) {
+                        if (response.success) {
+                            $(".another-select-checkout").val("Check Out").trigger('change');
+                        } else {
+                            $(".another-select-checkout").val("").trigger('change');
+                        }
+                    },
+                    error: function () {
+                        console.error("Error checking delivery status.");
+                    }
+                });
+            } else {
+                $(".another-select-checkout").val("").trigger('change');
+            }
+        });
+    
+        // Individual status change
+
+        $(document).off("change", ".another-select-checkout").on("change", ".another-select-checkout", function () {
+            var selectedValue = $(this).val();
+            console.log('selectedValue: ', selectedValue);
+            var deliveryId = $(this).data("delivery-id");
+            console.log('deliveryId: ', deliveryId);
+            var deliveryPK = $(this).data("delivery-pk");
+            console.log('deliveryPK: ', deliveryPK);
+            var $this = $(this); // Store reference to 'this'
+        
+            if (selectedValue === "Check Out") {
+                $.ajax({
+                    url: "{% url 'rental:rent_process:change_delivery_checkout_status' %}",
+                    type: "POST",
+                    headers: {
+                        'X-CSRFToken': "{{ csrf_token }}",
+                    },
+                    data: JSON.stringify({
+                        global_status_change: false,
+                        delivery_id: deliveryId,
+                        delivery_pk: deliveryPK
+                    }),
+                    contentType: "application/json",
+                    success: function (response) {
+                        if (!response.success) {
+                            $this.val(""); 
+                        }else{
+                            toastr.success("Status Updated Successfully!", 'Success', {
+                                closeButton: true,
+                                progressBar: true,
+                                positionClass: 'toast-bottom-right',
+                                timeOut: 6000
+                            });
+                        }
+                    },
+                    error: function () {
+                        console.error("Error updating individual delivery status.");
+                        $this.val(""); 
+                    }
+                });
+            }
+        });
+        
+    });
+    
 </script>

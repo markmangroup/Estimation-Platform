@@ -362,7 +362,7 @@
     });
   });
 </script>
-<script>
+{% comment %} <script>
   $(document).ready(function() {
 
     var stageMapping = {
@@ -432,16 +432,151 @@
       $("#deliveryTable").DataTable().ajax.reload(null, false);
       if (foundElements){
         value = $(".current a span.step").text();
-
+        
         var stageKey = stageMapping[value];
         const url = new URL(window.location.href);
+        
 
         url.searchParams.set('stage', stageKey);
         window.history.pushState({}, '', url);
+        for (const [key, stageName] of Object.entries(stageMapping)) {
+          if (stageKey === stageName) {
+              rental_stageMapping[currentStage] = key - 1 ;
+              break;  
+          }
+      }
+      console.log('foundElements: ', foundElements);
+      console.log('stageKey: ', stageKey);
+      console.log('url: ', url);
+      console.log('Updated rental_stageMapping: ', rental_stageMapping);
       }
       else{
         // console.log("Not found elements:");
       }
     });
+
+    
+  });
+</script>
+
+<script>
+  console.log("jQuery is ready==========>>>!");
+  var stageMapping = {
+      1: "Create Delivery",
+      2: "Pick Up Ticket",
+      3: "Check Out",
+      4: "Delivered To Customer",
+      5: "Create Return Delivery",
+      6: "Return Pick Up Ticket",
+      7: "Check In",
+      8: "Inspection Completed"
+  };
+
+  var rental_stageMapping = {}; // Store current stage
+
+  function updateStage(stageKey) {
+      $.each(stageMapping, function (key, stageName) {
+          if (stageKey.includes(stageName)) {  // Match stage text
+              rental_stageMapping["currentStage"] = key - 1;
+              console.log("🔄 Updated rental_stageMapping:", rental_stageMapping);
+              return false; // Stop loop
+          }
+      });
+  }
+
+  // Handle clicks on wizard steps
+  $("ul").on("click", "a[aria-controls^='steps']", function (event) {
+      event.preventDefault(); // Prevent default behavior
+      let clickedStageText = $(this).text().trim();
+      console.log("🖱️ Clicked Stage:", clickedStageText);
+      updateStage(clickedStageText);
+  });
+
+
+</script> {% endcomment %}
+
+<script>
+  $(document).ready(function () {
+      console.log(" jQuery is ready!");
+
+      var stageMapping = {
+          1: "Create Delivery",
+          2: "Pick Up Ticket",
+          3: "Check Out",
+          4: "Delivered To Customer",
+          5: "Create Return Delivery",
+          6: "Return Pick Up Ticket",
+          7: "Check In",
+          8: "Inspection Completed"
+      };
+
+      var currentStageIndex = 0; // Default to first stage
+
+      function updateURLAndReload(stageIndex) {
+          var stageName = stageMapping[stageIndex + 1]; // Get stage name from mapping
+          if (!stageName) return; // If no valid stage, exit
+      
+          //  Update rental_stageMapping
+          rental_stageMapping[currentStage] = stageIndex;
+          
+          console.log(" Updating Stage:", stageName, "| Index:", stageIndex);
+          console.log(" rental_stageMapping[currentStage]:", rental_stageMapping[currentStage]);
+          console.log("All Keys in rental_stageMapping:", Object.keys(rental_stageMapping));
+      
+          // Update URL
+          const url = new URL(window.location.href);
+          url.searchParams.set('stage', stageName);
+          window.history.pushState({}, '', url);
+      
+          // Reload DataTable
+          $("#deliveryTable").DataTable().ajax.reload(null, false);
+      }
+
+      // 🔹 Click on Steps (Direct Navigation)
+      $(".steps a").on("click", function (event) {
+          event.preventDefault();
+          var stepNumber = parseInt($(this).find(".step").text()); // Get step number
+          if (!isNaN(stepNumber)) {
+              currentStageIndex = stepNumber - 1; // Update index
+              updateURLAndReload(currentStageIndex);
+          }
+      });
+
+      // 🔹 Click on Next Button
+      $("a[href='#next']").on("click", function (e) {
+          if (currentStageIndex < Object.keys(stageMapping).length - 1) {
+              currentStageIndex++; // Move to next stage
+              //updateURLAndReload(currentStageIndex);
+
+              // 🔹 Send AJAX request
+              $.ajax({
+                  url: '{% url "rental:rent_process:update-stages" %}',
+                  type: 'POST',
+                  contentType: 'application/json',
+                  data: JSON.stringify({
+                      order_id: "{{order_obj.order_id}}",
+                      stage: `STAGE_${currentStageIndex + 1}`, // Adjusting to 1-based index
+                  }),
+                  headers: {
+                      'X-CSRFToken': "{{ csrf_token }}",
+                  },
+                  success: function (response) {
+                      console.log(" Stage Updated:", response);
+                  },
+                  error: function (xhr, status, error) {
+                      console.error(" Error:", error);
+                  }
+              });
+          }
+      });
+
+      // 🔹 Click on Previous Button
+      $("a[href='#previous']").on("click", function (e) {
+          if (currentStageIndex > 0) {
+              currentStageIndex--; // Move to previous stage
+              updateURLAndReload(currentStageIndex);
+          }
+      });
+
   });
 </script>
