@@ -93,4 +93,5 @@ urlpatterns = [
     ),
     path("ajax/pickupticket/<str:order_id>", views.PickupTicketListAjaxView.as_view(), name="pickup_ticket_list_ajax"),
     path("update-pickup-date/", views.UpdatePickupDateView.as_view(), name="update_pickup_date"),
+    # path("update-delivery-stock/",views.DeliveryStockUpdateView.as_view(),name="update_delivery_stock"),
 ]

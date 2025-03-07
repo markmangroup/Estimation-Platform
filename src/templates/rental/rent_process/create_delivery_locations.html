@@ -29,127 +29,76 @@
     });
 </script>
 <script>
-    let map, marker, geocoder, pickupAutocomplete, deliveryAutocomplete, searchAutocomplete;
-    let pickupLocation, deliveryLocation;
-    let isPickupLocationSelected = false;
-    function initMap() {
-        geocoder = new google.maps.Geocoder();
 
-        const defaultLocation = { lat: 40.7128, lng: -74.0060 };
-
-        map = new google.maps.Map(document.getElementById("map"), {
-            center: defaultLocation,
-            zoom: 12,
-        });
-
-        marker = new google.maps.Marker({
-            map: map,
-            position: defaultLocation,
-            draggable: true,
-        });
-
-        initAutocomplete();
-
-        map.addListener("click", (event) => {
-            const clickedLocation = event.latLng;
-            marker.setPosition(clickedLocation);
-
-            if (!pickupLocation || !isPickupLocationSelected) {
-                pickupLocation = clickedLocation;
-                updateAddress(pickupLocation, "pickupSite");
-                isPickupLocationSelected = true;
-            } else {
-                deliveryLocation = clickedLocation;
+        let map, marker, geocoder, searchAutocomplete;
+        let deliveryLocation;
+    
+        function initMap() {
+            geocoder = new google.maps.Geocoder();
+            const defaultLocation = { lat: 40.7128, lng: -74.0060 };
+    
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: defaultLocation,
+                zoom: 12,
+            });
+    
+            marker = new google.maps.Marker({
+                map: map,
+                position: defaultLocation,
+                draggable: true,
+            });
+    
+            initAutocomplete();
+    
+            map.addListener("click", (event) => {
+                deliveryLocation = event.latLng;
+                marker.setPosition(deliveryLocation);
                 updateAddress(deliveryLocation, "locationInput");
-                isPickupLocationSelected = false;
-
-            }
-        });
-
-        marker.addListener("dragend", () => {
-            if (pickupLocation) {
-                updateAddress(marker.getPosition(), "pickupSite");
-            } else {
-                updateAddress(marker.getPosition(), "locationInput");
-            }
-        });
-    }
-
-    function initAutocomplete() {
-        const pickupInput = document.getElementById("pickupSite");
-        const deliveryInput = document.getElementById("locationInput");
-        const searchInput = document.getElementById("searchInput");
-
-        pickupAutocomplete = new google.maps.places.Autocomplete(pickupInput);
-        deliveryAutocomplete = new google.maps.places.Autocomplete(deliveryInput);
-        searchAutocomplete = new google.maps.places.Autocomplete(searchInput);
-
-        pickupAutocomplete.addListener("place_changed", function () {
-            const place = pickupAutocomplete.getPlace();
-            if (!place.geometry) return;
-            map.setCenter(place.geometry.location);
-            marker.setPosition(place.geometry.location);
-            pickupLocation = place.geometry.location;
-            isPickupLocationSelected = true;
-        });
-
-        deliveryAutocomplete.addListener("place_changed", function () {
-            const place = deliveryAutocomplete.getPlace();
-            if (!place.geometry) return;
-            map.setCenter(place.geometry.location);
-            marker.setPosition(place.geometry.location);
-            deliveryLocation = place.geometry.location;
-        });
-
-        searchAutocomplete.addListener("place_changed", function () {
-            const place = searchAutocomplete.getPlace();
-            if (!place.geometry) return;
-            map.setCenter(place.geometry.location);
-            marker.setPosition(place.geometry.location);
-            if (!pickupLocation) {
-                pickupLocation = place.geometry.location;
-                updateAddress(pickupLocation, "pickupSite");
-            } else {
+            });
+    
+            marker.addListener("dragend", () => {
+                deliveryLocation = marker.getPosition();
+                updateAddress(deliveryLocation, "locationInput");
+            });
+        }
+    
+        function initAutocomplete() {
+            const searchInput = document.getElementById("searchInput");
+    
+            searchAutocomplete = new google.maps.places.Autocomplete(searchInput);
+    
+            searchAutocomplete.addListener("place_changed", function () {
+                const place = searchAutocomplete.getPlace();
+                if (!place.geometry) return;
+                map.setCenter(place.geometry.location);
+                marker.setPosition(place.geometry.location);
                 deliveryLocation = place.geometry.location;
                 updateAddress(deliveryLocation, "locationInput");
-            }
-        });
-    }
-
-    function updateAddress(latLng, inputId) {
-        geocoder.geocode({ location: latLng }, (results, status) => {
-            if (status === "OK" && results[0]) {
-                document.getElementById(inputId).value = results[0].formatted_address;
+            });
+        }
+    
+        function updateAddress(latLng, inputId) {
+            geocoder.geocode({ location: latLng }, (results, status) => {
+                if (status === "OK" && results[0]) {
+                    document.getElementById(inputId).value = results[0].formatted_address;
+                } else {
+                    console.error("Geocoder failed: ", status);
+                }
+            });
+        }
+    
+        document.getElementById("saveLocation").addEventListener("click", function () {
+            if (deliveryLocation) {
+                document.getElementById("locationInput").value = deliveryLocation.toString();
+                
+                // Ensure Bootstrap modal hides properly
+                setTimeout(() => {
+                    $('#myModal').modal('hide');
+                }, 200);
+                
             } else {
-                console.error("Geocoder failed: ", status);
+                alert("Please select a Delivery location.");
             }
         });
-    }
-
-    document.getElementById("saveLocations").addEventListener("click", function () {
-        if (pickupLocation && deliveryLocation) {
-            document.getElementById("pickupSite").value = pickupLocation.toString();
-            document.getElementById("locationInput").value = deliveryLocation.toString();
-            $('#myModal').modal('hide');
-        } else {
-            alert("Please select both Pickup and Delivery locations.");
-        }
-    });
-
-    $('#myModal').on('shown.bs.modal', function () {
-        $('#pickupSite, #locationInput, #searchInput').on('keydown', function (e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-            }
-        });
-    });
-
-    $('#myModal').on('hidden.bs.modal', function () {
-        if (pickupLocation) {
-            updateAddress(pickupLocation, "pickupSite");
-        }
-        if (deliveryLocation) {
-            updateAddress(deliveryLocation, "locationInput");
-        }
-    });
+        
 </script>

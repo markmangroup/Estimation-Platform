@@ -997,7 +997,7 @@ class DeliveryCheckoutListAjaxView(CustomDataTableMixin):
 
         delivery_objs = Delivery.objects.select_related("product", "order").filter(
             delivery_status__in=[Delivery.STAGE_2, Delivery.STAGE_3], order__order_id=order_id
-        )
+        ).order_by("delivery_qty")
 
         return delivery_objs
 
@@ -1024,6 +1024,8 @@ class DeliveryCheckoutListAjaxView(CustomDataTableMixin):
 
     def prepare_results(self, qs):
         """Format delivery data for DataTables with grouped deliveries."""
+        qs = sorted(qs, key=lambda x: x.delivery_qty) 
+
         delivery_map = {}
 
         for delivery in qs:
@@ -1075,14 +1077,14 @@ class DeliveryCheckoutListAjaxView(CustomDataTableMixin):
                 <td>{delivery.product.equipment_id}</td>
                 <td>{delivery.product.equipment_name}</td>
                 <td>
-                    <input type="text" id="quantity-{delivery.product.equipment_id}" data-delivery-pk="{delivery.pk}" data-delivery-unique_id="{delivery.unique_delivery_id}"
+                    <input type="text" id="quantity-{delivery.product.equipment_id}" data-delivery-unique_id="{delivery.unique_delivery_id}" data-delivery-pk="{delivery.pk}"
                         data-value="{delivery.delivery_qty}" value="{delivery.delivery_qty}"
                         class="form-control checkout-qty wizard-required">
                     <small class="quantityMessage text-danger"></small>
                 </td>
                 <td>
                     <select name="status" class="select2 form-control wizard-required another-select-checkout"
-                            data-delivery-id="{delivery.unique_delivery_id}">
+                            data-delivery-id="{delivery.unique_delivery_id}" data-delivery-pk="{delivery.pk}">
                         <option value="" disabled {selected_none}>None</option>
                         <option value="Check Out" {selected_checkout}>Check Out</option>
                     </select>
@@ -1139,52 +1141,52 @@ class DeliveryCheckoutListAjaxView(CustomDataTableMixin):
             return {"error": str(e)}
 
 
-class CheckDeliveryStatusView(View):
-    def post(self, request, *args, **kwargs):
-        try:
-            data = json.loads(request.body)
-            print(f"Received data: {data}")
+# class DeliveryStockUpdateView(View):
+#     def post(self, request, *args, **kwargs):
+#         try:
+#             data = json.loads(request.body)
+#             print(f"Received data: {data}")
 
-            checked_out_tables = data.get("checkedOutTables", [])
-            print("checked_out_tables: ", checked_out_tables)
+#             checked_out_tables = data.get("checkedOutTables", [])
+#             print("checked_out_tables: ", checked_out_tables)
 
-            if not checked_out_tables:
-                return JsonResponse({"success": False, "error": "No fully checked-out tables found."})
+#             if not checked_out_tables:
+#                 return JsonResponse({"success": False, "error": "No fully checked-out tables found."})
 
-            delivery_ids = self._get_delivery_ids_from_tables(checked_out_tables)
-            print("delivery_ids: ", delivery_ids)
+#             delivery_ids = self._get_delivery_ids_from_tables(checked_out_tables)
+#             print("delivery_ids: ", delivery_ids)
 
-            if not delivery_ids:
-                return JsonResponse({"success": False, "error": "No valid deliveries found for these tables."})
+#             if not delivery_ids:
+#                 return JsonResponse({"success": False, "error": "No valid deliveries found for these tables."})
 
-            delivery_objs = Delivery.objects.filter(unique_delivery_id__in=delivery_ids)
-            print("delivery_objs:", list(delivery_objs))
+#             delivery_objs = Delivery.objects.filter(unique_delivery_id__in=delivery_ids)
+#             print("delivery_objs:", list(delivery_objs))
 
-            if not delivery_objs.exists():
-                return JsonResponse({"success": False, "error": "No matching deliveries found in the database."})
+#             if not delivery_objs.exists():
+#                 return JsonResponse({"success": False, "error": "No matching deliveries found in the database."})
 
-            for delivery_obj in delivery_objs:
-                stockadjustment_obj = StockAdjustment.objects.filter(rental_product=delivery_obj.product).first()
-                if delivery_obj.delivery_status == Delivery.STAGE_2:
-                    if stockadjustment_obj:
-                        stockadjustment_obj.quantity -= delivery_obj.delivery_qty
-                        stockadjustment_obj.save()
-                delivery_obj.delivery_status = Delivery.STAGE_3
-                delivery_obj.save()
+#             for delivery_obj in delivery_objs:
+#                 stockadjustment_obj = StockAdjustment.objects.filter(rental_product=delivery_obj.product).first()
+#                 if delivery_obj.delivery_status == Delivery.STAGE_2:
+#                     if stockadjustment_obj:
+#                         stockadjustment_obj.quantity -= delivery_obj.delivery_qty
+#                         stockadjustment_obj.save()
+#                 # delivery_obj.delivery_status = Delivery.STAGE_3
+#                 # delivery_obj.save()
 
-            print(f"Deliveries {delivery_ids} updated successfully to {Delivery.STAGE_3}")
-            return JsonResponse({"success": True, "message": f"Deliveries {delivery_ids} updated successfully."})
+#             print(f"Deliveries {delivery_ids} updated successfully to {Delivery.STAGE_3}")
+#             return JsonResponse({"success": True, "message": f"Deliveries {delivery_ids} updated successfully."})
 
-        except json.JSONDecodeError:
-            return JsonResponse({"success": False, "error": "Invalid JSON data"})
+#         except json.JSONDecodeError:
+#             return JsonResponse({"success": False, "error": "Invalid JSON data"})
 
-        except Exception as e:
-            print(f"Unexpected error: {str(e)}")
-            return JsonResponse({"success": False, "error": "An unexpected error occurred"})
+#         except Exception as e:
+#             print(f"Unexpected error: {str(e)}")
+#             return JsonResponse({"success": False, "error": "An unexpected error occurred"})
 
-    def _get_delivery_ids_from_tables(self, table_ids):
-        print("table_ids: ", table_ids)
-        return table_ids
+#     def _get_delivery_ids_from_tables(self, table_ids):
+#         print("table_ids: ", table_ids)
+#         return table_ids
 
 
 class UpdateCheckoutDateView(View):
@@ -1244,6 +1246,45 @@ class UpdateQuantityView(View):
                 try:
                     delivery_obj = Delivery.objects.get(delivery_id=delivery_pk, unique_delivery_id=delivery_unique_id)
 
+                    # Prevent updates if the status is STAGE_1 or STAGE_2
+                    if delivery_obj.delivery_status in [Delivery.STAGE_1, Delivery.STAGE_2]:
+                        delivery_obj.delivery_qty = new_quantity
+                        delivery_obj.save()
+                        return JsonResponse({"success": True, "message": "Updated quantities successfully"})
+
+                    # If the delivery is in STAGE_3 or beyond, check all deliveries under unique_delivery_id
+                    all_deliveries = Delivery.objects.filter(unique_delivery_id=delivery_unique_id)
+                    if all(delivery.delivery_status in [
+                        Delivery.STAGE_3, Delivery.STAGE_4, Delivery.STAGE_5, 
+                        Delivery.STAGE_6, Delivery.STAGE_7, Delivery.STAGE_8
+                    ] for delivery in all_deliveries):
+                        
+                        # Calculate the difference in quantity
+                        quantity_difference = delivery_obj.delivery_qty - new_quantity
+                        
+                        stock_adjustment = StockAdjustment.objects.filter(rental_product=delivery_obj.product).first()
+                        if stock_adjustment:
+                            if quantity_difference > 0:
+                                # Reduce stock if the new quantity is smaller
+                                print(f"Reducing Stock: Product: {delivery_obj.product.equipment_name}, "
+                                      f"Old Quantity: {stock_adjustment.quantity}, "
+                                      f"Reduce By: {quantity_difference}")
+
+                                stock_adjustment.quantity += quantity_difference
+                            
+                            elif quantity_difference < 0:
+                                # Increase stock if the new quantity is larger
+                                increase_by = abs(quantity_difference)
+                                print(f"Increasing Stock: Product: {delivery_obj.product.equipment_name}, "
+                                      f"Old Quantity: {stock_adjustment.quantity}, "
+                                      f"Increase By: {increase_by}")
+
+                                stock_adjustment.quantity -= increase_by
+                            
+                            stock_adjustment.save()
+                            print(f"New Stock Quantity: {stock_adjustment.quantity}")
+
+                    # Update the delivery quantity
                     delivery_obj.delivery_qty = new_quantity
                     delivery_obj.save()
 
@@ -1557,3 +1598,99 @@ class DeliveryListAjaxView(CustomDataTableMixin):
             return context
         except Exception as e:
             return {"error": str(e)}
+
+class CheckDeliveryStatusView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            delivery_id = data.get("delivery_id")
+            delivery_pk = data.get("delivery_pk")
+            order_id = data.get("order_id")
+            global_status_change = data.get("global_status_change", False)
+
+            # **Single Delivery Update**
+            if delivery_id:
+                return self.update_single_delivery(delivery_id, delivery_pk)
+
+            # **Global Order-Wide Update**
+            elif order_id and global_status_change:
+                return self.update_global_deliveries(order_id)
+
+            return JsonResponse({"success": False, "error": "Invalid request parameters"})
+
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False, "error": "Invalid JSON data"})
+
+    def update_single_delivery(self, delivery_id, delivery_pk):
+        """Handles updating a single delivery's status"""
+        delivery = Delivery.objects.filter(unique_delivery_id=delivery_id, pk=delivery_pk).first()
+
+        if delivery:
+            previous_status = delivery.delivery_status  # Store old status before updating
+            delivery.delivery_status = Delivery.STAGE_3
+            delivery.save()
+
+            print(f"Updated Single Delivery: {delivery.pk}, Old Status: {previous_status}, New Status: {delivery.delivery_status}")
+
+            # Reduce stock only if it was in STAGE_2 before changing
+            if previous_status == Delivery.STAGE_2:
+                self.update_delivery_stock(delivery.unique_delivery_id)
+
+            return JsonResponse({"success": True})
+
+        return JsonResponse({"success": False, "error": f"Delivery with ID {delivery_id} not found"})
+
+    def update_global_deliveries(self, order_id):
+        """Handles global status change for all deliveries under an order"""
+        delivery_objs = Delivery.objects.filter(order__order_id=order_id)
+
+        if not delivery_objs.exists():
+            return JsonResponse({"success": False, "error": "No deliveries exist for this order"})
+
+        # Get unique_delivery_id values where all deliveries are in STAGE_2
+        unique_ids_to_update = {
+            unique_id for unique_id in delivery_objs.values_list('unique_delivery_id', flat=True).distinct()
+            if Delivery.objects.filter(unique_delivery_id=unique_id).exclude(delivery_status=Delivery.STAGE_2).count() == 0
+        }
+
+        if not unique_ids_to_update:
+            return JsonResponse({"success": False, "error": "No valid deliveries found for updating"})
+
+        # Bulk update deliveries to STAGE_3
+        updated_rows = Delivery.objects.filter(unique_delivery_id__in=unique_ids_to_update, delivery_status=Delivery.STAGE_2).update(delivery_status=Delivery.STAGE_3)
+
+        # Reduce stock for affected deliveries
+        for unique_id in unique_ids_to_update:
+            self.update_delivery_stock(unique_id)
+
+        return JsonResponse({"success": True, "updated_deliveries": list(unique_ids_to_update), "updated_rows": updated_rows})
+
+
+    def update_delivery_stock(self, unique_delivery_id):
+        """Reduces stock only if all deliveries under unique_delivery_id are in STAGE_3"""
+        print(f"Stock Adjustment Check Started for unique_delivery_id: {unique_delivery_id}")
+
+        # Fetch all deliveries under this unique_delivery_id
+        deliveries = Delivery.objects.filter(unique_delivery_id=unique_delivery_id)
+
+        # Check if ALL deliveries are in STAGE_3
+        if not all(delivery.delivery_status == Delivery.STAGE_3 for delivery in deliveries):
+            print(f"Stock reduction skipped: Not all deliveries in STAGE_3 for unique_delivery_id {unique_delivery_id}")
+            return
+
+        print(f"All deliveries in STAGE_3. Proceeding with stock reduction for unique_delivery_id: {unique_delivery_id}")
+
+        # Now proceed with stock reduction
+        for delivery in deliveries:
+            stock_adjustment = StockAdjustment.objects.filter(rental_product=delivery.product).first()
+            if stock_adjustment:
+                print(f"Reducing Stock: Product: {delivery.product.equipment_name}, "
+                    f"Old Quantity: {stock_adjustment.quantity}, "
+                    f"Reduce By: {delivery.delivery_qty}")
+
+                stock_adjustment.quantity -= delivery.delivery_qty
+                stock_adjustment.save()
+
+                print(f"New Stock Quantity: {stock_adjustment.quantity}")
+
+        print(f"Stock Adjustment Completed for unique_delivery_id: {unique_delivery_id}")
