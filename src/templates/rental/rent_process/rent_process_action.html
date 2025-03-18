@@ -10,7 +10,7 @@
 </a>
 {% endif %}
 {% if edit_url %}
-    <a data-url="{{edit_url}}" hx-get="{{edit_url}}" data-toggle="modal" data-target="{{data_target}}" hx-swap="innerHTML" hx-target="{{hx_target}}" class="primary htmx-trigger-btn" title="Edit"> 
+    <a data-url="{{edit_url}}" hx-get="{{edit_url}}" data-toggle="modal" data-target="#UpdateOrder" hx-swap="innerHTML" hx-target="#update-product-modal-content" class="primary htmx-trigger-btn-update-btn" title="Edit"> 
         <i class="ft-edit font-medium-3 mr-1"></i>
     </a>
 {% endif %}

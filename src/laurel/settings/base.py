@@ -65,6 +65,7 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount.providers.microsoft",
     "widget_tweaks",
     "storages",
+    "django_countries",
 ]
 LOCAL_APPS = [
     "apps.user.apps.UserConfig",
@@ -111,6 +112,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "laurel.urls"
 
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -127,6 +130,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "django_auto_logout.context_processors.auto_logout_client",
                 "apps.context_processors.get_user_application_access",
+                "apps.context_processors.get_google_api_key",
             ],
         },
     },

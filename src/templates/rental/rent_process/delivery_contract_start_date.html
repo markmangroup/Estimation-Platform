@@ -1,0 +1,6 @@
+<input type="date" id="contract-start-date-{{ delivery_obj.unique_delivery_id }}" 
+       name="contract_start_date" 
+       class="form-control delivered-to-customer-contract-start-date"
+       value="{% if contract_start_date %}{{ contract_start_date }}{% else %}{{ today_date }}{% endif %}" 
+       min="{{ today_date }}"
+       data-delivery-id="{{ delivery_obj.unique_delivery_id }}">

@@ -1,6 +1,38 @@
 {% extends "base.html" %}
 {% load static %}
 {% block nav %}
+
+  <style>
+    .form-loader {
+      width: 50px;
+      aspect-ratio: 1;
+      display: grid;
+    }
+    .form-loader::before,
+    .form-loader::after {    
+      content:"";
+      grid-area: 1/1;
+      --c:no-repeat radial-gradient(farthest-side,#975aff 92%,#0000);
+      background: 
+        var(--c) 50%  0, 
+        var(--c) 50%  100%, 
+        var(--c) 100% 50%, 
+        var(--c) 0    50%;
+      background-size: 12px 12px;
+      animation: l12 1s infinite;
+    }
+    .form-loader::before {
+      margin: 4px;
+      filter: hue-rotate(45deg);
+      background-size: 8px 8px;
+      animation-timing-function: linear
+    }
+    
+    @keyframes l12 { 
+      100%{transform: rotate(.5turn)}
+    }
+  </style>
+
   <nav class="navbar navbar-expand-lg navbar-light header-navbar navbar-fixed">
     <div class="container-fluid navbar-wrapper">
     <div class="navbar-header d-flex">

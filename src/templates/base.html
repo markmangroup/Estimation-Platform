@@ -183,12 +183,12 @@
       {% endblock script %}
 
       <!-- NOTE: Comment this while developing -->
-      <script>
+      {% comment %} <script>
          window.onload = function() {
             console.clear(); // Clear the console after refresh
             console.error = function() {}; // Disable all console.error calls
          };
-      </script>
+      </script> {% endcomment %}
       
       {% block extra_js %}
          {% if "rental_order.html" in template_name or "stage_2_file_upload.html" in template_name %}

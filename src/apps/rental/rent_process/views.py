@@ -1,6 +1,5 @@
 import datetime
 import json
-from collections import defaultdict
 from typing import Any, Dict
 
 from django.contrib import messages
@@ -11,8 +10,11 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import get_template, render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.timezone import now
-from django.views.generic.edit import CreateView
+from django.db.models import Sum
 from isodate import parse_date
+from django.http import JsonResponse
+from django.forms.models import BaseInlineFormSet
+
 
 from apps.constants import ERROR_RESPONSE, LOGGER
 from apps.mixin import (
@@ -37,11 +39,13 @@ from apps.rental.rent_process.models import (
     OrderFormPermissionModel,
     OrderItem,
     RecurringOrder,
+    ReturnDelivery,
+    ReturnDeliveryItem,
     ReturnOrder,
 )
 from apps.rental.stock_management.models import StockAdjustment
 
-from .forms import OrderForm, OrderFormPermissionForm, OrderItemForm, OrderItemFormSet
+from .forms import OrderForm, OrderFormPermissionForm, OrderItemForm, OrderItemFormSet,UpdateOrderForm,UpdateOrderItemForm
 
 
 class OrderListView(WarehouseViewMixin):
@@ -106,7 +110,7 @@ class OrderListAjaxView(CustomDataTableMixin):
     def filter_queryset(self, qs):
         """Return the list of items for this view."""
         if self.search:
-            return qs.filter(
+            qs = qs.filter(
                 Q(order_id__icontains=self.search)
                 | Q(customer__name__icontains=self.search)
                 | Q(rent_amount__icontains=self.search)
@@ -114,7 +118,9 @@ class OrderListAjaxView(CustomDataTableMixin):
                 | Q(repeat_start_date__icontains=self.search)
                 | Q(repeat_end_date__icontains=self.search)
                 | Q(updated_at__icontains=self.search)
-            )
+                | Q(order_status__icontains=self.search)
+                | Q(delivery_order__delivery_status__icontains=self.search)
+            ).distinct()  
         return qs
 
     def prepare_results(self, qs):
@@ -207,10 +213,15 @@ class OrderListAjaxView(CustomDataTableMixin):
         )
         hx_target = ""
         data_target = ""
-
+        edit_url = reverse(
+            "rental:rent_process:order-update",
+            kwargs={"pk": obj.pk},
+        )
+        
         return t.render(
             {
                 "delete_url": delete_url,
+                # "edit_url": edit_url,
                 "process_url": process_url,
                 "time_line_url": time_line_url,
                 "hx_target": hx_target,
@@ -508,10 +519,10 @@ class RecurringOrderListAjaxView(CustomDataTableMixin):
                     "account_manager": o.order.account_manager.name,
                     "recurring_type": o.order.repeat_type,
                     "repeat_start_date": (
-                        o.order.repeat_start_date.strftime("%d/%m/%Y") if o.order.repeat_start_date else None
+                        o.start_date.strftime("%d/%m/%Y") if o.start_date else None
                     ),
                     "repeat_end_date": (
-                        o.order.repeat_end_date.strftime("%d/%m/%Y") if o.order.repeat_end_date else None
+                        o.end_date.strftime("%d/%m/%Y") if o.end_date else None
                     ),
                     "number_of_orders": number_of_orders,
                     "actions": self._get_actions(o),
@@ -533,8 +544,11 @@ class ReturnOrderListAjaxView(CustomDataTableMixin):
         Generate action buttons for the Opportunity with a link to the detail page.
         """
         t = get_template("rental/rent_process/rent_process_action.html")
-
-        time_line_url = reverse("rental:rent_process:order-history", kwargs={"delivery_id": obj.delivery.delivery_id})
+        time_line_url = None
+        if obj.delivery:
+            time_line_url = reverse("rental:rent_process:order-history", kwargs={"delivery_id": obj.delivery.delivery_id})
+        else:
+            time_line_url = ''
         edit_url = reverse("rental:rent_process:return-order-edit", kwargs={"pk": obj.order.order_id})
         process_url = reverse("rental:rent_process:order-process", kwargs={"order_id": obj.order.order_id})
         data_target = "#update_return_order"
@@ -556,9 +570,12 @@ class ReturnOrderListAjaxView(CustomDataTableMixin):
         """
         Render the estimation stages for the deliveries using a partial template.
         """
-        t = get_template("rental/rent_process/estimation_stages.html")
-        deliveries = Delivery.objects.filter(delivery_id__in=delivery_ids)
-        return t.render({"deliveries": deliveries})
+        if delivery_ids:
+            t = get_template("rental/rent_process/estimation_stages.html")
+            deliveries = Delivery.objects.filter(delivery_id__in=delivery_ids)
+            return t.render({"deliveries": deliveries})
+        else:
+            return ""
 
     def _get_order_id(self, obj):
         """
@@ -593,13 +610,16 @@ class ReturnOrderListAjaxView(CustomDataTableMixin):
         """Create row data for datatables."""
         data = []
         for o in qs:
-            delivery_ids = list(
-                ReturnOrder.objects.filter(delivery=o.delivery.delivery_id).values_list("delivery_id", flat=True)
-            )
+            if o.delivery:
+                delivery_ids = list(
+                    ReturnOrder.objects.filter(delivery=o.delivery.delivery_id).values_list("delivery_id", flat=True)
+                )
+            else:
+                delivery_ids = None
             data.append(
                 {
                     "order_id": self._get_order_id(o.order),
-                    "delivery_id": o.delivery.unique_delivery_id,
+                    "delivery_id": o.delivery.unique_delivery_id if o.delivery else '',
                     "status": self._get_estimation_stage(delivery_ids),
                     "customer": o.order.customer.name,
                     "account_manager": o.order.account_manager.name,
@@ -733,7 +753,172 @@ class OrderCreate(CreateViewMixin):
 
         if order_item_formset.is_valid():
             order_item_formset.save()
-            messages.success(self.request, "Order Created Successfuly")
+            return_order = ReturnOrder.objects.create(order=order)
+            is_recurring = self.request.POST.get("recurring_order")
+            repeat_type = self.request.POST.get("repeat_type")  
+            repeat_value = self.request.POST.get("repeat_value", 0)
+            repeat_start_date = order.repeat_start_date  
+            print('repeat_start_date: ', repeat_start_date)
+            repeat_end_date = order.repeat_end_date  
+            print('repeat_end_date: ', repeat_end_date)
+
+            if is_recurring == "on" and repeat_type and int(repeat_value) > 0 and repeat_start_date and repeat_end_date:
+                start_date = repeat_start_date  
+                repeat_type = repeat_type.lower()
+                print('repeat_type: ', repeat_type)
+                print('start_date: ', start_date)
+
+                if repeat_type == "weekly":
+                    interval = 7  
+                elif repeat_type == "monthly":
+                    interval = 30 
+                elif repeat_type == "yearly":
+                    interval = 365
+                else:
+                    messages.error(self.request, "Invalid repeat type")
+                    return self.form_invalid(form)
+
+                last_end_date = repeat_end_date  
+
+                for i in range(int(repeat_value)):
+                    next_start_date = start_date + datetime.timedelta(days=interval * i)
+                    print('next_start_date: ', next_start_date)
+                    next_end_date = next_start_date + datetime.timedelta(days=interval - 1)
+                    print('next_end_date: ', next_end_date)
+
+                    # Use the date object directly for repeat_end_date
+                    defined_repeat_end = repeat_end_date
+                    next_end_date = min(next_end_date, defined_repeat_end)
+
+                    RecurringOrder.objects.create(
+                        order=order,
+                        start_date=next_start_date,
+                        end_date=next_end_date,
+                    )
+
+                    print(f"Recurring Order {i+1}: {next_start_date} to {next_end_date}")
+                    last_end_date = next_end_date
+
+                print('Before order.repeat_end_date: ', order.repeat_end_date)
+                order.rental_end_date = last_end_date
+                order.repeat_end_date = last_end_date
+                order.save()
+                print('After order.repeat_end_date: ', order.repeat_end_date)
+
+            messages.success(self.request, "Order Created Successfully")
+            return HttpResponse("success")
+        else:
+            print("OrderItem FormSet Errors:", order_item_formset.errors)
+            return self.form_invalid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Please correct the errors in the form.")
+        return self.render_to_response(self.get_context_data(form=form))
+    
+class BaseOrderItemFormSet(BaseInlineFormSet):
+    def _construct_form(self, i, **kwargs):
+        form = super()._construct_form(i, **kwargs)
+        # For extra forms (i >= initial_form_count), allow them to be empty.
+        if i >= self.initial_form_count():
+            form.empty_permitted = True
+        return form
+
+class OrderUpdateView(UpdateViewMixin):
+    model = Order
+    form_class = UpdateOrderForm
+    template_name = "rental/rent_process/update_order.html"
+    success_url = reverse_lazy("rental:rent_process_order_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        OrderItemFormSet = inlineformset_factory(
+                Order, 
+                OrderItem, 
+                form=UpdateOrderItemForm, 
+                extra=1, 
+                can_delete=True, 
+                formset=BaseOrderItemFormSet
+            )
+
+        if self.request.POST:
+            context["order_item_formset"] = OrderItemFormSet(self.request.POST, instance=self.object)
+        else:
+            formset = OrderItemFormSet(instance=self.object)
+            for form in formset.forms:
+                form.fields["product"].queryset = RentalProduct.objects.all()
+            context["order_item_formset"] = formset
+
+        # Update queryset for customer field if needed
+        context["form"].fields["customer"].queryset = RentalCustomer.objects.all()
+        context["permission"] = OrderFormPermissionModel.objects.first()
+        context["order_obj"] = Order.objects.filter(id=self.kwargs.get("pk")).first()
+        
+        return context
+
+    def form_valid(self, form):
+        order = form.save(commit=False)
+        OrderItemFormSet = inlineformset_factory(
+            Order, 
+            OrderItem, 
+            form=UpdateOrderItemForm, 
+            extra=1, 
+            can_delete=True, 
+            formset=BaseOrderItemFormSet
+        )
+        order_item_formset = OrderItemFormSet(self.request.POST, instance=order)
+
+        # Debugging the formset errors
+        if not order_item_formset.is_valid():
+            return self.form_invalid(form)
+        if order_item_formset.is_valid():
+            order.save()  # Save order before saving formset
+            order_item_formset.save()
+
+            # If updating recurring orders, remove the old ones and create new ones as needed
+            recurring = self.request.POST.get("recurring_order") == "on"
+            repeat_type = self.request.POST.get("repeat_type")
+            repeat_value = int(self.request.POST.get("repeat_value", 0))
+            repeat_start_date = order.repeat_start_date
+            repeat_end_date = order.repeat_end_date
+
+            # Remove old recurring orders (if any)
+            order.recurringorder_set.all().delete()
+
+            if recurring and repeat_type and repeat_value > 0 and repeat_start_date and repeat_end_date:
+                start_date = repeat_start_date  
+                repeat_type = repeat_type.lower()
+
+                if repeat_type == "weekly":
+                    interval = 7  
+                elif repeat_type == "monthly":
+                    interval = 30  
+                elif repeat_type == "yearly":
+                    interval = 365
+                else:
+                    messages.error(self.request, "Invalid repeat type")
+                    return self.form_invalid(form)
+
+                last_end_date = repeat_end_date
+
+                for i in range(repeat_value):
+                    next_start_date = start_date + datetime.timedelta(days=interval * i)
+                    next_end_date = next_start_date + datetime.timedelta(days=interval - 1)
+                    defined_repeat_end = repeat_end_date
+                    next_end_date = min(next_end_date, defined_repeat_end)
+
+                    RecurringOrder.objects.create(
+                        order=order,
+                        start_date=next_start_date,
+                        end_date=next_end_date,
+                    )
+                    last_end_date = next_end_date
+
+                # Update the order's rental_end_date and repeat_end_date accordingly
+                order.rental_end_date = last_end_date
+                order.repeat_end_date = last_end_date
+                order.save()
+
+            messages.success(self.request, "Order Updated Successfully")
             return HttpResponse("success")
         else:
             print("OrderItem FormSet Errors:", order_item_formset.errors)
@@ -995,9 +1180,13 @@ class DeliveryCheckoutListAjaxView(CustomDataTableMixin):
 
         order_id = self.kwargs.get("order_id")
 
-        delivery_objs = Delivery.objects.select_related("product", "order").filter(
-            delivery_status__in=[Delivery.STAGE_2, Delivery.STAGE_3], order__order_id=order_id
-        ).order_by("delivery_qty")
+        delivery_objs = (
+            Delivery.objects.select_related("product", "order")
+            .filter(
+                delivery_status__in=[Delivery.STAGE_2, Delivery.STAGE_3, Delivery.STAGE_4], order__order_id=order_id
+            )
+            .order_by("delivery_qty")
+        )
 
         return delivery_objs
 
@@ -1024,7 +1213,7 @@ class DeliveryCheckoutListAjaxView(CustomDataTableMixin):
 
     def prepare_results(self, qs):
         """Format delivery data for DataTables with grouped deliveries."""
-        qs = sorted(qs, key=lambda x: x.delivery_qty) 
+        qs = sorted(qs, key=lambda x: x.delivery_qty)
 
         delivery_map = {}
 
@@ -1068,7 +1257,7 @@ class DeliveryCheckoutListAjaxView(CustomDataTableMixin):
         if not delivery.product:
             return ""
 
-        selected_none = "" if delivery.delivery_status == "Check Out" else "selected"
+        selected_none = "" if delivery.delivery_status in [Delivery.STAGE_3, Delivery.STAGE_4] else "selected"
         selected_checkout = "selected" if delivery.delivery_status == "Check Out" else ""
 
         return f"""
@@ -1254,33 +1443,45 @@ class UpdateQuantityView(View):
 
                     # If the delivery is in STAGE_3 or beyond, check all deliveries under unique_delivery_id
                     all_deliveries = Delivery.objects.filter(unique_delivery_id=delivery_unique_id)
-                    if all(delivery.delivery_status in [
-                        Delivery.STAGE_3, Delivery.STAGE_4, Delivery.STAGE_5, 
-                        Delivery.STAGE_6, Delivery.STAGE_7, Delivery.STAGE_8
-                    ] for delivery in all_deliveries):
-                        
+                    if all(
+                        delivery.delivery_status
+                        in [
+                            Delivery.STAGE_3,
+                            Delivery.STAGE_4,
+                            Delivery.STAGE_5,
+                            Delivery.STAGE_6,
+                            Delivery.STAGE_7,
+                            Delivery.STAGE_8,
+                        ]
+                        for delivery in all_deliveries
+                    ):
+
                         # Calculate the difference in quantity
                         quantity_difference = delivery_obj.delivery_qty - new_quantity
-                        
+
                         stock_adjustment = StockAdjustment.objects.filter(rental_product=delivery_obj.product).first()
                         if stock_adjustment:
                             if quantity_difference > 0:
                                 # Reduce stock if the new quantity is smaller
-                                print(f"Reducing Stock: Product: {delivery_obj.product.equipment_name}, "
-                                      f"Old Quantity: {stock_adjustment.quantity}, "
-                                      f"Reduce By: {quantity_difference}")
+                                print(
+                                    f"Reducing Stock: Product: {delivery_obj.product.equipment_name}, "
+                                    f"Old Quantity: {stock_adjustment.quantity}, "
+                                    f"Reduce By: {quantity_difference}"
+                                )
 
                                 stock_adjustment.quantity += quantity_difference
-                            
+
                             elif quantity_difference < 0:
                                 # Increase stock if the new quantity is larger
                                 increase_by = abs(quantity_difference)
-                                print(f"Increasing Stock: Product: {delivery_obj.product.equipment_name}, "
-                                      f"Old Quantity: {stock_adjustment.quantity}, "
-                                      f"Increase By: {increase_by}")
+                                print(
+                                    f"Increasing Stock: Product: {delivery_obj.product.equipment_name}, "
+                                    f"Old Quantity: {stock_adjustment.quantity}, "
+                                    f"Increase By: {increase_by}"
+                                )
 
                                 stock_adjustment.quantity -= increase_by
-                            
+
                             stock_adjustment.save()
                             print(f"New Stock Quantity: {stock_adjustment.quantity}")
 
@@ -1307,12 +1508,14 @@ class PickupTicketListAjaxView(CustomDataTableMixin):
         t = get_template("rental/orders/delivery_order_actions.html")
         edit_url = ""
         remove_url = ""
-        return t.render({
-            "edit_url": edit_url,
-            "remove_url": remove_url,
-            "delivery": obj,
-            "request": self.request,
-        })
+        return t.render(
+            {
+                "edit_url": edit_url,
+                "remove_url": remove_url,
+                "delivery": obj,
+                "request": self.request,
+            }
+        )
 
     def get_queryset(self):
         """Returns a queryset of deliveries."""
@@ -1340,7 +1543,7 @@ class PickupTicketListAjaxView(CustomDataTableMixin):
             if delivery_id not in delivery_map:
                 delivery_map[delivery_id] = {
                     "delivery_id": delivery_id,
-                    "delivery_pk":delivery_pk,
+                    "delivery_pk": delivery_pk,
                     "total_qty": 0,
                     "pickup_date": delivery.pickup_date.strftime("%d %B, %Y") if delivery.pickup_date else "-",
                     "delivery_date": delivery.delivery_date.strftime("%d %B, %Y") if delivery.delivery_date else "-",
@@ -1348,19 +1551,21 @@ class PickupTicketListAjaxView(CustomDataTableMixin):
                     "actions": self._get_actions(delivery),
                 }
 
-            delivery_map[delivery_id]["total_qty"] += delivery.delivery_qty  
+            delivery_map[delivery_id]["total_qty"] += delivery.delivery_qty
 
             product_index = len(delivery_map[delivery_id]["products"].split("<tr>")) - 1
             product_row = self._get_product_row(delivery, product_index + 1)
 
             delivery_map[delivery_id]["products"] += product_row
 
-            print(f" delivery_pk: {delivery_pk} | delivery_id: {delivery_id} | total_delivery: {delivery_map[delivery_id]['total_qty']} | delivery.delivery_qty: {delivery.delivery_qty}")
+            print(
+                f" delivery_pk: {delivery_pk} | delivery_id: {delivery_id} | total_delivery: {delivery_map[delivery_id]['total_qty']} | delivery.delivery_qty: {delivery.delivery_qty}"
+            )
 
         data = []
         for value in delivery_map.values():
             if value["products"]:
-                value["products"] = self._wrap_product_table(value["products"],delivery_id, value["delivery_pk"])
+                value["products"] = self._wrap_product_table(value["products"], delivery_id, value["delivery_pk"])
             data.append(value)
 
         return data
@@ -1371,7 +1576,7 @@ class PickupTicketListAjaxView(CustomDataTableMixin):
             return ""
 
         selected_status = "None" if delivery.delivery_status == "Create Delivery" else "Loaded"
-        disable_none = 'disabled' if selected_status == "Loaded" else ""
+        disable_none = "disabled" if selected_status == "Loaded" else ""
 
         return f"""
             <tr>
@@ -1388,7 +1593,7 @@ class PickupTicketListAjaxView(CustomDataTableMixin):
             </tr>
         """
 
-    def _wrap_product_table(self, rows,delivery_id, delivery_pk):
+    def _wrap_product_table(self, rows, delivery_id, delivery_pk):
         """Wrap product rows in a full table structure."""
         return f"""
             <table class="table table-striped table-bordered pickup-products-table" id="pickup-products-table-{delivery_id}" data-table-id="{delivery_pk}">
@@ -1408,7 +1613,7 @@ class PickupTicketListAjaxView(CustomDataTableMixin):
                     {rows}
                 </tbody>
             </table>"""
-            
+
     def get_ordering(self, qs):
         """Handle ordering for DataTable columns."""
         column_map = {
@@ -1432,18 +1637,18 @@ class PickupTicketListAjaxView(CustomDataTableMixin):
             return context
         except Exception as e:
             return {"error": str(e)}
-        
+
 
 class UpdatePickupDateView(View):
     def post(self, request, *args, **kwargs):
         try:
             data = json.loads(request.POST.get("deliveries", "[]"))
-            print('data: ', data)
+            print("data: ", data)
 
             for item in data:
                 delivery_id = item.get("delivery_id")
                 new_pickup_date = item.get("pickup_date")
-                print('new_pickup_date: ', new_pickup_date)
+                print("new_pickup_date: ", new_pickup_date)
                 new_status = item.get("status")
 
                 try:
@@ -1455,7 +1660,7 @@ class UpdatePickupDateView(View):
                                 delivery.pickup_date = parse_date(new_pickup_date)
                                 delivery.save()
                             if new_status:
-                                print('new_status: in if ', new_status)
+                                print("new_status: in if ", new_status)
                                 delivery.delivery_status = delivery.STAGE_2
                             delivery.save()
 
@@ -1466,7 +1671,7 @@ class UpdatePickupDateView(View):
 
         except json.JSONDecodeError:
             return JsonResponse({"success": False, "error": "Invalid JSON data"})
-        
+
 
 class DeliveryListAjaxView(CustomDataTableMixin):
     """AJAX view for listing Deliveries in a DataTable format."""
@@ -1599,6 +1804,7 @@ class DeliveryListAjaxView(CustomDataTableMixin):
         except Exception as e:
             return {"error": str(e)}
 
+
 class CheckDeliveryStatusView(View):
     def post(self, request, *args, **kwargs):
         try:
@@ -1630,7 +1836,9 @@ class CheckDeliveryStatusView(View):
             delivery.delivery_status = Delivery.STAGE_3
             delivery.save()
 
-            print(f"Updated Single Delivery: {delivery.pk}, Old Status: {previous_status}, New Status: {delivery.delivery_status}")
+            print(
+                f"Updated Single Delivery: {delivery.pk}, Old Status: {previous_status}, New Status: {delivery.delivery_status}"
+            )
 
             # Reduce stock only if it was in STAGE_2 before changing
             if previous_status == Delivery.STAGE_2:
@@ -1649,22 +1857,27 @@ class CheckDeliveryStatusView(View):
 
         # Get unique_delivery_id values where all deliveries are in STAGE_2
         unique_ids_to_update = {
-            unique_id for unique_id in delivery_objs.values_list('unique_delivery_id', flat=True).distinct()
-            if Delivery.objects.filter(unique_delivery_id=unique_id).exclude(delivery_status=Delivery.STAGE_2).count() == 0
+            unique_id
+            for unique_id in delivery_objs.values_list("unique_delivery_id", flat=True).distinct()
+            if Delivery.objects.filter(unique_delivery_id=unique_id).exclude(delivery_status=Delivery.STAGE_2).count()
+            == 0
         }
 
         if not unique_ids_to_update:
             return JsonResponse({"success": False, "error": "No valid deliveries found for updating"})
 
         # Bulk update deliveries to STAGE_3
-        updated_rows = Delivery.objects.filter(unique_delivery_id__in=unique_ids_to_update, delivery_status=Delivery.STAGE_2).update(delivery_status=Delivery.STAGE_3)
+        updated_rows = Delivery.objects.filter(
+            unique_delivery_id__in=unique_ids_to_update, delivery_status=Delivery.STAGE_2
+        ).update(delivery_status=Delivery.STAGE_3)
 
         # Reduce stock for affected deliveries
         for unique_id in unique_ids_to_update:
             self.update_delivery_stock(unique_id)
 
-        return JsonResponse({"success": True, "updated_deliveries": list(unique_ids_to_update), "updated_rows": updated_rows})
-
+        return JsonResponse(
+            {"success": True, "updated_deliveries": list(unique_ids_to_update), "updated_rows": updated_rows}
+        )
 
     def update_delivery_stock(self, unique_delivery_id):
         """Reduces stock only if all deliveries under unique_delivery_id are in STAGE_3"""
@@ -1678,15 +1891,19 @@ class CheckDeliveryStatusView(View):
             print(f"Stock reduction skipped: Not all deliveries in STAGE_3 for unique_delivery_id {unique_delivery_id}")
             return
 
-        print(f"All deliveries in STAGE_3. Proceeding with stock reduction for unique_delivery_id: {unique_delivery_id}")
+        print(
+            f"All deliveries in STAGE_3. Proceeding with stock reduction for unique_delivery_id: {unique_delivery_id}"
+        )
 
         # Now proceed with stock reduction
         for delivery in deliveries:
             stock_adjustment = StockAdjustment.objects.filter(rental_product=delivery.product).first()
             if stock_adjustment:
-                print(f"Reducing Stock: Product: {delivery.product.equipment_name}, "
+                print(
+                    f"Reducing Stock: Product: {delivery.product.equipment_name}, "
                     f"Old Quantity: {stock_adjustment.quantity}, "
-                    f"Reduce By: {delivery.delivery_qty}")
+                    f"Reduce By: {delivery.delivery_qty}"
+                )
 
                 stock_adjustment.quantity -= delivery.delivery_qty
                 stock_adjustment.save()
@@ -1694,3 +1911,1443 @@ class CheckDeliveryStatusView(View):
                 print(f"New Stock Quantity: {stock_adjustment.quantity}")
 
         print(f"Stock Adjustment Completed for unique_delivery_id: {unique_delivery_id}")
+
+
+class DeliveredToCustomerListAjaxView(CustomDataTableMixin):
+    """AJAX view for listing Deliveries in a DataTable format."""
+
+    def get_queryset(self):
+        """Returns a queryset of deliveries."""
+
+        order_id = self.kwargs.get("order_id")
+
+        delivery_objs = (
+            Delivery.objects.select_related("product", "order")
+            .filter(delivery_status__in=[Delivery.STAGE_3, Delivery.STAGE_4], order__order_id=order_id)
+            .order_by("delivery_qty")
+        )
+
+        return delivery_objs
+
+    def filter_queryset(self, qs):
+        """Return filtered queryset based on search input."""
+        if self.search:
+            return qs.filter(
+                Q(order__order_id__icontains=self.search)
+                | Q(unique_delivery_id__icontains=self.search)
+                | Q(delivery_status__icontains=self.search)
+                | Q(order__customer__name__icontains=self.search)
+            )
+        return qs
+
+    def _get_contract_start_date(self, delivery_obj):
+
+        # Get today's date in YYYY-MM-DD format
+        today_date = now().date().isoformat()  # YYYY-MM-DD format
+        contract_start_date = delivery_obj.contract_start_date.isoformat() if delivery_obj.contract_start_date else None
+
+        # Render the partial template with delivery object and today_date
+        t = get_template("rental/rent_process/delivery_contract_start_date.html")
+        return t.render(
+            {"delivery_obj": delivery_obj, "today_date": today_date, "contract_start_date": contract_start_date}
+        )
+
+    def prepare_results(self, qs):
+        """Format delivery data for DataTables with grouped deliveries."""
+        qs = sorted(qs, key=lambda x: x.delivery_qty)
+
+        delivery_map = {}
+
+        for delivery in qs:
+            delivery_id = delivery.unique_delivery_id
+
+            if delivery_id not in delivery_map:
+                delivery_map[delivery_id] = {
+                    "delivery_id": delivery_id,
+                    "delivery_pk": delivery.unique_delivery_id,
+                    "total_qty": 0,
+                    "contract_start_date": self._get_contract_start_date(delivery),
+                    "delivery_date": delivery.delivery_date.strftime("%d %B, %Y") if delivery.delivery_date else "-",
+                    "products": "",
+                    # "actions": self._get_actions(delivery),
+                }
+
+            delivery_map[delivery_id]["total_qty"] += delivery.delivery_qty
+
+            product_index = len(delivery_map[delivery_id]["products"].split("<tr>")) - 1
+            product_row = self._get_product_row(delivery, product_index + 1)
+
+            delivery_map[delivery_id]["products"] += product_row
+
+            print(
+                f"delivery_id: {delivery_id} | total_delivery: {delivery_map[delivery_id]['total_qty']} | delivery.delivery_qty: {delivery.delivery_qty}"
+            )
+
+        data = []
+        for value in delivery_map.values():
+            if value["products"]:
+                value["products"] = self._wrap_product_table(
+                    value["products"], value["delivery_id"], value["delivery_pk"]
+                )
+            data.append(value)
+
+        return data
+
+    def _get_product_row(self, delivery, index):
+        """Generate a table row for an individual product with a dynamic Sr No."""
+        if not delivery.product:
+            return ""
+
+        selected_none = "" if delivery.delivery_status == "Delivered To Customer" else "selected"
+        selected_checkout = "selected" if delivery.delivery_status == "Delivered To Customer" else ""
+
+        return f"""
+            <tr>
+                <td>{index}</td>
+                <td>{delivery.product.equipment_id}</td>
+                <td>{delivery.product.equipment_name}</td>
+                <td>
+                    <input type="text" id="quantity-{delivery.product.equipment_id}" data-delivery-unique_id="{delivery.unique_delivery_id}" data-delivery-pk="{delivery.pk}"
+                        data-value="{delivery.delivery_qty}" value="{delivery.delivery_qty}"
+                        class="form-control delivered-to-customer-qty wizard-required">
+                    <small class="quantityMessage text-danger"></small>
+                </td>
+                <td>
+                    <select name="status" class="select2 form-control wizard-required another-select-delivered-to-customer"
+                            data-delivery-id="{delivery.unique_delivery_id}" data-delivery-pk="{delivery.pk}">
+                        <option value="" disabled {selected_none}>None</option>
+                        <option value="Delivered To Customer" {selected_checkout}>Delivered</option>
+                    </select>
+                </td>
+            </tr>
+        """
+
+    def _wrap_product_table(self, rows, delivery_id, delivery_pk):
+        print("delivery_pk: ", delivery_pk)
+        """Wrap product rows in a full table structure with a unique ID."""
+        return f"""
+            <table class="table table-striped table-bordered delivered-to-customer-products-table"
+                id="delivered-to-customer-products-table-{delivery_id}" data-table-id="{delivery_pk}">
+                <thead>
+                    <tr class="text-center">
+                        <th colspan="5" class="align-top">Items Information</th>
+                    </tr>
+                    <tr>
+                        <th>Sr No</th>
+                        <th>Equipment ID</th>
+                        <th>Items</th>
+                        <th>Quantity</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody class="table-striped">
+                    {rows}
+                </tbody>
+            </table>
+        """
+
+    def get_ordering(self, qs):
+        """Handle ordering for DataTable columns."""
+        column_map = {
+            "0": "unique_delivery_id",
+            "1": "delivery_qty",
+            "2": "contract_start_date",
+            "3": "delivery_date",
+        }
+        order_column_index = self.request.GET.get("order[0][column]", "0")
+        order_by = column_map.get(order_column_index, "unique_delivery_id")
+        return qs.order_by(order_by)
+
+    def get(self, request, *args, **kwargs):
+        """Return JSON response for DataTables."""
+        context_data = self.get_context_data(request)
+        return JsonResponse(context_data)
+
+    def get_context_data(self, request):
+        try:
+            context = super().get_context_data(request)
+            return context
+        except Exception as e:
+            return {"error": str(e)}
+
+
+class UpdateDeliveredToCustomerDateView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            delivery_id = data.get("delivery_id")
+            contract_start_date = data.get("contract_start_date")
+
+            if not delivery_id or not contract_start_date:
+                return JsonResponse({"success": False, "error": "Invalid data received."})
+
+            # Ensure the date format is correct
+            try:
+                contract_start_date = datetime.datetime.strptime(contract_start_date, "%Y-%m-%d").date()
+            except ValueError:
+                return JsonResponse({"success": False, "error": "Invalid date format."})
+
+            # Fetch and update the delivery object
+            deliverys = Delivery.objects.filter(unique_delivery_id=delivery_id)
+
+            if not deliverys:
+                return JsonResponse({"success": False, "error": "Delivery not found."})
+            for delivery in deliverys:
+                delivery.contract_start_date = contract_start_date
+                delivery.save()
+
+            print(f"Updated delivery {delivery_id} with new date: {contract_start_date}")
+            return JsonResponse({"success": True, "message": "Contract Start date updated successfully."})
+
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False, "error": "Invalid JSON data."})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": f"Unexpected error: {str(e)}"})
+
+
+class UpdateDeliveredToCustomerStatusView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            # Parse incoming JSON data
+            data = json.loads(request.body)
+            delivery_id = data.get("delivery_id")
+            delivery_pk = data.get("delivery_pk")
+            order_id = data.get("order_id")
+            global_status_change = data.get("global_status_change", False)
+
+            # **Single Delivery Update**
+            if delivery_id and delivery_pk:
+                return self.update_single_delivery(delivery_id, delivery_pk)
+
+            # **Global Order-Wide Update**
+            elif order_id and global_status_change:
+                return self.update_global_deliveries(order_id, delivery_id)
+
+            # If neither condition is met, return invalid parameters error
+            return JsonResponse({"success": False, "error": "Invalid request parameters"})
+
+        except json.JSONDecodeError:
+            # Handle case where the body isn't valid JSON
+            return JsonResponse({"success": False, "error": "Invalid JSON data"})
+
+        except Exception as e:
+            # General error handling to catch unexpected issues
+            return JsonResponse({"success": False, "error": f"An error occurred: {str(e)}"})
+
+    def update_single_delivery(self, delivery_id, delivery_pk):
+        """Handles updating a single delivery's status"""
+        try:
+            delivery = Delivery.objects.filter(unique_delivery_id=delivery_id, pk=delivery_pk).first()
+
+            if not delivery:
+                return JsonResponse(
+                    {"success": False, "error": f"Delivery with ID {delivery_id} and PK {delivery_pk} not found"}
+                )
+
+            previous_status = delivery.delivery_status
+            delivery.delivery_status = Delivery.STAGE_4
+            delivery.save()
+
+            print(
+                f"Updated Single Delivery: {delivery.pk}, Old Status: {previous_status}, New Status: {delivery.delivery_status}"
+            )
+
+            return JsonResponse(
+                {
+                    "success": True,
+                    "updated_delivery": {
+                        "id": delivery.pk,
+                        "old_status": previous_status,
+                        "new_status": delivery.delivery_status,
+                    },
+                }
+            )
+
+        except Exception as e:
+            return JsonResponse({"success": False, "error": f"Failed to update delivery: {str(e)}"})
+
+    def update_global_deliveries(self, order_id, delivery_id):
+        """Handles global status change for all deliveries under an order"""
+        try:
+            deliveries_to_update = Delivery.objects.filter(
+                order__order_id=order_id, unique_delivery_id__in=delivery_id, delivery_status=Delivery.STAGE_3
+            )
+
+            updated_count = deliveries_to_update.update(delivery_status=Delivery.STAGE_4)
+
+            if updated_count == 0:
+                return JsonResponse({"success": False, "error": "No deliveries found to update."})
+
+            updated_deliveries = list(deliveries_to_update)
+            updated_delivery_info = [
+                {"id": delivery.pk, "old_status": delivery.delivery_status, "new_status": Delivery.STAGE_4}
+                for delivery in updated_deliveries
+            ]
+
+            return JsonResponse(
+                {"success": True, "updated_deliveries": updated_delivery_info, "updated_count": updated_count}
+            )
+
+        except Exception as e:
+            return JsonResponse({"success": False, "error": f"Failed to update global deliveries: {str(e)}"})
+
+class ReturnDeliveryModalView(View):
+    model = Order
+    template_name = "rental/rent_process/return_delivery_table.html"
+
+    def get(self, request, *args, **kwargs):
+        order_id = self.kwargs["order_id"]
+        return_order = ReturnOrder.objects.filter(order__order_id=order_id).first()
+        return_order_created_at = return_order.created_at if return_order else None
+        delivered_items = (
+            Delivery.objects
+            .filter(order__order_id=order_id,delivery_status=Delivery.STAGE_4 )
+            .values("product")
+            .annotate(total_delivered_qty=Sum("delivery_qty"))
+        )
+
+        pending_return_items = []
+
+        for item in delivered_items:
+            product_id = item["product"]
+            total_delivered_qty = item["total_delivered_qty"]
+
+          # Get already returned quantity
+            returned_qty = (
+                ReturnDeliveryItem.objects
+                .filter(return_delivery__return_order__order__order_id=order_id, product_id=product_id)
+                .aggregate(Sum("return_qty"))["return_qty__sum"] or 0
+            )
+            
+            remaining_qty = total_delivered_qty - (returned_qty )
+            if remaining_qty > 0:
+                product_obj = RentalProduct.objects.get(pk=product_id)
+                pending_return_items.append({
+                    "product_id": product_obj.equipment_id,
+                    "product_name": product_obj.equipment_name,
+                    "delivered_qty": total_delivered_qty,
+                    "returned_qty": returned_qty,
+                    "remaining_qty": remaining_qty
+                })
+
+        context = {
+            "order": order_id,
+            "order_items": pending_return_items,
+            "return_order_created_at":return_order_created_at
+        }
+        return render(request, self.template_name, context)
+
+class CreateReturnDeliveryView(ViewMixin):
+    def post(self, request, *args, **kwargs):
+        try:
+            print(request.POST)
+            return_order_id = request.POST.get("order_id")
+            return_order = ReturnOrder.objects.get(order__order_id=return_order_id)
+            returned_pickup_date = request.POST.get("returned_pickup_date")
+            returned_delivery_date = request.POST.get("returned_delivery_date")
+            returned_pickup_site = request.POST.get("returned_pickup_site")
+            returned_delivery_site = request.POST.get("returned_delivery_site")
+            return_po_number = request.POST.get("return_po_number")
+            shipping_carrier = request.POST.get("shipping_carrier")
+            deliver_to_customer = request.POST.get("createcheckbox") == "on"
+            today_date = datetime.datetime.now().date() 
+            removal_date = today_date + datetime.timedelta(days=5)
+
+            order = request.POST.get("order") or None
+            if order:
+                order = Order.objects.filter(order_id=order).first()
+                if not order:
+                    return JsonResponse({"status": "error", "message": "Invalid Order ID. Order does not exist."})
+                if order.order_id == return_order_id:
+                    return JsonResponse({"status": "error", "message": "Order ID and Return Order ID cannot be the same."})
+                
+            success_message = ""
+            if deliver_to_customer and order:
+                selected_products_json = request.POST.get("selected_products")
+                selected_products = json.loads(selected_products_json)
+
+                for item in selected_products:
+                    product_id = item["id"]
+                    qty = item["quantity"]
+                    product = RentalProduct.objects.get(equipment_id=product_id)
+                    unique_delivery_id = tasks.generate_delivery_id(order)
+                    Delivery.objects.create(
+                        unique_delivery_id=unique_delivery_id,
+                        order=order,
+                        product=product,
+                        delivery_qty=int(qty),
+                        delivery_date=returned_delivery_date,
+                        contract_start_date= today_date,
+                        pickup_date = returned_pickup_date,
+                        pickup_site=returned_pickup_site,
+                        delivery_site=returned_delivery_site,
+                        po_number=return_po_number, 
+                        shipping_carrier=shipping_carrier,
+                        delivery_status=Delivery.STAGE_1,
+                        direct_delivery=True
+                    )
+                    
+                    return_delivery = ReturnDelivery.objects.create(
+                    return_order=return_order,
+                    returned_pickup_date=returned_pickup_date,
+                    returned_delivery_date=returned_delivery_date,
+                    returned_pickup_site=returned_pickup_site,
+                    contract_end_date = today_date,
+                    returned_delivery_site=returned_delivery_site,
+                    return_po_number=return_po_number,
+                    removal_date=removal_date,
+                    shipping_carrier=shipping_carrier,
+                    deliver_to_customer=deliver_to_customer,
+                    direct_delivery=True)
+
+                    print('ReturnDelivery: create Successfully   ')
+                    product = RentalProduct.objects.get(equipment_id=product_id)
+                    ReturnDeliveryItem.objects.create(
+                        return_delivery=return_delivery,
+                        product=product,
+                        return_qty=int(qty)
+                    )
+                    print('ReturnDeliveryItem: create Successfully   ')
+                    success_message = "Delivery Created Successfully!"
+            else:
+                return_delivery = ReturnDelivery.objects.create(
+                    return_order=return_order,
+                    returned_pickup_date=returned_pickup_date,
+                    returned_delivery_date=returned_delivery_date,
+                    returned_pickup_site=returned_pickup_site,
+                    returned_delivery_site=returned_delivery_site,
+                    return_po_number=return_po_number,
+                    shipping_carrier=shipping_carrier,
+                    contract_end_date = today_date,
+                    removal_date=removal_date,
+                    deliver_to_customer=deliver_to_customer
+                )
+
+                selected_products_json = request.POST.get("selected_products")
+                selected_products = json.loads(selected_products_json)
+
+                for item in selected_products:
+                    product_id = item["id"]
+                    qty = item["quantity"]
+
+                    product = RentalProduct.objects.get(equipment_id=product_id)
+                    ReturnDeliveryItem.objects.create(
+                        return_delivery=return_delivery,
+                        product=product,
+                        return_qty=int(qty)
+                    )
+                success_message = "Return Delivery Created Successfully!"
+
+            return JsonResponse({"status": "success", "message": success_message})
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)})
+        
+class CreateReturnDeliveryListAjaxView(CustomDataTableMixin):
+    """AJAX view for listing  Return delivery  in a DataTable format."""
+
+    def _get_actions(self, obj):
+            """Generate action buttons for delivery orders."""
+            t = get_template("rental/orders/return_delivery_actions.html") 
+            edit_url = reverse("rental:rent_process:return-delivery-edit", kwargs={"pk": obj})
+            remove_url = "#"
+            return t.render(
+                {
+                    "edit_url": edit_url,
+                    "remove_url": remove_url,
+                    "delivery": obj,
+                    "request": self.request,
+                }
+            )
+
+    def get_queryset(self):
+        """Returns a queryset of deliveries for the given order_id in the URL."""
+        order_id = self.kwargs.get("order_id")
+        return_orders = ReturnOrder.objects.filter(order__order_id=order_id)
+        return_deliveries = ReturnDelivery.objects.filter(return_order__in=return_orders).exclude(direct_delivery=True)
+        return_items = ReturnDeliveryItem.objects.filter(
+            return_delivery__in=return_deliveries,
+            return_status__in=[ReturnDeliveryItem.STAGE_5, ReturnDeliveryItem.STAGE_6, ReturnDeliveryItem.STAGE_7, ReturnDeliveryItem.STAGE_8]
+        )
+        return return_items
+
+    def filter_queryset(self, qs):
+        """Return filtered queryset based on search input."""
+        if self.search:
+            return qs.filter(
+                Q(return_delivery__return_order__order__order_id__icontains=self.search)
+                | Q(return_delivery__return_unique_id__icontains=self.search)
+                | Q(return_status__icontains=self.search)
+                | Q(return_delivery__return_order__customer__name__icontains=self.search)
+            )
+        return qs
+    
+    def _get_returned_pickup_date(self, return_delivery_obj):
+
+        today_date = now().date().isoformat()  
+        returned_pickup_date = return_delivery_obj.returned_pickup_date.isoformat() if return_delivery_obj.returned_pickup_date else None
+
+        t = get_template("rental/rent_process/delivery_returned_pickup_date.html")
+        return t.render({"return_delivery_obj": return_delivery_obj, "today_date": today_date, "returned_pickup_date": returned_pickup_date})
+
+    def prepare_results(self, qs):
+        """Format delivery data for DataTables with grouped deliveries."""
+        qs = sorted(qs, key=lambda x: x.return_qty)
+
+        return_map = {}
+        for return_item in qs:
+            return_delivery = return_item.return_delivery
+            return_id = return_delivery.return_unique_id
+
+            if return_id not in return_map:
+                return_map[return_id] = {
+                    "return_id": return_id,
+                    "delivery_id": return_delivery.pk,
+                    "total_qty": 0,
+                    "contract_end_date": (
+                        return_delivery.contract_end_date.strftime("%d %B, %Y")
+                        if return_delivery.contract_end_date
+                        else "-"
+                    ),
+                    "returned_pickup_date":self._get_returned_pickup_date(return_delivery),
+                    "removal_date": (
+                        return_delivery.removal_date.strftime("%d %B, %Y")
+                        if return_delivery.removal_date
+                        else "-"
+                    ),
+                    'actions':self._get_actions(return_id),
+                    "products": "",
+                }
+
+            return_map[return_id]["total_qty"] += return_item.return_qty
+            item_index = len(return_map[return_id]["products"].split("<tr>")) - 1
+            item_row = self._get_item_row(return_item, item_index + 1)
+            return_map[return_id]["products"] += item_row
+
+        data = []
+        for value in return_map.values():
+            if value["products"]:
+                value["products"] = self._wrap_item_table(value["products"], value["return_id"], value["delivery_id"])
+            data.append(value)
+
+        return data
+
+    def _get_item_row(self, return_item, index):
+        """Generate a table row for an individual return item with a dynamic Sr No."""
+        
+        if not return_item.product:
+            return ""
+
+        return f"""
+            <tr>
+                <td>{index}</td>
+                <td>{return_item.product.equipment_id if return_item.product else '-'}</td>
+                <td>{return_item.product.equipment_name}</td>
+                <td>
+                    <input type="text" name="delivery_site" class="form-control delivery-site-input" 
+                        value="{return_item.return_delivery.returned_delivery_site if return_item.return_delivery else ''}" 
+                        data-return-delivery-id="{return_item.return_delivery.return_unique_id if return_item.return_delivery else ''}">
+                </td>
+                <td>
+                    <input type="number" name="quantity" class="form-control quantity-input" 
+                        value="{return_item.return_qty}" min="1" 
+                        data-return-delivery-item-pk="{return_item.pk}">
+                </td>
+            </tr>
+        """
+
+
+    def _wrap_item_table(self, rows, return_id, delivery_id):
+        """Wrap item rows in a full table structure with a unique ID."""
+        return f"""
+            <table class="table table-striped table-bordered return-pick-up-ticket-items-table"
+                id="return-items-table-{return_id}" data-table-id="{delivery_id}">
+                <thead>
+                    <tr class="text-center">
+                        <th colspan="5" class="align-top">Items Information</th>
+                    </tr>
+                    <tr>
+                        <th>Sr No</th>
+                        <th>Internal Id</th>
+                        <th>Items</th>
+                        <th>Delivery Site</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody class="table-striped">
+                    {rows}
+                </tbody>
+            </table>
+        """
+
+    def get_ordering(self, qs):
+        """Handle ordering for DataTable columns."""
+        column_map = {
+            "0": "return_delivery__return_unique_id",
+            "1": "return_qty",
+            "2": "return_delivery__removal_date",
+        }
+        order_column_index = self.request.GET.get("order[0][column]", "0")
+        order_by = column_map.get(order_column_index, "return_delivery__return_unique_id")
+        return qs.order_by(order_by)
+
+    def get(self, request, *args, **kwargs):
+        """Return JSON response for DataTables."""
+        context_data = self.get_context_data(request)
+        return JsonResponse(context_data)
+
+    def get_context_data(self, request):
+        try:
+            context = super().get_context_data(request)
+            return context
+        except Exception as e:
+            return {"error": str(e)}
+        
+        
+class ReturnDeliveryUpdateView(ViewMixin):
+    def get(self, request, *args, **kwargs):
+        # obj = get_object_or_404(ReturnDelivery, return_unique_id=self.kwargs["pk"]).exclude(direct_delivery=True)
+        obj = get_object_or_404(ReturnDelivery.objects.exclude(direct_delivery=True), return_unique_id=self.kwargs["pk"])
+        return_items = obj.return_items.all
+        context = {
+            "obj": obj,
+            "return_items": return_items,
+        }
+        return render(request, "rental/orders/update_return_delivery.html", context)
+    
+    def post(self, request, *args, **kwargs):
+        obj = get_object_or_404(ReturnDelivery, return_unique_id=self.kwargs["pk"])
+        removal_date = request.POST.get("removal_date")
+        try:
+            data = json.loads(request.body.decode("utf-8")) if request.body else {}
+        except json.JSONDecodeError:
+            data = {}
+            
+        selected_products = data.get("selected_products", [])
+        deliver_to_customer = data.get("deliver_to_customer", False)
+        order = data.get("order")
+        return_order_id = order
+        print('return_order_id: ', return_order_id)
+        if deliver_to_customer:
+         return_order = ReturnOrder.objects.get(order__order_id=return_order_id)
+        if order:
+            order = Order.objects.filter(order_id=order).first()
+            if not order:
+                return JsonResponse({"status": "error", "message": "Invalid Order ID. Order does not exist."})
+        else:
+            order = None
+
+        if removal_date:
+            obj.removal_date = removal_date
+            obj.save()
+            return JsonResponse({"status": "success", "message": "Removal date updated successfully!"})
+        
+        if deliver_to_customer:
+            for product in selected_products:
+                product_id = product.get("id")
+                quantity = product.get("quantity")
+                product1 = RentalProduct.objects.get(equipment_id=product_id)
+                return_item = ReturnDeliveryItem.objects.filter(return_delivery=obj, product_id=product_id).first()
+                update_qty = return_item.return_qty - int(quantity)
+                if return_item:
+                    return_item.return_qty = update_qty
+                    return_item.save()
+                
+                unique_delivery_id = tasks.generate_delivery_id(order)
+                product_id = RentalProduct.objects.get(equipment_id=product_id)
+                Delivery.objects.create(
+                    unique_delivery_id=unique_delivery_id,
+                    order=order,
+                    product=product_id,
+                    delivery_qty=quantity,
+                    delivery_date=obj.returned_delivery_date,
+                    pickup_date = obj.returned_pickup_date,
+                    pickup_site=obj.returned_pickup_site,
+                    delivery_site=obj.returned_delivery_site,
+                    po_number=obj.return_po_number, 
+                    shipping_carrier=obj.shipping_carrier,
+                    delivery_status=Delivery.STAGE_1,
+                    direct_delivery=True
+                )
+                return_delivery = ReturnDelivery.objects.create(
+                return_order=return_order,
+                returned_pickup_date=obj.returned_pickup_date,
+                returned_delivery_date=obj.returned_delivery_date,
+                returned_pickup_site=obj.returned_pickup_site,
+                returned_delivery_site=obj.returned_delivery_site,
+                return_po_number=obj.return_po_number,
+                removal_date=obj.removal_date,
+                shipping_carrier=obj.shipping_carrier,
+                deliver_to_customer=deliver_to_customer,
+                direct_delivery=True)
+                
+                ReturnDeliveryItem.objects.create(
+                    return_delivery=return_delivery,
+                    product=product1,
+                    return_qty=int(quantity)
+                )
+            
+            # obj.deliver_to_customer = True
+            # obj.save()
+            return JsonResponse({"status": "success", "message": "Delivery created successfully for customer!"})
+        
+        else:
+            for product in selected_products:
+                product_id = product.get("id")
+                quantity = product.get("quantity")
+
+                return_item = ReturnDeliveryItem.objects.filter(return_delivery=obj, product_id=product_id).first()
+                if return_item:
+                    return_item.return_qty = quantity
+                    return_item.save()
+
+            return JsonResponse({"status": "success", "message": "products quantity updated successfully!"})
+                    
+class UpdateReturnDeliverySiteView(ViewMixin):
+    """Class-Based View for updating Delivery Site"""
+
+    def post(self, request, *args, **kwargs):
+        return_delivery_id = request.POST.get("return_delivery_id")
+        new_delivery_site = request.POST.get("new_delivery_site")
+
+        try:
+            return_delivery = ReturnDelivery.objects.get(return_unique_id=return_delivery_id)
+            return_delivery.returned_delivery_site = new_delivery_site
+            return_delivery.save()
+            return JsonResponse({"status": "success", "message": "Delivery site updated successfully!"})
+        except ReturnDelivery.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Return Delivery not found!"})
+
+class UpdateReturnDeliveryQtyView(ViewMixin):
+    """Class-Based View for updating Quantity"""
+
+    def post(self, request, *args, **kwargs):
+        return_delivery_item_pk = request.POST.get("return_delivery_item_pk")
+        new_quantity = request.POST.get("new_quantity")
+
+        try:
+            return_item = ReturnDeliveryItem.objects.get(pk=return_delivery_item_pk)
+            return_item.return_qty = new_quantity
+            return_item.save()
+            return JsonResponse({"status": "success", "message": "Quantity updated successfully!"})
+        except ReturnDeliveryItem.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Return Item not found!"})
+
+
+class ReturnPickupListAjaxView(CustomDataTableMixin):
+    """AJAX view for listing Return Pickups in a DataTable format."""
+
+    def get_queryset(self):
+        """Returns a queryset of return deliveries based on order."""
+        order_id = self.kwargs.get("order_id")
+
+        return_orders = ReturnOrder.objects.filter(order__order_id=order_id)
+        return_deliveries = ReturnDelivery.objects.filter(return_order__in=return_orders).exclude(direct_delivery=True)
+        return_items = ReturnDeliveryItem.objects.filter(return_delivery__in=return_deliveries,return_status__in=[ReturnDeliveryItem.STAGE_5, ReturnDeliveryItem.STAGE_6,ReturnDeliveryItem.STAGE_7,ReturnDeliveryItem.STAGE_8])
+
+        return return_items
+
+    def _get_returned_pickup_date(self, return_delivery_obj):
+
+        today_date = now().date().isoformat()  
+        returned_pickup_date = return_delivery_obj.returned_pickup_date.isoformat() if return_delivery_obj.returned_pickup_date else None
+
+        t = get_template("rental/rent_process/delivery_returned_pickup_date.html")
+        return t.render({"return_delivery_obj": return_delivery_obj, "today_date": today_date, "returned_pickup_date": returned_pickup_date})
+
+
+
+    def filter_queryset(self, qs):
+        """Return filtered queryset based on search input."""
+        if self.search:
+            return qs.filter(
+                Q(return_delivery__return_order__order__order_id__icontains=self.search)
+                | Q(return_delivery__return_unique_id__icontains=self.search)
+                | Q(return_status__icontains=self.search)
+                | Q(return_delivery__return_order__customer__name__icontains=self.search)
+            )
+        return qs
+
+    def prepare_results(self, qs):
+        """Format return delivery data for DataTables with grouped items."""
+        qs = sorted(qs, key=lambda x: x.return_qty)
+
+        return_map = {}
+        for return_item in qs:
+            return_delivery = return_item.return_delivery
+            return_id = return_delivery.return_unique_id
+
+            if return_id not in return_map:
+                return_map[return_id] = {
+                    "return_id": return_id,
+                    "delivery_id": return_delivery.pk,
+                    "total_qty": 0,
+                    "returned_pickup_date": (
+                        return_delivery.returned_pickup_date.strftime("%d %B, %Y")
+                        if return_delivery.returned_pickup_date
+                        else "-"
+                    ),
+                    "returned_pickup_date":self._get_returned_pickup_date(return_delivery),
+                    "delivery_date": (
+                        return_delivery.removal_date.strftime("%d %B, %Y")
+                        if return_delivery.removal_date
+                        else "-"
+                    ),
+                    "products": "",
+                }
+
+            return_map[return_id]["total_qty"] += return_item.return_qty
+            item_index = len(return_map[return_id]["products"].split("<tr>")) - 1
+            item_row = self._get_item_row(return_item, item_index + 1)
+            return_map[return_id]["products"] += item_row
+
+        data = []
+        for value in return_map.values():
+            if value["products"]:
+                value["products"] = self._wrap_item_table(value["products"], value["return_id"], value["delivery_id"])
+            data.append(value)
+
+        return data
+
+
+    def _get_item_row(self, return_item, index):
+        """Generate a table row for an individual return item with a dynamic Sr No."""
+        selected_none = "" if return_item.return_status in [ReturnDeliveryItem.STAGE_6,ReturnDeliveryItem.STAGE_7,ReturnDeliveryItem.STAGE_8] else "selected"
+        selected_return_pick_up_ticket = "selected" if return_item.return_status == "Return Pick Up Ticket" else ""
+        if not return_item.product:
+            return ""
+
+        return f"""
+            <tr>
+                <td>{index}</td>
+                <td>{return_item.product.equipment_id if return_item.product else '-'}</td>
+                <td>{return_item.product.equipment_name}</td>
+                <td>
+                    {return_item.return_qty}
+                </td>
+                <td>
+                    <select name="status" class="select2 form-control wizard-required another-select-return-pick-up-ticket"
+                            data-return-delivery-id="{return_item.return_delivery.return_unique_id}" data-return-delivery-item-pk="{return_item.pk}">
+                        <option value="" disabled {selected_none}>None</option>
+                        <option value="Return Pick Up Ticket" {selected_return_pick_up_ticket}>Loaded</option>
+                    </select>
+                </td>
+            </tr>
+        """
+
+    def _wrap_item_table(self, rows, return_id, delivery_id):
+        """Wrap item rows in a full table structure with a unique ID."""
+        return f"""
+            <table class="table table-striped table-bordered return-pick-up-ticket-items-table"
+                id="return-items-table-{return_id}" data-table-id="{delivery_id}">
+                <thead>
+                    <tr class="text-center">
+                        <th colspan="5" class="align-top">Return Items Information</th>
+                    </tr>
+                    <tr>
+                        <th>Sr No</th>
+                        <th>Internal Id</th>
+                        <th>Items</th>
+                        <th>Quantity</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody class="table-striped">
+                    {rows}
+                </tbody>
+            </table>
+        """
+
+    def get_ordering(self, qs):
+        """Handle ordering for DataTable columns."""
+        column_map = {
+            "0": "return_delivery__return_unique_id",
+            "1": "return_qty",
+            "2": "return_delivery__returned_pickup_site",
+        }
+        order_column_index = self.request.GET.get("order[0][column]", "0")
+        order_by = column_map.get(order_column_index, "return_delivery__return_unique_id")
+        return qs.order_by(order_by)
+
+    def get(self, request, *args, **kwargs):
+        """Return JSON response for DataTables."""
+        context_data = self.get_context_data(request)
+        return JsonResponse(context_data)
+
+    def get_context_data(self, request):
+        try:
+            context = super().get_context_data(request)
+            return context
+        except Exception as e:
+            return {"error": str(e)}
+
+
+class UpdateReturnPickupDateView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            delivery_id = data.get("delivery_id")
+            returned_pickup_date = data.get("returned_pickup_date")
+
+            if not delivery_id or not returned_pickup_date:
+                return JsonResponse({"success": False, "error": "Invalid data received."})
+
+            # Ensure the date format is correct
+            try:
+                returned_pickup_date = datetime.datetime.strptime(returned_pickup_date, "%Y-%m-%d").date()
+            except ValueError:
+                return JsonResponse({"success": False, "error": "Invalid date format."})
+
+            # Fetch and update the delivery object
+            return_deliverys = ReturnDelivery.objects.filter(return_unique_id=delivery_id)
+            if not return_deliverys:
+                return JsonResponse({"success": False, "error": "Delivery not found."})
+            for return_delivery in return_deliverys:
+                return_delivery.returned_pickup_date = returned_pickup_date
+                return_delivery.save()
+
+            print(f"Updated return_delivery {delivery_id} with new date: {returned_pickup_date}")
+            return JsonResponse({"success": True, "message": "Checkout date updated successfully."})
+
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False, "error": "Invalid JSON data."})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": f"Unexpected error: {str(e)}"})
+        
+
+class ReturnPickupStatusView(View):
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        return_delivery_id = data.get("return_delivery_id")
+        return_delivery_item_pk = data.get("return_delivery_item_pk")
+        order_id = data.get("order_id")
+        global_status_change = data.get("global_status_change", False)
+        try:
+            # **Single Delivery Update**
+            if return_delivery_id:
+                return self.update_single_delivery(return_delivery_item_pk)
+
+            # **Global Order-Wide Update**
+            elif order_id and global_status_change:
+                return self.update_global_deliveries(return_delivery_id)
+
+            return JsonResponse({"success": False, "error": "Invalid request parameters"})
+
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False, "error": "Invalid JSON data"})
+
+    def update_single_delivery(self,return_delivery_item_pk):
+        """Handles updating a single delivery's status"""
+        delivery = ReturnDeliveryItem.objects.filter(pk=return_delivery_item_pk).first()
+
+        if delivery:
+            delivery.return_status = ReturnDeliveryItem.STAGE_6
+            delivery.save()
+
+            return JsonResponse({"success": True})
+
+        return JsonResponse({"success": False, "error": f"Delivery with ID {return_delivery_item_pk} not found"})
+
+    def update_global_deliveries(self, return_delivery_id):
+        """Handles global status change for all deliveries under an order"""
+        delivery_objs = ReturnDeliveryItem.objects.filter(return_delivery__return_unique_id=return_delivery_id)
+
+        for delivery_obj in delivery_objs:
+            delivery_obj.return_status = ReturnDeliveryItem.STAGE_6
+            delivery_obj.save()
+
+        return JsonResponse(
+            {"success": True,}
+        )
+class CheckInListAjaxView(CustomDataTableMixin):
+    """AJAX view for listing Return Pickups in a DataTable format."""
+
+    def get_queryset(self):
+        """Returns a queryset of return deliveries based on order."""
+        order_id = self.kwargs.get("order_id")
+
+        return_orders = ReturnOrder.objects.filter(order__order_id=order_id)
+        return_deliveries = ReturnDelivery.objects.filter(return_order__in=return_orders).exclude(direct_delivery=True)
+        return_items = ReturnDeliveryItem.objects.filter(return_delivery__in=return_deliveries,return_status__in=[ReturnDeliveryItem.STAGE_6,ReturnDeliveryItem.STAGE_7,ReturnDeliveryItem.STAGE_8])
+
+        return return_items
+
+    def _get_check_in_date(self, return_delivery_obj):
+        # Get today's date in ISO format
+        today_date = datetime.datetime.utcnow().date().isoformat()
+        
+        # Get the check-in date from the return_delivery_obj, if available
+        check_in_date = return_delivery_obj.check_in_date
+        if check_in_date:
+            check_in_date = check_in_date.date().isoformat()  # Strip time and timezone
+
+        # Render the template with the provided context
+        t = get_template("rental/rent_process/delivery_check_in_date.html")
+        return t.render({
+            "return_delivery_obj": return_delivery_obj,
+            "today_date": today_date,
+            "check_in_date": check_in_date
+        })
+
+
+
+
+    def filter_queryset(self, qs):
+        """Return filtered queryset based on search input."""
+        if self.search:
+            return qs.filter(
+                Q(return_delivery__return_order__order__order_id__icontains=self.search)
+                | Q(return_delivery__return_unique_id__icontains=self.search)
+                | Q(return_status__icontains=self.search)
+                | Q(return_delivery__return_order__customer__name__icontains=self.search)
+            )
+        return qs
+
+    def prepare_results(self, qs):
+        """Format return delivery data for DataTables with grouped items."""
+        qs = sorted(qs, key=lambda x: x.return_qty)
+
+        return_map = {}
+        for return_item in qs:
+            return_delivery = return_item.return_delivery
+            return_id = return_delivery.return_unique_id
+
+            if return_id not in return_map:
+                return_map[return_id] = {
+                    "return_id": return_id,
+                    "delivery_id": return_delivery.pk,
+                    "total_qty": 0,
+                    "returned_pickup_date": (
+                        return_delivery.returned_pickup_date.strftime("%d %B, %Y")
+                        if return_delivery.returned_pickup_date
+                        else "-"
+                    ),
+                    "returned_pickup_date":self._get_check_in_date(return_delivery),
+                    "products": "",
+                }
+
+            return_map[return_id]["total_qty"] += return_item.return_qty
+            item_index = len(return_map[return_id]["products"].split("<tr>")) - 1
+            item_row = self._get_item_row(return_item, item_index + 1)
+            return_map[return_id]["products"] += item_row
+
+        data = []
+        for value in return_map.values():
+            if value["products"]:
+                value["products"] = self._wrap_item_table(value["products"], value["return_id"], value["delivery_id"])
+            data.append(value)
+
+        return data
+
+
+    def _get_item_row(self, return_item, index):
+        """Generate a table row for an individual return item with a dynamic Sr No."""
+        selected_none = "" if return_item.return_status in [ReturnDeliveryItem.STAGE_6] else "selected"
+        selected_return_pick_up_ticket = "selected" if return_item.return_status == "Return Pick Up Ticket" else ""
+        if not return_item.product:
+            return ""
+        stock_adjustments = return_item.product.stock_adjustments.all()  # This returns a queryset
+        stock_adjustments_pk = stock_adjustments.first().pk if stock_adjustments.exists() else ''  # Access the first element's pk
+        stock_adjustments_stock = stock_adjustments.first().quantity if stock_adjustments.exists() else ''  # Access the first element's pk
+        return f"""
+            <tr>
+                <td>{index}</td>
+                <td>{return_item.product.equipment_id if return_item.product else '-'}</td>
+                <td>{return_item.product.equipment_name}</td>
+                <td>
+                    <input type="text" 
+                        id="quantity-{return_item.product.equipment_id}" 
+                        data-return-delivery-unique_id="{return_item.return_delivery.return_unique_id}" 
+                        data-pick-up-ticket-items-pk="{return_item.pk}" 
+                        data-stock-id="{stock_adjustments_pk}"
+                        data-value="{return_item.return_qty}" 
+                        data-current-stock="{stock_adjustments_stock}" 
+                        value="{return_item.return_qty}"
+                        class="form-control check-in-qty wizard-required">
+                    <small class="quantityMessage text-danger"></small>
+                </td>
+            </tr>
+        """
+
+    def _wrap_item_table(self, rows, return_id, delivery_id):
+        """Wrap item rows in a full table structure with a unique ID."""
+        return f"""
+            <table class="table table-striped table-bordered return-pick-up-ticket-items-table"
+                id="return-items-table-{return_id}" data-table-id="{delivery_id}">
+                <thead>
+                    <tr class="text-center">
+                        <th colspan="5" class="align-top">Return Items Information</th>
+                    </tr>
+                    <tr>
+                        <th>Sr No</th>
+                        <th>Internal Id</th>
+                        <th>Items</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody class="table-striped">
+                    {rows}
+                </tbody>
+            </table>
+        """
+
+    def get_ordering(self, qs):
+        """Handle ordering for DataTable columns."""
+        column_map = {
+            "0": "return_delivery__return_unique_id",
+            "1": "return_qty",
+            "2": "return_delivery__return_date",
+        }
+        order_column_index = self.request.GET.get("order[0][column]", "0")
+        order_by = column_map.get(order_column_index, "return_delivery__return_unique_id")
+        return qs.order_by(order_by)
+
+    def get(self, request, *args, **kwargs):
+        """Return JSON response for DataTables."""
+        context_data = self.get_context_data(request)
+        return JsonResponse(context_data)
+
+    def get_context_data(self, request):
+        try:
+            context = super().get_context_data(request)
+            return context
+        except Exception as e:
+            return {"error": str(e)}
+
+
+
+class UpdateCheckInDateView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            delivery_id = data.get("delivery_id")
+            check_in_date = data.get("check_in_date")
+
+            if not delivery_id or not check_in_date:
+                return JsonResponse({"success": False, "error": "Invalid data received."})
+
+            # Ensure the date format is correct
+            try:
+                check_in_date = datetime.datetime.strptime(check_in_date, "%Y-%m-%d").date()
+            except ValueError:
+                return JsonResponse({"success": False, "error": "Invalid date format."})
+
+            # Fetch and update the delivery object
+            return_deliverys = ReturnDelivery.objects.filter(return_unique_id=delivery_id)
+            if not return_deliverys:
+                return JsonResponse({"success": False, "error": "Delivery not found."})
+            for return_delivery in return_deliverys:
+                return_delivery.check_in_date = check_in_date
+                return_delivery.save()
+
+            print(f"Updated return_delivery {delivery_id} with new date: {check_in_date}")
+            return JsonResponse({"success": True, "message": "Checkout date updated successfully."})
+
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False, "error": "Invalid JSON data."})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": f"Unexpected error: {str(e)}"})
+
+class ReturnDeliveryItemMismatchUpdateView(View):
+    def post(self, request, pk):
+        # Retrieve plus and minus quantities from POST data.
+        pulse_quantity = request.POST.get("pulse_quantity")
+        minus_quantity = request.POST.get("minus_quantity")
+        print('pulse_quantity:', pulse_quantity)
+        print('minus_quantity:', minus_quantity)
+        
+        if pulse_quantity is None or minus_quantity is None:
+            return JsonResponse({"success": False, "message": "Plus or minus quantity missing."}, status=400)
+        
+        try:
+            plus_val = int(pulse_quantity)
+            minus_val = int(minus_quantity)
+        except ValueError:
+            return JsonResponse({"success": False, "message": "Invalid quantity values."}, status=400)
+        
+        # Compute the net mismatch.
+        # For example, if minus (missing qty) is greater than plus (extra qty), then net_mismatch is positive.
+        net_mismatch = minus_val - plus_val
+        print("Calculated net_mismatch:", net_mismatch)
+        
+        # Get the ReturnDeliveryItem
+        item = get_object_or_404(ReturnDeliveryItem, pk=pk)
+        try:
+            print('Before item.return_qty:', item.return_qty)
+            # Subtract the net mismatch from the current return_qty
+            item.return_qty -= net_mismatch
+            item.save()
+            print('After item.return_qty:', item.return_qty)
+            return JsonResponse({"success": True, "message": "Return Delivery Item updated."})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": str(e)}, status=400)
+        
+
+
+
+
+class InspectionListAjaxView(CustomDataTableMixin):
+    """AJAX view for listing Return Pickups in a DataTable format."""
+
+    def get_queryset(self):
+        """Returns a queryset of return deliveries based on order."""
+        order_id = self.kwargs.get("order_id")
+
+        return_orders = ReturnOrder.objects.filter(order__order_id=order_id)
+        return_deliveries = ReturnDelivery.objects.filter(return_order__in=return_orders).exclude(direct_delivery=True)
+        return_items = ReturnDeliveryItem.objects.filter(return_delivery__in=return_deliveries,return_status__in=[ReturnDeliveryItem.STAGE_7,ReturnDeliveryItem.STAGE_8])
+
+        return return_items
+
+    def _get_inspection_date(self, return_delivery_obj):
+        # Get today's date in ISO format
+        today_date = datetime.datetime.utcnow().date().isoformat()
+        
+        # Get the check-in date from the return_delivery_obj, if available
+        inspection_date = return_delivery_obj.inspection_date
+        print('inspection_date: ======================++>>>', inspection_date)
+        if inspection_date:
+            inspection_date = inspection_date.isoformat()  # Strip time and timezone
+
+        # Render the template with the provided context
+        t = get_template("rental/rent_process/delivery_inspection_date.html")
+        return t.render({
+            "return_delivery_obj": return_delivery_obj,
+            "today_date": today_date,
+            "inspection_date": inspection_date
+        })
+
+
+
+
+    def filter_queryset(self, qs):
+        """Return filtered queryset based on search input."""
+        if self.search:
+            return qs.filter(
+                Q(return_delivery__return_order__order__order_id__icontains=self.search)
+                | Q(return_delivery__return_unique_id__icontains=self.search)
+                | Q(return_status__icontains=self.search)
+                | Q(return_delivery__return_order__customer__name__icontains=self.search)
+            )
+        return qs
+
+    def prepare_results(self, qs):
+        """Format return delivery data for DataTables with grouped items."""
+        qs = sorted(qs, key=lambda x: x.return_qty)
+
+        return_map = {}
+        for return_item in qs:
+            return_delivery = return_item.return_delivery
+            return_id = return_delivery.return_unique_id
+
+            if return_id not in return_map:
+                return_map[return_id] = {
+                    "return_id": return_id,
+                    "delivery_id": return_delivery.pk,
+                    "total_qty": 0,
+                    "check_in_date": (
+                        return_delivery.check_in_date.strftime("%d %B, %Y")
+                        if return_delivery.check_in_date
+                        else "-"
+                    ),
+                    "inspection_date":self._get_inspection_date(return_delivery),
+                    "products": "",
+                }
+
+            return_map[return_id]["total_qty"] += return_item.return_qty
+            item_index = len(return_map[return_id]["products"].split("<tr>")) - 1
+            item_row = self._get_item_row(return_item, item_index + 1)
+            return_map[return_id]["products"] += item_row
+
+        data = []
+        for value in return_map.values():
+            if value["products"]:
+                value["products"] = self._wrap_item_table(value["products"], value["return_id"], value["delivery_id"])
+            data.append(value)
+
+        return data
+
+
+    def _get_item_row(self, return_item, index):
+        """Generate a table row for an individual return item with a dynamic Sr No."""
+        if not return_item.product:
+            return ""
+        stock_adjustments = return_item.product.stock_adjustments.all()  # This returns a queryset
+        stock_adjustments_pk = stock_adjustments.first().pk if stock_adjustments.exists() else ''
+        stock_adjustments_stock = stock_adjustments.first().quantity if stock_adjustments.exists() else ''
+        # Build the AJAX URL using reverse:
+        complete_inspection_url = reverse('rental:rent_process:mark-inspection-completed-ajax', args=[return_item.pk])
+        
+        # Only show the mark-completed block if status is not already completed.
+        if return_item.return_status != ReturnDeliveryItem.STAGE_8:
+            mark_block = f"""
+                <span class="info mark-completed">
+                    <i class="ft-info"></i> Mark inspection as completed!!
+                    <a href="#" class="marked" data-url="{complete_inspection_url}">
+                        <i class="ft-check success" id="completed-inspection-product-stock"
+                        data-item-stock-pk="{return_item.pk}"
+                        data-item-quantity="{return_item.return_qty}"></i>
+                    </a>
+                    <a href="#" class="inspection-adjust-stock-cancel" data-stock-id="{stock_adjustments_pk}" data-pick-up-ticket-items-pk="{return_item.pk}" data-mismatched-quantity="0"><i class="ft-x danger"></i></a>
+                </span>
+            """
+        else:
+            mark_block = ""
+        
+        return f"""
+            <tr>
+                <td>{index}</td>
+                <td>{return_item.product.equipment_id if return_item.product else '-'}</td>
+                <td>{return_item.product.equipment_name}</td>
+                <td>
+                    <input type="text" 
+                        id="quantity-{return_item.product.equipment_id}" 
+                        data-return-delivery-unique_id="{return_item.return_delivery.return_unique_id}" 
+                        data-pick-up-ticket-items-pk="{return_item.pk}" 
+                        data-stock-id="{stock_adjustments_pk}"
+                        data-value="{return_item.return_qty}" 
+                        data-current-stock="{stock_adjustments_stock}" 
+                        value="{return_item.return_qty}"
+                        class="form-control inspection-qty wizard-required">
+                    <small class="quantityMessage text-danger"></small>
+                    {mark_block}
+                </td>
+            </tr>
+        """
+
+    def _wrap_item_table(self, rows, return_id, delivery_id):
+        """Wrap item rows in a full table structure with a unique ID."""
+        return f"""
+            <table class="table table-striped table-bordered inspection-items-table"
+                id="return-items-table-{return_id}" data-table-id="{delivery_id}">
+                <thead>
+                    <tr class="text-center">
+                        <th colspan="5" class="align-top">Return Items Information</th>
+                    </tr>
+                    <tr>
+                        <th>Sr No</th>
+                        <th>Internal Id</th>
+                        <th>Items</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody class="table-striped">
+                    {rows}
+                </tbody>
+            </table>
+        """
+
+    def get_ordering(self, qs):
+        """Handle ordering for DataTable columns."""
+        column_map = {
+            "0": "return_delivery__return_unique_id",
+            "1": "return_qty",
+            "2": "return_delivery__return_date",
+        }
+        order_column_index = self.request.GET.get("order[0][column]", "0")
+        order_by = column_map.get(order_column_index, "return_delivery__return_unique_id")
+        return qs.order_by(order_by)
+
+    def get(self, request, *args, **kwargs):
+        """Return JSON response for DataTables."""
+        context_data = self.get_context_data(request)
+        return JsonResponse(context_data)
+
+    def get_context_data(self, request):
+        try:
+            context = super().get_context_data(request)
+            return context
+        except Exception as e:
+            return {"error": str(e)}
+
+class MarkInspectionCompletedAjaxView(View):
+    def post(self, request, pk):
+        # Get the ReturnDeliveryItem instance
+        item = get_object_or_404(ReturnDeliveryItem, pk=pk)
+        # Update its status to "Inspection Completed" (STAGE_8)
+        item.return_status = ReturnDeliveryItem.STAGE_8
+        item.save()
+        return JsonResponse({
+            "success": True,
+            "message": "Inspection marked as completed."
+        })
+
+class UpdateInspectionDateView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            delivery_id = data.get("delivery_id")
+            inspection_date = data.get("inspection_date")
+
+            if not delivery_id or not inspection_date:
+                return JsonResponse({"success": False, "error": "Invalid data received."})
+
+            # Ensure the date format is correct
+            try:
+                inspection_date = datetime.datetime.strptime(inspection_date, "%Y-%m-%d").date()
+            except ValueError:
+                return JsonResponse({"success": False, "error": "Invalid date format."})
+
+            # Fetch and update the delivery object
+            return_deliverys = ReturnDelivery.objects.filter(return_unique_id=delivery_id)
+            if not return_deliverys:
+                return JsonResponse({"success": False, "error": "Delivery not found."})
+            for return_delivery in return_deliverys:
+                return_delivery.inspection_date = inspection_date
+                return_delivery.save()
+
+            print(f"Updated return_delivery {delivery_id} with new date: {inspection_date}")
+            return JsonResponse({"success": True, "message": "Checkout date updated successfully."})
+
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False, "error": "Invalid JSON data."})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": f"Unexpected error: {str(e)}"})
+
+class UpdateCheckInStatusView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            order_identifier = self.kwargs.get("order_id")  # This is your order_id string, e.g., "O20250200001"
+            
+            # Filter by the order_id field, not the primary key.
+            order_obj = Order.objects.filter(order_id=order_identifier).first()
+            if not order_obj:
+                return JsonResponse({"success": False, "error": "Order not found"})
+            
+            return_order_obj = ReturnOrder.objects.filter(order=order_obj).first()
+            if not return_order_obj:
+                return JsonResponse({"success": False, "error": "Return order not found"})
+            
+            return_order_objs = ReturnDelivery.objects.filter(return_order=return_order_obj)
+            if not return_order_objs.exists():
+                return JsonResponse({"success": False, "error": "Return deliveries not found"})
+            
+            # Update the return status of ReturnDeliveryItems in bulk
+            updated_count = 0
+            for return_delivery in return_order_objs:
+                updated_count += ReturnDeliveryItem.objects.filter(
+                    return_delivery=return_delivery,
+                    return_status=ReturnDeliveryItem.STAGE_6
+                ).update(return_status=ReturnDeliveryItem.STAGE_7)
+            
+            if updated_count == 0:
+                return JsonResponse({"success": False, "error": "No items to update"})
+            
+            return JsonResponse({"success": True, "message": "Status updated successfully"})
+        
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False, "error": "Invalid JSON data"})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+
+    
+class CustomerAddressAjaxView(View):
+    def get(self, request, *args, **kwargs):
+        customer_id = request.GET.get('customer_id')
+        data = {}
+        if customer_id:
+            try:
+                customer = RentalCustomer.objects.get(pk=customer_id)
+                data['address'] = customer.billing_address_1 if customer.billing_address_1 else customer.billing_address_2
+            except RentalCustomer.DoesNotExist:
+                data['address'] = ''
+        return JsonResponse(data)
