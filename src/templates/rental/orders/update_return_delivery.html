@@ -1,0 +1,192 @@
+<div class="modal fade text-left" id="update_retrun_delivery" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" data-backdrop="false" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabel5">Update Return Delivery : {{obj}}</h4>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true"
+              ><i class="ft-x font-medium-2 text-bold-700"></i
+            ></span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row mb-3">
+            <div class="col-6 mb-3">
+              <label for="" class="form-label">Contract End Date</label>
+              <input type="text" class="form-control" value="{{obj.contract_end_date|date:"d/m/Y"}}" disabled>
+            </div>
+            <div class="col-6 mb-3">
+              <label for="" class="form-label">Removal Date</label>
+              <input type="date" class="form-control removal-date" value="{{obj.removal_date|date:"Y-m-d"}}">
+            </div>
+          </div>
+          {% comment %} <div class="col-6 mb-3">
+            <label for="directDelivery" class="form-label">Deliver Directly to Customer</label>
+            <input id="directDelivery" class="checkbox-class" name="checkbox" type="checkbox" />
+         </div> {% endcomment %}
+        
+        <div class="col-6 mb-3 hidden" id="orderFieldContainer" style="display: none;">
+            <label for="orderField" class="form-label">Order</label>
+            <input id="orderField" name="order" type="text" class="form-control" />
+        </div>
+        
+          
+          <div class="table-responsive">
+            <table id="sample" class="table table-bordered table-striped">
+              <thead>
+                  <tr>
+                      <th><input name="checkbox" type="checkbox" class="row-checkbox" /></th>
+                      <th>Internal ID</th>
+                      <th>Items</th>
+                      <th>Return Qty</th>
+                      <th>Quantity</th>
+                  </tr>
+              </thead>
+              <tbody>
+                {% for item in return_items %}
+                <tr>
+                  <td><input name="checkbox" type="checkbox" class="row-checkbox" checked></td>
+                  <td>{{item.product.equipment_id}}</td>
+                  <td>{{item.product.equipment_name}}</td>
+                  <td>{{item.return_qty}}</td>
+                  <td><input type="text" class="form-control" placeholder="Enter Qty" value="{{item.return_qty}}"></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No items found.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn bg-light-secondary"
+            data-dismiss="modal"
+          >
+            Close
+          </button>
+          <button type="button" id="update_delivery" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Bootstrap JS (Include this after jQuery) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
+<script>
+  $(document).ready(function () {
+      $("#update_retrun_delivery").modal('show');
+      $('.checkbox-class').on('change', function() {
+          var isChecked = $(this).prop("checked");
+          if (isChecked) {
+              $("#orderFieldContainer").show();
+          } else {
+              $("#orderFieldContainer").hide();
+          }
+      });
+
+      $(".removal-date").on("change", function () {
+        var removalDate = $(this).val();
+        var url = "{% url 'rental:rent_process:return-delivery-edit' obj.return_unique_id %}";
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+                removal_date: removalDate,
+                csrfmiddlewaretoken: "{{ csrf_token }}"
+            },
+            success: function (response) {
+              if (response.status === "success") {
+                  toastr.success(response.message, "Success", {
+                      closeButton: true,
+                      progressBar: true,
+                      positionClass: "toast-bottom-right",
+                      timeOut: 6000
+                  });
+                  $('#return_delivery_table').DataTable().ajax.reload();
+
+              } else {
+                  toastr.error("Error: " + response.message, "Error", {
+                      closeButton: true,
+                      progressBar: true,
+                      positionClass: "toast-bottom-right",
+                      timeOut: 6000
+                  });
+              }
+          },
+          error: function () {
+              toastr.error("Something went wrong!", "Error", {
+                  closeButton: true,
+                  progressBar: true,
+                  positionClass: "toast-bottom-right",
+                  timeOut: 6000
+              });
+          },
+        });
+    });
+  });
+</script>
+<script>
+  $(document).ready(function () {
+    $("#update_delivery").on("click", function (event) {
+        event.preventDefault();
+        var isChecked = $("#directDelivery").prop("checked");
+        var orderId = $("#orderField").val();
+        var selectedProducts = [];
+
+        // Get selected products with quantities
+        $("#sample tbody tr").each(function () {
+            var rowChecked = $(this).find(".row-checkbox").prop("checked");
+            if (rowChecked) {
+                var productId = $(this).find("td:nth-child(2)").text().trim();
+                var qty = $(this).find("td:nth-child(5) input").val().trim();
+                selectedProducts.push({ id: productId, quantity: qty });
+            }
+        });
+
+        // Validation check
+        if (isChecked && (!orderId || selectedProducts.length === 0)) {
+            alert("Order ID aur kam se kam ek product selection required hai for direct delivery.");
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'rental:rent_process:return-delivery-edit' obj.return_unique_id %}",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify({
+                deliver_to_customer: isChecked,
+                order: orderId,
+                selected_products: selectedProducts,
+            }),
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            success: function (response) {
+              toastr.success(response.message, "Success", {
+                closeButton: true,
+                progressBar: true,
+                positionClass: "toast-bottom-right",
+                timeOut: 6000
+            });
+                $("#update_retrun_delivery").modal("hide");
+                $('#return_delivery_table').DataTable().ajax.reload(null, false);
+            },
+            error: function (xhr) {
+                alert(xhr.responseJSON.message);
+            }
+        });
+    });
+  });
+</script>

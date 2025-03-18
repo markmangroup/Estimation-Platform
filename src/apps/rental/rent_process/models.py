@@ -7,9 +7,20 @@ from apps.rental.customer.models import RentalCustomer
 from apps.rental.account_manager.models import AccountManager
 from apps.rental.product.models import RentalProduct
 from django.utils.timezone import now
+from django_countries.fields import CountryField
 from azure.storage.blob import BlobSasPermissions, BlobServiceClient, generate_blob_sas
-from dotenv import load_dotenv
 
+from azure.storage.blob import BlobSasPermissions, BlobServiceClient, generate_blob_sas
+from django.db import models
+from django.utils.timezone import now
+from django.utils.translation import gettext_lazy as _
+from dotenv import load_dotenv
+from django.db import transaction
+
+from apps.rental.account_manager.models import AccountManager
+from apps.rental.customer.models import RentalCustomer
+from apps.rental.product.models import RentalProduct
+from laurel.models import BaseModel
 
 SHIPPING_CARRIER_CHOICES = [
     ("Internal", _("Internal")),
@@ -57,7 +68,7 @@ class Order(BaseModel):
         AccountManager, on_delete=models.CASCADE, related_name="account_manager_order", blank=True, null=True
     )
     link_netsuite = models.URLField(max_length=500, blank=True, null=True)
-    region = models.CharField(max_length=255, blank=True, null=True)
+    region = CountryField(null=True, blank=True, max_length=255)
     pick_up_location = models.CharField(max_length=255, blank=True, null=True)
     delivery_location = models.CharField(max_length=255, blank=True, null=True)
     water_source = models.CharField(max_length=255, blank=True, null=True)
@@ -190,6 +201,7 @@ class Delivery(BaseModel):
     delivery_site = models.CharField(max_length=255)
     po_number = models.CharField(max_length=50, blank=True, null=True)
     shipping_carrier = models.CharField(max_length=20, choices=SHIPPING_CARRIER_CHOICES)
+    direct_delivery = models.BooleanField(default=False)
     delivery_status = models.CharField(
         _("Delivery Status"), max_length=50, choices=DELIVERY_STATUS_CHOICES, default=STAGE_1
     )
@@ -204,7 +216,13 @@ class Delivery(BaseModel):
             try:
                 last_number = int(last_delivery.delivery_id[2:])
                 new_number = last_number + 1
-                return f"DE{new_number}"
+                new_delivery_id = f"DE{new_number}"
+
+                while Delivery.objects.filter(delivery_id=new_delivery_id).exists():
+                    new_number += 1
+                    new_delivery_id = f"DE{new_number}"
+
+                return new_delivery_id
             except ValueError:
                 return "DE1"
         else:
@@ -215,28 +233,96 @@ class Delivery(BaseModel):
             self.delivery_id = self.generate_delivery_id()
         super().save(*args, **kwargs)
 
+class ReturnOrder(BaseModel):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="return_orders", blank=True, null=True)
+    delivery = models.ForeignKey(
+        Delivery, on_delete=models.CASCADE, related_name="delivery_return_orders", blank=True, null=True
+    )
+    return_order_unique_id = models.CharField(max_length=30, unique=True, blank=True, null=True)
+    
+    def save(self, *args, **kwargs):
+        if not self.return_order_unique_id and self.order:
+            self.return_order_unique_id = self.order.order_id.replace("O", "OR", 1)
+        
+        super().save(*args, **kwargs)
+    def __str__(self):
+        return f"Return Order {self.order.order_id} - {self.return_order_unique_id}"
 
 class ReturnDelivery(BaseModel):
-    delivery = models.ForeignKey(
-        Delivery, on_delete=models.CASCADE, related_name="return_delivery", blank=True, null=True
-    )
-    return_order = models.CharField(max_length=50)
-    return_qty = models.IntegerField()
+    return_order = models.ForeignKey(ReturnOrder, on_delete=models.CASCADE, related_name="return_delivery_order", blank=True, null=True)
+    return_unique_id = models.CharField(max_length=30, unique=True, blank=True, null=True)
     return_po_number = models.CharField(max_length=50)
     returned_pickup_date = models.DateField()
+    contract_end_date = models.DateField(blank=True, null=True)
+    check_in_date = models.DateTimeField(blank=True, null=True)
+    removal_date = models.DateField(blank=True, null=True)
+    inspection_date = models.DateField(blank=True, null=True)
     returned_delivery_date = models.DateField()
     returned_pickup_site = models.CharField(max_length=255)
     returned_delivery_site = models.CharField(max_length=255)
     shipping_carrier = models.CharField(max_length=20, choices=SHIPPING_CARRIER_CHOICES)
     deliver_to_customer = models.BooleanField(default=False)
+    direct_delivery = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if not self.return_unique_id:
+            today = datetime.today()
+            year = today.strftime("%Y")
+            month = today.strftime("%m")
+            day = today.strftime("%d")
+
+            formatted_date = f"{year}{month}000{day}"
+            last_return = (
+                ReturnDelivery.objects.filter(return_unique_id__startswith=f"O{formatted_date}").order_by("-id").first()
+            )
+            return_count = 1
+
+            if last_return:
+                last_id = last_return.return_unique_id.split("-R")[-1]
+                return_count = int(last_id) + 1
+
+            self.return_unique_id = f"O{formatted_date}-R{return_count}"
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.return_order
+        return self.return_unique_id
+
+
+class ReturnDeliveryItem(models.Model):
+    STAGE_1 = "Create Delivery"
+    STAGE_2 = "Pick Up Ticket"
+    STAGE_3 = "Check Out"
+    STAGE_4 = "Delivered To Customer"
+    STAGE_5 = "Create Return Delivery"
+    STAGE_6 = "Return Pick Up Ticket"
+    STAGE_7 = "Check In"
+    STAGE_8 = "Inspection Completed"
+
+    RETURN_STATUS_CHOICES = [
+        (STAGE_1, _("Create Delivery")),
+        (STAGE_2, _("Pick Up Ticket")),
+        (STAGE_3, _("Check Out")),
+        (STAGE_4, _("Delivered To Customer")),
+        (STAGE_5, _("Create Return Delivery")),
+        (STAGE_6, _("Return Pick Up Ticket")),
+        (STAGE_7, _("Check In")),
+        (STAGE_8, _("Inspection Completed")),
+    ]
+    return_delivery = models.ForeignKey(ReturnDelivery, on_delete=models.CASCADE, related_name="return_items")
+    product = models.ForeignKey(RentalProduct, on_delete=models.CASCADE, related_name="return_delivery_products")
+    return_qty = models.IntegerField()
+    return_status = models.CharField(max_length=50, choices=RETURN_STATUS_CHOICES, default=STAGE_5)
+
+    def __str__(self):
+        return f"{self.product} - {self.return_qty}"
 
 
 class RecurringOrder(BaseModel):
     recurring_order_id = models.CharField(max_length=255, primary_key=True)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="recurring_orders", blank=True, null=True)
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
 
     def __str__(self):
         return self.recurring_order_id
@@ -248,16 +334,18 @@ class RecurringOrder(BaseModel):
 
     def _generate_recurring_order_id(self):
         if isinstance(self.order.rental_start_date, str):
-            self.order.rental_start_date = datetime.strptime(self.rental_start_date, "%Y-%m-%d")
+            self.order.rental_start_date = datetime.datetime.strptime(self.order.rental_start_date, "%Y-%m-%d").date()
+
         year_month = (
             self.order.rental_start_date.strftime("%Y%m") if self.order.rental_start_date else now().strftime("%Y%m")
         )
-        prefix = "OR" if self.recurring_order else "OR"
 
-        last_order = Order.objects.filter(order_id__startswith=prefix + year_month).order_by("-order_id").first()
+        prefix = "OR"
+
+        last_order = RecurringOrder.objects.filter(recurring_order_id__startswith=prefix + year_month).order_by("-recurring_order_id").first()
 
         if last_order:
-            last_seq = int(last_order.order_id[-5:])
+            last_seq = int(last_order.recurring_order_id[-5:])
             new_seq = f"{last_seq + 1:05d}"
         else:
             new_seq = "00001"
@@ -265,14 +353,8 @@ class RecurringOrder(BaseModel):
         return f"{prefix}{year_month}{new_seq}"
 
 
-class ReturnOrder(BaseModel):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="return_orders", blank=True, null=True)
-    delivery = models.ForeignKey(
-        Delivery, on_delete=models.CASCADE, related_name="delivery_return_orders", blank=True, null=True
-    )
 
-    def __str__(self):
-        return f"Return Order {self.order.order_id} - {self.delivery.delivery_id}"
+
 
 
 class OrderFormPermissionModel(models.Model):

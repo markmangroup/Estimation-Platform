@@ -251,7 +251,6 @@
 
         $.get(url, function (data) {
             $("#show .modal-body");
-            $("#show").modal("show");
         });
     });
 });
@@ -267,6 +266,7 @@
     let table = $("#createdelivery").DataTable({
         processing: true,
         serverSide: true,
+        searching: false, 
         ajax: {
             url: url,
             type: "GET",
@@ -332,7 +332,6 @@
         dataType: "json",
         success: function (data) {
           $("#modal-body").html(data.html);
-          $("#show").modal("show");
         },
         error: function () {
           alert("Error loading modal data!");
@@ -432,17 +431,17 @@
       $("#deliveryTable").DataTable().ajax.reload(null, false);
       if (foundElements){
         value = $(".current a span.step").text();
-        
+
         var stageKey = stageMapping[value];
         const url = new URL(window.location.href);
-        
+
 
         url.searchParams.set('stage', stageKey);
         window.history.pushState({}, '', url);
         for (const [key, stageName] of Object.entries(stageMapping)) {
           if (stageKey === stageName) {
               rental_stageMapping[currentStage] = key - 1 ;
-              break;  
+              break;
           }
       }
       console.log('foundElements: ', foundElements);
@@ -455,7 +454,7 @@
       }
     });
 
-    
+
   });
 </script>
 
@@ -497,8 +496,18 @@
 
 <script>
   $(document).ready(function () {
-      console.log(" jQuery is ready!");
 
+    function DataTableReload(){
+      $("#createdelivery").DataTable().ajax.reload(null, false);
+      $("#pickuptable").DataTable().ajax.reload(null, false);
+      $("#deliveryTable").DataTable().ajax.reload(null, false);
+      $("#delivered-to-customer-table").DataTable().ajax.reload(null, false);
+      $("#return_delivery_table").DataTable().ajax.reload(null, false);
+      $("#return-pickup-table").DataTable().ajax.reload(null, false);
+      $("#check-in-table").DataTable().ajax.reload(null, false);
+      $("#inspection-table").DataTable().ajax.reload(null, false);
+    }
+      console.log(" jQuery is ready!");
       var stageMapping = {
           1: "Create Delivery",
           2: "Pick Up Ticket",
@@ -515,21 +524,21 @@
       function updateURLAndReload(stageIndex) {
           var stageName = stageMapping[stageIndex + 1]; // Get stage name from mapping
           if (!stageName) return; // If no valid stage, exit
-      
+
           //  Update rental_stageMapping
           rental_stageMapping[currentStage] = stageIndex;
-          
+
           console.log(" Updating Stage:", stageName, "| Index:", stageIndex);
           console.log(" rental_stageMapping[currentStage]:", rental_stageMapping[currentStage]);
           console.log("All Keys in rental_stageMapping:", Object.keys(rental_stageMapping));
-      
+
           // Update URL
           const url = new URL(window.location.href);
           url.searchParams.set('stage', stageName);
           window.history.pushState({}, '', url);
-      
+
           // Reload DataTable
-          $("#deliveryTable").DataTable().ajax.reload(null, false);
+          DataTableReload()
       }
 
       // 🔹 Click on Steps (Direct Navigation)
@@ -537,17 +546,46 @@
           event.preventDefault();
           var stepNumber = parseInt($(this).find(".step").text()); // Get step number
           if (!isNaN(stepNumber)) {
-              currentStageIndex = stepNumber - 1; // Update index
-              updateURLAndReload(currentStageIndex);
+            if(stage_is_valid === true){
+                currentStageIndex = stepNumber - 1; // Update index
+                window.returnDeliveryUpdateFired = false;
+                if ($("#adjust_stock_details").hasClass("show")) {
+                  $("#adjust_stock_details").modal("hide");
+              }
+                //updateURLAndReload(currentStageIndex);
+                updateURLAndReload(currentStageIndex);
+              }
           }
       });
 
       // 🔹 Click on Next Button
       $("a[href='#next']").on("click", function (e) {
           if (currentStageIndex < Object.keys(stageMapping).length - 1) {
+            console.log('Before Condition currentStageIndex: ', currentStageIndex);
+            console.log('stage_is_valid: ', stage_is_valid);
+            window.returnDeliveryUpdateFired = false;
+            var foundElements = $(".steps li").find(".current");
+            value = $(".current a span.step").text();
+            var stageKey = stageMapping[value];
+            const url = new URL(window.location.href);
+            url.searchParams.set('stage', stageKey);
+            window.history.pushState({}, '', url);
+            
+            if(stage_is_valid === true){
               currentStageIndex++; // Move to next stage
               //updateURLAndReload(currentStageIndex);
+              DataTableReload()
+            }
+              console.log('After Condition currentStageIndex: ', currentStageIndex);
+              if ($("#adjust_stock_details").hasClass("show")) {
+                  $("#adjust_stock_details").modal("hide");
+              }
 
+              // (rest of your code)
+              // Also, if the modal is open, close it:
+              if ($("#adjust_modal").hasClass("show")) {
+                  $("#adjust_modal").modal("hide");
+              }
               // 🔹 Send AJAX request
               $.ajax({
                   url: '{% url "rental:rent_process:update-stages" %}',
@@ -562,6 +600,7 @@
                   },
                   success: function (response) {
                       console.log(" Stage Updated:", response);
+                      DataTableReload()
                   },
                   error: function (xhr, status, error) {
                       console.error(" Error:", error);
@@ -574,9 +613,33 @@
       $("a[href='#previous']").on("click", function (e) {
           if (currentStageIndex > 0) {
               currentStageIndex--; // Move to previous stage
+              console.log('isValid: ======+++>>>', stage_is_valid);
+              if ($("#adjust_stock_details").hasClass("show")) {
+                $("#adjust_stock_details").modal("hide");
+            }
+              window.returnDeliveryUpdateFired = false;
               updateURLAndReload(currentStageIndex);
+          }
+          var foundElements = $(".steps li").find(".current");
+          if (foundElements){
+            value = $(".current a span.step").text();
+
+            var stageKey = stageMapping[value];
+            const url = new URL(window.location.href);
+            url.searchParams.set('stage', stageKey);
+            window.history.pushState({}, '', url);
+            for (const [key, stageName] of Object.entries(stageMapping)) {
+              if (stageKey === stageName) {
+                  rental_stageMapping[currentStage] = key - 1 ;
+                  break;
+              }
+          }
+          }
+          else{
+            // console.log("Not found elements:");
           }
       });
 
   });
+
 </script>

@@ -6,6 +6,7 @@ from apps.rental.account_manager.models import AccountManager
 from apps.rental.customer.models import RentalCustomer
 from apps.rental.product.models import RentalProduct
 from apps.rental.rent_process.models import Order, OrderFormPermissionModel,OrderItem,RecurringOrder
+from apps.rental.warehouse.models import RentalWarehouse
 
 class ImportOrderCSVForm(forms.Form):
     """Form for uploading warehouse data from CSV, XLSX, or XLS files."""
@@ -76,8 +77,6 @@ class DeliveryForm(forms.ModelForm):
             "po_number": forms.TextInput(attrs={"class": "form-control"}),
         }
         
-        
-
 class RecurringOrderEditForm(forms.ModelForm):
     no_of_product = forms.IntegerField(
         label="Number of Products",
@@ -163,6 +162,13 @@ class OrderForm(forms.ModelForm):
         widget=forms.Textarea(attrs={"class": "form-control", "id": "rentPerMonth", "rows": 4, "readonly": "readonly"}),
     )
 
+    pick_up_location = forms.ModelChoiceField(
+        queryset=RentalWarehouse.objects.all(),
+        widget=forms.Select(attrs={"class": "form-control"}),
+        empty_label="Select a Warehouse",
+        label="Pick-Up Location"
+    )
+
     class Meta:
         model = Order
         fields = [
@@ -172,13 +178,13 @@ class OrderForm(forms.ModelForm):
             "repeat_type", "repeat_value", "repeat_start_date", "repeat_end_date"
         ]
         widgets = {
-            "link_netsuite": forms.URLInput(attrs={"class": "form-control", "placeholder": "Link NetSuite"}),
-            "region": forms.TextInput(attrs={"class": "form-control", "placeholder": "Region"}),
+            "link_netsuite": forms.TextInput(attrs={"class": "form-control", "placeholder": "Link NetSuite"}),
+            "region": forms.Select(attrs={"class": "form-control", "placeholder": "Region"}),
             "pick_up_location": forms.TextInput(attrs={"class": "form-control", "placeholder": "Pick-Up Location"}),
             "delivery_location": forms.TextInput(attrs={"class": "form-control", "placeholder": "Delivery Location"}),
             "water_source": forms.TextInput(attrs={"class": "form-control", "placeholder": "Water Source"}),
             "crop": forms.TextInput(attrs={"class": "form-control", "placeholder": "Crop"}),
-            "rent_amount": forms.NumberInput(attrs={"class": "form-control", "id": "rentAmount", "placeholder": "Rent Amount"}),
+            "rent_amount": forms.NumberInput(attrs={"class": "form-control","disabled":"disabled", "id": "rentAmount", "placeholder": "Rent Amount"}),
             "rental_start_date": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
             "rental_end_date": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
             "recurring_order": forms.CheckboxInput(attrs={"class": "form-check-input", "id": "recurring-checkbox"}),
@@ -241,32 +247,37 @@ class OrderItemForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Set empty_permitted to True for extra (new) forms
+        if not (self.instance and self.instance.pk):
+            self.empty_permitted = True
 
-        # Get the first instance of OrderFormPermissionModel (assuming single row)
+        # Set permissions if needed (your existing code)
         permissions = OrderFormPermissionModel.objects.first()
-
         if permissions:
-            # Loop through form fields and set required dynamically
             for field_name in self.fields:
                 if hasattr(permissions, field_name):
                     self.fields[field_name].required = getattr(permissions, field_name)
 
         self.fields["equipment_id"].queryset = RentalProduct.objects.all()
         self.fields["equipment_name"].queryset = RentalProduct.objects.all()
-
         self.fields["equipment_id"].label_from_instance = lambda obj: f"{obj.equipment_id}"
         self.fields["equipment_name"].label_from_instance = lambda obj: f"{obj.equipment_name}"
 
-        if "instance" in kwargs and kwargs["instance"]:
+        if "instance" in kwargs and kwargs.get("instance"):
             product_instance = kwargs["instance"].product
             if product_instance:
                 self.initial["equipment_id"] = product_instance
                 self.initial["equipment_name"] = product_instance
 
     def clean(self):
+        # If the form has not changed, return an empty dict
+        if not self.has_changed():
+            # This signals that the form is empty and should be ignored by the formset
+            self.cleaned_data = {}
+            return self.cleaned_data
+
         cleaned_data = super().clean()
         equipment_id = cleaned_data.get("equipment_id")
-
         if equipment_id:
             cleaned_data["product"] = equipment_id
         return cleaned_data
@@ -336,3 +347,202 @@ class UploadDocumentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["document"].required = False
+
+class UpdateOrderForm(forms.ModelForm):
+    rental_start_date = forms.DateField(widget=forms.HiddenInput())
+    rental_end_date = forms.DateField(widget=forms.HiddenInput())
+
+    # Use a ChoiceField for customer and account_manager and convert in clean()
+    customer = forms.ChoiceField(
+        choices=[("", "Select a value")] + [(c.id, c.name) for c in RentalCustomer.objects.only('id', 'name')],
+        widget=forms.Select(attrs={"class": "form-control disable-first-option"})
+    )
+    account_manager = forms.ChoiceField(
+        choices=[("", "Select a value")] + [(a.id, a.name) for a in AccountManager.objects.only('id', 'name')],
+        widget=forms.Select(attrs={"class": "form-control disable-first-option"})
+    )
+    repeat_type = forms.ChoiceField(
+        choices=[("", "Select a value")] + Order.REPEAT_TYPE_CHOICES,
+        widget=forms.Select(attrs={"class": "form-control disable-first-option", "id": "repeatType"})
+    )
+    customer_email = forms.EmailField(
+        label="Customer Email",
+        widget=forms.EmailInput(attrs={"class": "form-control"}),
+    )
+    rent_per_month = forms.CharField(
+        label="Rent Per Month",
+        required=False,
+        widget=forms.Textarea(attrs={
+            "class": "form-control", 
+            "id": "rentPerMonth", 
+            "rows": 4, 
+            "readonly": "readonly"
+        }),
+    )
+    # Use a ModelChoiceField for pick_up_location (RentalWarehouse)
+    pick_up_location = forms.ModelChoiceField(
+        queryset=RentalWarehouse.objects.all(),
+        widget=forms.Select(attrs={"class": "form-control"}),
+        empty_label="Select a Warehouse",
+        label="Pick-Up Location"
+    )
+
+    class Meta:
+        model = Order
+        fields = [
+            "customer", "account_manager", "link_netsuite", "region",
+            "pick_up_location", "delivery_location", "water_source", "crop",
+            "rent_amount", "rental_start_date", "rental_end_date", "recurring_order",
+            "repeat_type", "repeat_value", "repeat_start_date", "repeat_end_date"
+        ]
+        widgets = {
+            "link_netsuite": forms.TextInput(attrs={
+                "class": "form-control", 
+                "placeholder": "Link NetSuite"
+            }),
+            # For update, you might want to use a select widget (or another widget) for region.
+            "region": forms.Select(attrs={
+                "class": "form-control", 
+                "placeholder": "Region"
+            }),
+            # We override pick_up_location in the field definition so you may remove it from here
+            "delivery_location": forms.TextInput(attrs={
+                "class": "form-control", 
+                "placeholder": "Delivery Location"
+            }),
+            "water_source": forms.TextInput(attrs={
+                "class": "form-control", 
+                "placeholder": "Water Source"
+            }),
+            "crop": forms.TextInput(attrs={
+                "class": "form-control", 
+                "placeholder": "Crop"
+            }),
+            "rent_amount": forms.NumberInput(attrs={
+                "class": "form-control",
+                "disabled": "disabled", 
+                "id": "rentAmount", 
+                "placeholder": "Rent Amount"
+            }),
+            "rental_start_date": forms.DateInput(attrs={
+                "class": "form-control", 
+                "type": "date"
+            }),
+            "rental_end_date": forms.DateInput(attrs={
+                "class": "form-control", 
+                "type": "date"
+            }),
+            "recurring_order": forms.CheckboxInput(attrs={
+                "class": "form-check-input", 
+                "id": "recurring-checkbox"
+            }),
+            "repeat_value": forms.NumberInput(attrs={
+                "class": "form-control", 
+                "style": "width: 100px;", 
+                "id": "repeatValue"
+            }),
+            "repeat_start_date": forms.DateInput(attrs={
+                "class": "form-control", 
+                "type": "date", 
+                "id": "startDate", 
+                "style": "width: 150px;"
+            }),
+            "repeat_end_date": forms.DateInput(attrs={
+                "class": "form-control", 
+                "type": "date", 
+                "id": "endDate", 
+                "style": "width: 150px;"
+            }),
+        }
+
+    def clean_customer(self):
+        customer_id = self.cleaned_data["customer"]
+        if customer_id:
+            return RentalCustomer.objects.get(id=int(customer_id))
+        return None
+    
+    def clean_account_manager(self):
+        account_manager = self.cleaned_data["account_manager"]
+        if account_manager:
+            return AccountManager.objects.get(id=int(account_manager))
+        return None
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Set permission-based required attributes, if a permission instance exists.
+        permissions = OrderFormPermissionModel.objects.first()
+        if permissions:
+            for field_name in self.fields:
+                if hasattr(permissions, field_name):
+                    self.fields[field_name].required = getattr(permissions, field_name)
+                    
+        # For update, if an instance exists, prefill certain fields.
+        if self.instance and self.instance.pk:
+            # For example, set an initial value for a "rental_period" display if you have one.
+            # You might store it in a separate field or use it in the template.
+            self.initial["rental_start_date"] = self.instance.rental_start_date
+            self.initial["rental_end_date"] = self.instance.rental_end_date
+            
+            # Optionally, update widget attributes (for example, IDs) if needed.
+            self.fields["repeat_type"].widget.attrs.update({"id": "repeatType"})
+            self.fields["repeat_value"].widget.attrs.update({"id": "repeatValue"})
+            self.fields["repeat_start_date"].widget.attrs.update({"id": "startDate"})
+            self.fields["repeat_end_date"].widget.attrs.update({"id": "endDate"})
+            if self.instance and self.instance.customer:
+                self.initial["customer_email"] = self.instance.customer.customer_email
+
+class UpdateOrderItemForm(forms.ModelForm):
+    equipment_id = forms.ModelChoiceField(
+        queryset=RentalProduct.objects.all(),
+        widget=forms.Select(attrs={"class": "form-control disable-first-option", "onchange": "updateEquipmentName(this)"}),
+        empty_label="Select Equipment ID",
+        label="Equipment ID"
+    )
+    equipment_name = forms.ModelChoiceField(
+        queryset=RentalProduct.objects.all(),
+        widget=forms.Select(attrs={"class": "form-control disable-first-option", "onchange": "updateEquipmentID(this)"}),
+        empty_label="Select Equipment Name",
+        label="Equipment Name"
+    )
+    
+    class Meta:
+        model = OrderItem
+        fields = ["product", "quantity", "per_unit_price"]
+        widgets = {
+            "product": forms.HiddenInput(),
+            "quantity": forms.NumberInput(attrs={"class": "form-control quantity", "oninput": "updateRentAmount()"}),
+            "per_unit_price": forms.NumberInput(attrs={"class": "form-control price", "oninput": "updateRentAmount()"}),
+        }
+        # Remove exclude if present
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Remove the id field if it exists so that Django won't validate it.
+        if 'id' in self.fields:
+            del self.fields['id']
+
+        # Set permission-based required attributes if necessary
+        permissions = OrderFormPermissionModel.objects.first()
+        if permissions:
+            for field_name in self.fields:
+                if hasattr(permissions, field_name):
+                    self.fields[field_name].required = getattr(permissions, field_name)
+
+        self.fields["equipment_id"].queryset = RentalProduct.objects.all()
+        self.fields["equipment_name"].queryset = RentalProduct.objects.all()
+        self.fields["equipment_id"].label_from_instance = lambda obj: f"{obj.equipment_id}"
+        self.fields["equipment_name"].label_from_instance = lambda obj: f"{obj.equipment_name}"
+
+        if "instance" in kwargs and kwargs.get("instance"):
+            product_instance = kwargs["instance"].product
+            if product_instance:
+                self.initial["equipment_id"] = product_instance
+                self.initial["equipment_name"] = product_instance
+
+    def clean(self):
+        cleaned_data = super().clean()
+        equipment_id = cleaned_data.get("equipment_id")
+        if equipment_id:
+            cleaned_data["product"] = equipment_id
+        return cleaned_data

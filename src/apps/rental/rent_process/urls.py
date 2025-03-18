@@ -12,6 +12,8 @@ urlpatterns = [
         views.OrderCreate.as_view(),
         name="order-create",
     ),
+    path('ajax/customer-address/', views.CustomerAddressAjaxView.as_view(), name='customer-address-ajax'),
+    path("order/update/<int:pk>",views.OrderUpdateView.as_view(),name="order-update",),
     path("order/list/ajax", views.OrderListAjaxView.as_view(), name="order-list-ajax"),
     path(
         "order/<str:order_id>/overview",
@@ -94,4 +96,51 @@ urlpatterns = [
     path("ajax/pickupticket/<str:order_id>", views.PickupTicketListAjaxView.as_view(), name="pickup_ticket_list_ajax"),
     path("update-pickup-date/", views.UpdatePickupDateView.as_view(), name="update_pickup_date"),
     # path("update-delivery-stock/",views.DeliveryStockUpdateView.as_view(),name="update_delivery_stock"),
+    # Stage 4 Delivered To Customer
+    path(
+        "order/<str:order_id>/ajax/delivered-to-customer-list-ajax/",
+        views.DeliveredToCustomerListAjaxView.as_view(),
+        name="delivered-to-customer-list-ajax",
+    ),
+    path(
+        "delivered-to-customer-update-date/",
+        views.UpdateDeliveredToCustomerDateView.as_view(),
+        name="delivered_to_customer_update_date",
+    ),
+    path(
+        "change-delivery-delivered-to-customer-status/",
+        views.UpdateDeliveredToCustomerStatusView.as_view(),
+        name="change_delivery_delivered_to_customer_status",
+    ),
+    path(
+        "create-return-delivery/<str:order_id>/",
+        views.ReturnDeliveryModalView.as_view(),
+        name="create_return_delivery_modal",
+    ),
+    path("return-delivery/", views.CreateReturnDeliveryView.as_view(), name="create_return_delivery"),
+    path("order/<str:order_id>/ajax/return-delivery-list-ajax/",views.CreateReturnDeliveryListAjaxView.as_view(),name="return_delivery_list_ajax"),
+    path("update-return-delivery-site/", views.UpdateReturnDeliverySiteView.as_view(), name="update_return_delivery_site"),
+    path("update-return-delivery-qty/", views.UpdateReturnDeliveryQtyView.as_view(), name="update_return_delivery_qty"),
+    path("return-delivery/edit/<str:pk>/", views.ReturnDeliveryUpdateView.as_view(), name="return-delivery-edit"),
+
+
+    #Stage 6 Return Pickup 
+    path("order/<str:order_id>/ajax/return-pickup-list-ajax/",views.ReturnPickupListAjaxView.as_view(),name="return-pickup-list-ajax"),
+    path("update-return-pickup-date/", views.UpdateReturnPickupDateView.as_view(), name="update_return_pickup_date"),
+    path("change-delivery-return-pickup-status/",views.ReturnPickupStatusView.as_view(),name="change_return_pickup_status"),
+
+    #Stage 7 Check In  
+    path("order/<str:order_id>/ajax/check-in-list-ajax/",views.CheckInListAjaxView.as_view(),name="check-in-list-ajax"),
+    path("update-check-in-date/", views.UpdateCheckInDateView.as_view(), name="update_check_in_date"),
+    path("return-delivery-item/update/<int:pk>/",views.ReturnDeliveryItemMismatchUpdateView.as_view(),name="return-delivery-item-update"),
+    path("update-check-in-status/<str:order_id>/", views.UpdateCheckInStatusView.as_view(), name="update_check_in_status"),
+
+    #Stage 7 Inspection
+    path("order/<str:order_id>/ajax/inspection-list-ajax/",views.InspectionListAjaxView.as_view(),name="inspection-list-ajax"),
+    path("update-inspection-date/", views.UpdateInspectionDateView.as_view(), name="update_inspection_date"),
+    path("return-delivery-item/update/<int:pk>/",views.ReturnDeliveryItemMismatchUpdateView.as_view(),name="return-delivery-item-update"),
+    path("mark-inspection-completed-ajax/<int:pk>/",views.MarkInspectionCompletedAjaxView.as_view(),name="mark-inspection-completed-ajax"),
+
+
+    
 ]

@@ -1,0 +1,13 @@
+<div id="rda-{{delivery}}">
+    <a href="#" hx-get="{{ edit_url }}" hx-target="#update_retrun_delivery1"  data-toggle="modal"  title="Edit">
+        <i class="ft-edit font-medium-3 mr-2"></i>
+    </a> 
+    <a href="{{ remove_url }}" title="Remove">
+        <i class="fa fa-times font-medium-3 mr-2"></i>
+    </a>
+</div>
+
+<script>
+    htmx.process(document.getElementById("rda-{{delivery}}"))
+</script>
+

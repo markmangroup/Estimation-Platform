@@ -1,6 +1,6 @@
 {% load static %}
 {% load crispy_forms_tags %}
-<form method="post" hx-post="{% url 'rental:rent_process:order-create' %}" enctype="multipart/form-data">
+<form method="post" hx-post="{% url 'rental:rent_process:order-update' order_obj.pk %}" enctype="multipart/form-data">
   {% csrf_token %}
   <div class="modal-body">
     <div class="row">
@@ -261,7 +261,7 @@
   </div>
   <div class="modal-footer">
     <input type="reset" class="btn bg-light-secondary" data-dismiss="modal" value="Close">
-    <button type="submit" class="btn btn-primary">Add Order</button>
+    <button type="submit" class="btn btn-primary">Update Order</button>
   </div>
 </form>
 <!-- Js Start -->
@@ -275,6 +275,39 @@
 <script type="text/javascript" src="{% static 'datepicker/daterangepicker.min.js' %}" defer></script>
 
 <!-- Date picker End -->
+ <!-- CheckBox Modal -->
+<script>
+    $(document).ready(function () {
+      // Get the modal
+      // var modal = $('#recurring_modal');
+      var fildset = $(".recurring")
+      console.log('fildset: ', fildset);
+  
+      // Get the checkbox
+      var checkbox = $('#recurring-checkbox');
+      console.log('checkbox: ', checkbox);
+      var clsbtn = $('.recurring-close');
+      if(recurringCheckbox.is(':checked') === true){
+            $(".recurring").css('display', 'block');
+        }else{
+            $(".recurring").css('display', 'none');
+        }
+
+      // Default hidden
+      fildset.hide();
+  
+      // When the checkbox is changed
+      checkbox.on('change', function() {
+        if (this.checked) {
+          fildset.show();
+        }else{
+          fildset.hide();
+        }
+      });
+    });
+  </script>
+  <!-- CheckBox Modal -->
+  
 <!-- Date picker Start -->
 <script type="text/javascript">
   $(document).ready(function() {
@@ -282,7 +315,7 @@
     var rentalPeriod = $('.reportrange');
 
     toggleRentalPeriod(recurringCheckbox.is(':checked'));
-
+    
     recurringCheckbox.on('change', function() {
       toggleRentalPeriod(this.checked);
     });
@@ -291,9 +324,11 @@
       if (isRecurring) {
         rentalPeriod.prop('disabled', true);
         rentalPeriod.closest('.col').hide();
+        $(".recurring").css('display', 'block');
       } else {
         rentalPeriod.prop('disabled', false);
         rentalPeriod.closest('.col').show();
+        $(".recurring").css('display', 'none');
       }
     }
 
@@ -505,31 +540,6 @@
 </script>
 <!-- Copy Row JS End -->
 
-<!-- CheckBox Modal -->
-<script>
-  $(document).ready(function () {
-    // Get the modal
-    // var modal = $('#recurring_modal');
-    var fildset = $(".recurring")
-
-    // Get the checkbox
-    var checkbox = $('#recurring-checkbox');
-    var clsbtn = $('.recurring-close');
-
-    // Default hidden
-    fildset.hide();
-
-    // When the checkbox is changed
-    checkbox.on('change', function() {
-      if (this.checked) {
-        fildset.show();
-      }else{
-        fildset.hide();
-      }
-    });
-  });
-</script>
-<!-- CheckBox Modal -->
 
 <!-- Script For reccuring types -->
 <script>
@@ -777,10 +787,7 @@ function updateEquipmentID(select) {
 </script>
 
 <style>
-  .loading-form {
-    display : none;
-  }
-  .loading-form-2 {
+  .update-loading-form{
     display : none;
   }
 </style>
@@ -806,4 +813,4 @@ function updateEquipmentID(select) {
           }
       });
   });
-  </script>
+</script>

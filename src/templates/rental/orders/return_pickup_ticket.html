@@ -1,5 +1,9 @@
 {% load static %}
-
+<style>
+  #return-pickup-table{
+    width: 100% !important;
+  }
+</style>
 <!-- Print Button Start -->
 <div class="float-left my-2 mt-3">
   <button type="button" class="btn btn-primary print-button" data-table-id="table6">Print</button>
@@ -9,14 +13,14 @@
   <label for="" class="form-label font-weight-bold">Global Status</label> 
   <select name="status" class="select2 form-control wizard-required" id="global-select-template-returnpickup">
     <option value="" disabled selected>None</option>
-    <option value="Loaded">Loaded</option>
+    <option value="Return Pick Up Ticket">Loaded</option>
   </select>
 </div>
 <!-- Print Button End -->
 
 <!-- New Table View Start-->
 <div class="mt-5">
-    <table id="table6" class="table table-striped table-bordered">
+    <table id="return-pickup-table" class="table table-striped table-bordered">
       <thead>
         <tr>
           <th style="max-width:100px">Delivery ID</th>
@@ -27,7 +31,7 @@
         </tr>
       </thead>
       <tbody>
-        <!--Main Row 1 -->
+        {% comment %} <!--Main Row 1 -->
         <tr>
           <td> OR20240200018-1 </td>
           <td> 28 </td>
@@ -147,7 +151,7 @@
             </div>
             
           </td>
-        </tr>
+        </tr> {% endcomment %}
 
       </tbody>
     </table>
@@ -158,11 +162,210 @@
   var selectElement = document.getElementById('global-select-template-returnpickup');
   $("#global-select-template-returnpickup").on("change", function (e){
     selectedValue = ($(this).val()) 
-    if (selectedValue === "Loaded") {
-      $(".another-select-returnpickup").val("Loaded").trigger('change');
+    if (selectedValue === "Return Pick Up Ticket") {
+      $(".another-select-return-pick-up-ticket").val("Return Pick Up Ticket").trigger('change');
   } else {
-      $(".another-select-returnpickup").val("").trigger('change');
+      $(".another-select-return-pick-up-ticket").val("").trigger('change');
   }
   })
 
+</script>
+<script>
+  var csrf_token = "{{ csrf_token }}";
+  
+  $(document).ready(function () {
+
+    
+    if ($.fn.dataTable.isDataTable('#return-pickup-table')) {
+        $('#return-pickup-table').DataTable().clear().destroy();
+    }
+    var order_obj_id = "{{order.order_id}}"
+    var url = "{% url 'rental:rent_process:return-pickup-list-ajax' order_id='ORDER_ID' %}".replace('ORDER_ID', order_obj_id);
+    let table = $("#return-pickup-table").DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: url,
+            type: "GET",
+        },
+        columns: [
+            { data: "return_id" },
+            { data: "total_qty" },
+            { data: "returned_pickup_date" },
+            { data: "delivery_date" },
+            //{ data: "actions", orderable: false, searchable: false },
+        ],
+        rowCallback: function (row, data, index) {
+          if (data.products) {
+              let totalQtyCell = $(row).find('td:eq(1)');
+              let checkoutCell = $(row).find('td:eq(2)');
+              let deliveryCell = $(row).find('td:eq(3)');
+
+              // Merge the columns to fit all data in one row
+              totalQtyCell.attr('colspan', 3).css({ "vertical-align": "top" });
+
+              let summaryRow = `
+                 <table class="table table-striped table-bordered">
+                    <tbody>
+                        <tr>
+                            <td style="width: 28.5%;">${data.total_qty}</td>
+                            <td style="width: 29.1%;">${data.returned_pickup_date}</td>
+                            <td style="width: 27.7%;">${data.delivery_date}</td>
+                        </tr>
+                    </tbody>
+                </table>
+              `;
+
+              totalQtyCell.html(`
+                  ${summaryRow}
+                  <div>${data.products}</div>
+              `);
+
+              checkoutCell.hide();
+              deliveryCell.hide();
+              //actionsCell.hide();
+          }
+      }
+
+    });
+
+    setInterval(function () {
+        table.ajax.reload(null, false);
+    }, 60000);
+
+
+  let isUpdating = false;
+
+  $(document).off("change", ".returned-pickup-date").on("change", ".returned-pickup-date", function () {
+    if (isUpdating) return; // Don't allow another request if one is already in progress
+    isUpdating = true;
+
+    let selectedDate = $(this).val();
+    console.log('selectedDate: ', selectedDate);
+    let deliveryId = $(this).data("delivery-id");
+    console.log('deliveryId: ', deliveryId);
+    let successMessage = $(this).siblings(".success-message");
+    let errorMessage = $(this).siblings(".error-message");
+    var update_returned_pickup_date_url = "{% url 'rental:rent_process:update_return_pickup_date' %}";
+
+    console.log(`Updating delivery ${deliveryId} with date: ${selectedDate}`);
+
+    $.ajax({
+        url: update_returned_pickup_date_url,
+        type: "POST",
+        headers: {
+            "X-CSRFToken": csrf_token,
+        },
+        data: JSON.stringify({
+            delivery_id: deliveryId,
+            returned_pickup_date: selectedDate,
+        }),
+        contentType: "application/json",
+        dataType: "json",
+        success: function (response) {
+            isUpdating = false; // Reset the flag when the request is complete
+
+            if (response.success) {
+                toastr.success("Date Updated Successfully!", 'Success', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-bottom-right',
+                    timeOut: 6000
+                });
+            } else {
+                errorMessage.text(response.error).show().delay(2000).fadeOut();
+            }
+        },
+        error: function (xhr, status, error) {
+            isUpdating = false; // Reset the flag even in case of error
+            console.log("Error:", error);
+            errorMessage.text("Failed to update date.").show().delay(2000).fadeOut();
+        },
+    });
+  });
+
+
+});
+</script>
+<script>
+  $(document).ready(function () {
+      // Global status change
+      $("#global-select-template-returnpickup").on("change", function () {
+          var selectedValue = $(this).val();
+          var order_obj_id = "{{ order.order_id }}";
+  
+          if (selectedValue === "Return Pick Up Ticket") {
+              $.ajax({
+                  url: "{% url 'rental:rent_process:change_return_pickup_status' %}",
+                  type: "POST",
+                  headers: {
+                      'X-CSRFToken': "{{ csrf_token }}",
+                  },
+                  data: JSON.stringify({
+                      global_status_change: true,
+                      order_id: order_obj_id
+                  }),
+                  contentType: "application/json",
+                  success: function (response) {
+                      if (response.success) {
+                          $(".another-select-return-pick-up-ticket").val("Return Pick Up Ticket").trigger('change');
+                      } else {
+                          $(".another-select-return-pick-up-ticket").val("").trigger('change');
+                      }
+                  },
+                  error: function () {
+                      console.error("Error checking delivery status.");
+                  }
+              });
+          } else {
+              $(".another-select-return-pick-up-ticket").val("").trigger('change');
+          }
+      });
+  
+      // Individual status change
+
+      $(document).off("change", ".another-select-return-pick-up-ticket").on("change", ".another-select-return-pick-up-ticket", function () {
+          var selectedValue = $(this).val();
+          console.log('selectedValue: ', selectedValue);
+          var return_deliveryId = $(this).data("return-delivery-id");
+          console.log('return_deliveryId: ', return_deliveryId);
+          var return_delivery_item_pk = $(this).data("return-delivery-item-pk");
+          console.log('return_delivery_item_pk: ', return_delivery_item_pk);
+          var $this = $(this); // Store reference to 'this'
+      
+          if (selectedValue === "Return Pick Up Ticket") {
+              $.ajax({
+                  url: "{% url 'rental:rent_process:change_return_pickup_status' %}",
+                  type: "POST",
+                  headers: {
+                      'X-CSRFToken': "{{ csrf_token }}",
+                  },
+                  data: JSON.stringify({
+                      global_status_change: false,
+                      return_delivery_id: return_deliveryId,
+                      return_delivery_item_pk: return_delivery_item_pk
+                  }),
+                  contentType: "application/json",
+                  success: function (response) {
+                      if (!response.success) {
+                          $this.val(""); 
+                      }else{
+                          toastr.success("Status Updated Successfully!", 'Success', {
+                              closeButton: true,
+                              progressBar: true,
+                              positionClass: 'toast-bottom-right',
+                              timeOut: 6000
+                          });
+                      }
+                  },
+                  error: function () {
+                      console.error("Error updating individual delivery status.");
+                      $this.val(""); 
+                  }
+              });
+          }
+      });
+      
+  });
+  
 </script>

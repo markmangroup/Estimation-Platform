@@ -1,0 +1,317 @@
+{% load static %}
+<div class="modal fade text-left" id="create_retrun_delivert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" aria-hidden="true" data-backdrop="false">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel5">Create Return Delivery  </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="returndeliveryform" method="POST" >
+            {% csrf_token %}
+            <input type="hidden"  value={{order}} name="order_id" class="form-control">
+            <div class="row mb-3">
+              <div class="col-6 mb-3">
+                <label for="" class="form-label">Pick Up Date</label>
+                <input type="date" name="returned_pickup_date" class="form-control">
+              </div>
+              <div class="col-6 mb-3">
+                <label for="" class="form-label">Delivery Date</label>
+                <input type="date" name="returned_delivery_date" class="form-control">
+              </div>
+              <div class="row mb-3 container">
+                <div class="col mb-3">
+                  <label for="create_directDelivery" class="form-label">Deliver Directly to Customer</label>
+                  <input id="create_directDelivery" name="createcheckbox" type="checkbox" class="checkbox-class"/>
+                </div>
+              </div> 
+              <div class="col-6 mb-3" id="create_orderFieldContainer112">
+                <label for="orderField" class="form-label">Order</label>
+                <input id="create_orderField" name="order" type="text" class="form-control" />
+              </div>
+              <div class="col-6 mb-3">
+                <label for="" class="form-label">Shipping Carrier</label>
+                <select name="shipping_carrier" class="select2 form-control Returnshipping">
+                  <option disabled selected>Select Shipping Carrier</option>
+                  <option value="Internal">Internal</option>
+                  <option value="Hired">Hired</option>
+                </select>
+              </div>
+              <div class="col-6 mb-3" id="ReturnpoField" style="display: none;">
+                <label for="ReturnpoNumber" class="form-label">Enter PO</label>
+                <input type="text" id="ReturnpoNumber" name="return_po_number" class="form-control">
+              </div>
+              <div class="col-6 mb-3">
+                <label for="" class="form-label">Pick Up Site</label>
+                <input type="text" id="returned_pickup_site" name="returned_pickup_site" value="" class="form-control">
+                <a  href="#" class="showonmap" data-toggle="modal" data-target="#myModal2">Show on Map</a>
+              </div>
+              <div class="col-6 mb-3">
+                <label for="locationInput-retuen" class="form-label">Delivery Site</label>
+                <input type="text" id="" name="returned_delivery_site" value="" class="form-control">
+              </div>            
+            </div>
+          <div class="table-responsive">
+            <table id="sample" class="table table-bordered table-striped">
+              <thead>
+                  <tr>
+                      <th><input name="checkbox" id="selectAll" type="checkbox" class="row-checkbox" /></th>
+                      <th>Material name</th>
+                      <th>Return Qty</th>
+                      <th>Quantity</th>
+                  </tr>
+              </thead>
+              <tbody>
+                {% for item in order_items %}
+                <tr>
+                  <td><input name="checkbox" name="selected_products" type="checkbox" class="row-checkbox"></td>
+                  <td>{{ item.product_name }} <input type="hidden" value="{{ item.product_id }}"/></td>
+                  <td>{{ item.remaining_qty }}</td>
+                  <td><input type="number" class="form-control" name="quantity_{{ item.product_id }}" placeholder="Enter Qty"></td>
+                </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="4" class="text-center">No items found!</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div> 
+        </form>
+      </div>
+      <div id="retrun_delivery_data">
+
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn bg-light-secondary"
+          data-dismiss="modal"
+        >
+          Close
+        </button>
+        <button type="submit" id="submit_btn" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% include "rental/rent_process/create_return_delivery_locations.html" %}
+<!-- Bootstrap JS (Include this after jQuery) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
+{% comment %} <script src="{% static 'vendors/js/datatable/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'vendors/js/datatable/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'app/js/data-tables/datatables-init.js' %}"></script> {% endcomment %}
+<script>
+  $(document).ready(function() {
+    document.getElementById("selectAll").addEventListener("change", function () {
+      let checkboxes = document.querySelectorAll(".row-checkbox");
+      checkboxes.forEach(checkbox => {
+          checkbox.checked = this.checked;
+      });
+    });
+      $("#submit_btn").click(function(e) {
+          e.preventDefault();  
+
+          let isValid = true;
+          let selectedProducts = [];
+          let errorMessages = {};
+
+          $(".error-message").remove();
+          $("#table-error-message").remove();
+
+          let pickupDateInput = $("input[name='returned_pickup_date']");
+          let deliveryDateInput = $("input[name='returned_delivery_date']");
+          let shippingCarrierInput = $("select[name='shipping_carrier']");
+          let orderCreationDate = new Date("{{ return_order_created_at.isoformat }}");
+          let orderFieldInput = $("input[name='order']");
+          let deliverToCustomerCheckbox = $("#create_directDelivery");
+          let pickupDate = new Date(pickupDateInput.val());
+          let deliveryDate = new Date(deliveryDateInput.val());
+          let shippingCarrier = shippingCarrierInput.val();
+          let pickupSite = $("input[name='returned_pickup_site']");
+          let deliverySite = $("input[name='returned_delivery_site']");
+
+          if (!pickupSite.val().trim()) {
+              isValid = false;
+              errorMessages[pickupSite.attr("name")] = "Pickup site is required.";
+          }
+          
+          if (!deliverySite.val().trim()) {
+              isValid = false;
+              errorMessages[deliverySite.attr("name")] = "Delivery site is required.";
+          }
+
+          if (!shippingCarrier) {
+              isValid = false;
+              errorMessages[shippingCarrierInput.attr("name")] = "Shipping Carrier is required.";
+          }
+
+          if (!pickupDateInput.val()) {
+              isValid = false;
+              errorMessages[pickupDateInput.attr("name")] = "Pickup Date is required.";
+          }
+
+          if (!deliveryDateInput.val()) {
+              isValid = false;
+              errorMessages[deliveryDateInput.attr("name")] = "Returned Delivery Date is required.";
+          }
+
+          if (pickupDate < orderCreationDate) {
+              isValid = false;
+              errorMessages[pickupDateInput.attr("name")] = "Pickup Date cannot be earlier than the Order Creation Date.";
+          }
+
+          if (deliveryDate < pickupDate) {
+              isValid = false;
+              errorMessages[deliveryDateInput.attr("name")] = "Delivery Date cannot be earlier than Pickup Date.";
+          }
+
+          if (deliveryDate <= pickupDate) {
+              isValid = false;
+              errorMessages[deliveryDateInput.attr("name")] = "Delivery Date must be greater than Pickup Date.";
+          }
+
+          if (deliverToCustomerCheckbox.is(":checked") && !orderFieldInput.val().trim()) {
+            isValid = false;
+            errorMessages[orderFieldInput.attr("name")] = "Order is required when delivering directly to customer.";
+          }
+
+          let productSelected = false;
+
+          $("input[name='checkbox']:checked").each(function() {
+              let row = $(this).closest("tr");  
+              let quantityInput = row.find("input[name^='quantity_']");
+              
+              if (quantityInput.length > 0) {
+                  let productId = row.find("input[type='hidden']").val();
+                  let quantity = parseInt(quantityInput.val()) || 0;
+                  let maxQty = parseInt(row.find("td:nth-child(3)").text()) || 0;
+
+                  if (quantity > 0) {
+                      productSelected = true;
+                      selectedProducts.push({id: productId, quantity: quantity});
+
+                      if (quantity > maxQty) {
+                          isValid = false;
+                          errorMessages[quantityInput.attr("name")] = `Quantity cannot exceed ${maxQty}.`;
+                      }
+                  } else {
+                      isValid = false;
+                      errorMessages[quantityInput.attr("name")] = "Quantity must be greater than 0.";
+                  }
+              }
+          });
+
+          if (!productSelected) {
+              isValid = false;
+              $("#sample").before(`<p id="table-error-message" style="color: red; font-size: 14px; font-weight: bold;">At least one product with valid quantity is required.</p>`);
+          }
+
+          for (let fieldName in errorMessages) {
+              let inputField = $(`[name='${fieldName}']`);
+              inputField.after(`<span class="error-message" style="color: red; font-size: 12px;">${errorMessages[fieldName]}</span>`);
+          }
+          if (isValid) {
+              let formData = new FormData($("#returndeliveryform")[0]);
+              formData.append("selected_products", JSON.stringify(selectedProducts));
+
+              $.ajax({
+                  type: "POST",
+                  url: "{% url 'rental:rent_process:create_return_delivery' %}",
+                  data: formData,
+                  processData: false,
+                  contentType: false,
+                  headers: {
+                      "X-CSRFToken": "{{ csrf_token }}"
+                  },
+                  success: function(response) {
+                    if (response.status == "success") {
+                      toastr.success(response.message, 'Success', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-bottom-right',
+                        timeOut: 6000
+                      });
+                          $("#create_retrun_delivert").modal("hide");
+                          window.location.reload();
+                          //$("#return_delivery_table").DataTable().ajax.reload(null, false); 
+                      } else {
+                        toastr.error("Error: " + response.message);
+                      }
+                  },
+                  error: function(xhr, status, error) {
+                      alert("Something went wrong! " + error);
+                  }
+              });
+          }
+      });
+  });
+</script>
+
+  <script>
+  $(document).ready(function () {
+      $("#create_retrun_delivert").modal('show');
+      $('.checkbox-class').on('change', function() {
+          var isChecked = $(this).prop("checked");
+          var create_orderFieldContainer = document.getElementById("create_orderFieldContainer112");
+
+          if (isChecked) {
+              create_orderFieldContainer.setAttribute("style", "display: block !important;");
+          } else {
+              create_orderFieldContainer.setAttribute("style", "display: none !important;");
+              
+          }
+      });
+  });
+
+  $(document).ready(function () {
+    $('.Returnshipping').on('change', function() {
+        var selectedValue = $(this).val();
+        if (selectedValue === "Hired") {
+            $("#ReturnpoField").show();
+        } else {
+            $("#ReturnpoField").hide();
+        }
+    });
+  });
+</script>
+<script>
+  $(document).ready(function() {
+    var isMouseDown = false,
+    isHighlighted;
+    
+    $("#sample input:checkbox").mousedown(function(e) {
+      e.preventDefault();
+    });
+    
+      $("#sample tr")
+      .mousedown(function(e) {
+          if ($(e.target).is('input')) {
+            return;
+          }
+          
+          isMouseDown = true;
+          $(this).toggleClass("highlighted");
+          isHighlighted = $(this).hasClass("highlighted");
+          $(this).find("input:checkbox").prop("checked", isHighlighted);
+          return false;
+        })
+        .mouseover(function() {
+          if (isMouseDown) {
+            $(this).toggleClass("highlighted", isHighlighted);
+            $(this).find("input:checkbox").prop("checked", isHighlighted);
+          }
+        })
+        .bind("selectstart", function() {
+          return false;
+        });
+  
+      $(document)
+        .mouseup(function() {
+          isMouseDown = false;
+        });
+    });
+</script>
