@@ -250,6 +250,7 @@ class TaskMapping(BaseModel):
     # Assign labor
     is_assign_task = models.BooleanField(_("Is Assign Task"), default=False)
     assign_to = models.CharField(_("Assign to"), max_length=255, null=True, blank=True)
+    linked_task = models.ForeignKey("self", on_delete=models.SET_NULL, related_name="task_mapping_linked_tasks", blank=True, null=True)
 
     # Manually added tasks
     code = models.CharField(_("Task Code"), max_length=255, blank=True, null=True)
@@ -273,7 +274,7 @@ class TaskMapping(BaseModel):
         """
         Calculate the labor cost based on assigned products for tasks related to this TaskMapping instance.
         """
-        if self.is_assign_task:
+        if self.linked_task:
             task_mappings = TaskMapping.objects.filter(
                 opportunity=self.opportunity, task__description__icontains="labor"
             )
@@ -299,10 +300,13 @@ class TaskMapping(BaseModel):
 
             return round(total_price, 2)
 
-        elif not self.assign_to and self.description and "labor" in self.description.lower():
+        elif not self.linked_task and self.description and "labor" in self.description.lower():
+
             task_mappings = TaskMapping.objects.filter(
                 opportunity=self.opportunity, task__description__icontains="labor"
             ).filter(models.Q(id=self.id) | models.Q(code=self.code))
+
+            print("-- task_mappings --", task_mappings)
 
             # Initialize total calculations
             total_quantity = 0

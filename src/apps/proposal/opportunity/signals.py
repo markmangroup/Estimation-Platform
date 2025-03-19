@@ -13,6 +13,7 @@ from apps.proposal.opportunity.models import (
     TaskMapping,
 )
 
+SAVING_FLAG = False
 
 @receiver(post_save, sender=Opportunity)
 def generate_invoice_details(sender, instance, created, **kwargs):
@@ -89,7 +90,6 @@ def remove_document(sender, instance, created, **kwargs):
         except Exception as e:
             LOGGER.error(f"-- An error occurred while remove empty document from db -- {e}")
 
-
 @receiver(post_save, sender=TaskMapping)
 def sync_task_description_value(sender, instance, created, **kwargs):
     """
@@ -101,8 +101,11 @@ def sync_task_description_value(sender, instance, created, **kwargs):
         created: Boolean indicating if a new record was created.
         **kwargs: Additional keyword arguments..
     """
-    if not created:  # Check object is updated
+    global SAVING_FLAG
+
+    if not created and not SAVING_FLAG:  # Check object is updated
         try:
+            SAVING_FLAG = True
             select_task_code = SelectTaskCode.objects.filter(
                 opportunity=instance.opportunity, task=instance.task
             ).first()

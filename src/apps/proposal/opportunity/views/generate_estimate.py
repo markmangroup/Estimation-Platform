@@ -24,9 +24,11 @@ class TaskProductDataView(CustomDataTableMixin):
     def get_queryset(self):
         document_number = self.kwargs.get("document_number")
         qs = TaskMapping.objects.filter(opportunity__document_number=document_number).exclude(
-            Q(assign_to__isnull=False, task__description__icontains="labor") | 
+            # Q(assign_to__isnull=False, task__description__icontains="labor") | 
+            Q(linked_task__isnull=False, task__description__icontains="labor") |
             Q(task__description__icontains="Freight")
         )
+        # Q(linked_task__isnull=False, task__description__icontains="labor") |
         return qs.exclude(code__icontains="FRT")
 
     def filter_queryset(self, qs):

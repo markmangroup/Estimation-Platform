@@ -468,16 +468,23 @@ class AssignTaskLaborView(ViewMixin):
         """Retrieve available tasks for the specified opportunity."""
         document_number = kwargs.get("document_number")
 
+        # Retrieve opportunity based on the document number
         opportunity_obj = Opportunity.objects.filter(document_number=document_number).first()
-        qs = TaskMapping.objects.filter(opportunity=opportunity_obj, is_assign_task=False).exclude(
-            description__icontains="labor"
-        )
+
+        # Filter normal tasks that are not assigned to any labor task
+        qs = TaskMapping.objects.filter(
+            opportunity=opportunity_obj, 
+            linked_task__isnull=True
+        ).exclude(description__icontains="labor")
+        
+        # Create a list of tasks to be displayed in the dropdown
         task_item_list = [{"id": t.id, "text": t.code} for t in qs]
         return JsonResponse({"results": task_item_list})
 
     def post(self, request, *args, **kwargs) -> JsonResponse:
         """Assign a labor task to a current task."""
         try:
+            # Decode the request body
             body_unicode = request.body.decode("utf-8")
             data = urllib.parse.parse_qs(body_unicode)
 
@@ -485,25 +492,36 @@ class AssignTaskLaborView(ViewMixin):
             value = data["value"][0]
             document_number = data["document_number"][0]
 
+            # Fetch the current task and the selected labor task
             current_task = TaskMapping.objects.get(id=current_task_id)
-            _assign_to = current_task.assign_to  # old value
             assign_labor_task = TaskMapping.objects.get(id=value)
 
+            # Backup the previous task assigned to the labor task
+            previous_task_code = current_task.assign_to
+
+            # Link the labor task to the current task
             current_task.assign_to = assign_labor_task.code
+            current_task.linked_task = assign_labor_task
             current_task.save()
+
+            # Update the labor task to reflect the link
             assign_labor_task.is_assign_task = True
             assign_labor_task.assign_to = current_task.code
+            assign_labor_task.linked_task = current_task
             assign_labor_task.save()
 
-            if _assign_to:
-                task_mapping_object = TaskMapping.objects.filter(
-                    opportunity__document_number=document_number, code=_assign_to
+            # If there was a previously assigned task, unlink it
+            if previous_task_code:
+                previous_task_mapping = TaskMapping.objects.filter(
+                    opportunity__document_number=document_number, code=previous_task_code
                 ).first()
-                task_mapping_object.is_assign_task = False
-                task_mapping_object.assign_to = ""
-                task_mapping_object.save()
+                if previous_task_mapping and previous_task_mapping.linked_task:
+                    # Unlink the previous task from the labor task
+                    previous_task_mapping.linked_task.is_assign_task = False
+                    previous_task_mapping.linked_task.assign_to = ""
+                    previous_task_mapping.linked_task = None
+                    previous_task_mapping.save()
 
-            # messages.success(request, f"Labor Assigned to task {assign_labor_task.code}")
             return JsonResponse(
                 {
                     "code": 200,
@@ -788,7 +806,7 @@ class TaskMappingData:
             total_quantity = sum(product.quantity for product in task_assigned_products)
             total_price = sum(
                 (
-                    (product.vendor_quoted_cost if product.vendor_quoted_cost is not None else product.standard_cost)
+                    (product.vendor_quoted_cost if product.vendor_quoted_cost != 0 else product.standard_cost)
                     * product.quantity
                 )
                 for product in task_assigned_products
