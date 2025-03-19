@@ -168,9 +168,12 @@ def calculation_of_rent_amount(quantity, price, start_date=None, end_date=None):
     if not start_date or not end_date:
         rent_details['rent_amount'] = None
         return rent_details
-
-    rent_amount = quantity * price
-    rent_details['rent_amount'] = rent_amount
+    if quantity and price:
+        rent_amount = quantity * price
+        rent_details['rent_amount'] = rent_amount
+    else:
+        rent_amount = 0
+        rent_details['rent_amount'] = 0
 
     while start_date <= end_date:
         month_name = start_date.strftime("%B %Y")

@@ -134,19 +134,22 @@
             {{ order_item_formset.management_form }}
             {% for item_form in order_item_formset %}
             <tr class="order-item-row">
-              <td class="d-none">{{ item_form.product }}</td>
-              <td>{{ item_form.equipment_id }}</td>
-              <td>{{ item_form.equipment_name }}</td>
-              <td>{{ item_form.quantity }}</td>
-              <td>{{ item_form.per_unit_price }}</td>
-              <td class="d-flex">
+                <!-- Render the hidden id field for existing forms -->
+                {% if item_form.instance.pk %}
+                <td style="display:none;">{{ item_form.id }}</td>
+                {% endif %}
+                <td>{{ item_form.equipment_id }}</td>
+                <td>{{ item_form.equipment_name }}</td>
+                <td>{{ item_form.quantity }}</td>
+                <td>{{ item_form.per_unit_price }}</td>
+                <td class="d-flex">
                 <button type="button" class="btn btn-danger mr-2" onclick="removeRow(this)">
-                  <i class="fa fa-trash"></i>
+                    <i class="fa fa-trash"></i>
                 </button>
                 <button type="button" class="btn btn-primary" onclick="addNewRow()">
-                  <i class="fa fa-plus"></i>
+                    <i class="fa fa-plus"></i>
                 </button>
-              </td>
+                </td>
             </tr>
             {% endfor %}
           </tbody>
@@ -274,37 +277,46 @@
 <script type="text/javascript" src="{% static 'datepicker/moment.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'datepicker/daterangepicker.min.js' %}" defer></script>
 
+
+
+<!-- This will calculate rant par month -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<!-- Date picker End -->
+
+<script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
+
+
 <!-- Date picker End -->
  <!-- CheckBox Modal -->
 <script>
-    $(document).ready(function () {
-      // Get the modal
-      // var modal = $('#recurring_modal');
-      var fildset = $(".recurring")
-      console.log('fildset: ', fildset);
-  
-      // Get the checkbox
-      var checkbox = $('#recurring-checkbox');
-      console.log('checkbox: ', checkbox);
+  $(document).ready(function () {
+      var fildset = $(".recurring");
+      var checkbox = $('#recurring-checkbox'); // Define the checkbox
       var clsbtn = $('.recurring-close');
-      if(recurringCheckbox.is(':checked') === true){
-            $(".recurring").css('display', 'block');
-        }else{
-            $(".recurring").css('display', 'none');
-        }
 
       // Default hidden
       fildset.hide();
-  
-      // When the checkbox is changed
-      checkbox.on('change', function() {
-        if (this.checked) {
+
+      // Check if checkbox is initially checked
+      if (checkbox.is(':checked')) {
           fildset.show();
-        }else{
+      } else {
           fildset.hide();
-        }
+      }
+
+      // When the checkbox is changed
+      checkbox.on('change', function () {
+          if (this.checked) {
+              fildset.show();
+          } else {
+              fildset.hide();
+          }
       });
-    });
+  });
   </script>
   <!-- CheckBox Modal -->
   
@@ -325,6 +337,12 @@
         rentalPeriod.prop('disabled', true);
         rentalPeriod.closest('.col').hide();
         $(".recurring").css('display', 'block');
+        var endDate = "{{ order.rental_end_date }}"; // Example: "May 30, 2025"
+
+        // Initialize Datepicker with a custom date format
+        $("#endDate").datepicker({
+            dateFormat: 'M d, yy' // This format will show "May 30, 2025"
+        }).val(endDate);
       } else {
         rentalPeriod.prop('disabled', false);
         rentalPeriod.closest('.col').show();
@@ -332,17 +350,41 @@
       }
     }
 
-    $('#daterangepicker').daterangepicker({
-      locale: { format: 'MMMM D, YYYY' },  // Format changed to "January 16, 2025"
-      startDate: moment().startOf('month'),
-      endDate: moment().endOf('month'),
-      opens: 'left'
-    }, function(start, end) {
-      $('#rentalPeriod').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY')); // Updated format
-      $('#id_rental_start_date').val(start.format('YYYY-MM-DD'));
-      $('#id_rental_end_date').val(end.format('YYYY-MM-DD'));
-      calculateRentPerMonth(start, end);
-  });
+    setTimeout(function () {
+      let order_start_date = "{{ order.rental_start_date }}";
+      let order_end_date = "{{ order.rental_end_date }}";
+  
+      // Convert Django template values to moment.js dates
+      let formattedStart = order_start_date ? moment(order_start_date, "MMMM D, YYYY") : moment().startOf('month');
+      let formattedEnd = order_end_date ? moment(order_end_date, "MMMM D, YYYY") : moment().endOf('month');
+  
+      console.log("Order Start Date:", formattedStart.format("MMMM D, YYYY"));
+      console.log("Order End Date:", formattedEnd.format("MMMM D, YYYY"));
+  
+      let $dateRangePicker = $('#daterangepicker');
+  
+      $dateRangePicker.daterangepicker({
+          locale: { format: 'MMMM D, YYYY' }, 
+          startDate: formattedStart,
+          endDate: formattedEnd,
+          opens: 'left',
+          autoUpdateInput: true 
+      }, function(start, end) {
+          let selectedDateRange = start.format("MMMM D, YYYY") + " - " + end.format("MMMM D, YYYY");
+  
+          $('#daterangepicker').val(selectedDateRange);
+          $('#rentalPeriod').text(selectedDateRange);  
+          $('#id_rental_start_date').val(start.format('YYYY-MM-DD'));
+          $('#id_rental_end_date').val(end.format('YYYY-MM-DD'));
+          calculateRentPerMonth(start, end);
+      });
+  
+      let initialDateRange = formattedStart.format("MMMM D, YYYY") + " - " + formattedEnd.format("MMMM D, YYYY");
+      $dateRangePicker.val(initialDateRange);
+      $('#rentalPeriod').text(initialDateRange);
+      $dateRangePicker.trigger('change'); 
+  }, 500);
+  
 
     $('#daterangepicker').on('apply.daterangepicker', function(ev, picker) {
       $('#rentalPeriod').html(
@@ -413,8 +455,6 @@
     console.log("Updated #rentPerMonth field with:\n" + rentPerMonthText);
 }
 </script>
-{% comment %} this will Calculate Rant amount {% endcomment %}
-
 <!-- Rant amount calculate -->
 <script>
   function updateRentAmount() {
@@ -453,30 +493,57 @@
     // Trigger the change event (if needed by delegated handlers)
     $('#rentAmount').trigger('change');
   }
-  
 
   $('#rentAmount').on('input', function() {
     console.log("Rent amount input (on input) changed. New value:", $(this).val());
   });
-  function removeRow(button) {
-    const row = button.closest('tr');
-    row.remove();
-    updateRentAmount();
-  }
+function removeRow(button) {
+    var row = button.closest('tr');
+    var deleteInput = row.querySelector("input[name$='-DELETE']");
 
+    if (deleteInput) {
+        deleteInput.checked = true;  // Mark for deletion
+        row.style.display = "none";  // Hide the row
+    } else {
+        row.remove();  // Only remove if no delete checkbox exists
+    }
+
+    updateTotalForms();
+    updateRentAmount();   
+}
+
+function updateTotalForms() {
+  let totalFormsInput = document.getElementById("id_orders-TOTAL_FORMS");
+  let allRows = document.querySelectorAll(".order-item-row"); // Select all form rows
+  let deleteInputs = document.querySelectorAll("[name^='orders-'][name$='-DELETE']");
+
+  let activeFormsCount = 0;
+
+  allRows.forEach(row => {
+      let deleteInput = row.querySelector("[name$='-DELETE']");
+      if (!deleteInput || !deleteInput.checked) {
+          activeFormsCount++;  // Count only rows that are NOT marked for deletion
+      }
+  });
+
+  console.log("Updated TOTAL_FORMS:", activeFormsCount);
+
+  // Update TOTAL_FORMS value
+  totalFormsInput.value = activeFormsCount;
+}
   function addNewRow() {
     console.log("Adding new row...");
 
     var formsetTable = document.getElementById("order-item-formset");
-    var totalFormsInput = document.getElementById("id_orders-TOTAL_FORMS"); 
+    var totalFormsInput = document.getElementById("id_orders-TOTAL_FORMS");
 
     if (!totalFormsInput || !formsetTable) {
         console.error("Error: TOTAL_FORMS input ya table body nahi mila.");
         return;
     }
 
-    var totalForms = parseInt(totalFormsInput.value, 10); 
-    var firstRow = formsetTable.querySelector(".order-item-row"); 
+    var totalForms = parseInt(totalFormsInput.value, 10);
+    var firstRow = formsetTable.querySelector(".order-item-row");
 
     if (!firstRow) {
         console.error("Error: Koi row nahi mili clone karne ke liye!");
@@ -495,7 +562,9 @@
             var newId = input.id.replace(/-\d+-/, "-" + totalForms + "-");
             input.id = newId;
         }
-        input.value = "";
+        if (input.type !== "hidden") {
+            input.value = "";
+        }
     });
 
     var deleteButton = newRow.querySelector(".btn-danger");
@@ -508,38 +577,35 @@
     formsetTable.appendChild(newRow);
 
     totalFormsInput.value = totalForms + 1;
-}
+  }
+
 
 </script>
 
-<!-- Date picker End -->
-
-<script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
 
 <!-- Copy Row JS Start -->
 <script>
-  function CopyTableRow() {
-
-    var tableBody = document.getElementById("tableBody");
-    // console.log("Table Body:", tableBody);
-
-    var rowToCopy = document.getElementById("newProduct");
-    // console.log("Row to Copy:", rowToCopy);
-
-    totalRows = 1;
-
-    for (var i = 0; i < totalRows; i++) {
-      // console.log("Copying row", i + 1);
-      // Clone the row
-      var clonedRow = rowToCopy.cloneNode(true);
-      // console.log("Cloned Row:", clonedRow);
-      tableBody.appendChild(clonedRow);
-      // console.log("Row appended to table body");
-    }
-  }
+    function CopyTableRow() {
+        var tableBody = document.getElementById("tableBody");
+        var rowToCopy = document.getElementById("newProduct");
+        // Copy the row once (adjust totalRows if needed)
+        var totalRows = 1;
+        
+        for (var i = 0; i < totalRows; i++) {
+          // Clone the row
+          var newRow = rowToCopy.cloneNode(true);
+          // Clear the primary key field if it exists
+          var idField = newRow.querySelector("input[name$='-id']");
+          if (idField) {
+            idField.value = "";
+          }
+          // Append the new row to the table body
+          tableBody.appendChild(newRow);
+        }
+      }
+      
 </script>
 <!-- Copy Row JS End -->
-
 
 <!-- Script For reccuring types -->
 <script>
@@ -600,88 +666,6 @@
   });
 </script>
 
-<!-- Script For reccuring types -->
-
-<!-- Script For disabled state of the "Rental Period" section: -->
-<!-- <script>
-  $(document).ready(function() {
-    // Get the modal and elements
-    var rentalPeriod = $('.reportrange'); // Adjust this if needed
-    var recurringCheckbox = $('#recurring-checkbox');
-
-    // Initially hide the rental period if the checkbox is checked
-    toggleRentalPeriod(recurringCheckbox.is(':checked'));
-
-    // Toggle rental period visibility based on the checkbox state
-    recurringCheckbox.on('change', function() {
-      toggleRentalPeriod(this.checked);
-    });
-
-    function toggleRentalPeriod(isRecurring) {
-      if (isRecurring) {
-        rentalPeriod.prop('disabled', true);
-        rentalPeriod.closest('.col').hide(); // Hide the entire column
-      } else {
-        rentalPeriod.prop('disabled', false);
-        rentalPeriod.closest('.col').show(); // Show the entire column
-      }
-    }
-  });
-</script> -->
-
-<!-- This will calculate rant par month -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/daterangepicker/moment.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-
-<!-- <script>
-  $(function() {
-    $('#daterangepicker').daterangepicker({
-      locale: { format: 'YYYY-MM-DD' },
-      startDate: moment().startOf('month'),
-      endDate: moment().endOf('month'),
-      opens: 'left'
-    }, function(start, end) {
-      $('#rentalPeriod').html(start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-      calculateRentPerMonth();
-    });
-
-    $('#rentAmount').on('input', calculateRentPerMonth);
-
-    function calculateRentPerMonth() {
-      var rentAmount = parseFloat($('#rentAmount').val());
-      var period = $('#rentalPeriod').text().split(' to ');
-
-      if (!rentAmount || period.length !== 2) return;
-
-      var startDate = moment(period[0]);
-      var endDate = moment(period[1]);
-
-      // Calculate the total number of months in the rental period
-      var months = [];
-      var currentMonthStart = startDate.clone().startOf('month');
-
-      while (currentMonthStart <= endDate) {
-        months.push(currentMonthStart.format('YYYY-MM'));
-        currentMonthStart.add(1, 'month').startOf('month');
-      }
-
-      var numberOfMonths = months.length;
-      var rentPerMonth = rentAmount / numberOfMonths;
-
-      var rentPerMonthText = '';
-      months.forEach(function(month) {
-        rentPerMonthText += moment(month).format('MMMM YYYY') + ': ' + rentPerMonth.toFixed(2) + '\n';
-      });
-
-      $('#rentPerMonth').val(rentPerMonthText);
-    }
-  });
-</script> -->
-
-
 <script>
   $(document).ready(function () {
     $(".disable-first-option").each(function () {
@@ -736,8 +720,8 @@ function updateEquipmentID(select) {
     function updateEndDate() {
         console.log("Function triggered");
 
-        let repeatType = $("#id_repeat_type").val();  
-        let repeatValue = parseInt($("#id_repeat_value").val(), 10);
+        let repeatType = $("#repeatType").val();  
+        let repeatValue = parseInt($("#repeatValue").val(), 10);
         let startDate = $("#startDate").val();  
 
         console.log("Repeat Type:", repeatType);
@@ -760,7 +744,7 @@ function updateEquipmentID(select) {
         console.log("Parsed Start Date:", startMoment.format("YYYY-MM-DD"));
 
         let daysToAdd = 0;
-
+        console.log('repeatType.toLowerCase(): ', repeatType.toLowerCase());
         if (repeatType.toLowerCase() === "weekly") {
             daysToAdd = repeatValue * 7;
         } else if (repeatType.toLowerCase() === "monthly") {
@@ -781,7 +765,7 @@ function updateEquipmentID(select) {
         $("#hidden_endDate").val(formattedEndDate);
     }
 
-    $("#id_repeat_type, #id_repeat_value, #startDate").on("change keyup", updateEndDate);
+    $("#repeatType, #repeatValue, #startDate").on("change keyup", updateEndDate);
 
   });
 </script>

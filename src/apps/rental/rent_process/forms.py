@@ -489,60 +489,110 @@ class UpdateOrderForm(forms.ModelForm):
             self.fields["repeat_value"].widget.attrs.update({"id": "repeatValue"})
             self.fields["repeat_start_date"].widget.attrs.update({"id": "startDate"})
             self.fields["repeat_end_date"].widget.attrs.update({"id": "endDate"})
+
+            last_recurring_order = self.instance.recurring_orders.order_by("-end_date").first()
+            if last_recurring_order:
+                self.initial["repeat_end_date"] = last_recurring_order.end_date
             if self.instance and self.instance.customer:
                 self.initial["customer_email"] = self.instance.customer.customer_email
+            if self.instance.pick_up_location:
+                if isinstance(self.instance.pick_up_location, RentalWarehouse):
+                    self.initial["pick_up_location"] = self.instance.pick_up_location
+                else:
+                    try:
+                        self.initial["pick_up_location"] = RentalWarehouse.objects.get(location=self.instance.pick_up_location)
+                    except RentalWarehouse.DoesNotExist:
+                        # Optionally, set to None or leave unchanged
+                        self.initial["pick_up_location"] = None
 
 class UpdateOrderItemForm(forms.ModelForm):
     equipment_id = forms.ModelChoiceField(
         queryset=RentalProduct.objects.all(),
-        widget=forms.Select(attrs={"class": "form-control disable-first-option", "onchange": "updateEquipmentName(this)"}),
+        widget=forms.Select(attrs={
+            "class": "form-control disable-first-option", 
+            "onchange": "updateEquipmentName(this)"
+        }),
         empty_label="Select Equipment ID",
         label="Equipment ID"
     )
     equipment_name = forms.ModelChoiceField(
         queryset=RentalProduct.objects.all(),
-        widget=forms.Select(attrs={"class": "form-control disable-first-option", "onchange": "updateEquipmentID(this)"}),
+        widget=forms.Select(attrs={
+            "class": "form-control disable-first-option", 
+            "onchange": "updateEquipmentID(this)"
+        }),
         empty_label="Select Equipment Name",
         label="Equipment Name"
     )
-    
+
     class Meta:
         model = OrderItem
-        fields = ["product", "quantity", "per_unit_price"]
+        # Include "id" so that existing instances have the primary key.
+        fields = ["id", "product", "quantity", "per_unit_price"]
         widgets = {
+            "id": forms.HiddenInput(),  # Hidden field for the primary key.
             "product": forms.HiddenInput(),
-            "quantity": forms.NumberInput(attrs={"class": "form-control quantity", "oninput": "updateRentAmount()"}),
-            "per_unit_price": forms.NumberInput(attrs={"class": "form-control price", "oninput": "updateRentAmount()"}),
+            "quantity": forms.NumberInput(attrs={
+                "class": "form-control quantity", 
+                "oninput": "updateRentAmount()"
+            }),
+            "per_unit_price": forms.NumberInput(attrs={
+                "class": "form-control price", 
+                "oninput": "updateRentAmount()"
+            }),
         }
-        # Remove exclude if present
+        # Do not use exclude here
 
     def __init__(self, *args, **kwargs):
+        print("Initializing UpdateOrderItemForm with args:", args, "and kwargs:", kwargs)
         super().__init__(*args, **kwargs)
-        # Remove the id field if it exists so that Django won't validate it.
-        if 'id' in self.fields:
-            del self.fields['id']
+        
+        # If this is an extra form (new), remove the "id" field so it isn’t required.
+        if not (self.instance and self.instance.pk):
+            if "id" in self.fields:
+                print("No instance pk found (extra form). Removing 'id' field.")
+                del self.fields["id"]
+        else:
+            print("Existing instance found with id:", self.instance.pk)
 
-        # Set permission-based required attributes if necessary
+        # Debug: List all fields in this form:
+        print("Fields in form after init:", list(self.fields.keys()))
+
+        # Set permissions if provided
         permissions = OrderFormPermissionModel.objects.first()
         if permissions:
             for field_name in self.fields:
                 if hasattr(permissions, field_name):
                     self.fields[field_name].required = getattr(permissions, field_name)
+                    print(f"Setting required for field '{field_name}' to {getattr(permissions, field_name)}")
 
+        # Set querysets and label formatting for equipment fields
         self.fields["equipment_id"].queryset = RentalProduct.objects.all()
         self.fields["equipment_name"].queryset = RentalProduct.objects.all()
         self.fields["equipment_id"].label_from_instance = lambda obj: f"{obj.equipment_id}"
         self.fields["equipment_name"].label_from_instance = lambda obj: f"{obj.equipment_name}"
 
-        if "instance" in kwargs and kwargs.get("instance"):
-            product_instance = kwargs["instance"].product
+        if self.instance and self.instance.pk:
+            product_instance = self.instance.product
+            print("Instance has product:", product_instance)
             if product_instance:
                 self.initial["equipment_id"] = product_instance
                 self.initial["equipment_name"] = product_instance
 
     def clean(self):
+        print("Cleaning UpdateOrderItemForm. Initial cleaned_data:", self.cleaned_data)
         cleaned_data = super().clean()
+        # If form hasn't changed, consider it empty.
+        if not self.has_changed():
+            print("Form has not changed. Marking as empty.")
+            self.cleaned_data = {}
+            return self.cleaned_data
+
         equipment_id = cleaned_data.get("equipment_id")
         if equipment_id:
+            print("Equipment ID found:", equipment_id)
             cleaned_data["product"] = equipment_id
+        else:
+            print("No Equipment ID provided.")
+        print("Cleaned data after processing:", cleaned_data)
         return cleaned_data
