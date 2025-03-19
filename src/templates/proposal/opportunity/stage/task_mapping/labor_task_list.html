@@ -34,13 +34,13 @@
         <div class="float-left my-2">
             <label>Assign labor to task:</label>
             {% if t_info.task.assign_to %}
-            <select class="select-labor-task" name="" data-url="{% url "proposal_app:opportunity:assign-task-labor" opportunity.document_number %}" data-id={{t_id}} data-document={{ opportunity.document_number }}>
-                <option value="{{t_info.task.assign_to}}">{{t_info.task.assign_to}}</option>
-            </select>
+                <select class="select-labor-task" name="" data-url="{% url "proposal_app:opportunity:assign-task-labor" opportunity.document_number %}" data-id={{t_id}} data-document={{ opportunity.document_number }}>
+                    <option value="{{t_info.task.assign_to}}">{{t_info.task.assign_to}}</option>
+                </select>
             {% else %}
-            <select class="select-labor-task" name="" data-url="{% url "proposal_app:opportunity:assign-task-labor" opportunity.document_number %}" data-id={{t_id}} data-document={{ opportunity.document_number }}>
-                <option selected disabled>Select task</option>
-            </select>
+                <select class="select-labor-task" name="" data-url="{% url "proposal_app:opportunity:assign-task-labor" opportunity.document_number %}" data-id={{t_id}} data-document={{ opportunity.document_number }}>
+                    <option selected disabled>Select task</option>
+                </select>
             {% endif %}
 
         </div>
