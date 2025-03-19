@@ -296,18 +296,19 @@
         rentalPeriod.closest('.col').show();
       }
     }
-
-    $('#daterangepicker').daterangepicker({
-      locale: { format: 'MMMM D, YYYY' },  // Format changed to "January 16, 2025"
-      startDate: moment().startOf('month'),
-      endDate: moment().endOf('month'),
-      opens: 'left'
-    }, function(start, end) {
-      $('#rentalPeriod').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY')); // Updated format
-      $('#id_rental_start_date').val(start.format('YYYY-MM-DD'));
-      $('#id_rental_end_date').val(end.format('YYYY-MM-DD'));
-      calculateRentPerMonth(start, end);
-  });
+    setTimeout(function () {
+        $('#daterangepicker').daterangepicker({
+          locale: { format: 'MMMM D, YYYY' },  // Format changed to "January 16, 2025"
+          startDate: moment().startOf('month'),
+          endDate: moment().endOf('month'),
+          opens: 'left'
+        }, function(start, end) {
+          $('#rentalPeriod').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY')); // Updated format
+          $('#id_rental_start_date').val(start.format('YYYY-MM-DD'));
+          $('#id_rental_end_date').val(end.format('YYYY-MM-DD'));
+          calculateRentPerMonth(start, end);
+      });
+    }, 500);  // 500ms delay
 
     $('#daterangepicker').on('apply.daterangepicker', function(ev, picker) {
       $('#rentalPeriod').html(

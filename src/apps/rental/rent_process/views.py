@@ -5,16 +5,13 @@ from typing import Any, Dict
 from django.contrib import messages
 from django.db.models import Q, Sum
 from django.forms import inlineformset_factory
+from django.forms.models import BaseInlineFormSet
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, render
 from django.template.loader import get_template, render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.timezone import now
-from django.db.models import Sum
 from isodate import parse_date
-from django.http import JsonResponse
-from django.forms.models import BaseInlineFormSet
-
 
 from apps.constants import ERROR_RESPONSE, LOGGER
 from apps.mixin import (
@@ -45,7 +42,14 @@ from apps.rental.rent_process.models import (
 )
 from apps.rental.stock_management.models import StockAdjustment
 
-from .forms import OrderForm, OrderFormPermissionForm, OrderItemForm, OrderItemFormSet,UpdateOrderForm,UpdateOrderItemForm
+from .forms import (
+    OrderForm,
+    OrderFormPermissionForm,
+    OrderItemForm,
+    OrderItemFormSet,
+    UpdateOrderForm,
+    UpdateOrderItemForm,
+)
 
 
 class OrderListView(WarehouseViewMixin):
@@ -120,7 +124,7 @@ class OrderListAjaxView(CustomDataTableMixin):
                 | Q(updated_at__icontains=self.search)
                 | Q(order_status__icontains=self.search)
                 | Q(delivery_order__delivery_status__icontains=self.search)
-            ).distinct()  
+            ).distinct()
         return qs
 
     def prepare_results(self, qs):
@@ -213,11 +217,11 @@ class OrderListAjaxView(CustomDataTableMixin):
         )
         hx_target = ""
         data_target = ""
-        edit_url = reverse(
-            "rental:rent_process:order-update",
-            kwargs={"pk": obj.pk},
-        )
-        
+        # edit_url = reverse(
+        #     "rental:rent_process:order-update",
+        #     kwargs={"pk": obj.pk},
+        # )
+
         return t.render(
             {
                 "delete_url": delete_url,
@@ -509,7 +513,7 @@ class RecurringOrderListAjaxView(CustomDataTableMixin):
         """Create row data for datatables."""
         data = []
         for o in qs:
-            number_of_orders = o.order.calculate_total_repeat_orders()
+            number_of_orders = RecurringOrder.objects.filter(order=o.order).count()
             data.append(
                 {
                     "order_id": self._get_orignal_order_id(o.order.order_id),
@@ -518,12 +522,8 @@ class RecurringOrderListAjaxView(CustomDataTableMixin):
                     "order_amount": o.order.rent_amount,
                     "account_manager": o.order.account_manager.name,
                     "recurring_type": o.order.repeat_type,
-                    "repeat_start_date": (
-                        o.start_date.strftime("%d/%m/%Y") if o.start_date else None
-                    ),
-                    "repeat_end_date": (
-                        o.end_date.strftime("%d/%m/%Y") if o.end_date else None
-                    ),
+                    "repeat_start_date": (o.start_date.strftime("%d/%m/%Y") if o.start_date else None),
+                    "repeat_end_date": (o.end_date.strftime("%d/%m/%Y") if o.end_date else None),
                     "number_of_orders": number_of_orders,
                     "actions": self._get_actions(o),
                 }
@@ -546,9 +546,11 @@ class ReturnOrderListAjaxView(CustomDataTableMixin):
         t = get_template("rental/rent_process/rent_process_action.html")
         time_line_url = None
         if obj.delivery:
-            time_line_url = reverse("rental:rent_process:order-history", kwargs={"delivery_id": obj.delivery.delivery_id})
+            time_line_url = reverse(
+                "rental:rent_process:order-history", kwargs={"delivery_id": obj.delivery.delivery_id}
+            )
         else:
-            time_line_url = ''
+            time_line_url = ""
         edit_url = reverse("rental:rent_process:return-order-edit", kwargs={"pk": obj.order.order_id})
         process_url = reverse("rental:rent_process:order-process", kwargs={"order_id": obj.order.order_id})
         data_target = "#update_return_order"
@@ -619,7 +621,7 @@ class ReturnOrderListAjaxView(CustomDataTableMixin):
             data.append(
                 {
                     "order_id": self._get_order_id(o.order),
-                    "delivery_id": o.delivery.unique_delivery_id if o.delivery else '',
+                    "delivery_id": o.delivery.unique_delivery_id if o.delivery else "",
                     "status": self._get_estimation_stage(delivery_ids),
                     "customer": o.order.customer.name,
                     "account_manager": o.order.account_manager.name,
@@ -753,38 +755,38 @@ class OrderCreate(CreateViewMixin):
 
         if order_item_formset.is_valid():
             order_item_formset.save()
-            return_order = ReturnOrder.objects.create(order=order)
+            ReturnOrder.objects.create(order=order)
             is_recurring = self.request.POST.get("recurring_order")
-            repeat_type = self.request.POST.get("repeat_type")  
+            repeat_type = self.request.POST.get("repeat_type")
             repeat_value = self.request.POST.get("repeat_value", 0)
-            repeat_start_date = order.repeat_start_date  
-            print('repeat_start_date: ', repeat_start_date)
-            repeat_end_date = order.repeat_end_date  
-            print('repeat_end_date: ', repeat_end_date)
+            repeat_start_date = order.repeat_start_date
+            print("repeat_start_date: ", repeat_start_date)
+            repeat_end_date = order.repeat_end_date
+            print("repeat_end_date: ", repeat_end_date)
 
             if is_recurring == "on" and repeat_type and int(repeat_value) > 0 and repeat_start_date and repeat_end_date:
-                start_date = repeat_start_date  
+                start_date = repeat_start_date
                 repeat_type = repeat_type.lower()
-                print('repeat_type: ', repeat_type)
-                print('start_date: ', start_date)
+                print("repeat_type: ", repeat_type)
+                print("start_date: ", start_date)
 
                 if repeat_type == "weekly":
-                    interval = 7  
+                    interval = 7
                 elif repeat_type == "monthly":
-                    interval = 30 
+                    interval = 30
                 elif repeat_type == "yearly":
                     interval = 365
                 else:
                     messages.error(self.request, "Invalid repeat type")
                     return self.form_invalid(form)
 
-                last_end_date = repeat_end_date  
+                last_end_date = repeat_end_date
 
                 for i in range(int(repeat_value)):
                     next_start_date = start_date + datetime.timedelta(days=interval * i)
-                    print('next_start_date: ', next_start_date)
+                    print("next_start_date: ", next_start_date)
                     next_end_date = next_start_date + datetime.timedelta(days=interval - 1)
-                    print('next_end_date: ', next_end_date)
+                    print("next_end_date: ", next_end_date)
 
                     # Use the date object directly for repeat_end_date
                     defined_repeat_end = repeat_end_date
@@ -799,12 +801,14 @@ class OrderCreate(CreateViewMixin):
                     print(f"Recurring Order {i+1}: {next_start_date} to {next_end_date}")
                     last_end_date = next_end_date
 
-                print('Before order.repeat_end_date: ', order.repeat_end_date)
+                print("Before order.repeat_end_date: ", order.repeat_end_date)
                 order.rental_end_date = last_end_date
                 order.repeat_end_date = last_end_date
                 order.save()
-                print('After order.repeat_end_date: ', order.repeat_end_date)
-
+                print("After order.repeat_end_date: ", order.repeat_end_date)
+            total_rent_amount = sum((item.quantity or 0) * (item.per_unit_price or 0) for item in order.orders.all())
+            order.rent_amount = total_rent_amount
+            order.save()
             messages.success(self.request, "Order Created Successfully")
             return HttpResponse("success")
         else:
@@ -814,7 +818,8 @@ class OrderCreate(CreateViewMixin):
     def form_invalid(self, form):
         messages.error(self.request, "Please correct the errors in the form.")
         return self.render_to_response(self.get_context_data(form=form))
-    
+
+
 class BaseOrderItemFormSet(BaseInlineFormSet):
     def _construct_form(self, i, **kwargs):
         form = super()._construct_form(i, **kwargs)
@@ -822,6 +827,7 @@ class BaseOrderItemFormSet(BaseInlineFormSet):
         if i >= self.initial_form_count():
             form.empty_permitted = True
         return form
+
 
 class OrderUpdateView(UpdateViewMixin):
     model = Order
@@ -831,14 +837,10 @@ class OrderUpdateView(UpdateViewMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        print("OrderUpdateView.get_context_data: self.object ====>", self.object)
         OrderItemFormSet = inlineformset_factory(
-                Order, 
-                OrderItem, 
-                form=UpdateOrderItemForm, 
-                extra=1, 
-                can_delete=True, 
-                formset=BaseOrderItemFormSet
-            )
+            Order, OrderItem, form=UpdateOrderItemForm, extra=0, can_delete=True, formset=BaseOrderItemFormSet
+        )
 
         if self.request.POST:
             context["order_item_formset"] = OrderItemFormSet(self.request.POST, instance=self.object)
@@ -847,82 +849,104 @@ class OrderUpdateView(UpdateViewMixin):
             for form in formset.forms:
                 form.fields["product"].queryset = RentalProduct.objects.all()
             context["order_item_formset"] = formset
+            print("Using instance data for formset. Total forms:", len(formset.forms))
 
         # Update queryset for customer field if needed
         context["form"].fields["customer"].queryset = RentalCustomer.objects.all()
         context["permission"] = OrderFormPermissionModel.objects.first()
-        context["order_obj"] = Order.objects.filter(id=self.kwargs.get("pk")).first()
-        
+        # Here, ensure that order_obj is correctly retrieved
+        order_obj = Order.objects.filter(id=self.kwargs.get("pk")).first()
+        context["order_obj"] = order_obj
+        print("Order object in context:", order_obj)
         return context
 
     def form_valid(self, form):
-        order = form.save(commit=False)
+        order = form.save(commit=False)  # Save order but don't commit yet
+
+        # Define the formset for handling OrderItems
         OrderItemFormSet = inlineformset_factory(
-            Order, 
-            OrderItem, 
-            form=UpdateOrderItemForm, 
-            extra=1, 
-            can_delete=True, 
-            formset=BaseOrderItemFormSet
+            Order, OrderItem, form=UpdateOrderItemForm, extra=0, can_delete=True, formset=BaseOrderItemFormSet
         )
+
         order_item_formset = OrderItemFormSet(self.request.POST, instance=order)
 
-        # Debugging the formset errors
         if not order_item_formset.is_valid():
+            print("Formset errors:", order_item_formset.errors)
             return self.form_invalid(form)
-        if order_item_formset.is_valid():
-            order.save()  # Save order before saving formset
-            order_item_formset.save()
 
-            # If updating recurring orders, remove the old ones and create new ones as needed
-            recurring = self.request.POST.get("recurring_order") == "on"
-            repeat_type = self.request.POST.get("repeat_type")
-            repeat_value = int(self.request.POST.get("repeat_value", 0))
-            repeat_start_date = order.repeat_start_date
-            repeat_end_date = order.repeat_end_date
+        order.save()
 
-            # Remove old recurring orders (if any)
-            order.recurringorder_set.all().delete()
+        submitted_order_item_ids = set()
 
-            if recurring and repeat_type and repeat_value > 0 and repeat_start_date and repeat_end_date:
-                start_date = repeat_start_date  
-                repeat_type = repeat_type.lower()
+        # Iterate through formset and process each form
+        for item_form in order_item_formset.forms:
+            if item_form.cleaned_data.get("DELETE", False):
+                print(f"Deleting order item ID: {item_form.instance.pk}")
+                if item_form.instance.pk:
+                    item_form.instance.delete()
+                continue
 
-                if repeat_type == "weekly":
-                    interval = 7  
-                elif repeat_type == "monthly":
-                    interval = 30  
-                elif repeat_type == "yearly":
-                    interval = 365
-                else:
-                    messages.error(self.request, "Invalid repeat type")
-                    return self.form_invalid(form)
+            if item_form.instance.pk:
+                print(f"Updating existing OrderItem ID: {item_form.instance.pk}")
+                submitted_order_item_ids.add(item_form.instance.pk)
+            else:
+                print("Creating new OrderItem...")
 
-                last_end_date = repeat_end_date
+            item = item_form.save(commit=False)
+            item.order = order  # Ensure OrderItem is linked to the order
+            item.save()
+            submitted_order_item_ids.add(item.pk)  # Store new item's ID
 
-                for i in range(repeat_value):
-                    next_start_date = start_date + datetime.timedelta(days=interval * i)
-                    next_end_date = next_start_date + datetime.timedelta(days=interval - 1)
-                    defined_repeat_end = repeat_end_date
-                    next_end_date = min(next_end_date, defined_repeat_end)
+        # Delete any old OrderItems not in the formset
+        OrderItem.objects.filter(order=order).exclude(pk__in=submitted_order_item_ids).delete()
 
-                    RecurringOrder.objects.create(
-                        order=order,
-                        start_date=next_start_date,
-                        end_date=next_end_date,
-                    )
-                    last_end_date = next_end_date
+        # Process recurring order logic
+        order.recurring_orders.all().delete()
 
-                # Update the order's rental_end_date and repeat_end_date accordingly
-                order.rental_end_date = last_end_date
-                order.repeat_end_date = last_end_date
-                order.save()
+        recurring = self.request.POST.get("recurring_order") == "on"
+        repeat_type = self.request.POST.get("repeat_type")
+        repeat_value = self.request.POST.get("repeat_value", 0)
+        repeat_start_date = order.repeat_start_date
+        repeat_end_date = order.repeat_end_date if not recurring else self.request.POST.get("repeat_end_date")
 
-            messages.success(self.request, "Order Updated Successfully")
-            return HttpResponse("success")
-        else:
-            print("OrderItem FormSet Errors:", order_item_formset.errors)
-            return self.form_invalid(form)
+        if recurring and repeat_type and int(repeat_value) > 0 and repeat_start_date and repeat_end_date:
+            start_date = repeat_start_date
+            repeat_type = repeat_type.lower()
+
+            interval_map = {"weekly": 7, "monthly": 30, "yearly": 365}
+            interval = interval_map.get(repeat_type)
+
+            if not interval:
+                messages.error(self.request, "Invalid repeat type")
+                return self.form_invalid(form)
+
+            # Convert repeat_end_date to datetime.date if it's a string
+            if isinstance(repeat_end_date, str):
+                repeat_end_date = datetime.datetime.strptime(repeat_end_date, "%Y-%m-%d").date()
+
+            last_end_date = repeat_end_date
+
+            for i in range(int(repeat_value)):
+                next_start_date = start_date + datetime.timedelta(days=interval * i)
+                next_end_date = min(next_start_date + datetime.timedelta(days=interval - 1), repeat_end_date)
+
+                RecurringOrder.objects.create(
+                    order=order,
+                    start_date=next_start_date,
+                    end_date=next_end_date,
+                )
+                last_end_date = next_end_date
+
+            order.rental_end_date = last_end_date
+            order.repeat_end_date = last_end_date
+            order.save()
+        # Update total rent amount
+        total_rent_amount = sum((item.quantity or 0) * (item.per_unit_price or 0) for item in order.orders.all())
+        order.rent_amount = total_rent_amount
+        order.save()
+
+        messages.success(self.request, "Order Updated Successfully")
+        return HttpResponse("success")
 
     def form_invalid(self, form):
         messages.error(self.request, "Please correct the errors in the form.")
@@ -1048,7 +1072,7 @@ class UploadDocument(CreateViewMixin):
 
         :return: The success URL for the opportunity detail view.
         """
-        order_id = self.request.POST.get("order_id")
+        self.request.POST.get("order_id")
         return reverse("rental:rent_process:order-list")
 
 
@@ -2191,6 +2215,7 @@ class UpdateDeliveredToCustomerStatusView(View):
         except Exception as e:
             return JsonResponse({"success": False, "error": f"Failed to update global deliveries: {str(e)}"})
 
+
 class ReturnDeliveryModalView(View):
     model = Order
     template_name = "rental/rent_process/return_delivery_table.html"
@@ -2200,8 +2225,7 @@ class ReturnDeliveryModalView(View):
         return_order = ReturnOrder.objects.filter(order__order_id=order_id).first()
         return_order_created_at = return_order.created_at if return_order else None
         delivered_items = (
-            Delivery.objects
-            .filter(order__order_id=order_id,delivery_status=Delivery.STAGE_4 )
+            Delivery.objects.filter(order__order_id=order_id, delivery_status=Delivery.STAGE_4)
             .values("product")
             .annotate(total_delivered_qty=Sum("delivery_qty"))
         )
@@ -2212,30 +2236,34 @@ class ReturnDeliveryModalView(View):
             product_id = item["product"]
             total_delivered_qty = item["total_delivered_qty"]
 
-          # Get already returned quantity
+            # Get already returned quantity
             returned_qty = (
-                ReturnDeliveryItem.objects
-                .filter(return_delivery__return_order__order__order_id=order_id, product_id=product_id)
-                .aggregate(Sum("return_qty"))["return_qty__sum"] or 0
+                ReturnDeliveryItem.objects.filter(
+                    return_delivery__return_order__order__order_id=order_id, product_id=product_id
+                ).aggregate(Sum("return_qty"))["return_qty__sum"]
+                or 0
             )
-            
-            remaining_qty = total_delivered_qty - (returned_qty )
+
+            remaining_qty = total_delivered_qty - (returned_qty)
             if remaining_qty > 0:
                 product_obj = RentalProduct.objects.get(pk=product_id)
-                pending_return_items.append({
-                    "product_id": product_obj.equipment_id,
-                    "product_name": product_obj.equipment_name,
-                    "delivered_qty": total_delivered_qty,
-                    "returned_qty": returned_qty,
-                    "remaining_qty": remaining_qty
-                })
+                pending_return_items.append(
+                    {
+                        "product_id": product_obj.equipment_id,
+                        "product_name": product_obj.equipment_name,
+                        "delivered_qty": total_delivered_qty,
+                        "returned_qty": returned_qty,
+                        "remaining_qty": remaining_qty,
+                    }
+                )
 
         context = {
             "order": order_id,
             "order_items": pending_return_items,
-            "return_order_created_at":return_order_created_at
+            "return_order_created_at": return_order_created_at,
         }
         return render(request, self.template_name, context)
+
 
 class CreateReturnDeliveryView(ViewMixin):
     def post(self, request, *args, **kwargs):
@@ -2250,7 +2278,7 @@ class CreateReturnDeliveryView(ViewMixin):
             return_po_number = request.POST.get("return_po_number")
             shipping_carrier = request.POST.get("shipping_carrier")
             deliver_to_customer = request.POST.get("createcheckbox") == "on"
-            today_date = datetime.datetime.now().date() 
+            today_date = datetime.datetime.now().date()
             removal_date = today_date + datetime.timedelta(days=5)
 
             order = request.POST.get("order") or None
@@ -2259,8 +2287,10 @@ class CreateReturnDeliveryView(ViewMixin):
                 if not order:
                     return JsonResponse({"status": "error", "message": "Invalid Order ID. Order does not exist."})
                 if order.order_id == return_order_id:
-                    return JsonResponse({"status": "error", "message": "Order ID and Return Order ID cannot be the same."})
-                
+                    return JsonResponse(
+                        {"status": "error", "message": "Order ID and Return Order ID cannot be the same."}
+                    )
+
             success_message = ""
             if deliver_to_customer and order:
                 selected_products_json = request.POST.get("selected_products")
@@ -2277,37 +2307,36 @@ class CreateReturnDeliveryView(ViewMixin):
                         product=product,
                         delivery_qty=int(qty),
                         delivery_date=returned_delivery_date,
-                        contract_start_date= today_date,
-                        pickup_date = returned_pickup_date,
+                        contract_start_date=today_date,
+                        pickup_date=returned_pickup_date,
                         pickup_site=returned_pickup_site,
                         delivery_site=returned_delivery_site,
-                        po_number=return_po_number, 
+                        po_number=return_po_number,
                         shipping_carrier=shipping_carrier,
                         delivery_status=Delivery.STAGE_1,
-                        direct_delivery=True
+                        direct_delivery=True,
                     )
-                    
-                    return_delivery = ReturnDelivery.objects.create(
-                    return_order=return_order,
-                    returned_pickup_date=returned_pickup_date,
-                    returned_delivery_date=returned_delivery_date,
-                    returned_pickup_site=returned_pickup_site,
-                    contract_end_date = today_date,
-                    returned_delivery_site=returned_delivery_site,
-                    return_po_number=return_po_number,
-                    removal_date=removal_date,
-                    shipping_carrier=shipping_carrier,
-                    deliver_to_customer=deliver_to_customer,
-                    direct_delivery=True)
 
-                    print('ReturnDelivery: create Successfully   ')
+                    return_delivery = ReturnDelivery.objects.create(
+                        return_order=return_order,
+                        returned_pickup_date=returned_pickup_date,
+                        returned_delivery_date=returned_delivery_date,
+                        returned_pickup_site=returned_pickup_site,
+                        contract_end_date=today_date,
+                        returned_delivery_site=returned_delivery_site,
+                        return_po_number=return_po_number,
+                        removal_date=removal_date,
+                        shipping_carrier=shipping_carrier,
+                        deliver_to_customer=deliver_to_customer,
+                        direct_delivery=True,
+                    )
+
+                    print("ReturnDelivery: create Successfully   ")
                     product = RentalProduct.objects.get(equipment_id=product_id)
                     ReturnDeliveryItem.objects.create(
-                        return_delivery=return_delivery,
-                        product=product,
-                        return_qty=int(qty)
+                        return_delivery=return_delivery, product=product, return_qty=int(qty)
                     )
-                    print('ReturnDeliveryItem: create Successfully   ')
+                    print("ReturnDeliveryItem: create Successfully   ")
                     success_message = "Delivery Created Successfully!"
             else:
                 return_delivery = ReturnDelivery.objects.create(
@@ -2318,9 +2347,9 @@ class CreateReturnDeliveryView(ViewMixin):
                     returned_delivery_site=returned_delivery_site,
                     return_po_number=return_po_number,
                     shipping_carrier=shipping_carrier,
-                    contract_end_date = today_date,
+                    contract_end_date=today_date,
                     removal_date=removal_date,
-                    deliver_to_customer=deliver_to_customer
+                    deliver_to_customer=deliver_to_customer,
                 )
 
                 selected_products_json = request.POST.get("selected_products")
@@ -2332,32 +2361,31 @@ class CreateReturnDeliveryView(ViewMixin):
 
                     product = RentalProduct.objects.get(equipment_id=product_id)
                     ReturnDeliveryItem.objects.create(
-                        return_delivery=return_delivery,
-                        product=product,
-                        return_qty=int(qty)
+                        return_delivery=return_delivery, product=product, return_qty=int(qty)
                     )
                 success_message = "Return Delivery Created Successfully!"
 
             return JsonResponse({"status": "success", "message": success_message})
         except Exception as e:
             return JsonResponse({"status": "error", "message": str(e)})
-        
+
+
 class CreateReturnDeliveryListAjaxView(CustomDataTableMixin):
     """AJAX view for listing  Return delivery  in a DataTable format."""
 
     def _get_actions(self, obj):
-            """Generate action buttons for delivery orders."""
-            t = get_template("rental/orders/return_delivery_actions.html") 
-            edit_url = reverse("rental:rent_process:return-delivery-edit", kwargs={"pk": obj})
-            remove_url = "#"
-            return t.render(
-                {
-                    "edit_url": edit_url,
-                    "remove_url": remove_url,
-                    "delivery": obj,
-                    "request": self.request,
-                }
-            )
+        """Generate action buttons for delivery orders."""
+        t = get_template("rental/orders/return_delivery_actions.html")
+        edit_url = reverse("rental:rent_process:return-delivery-edit", kwargs={"pk": obj})
+        remove_url = "#"
+        return t.render(
+            {
+                "edit_url": edit_url,
+                "remove_url": remove_url,
+                "delivery": obj,
+                "request": self.request,
+            }
+        )
 
     def get_queryset(self):
         """Returns a queryset of deliveries for the given order_id in the URL."""
@@ -2366,7 +2394,12 @@ class CreateReturnDeliveryListAjaxView(CustomDataTableMixin):
         return_deliveries = ReturnDelivery.objects.filter(return_order__in=return_orders).exclude(direct_delivery=True)
         return_items = ReturnDeliveryItem.objects.filter(
             return_delivery__in=return_deliveries,
-            return_status__in=[ReturnDeliveryItem.STAGE_5, ReturnDeliveryItem.STAGE_6, ReturnDeliveryItem.STAGE_7, ReturnDeliveryItem.STAGE_8]
+            return_status__in=[
+                ReturnDeliveryItem.STAGE_5,
+                ReturnDeliveryItem.STAGE_6,
+                ReturnDeliveryItem.STAGE_7,
+                ReturnDeliveryItem.STAGE_8,
+            ],
         )
         return return_items
 
@@ -2380,14 +2413,22 @@ class CreateReturnDeliveryListAjaxView(CustomDataTableMixin):
                 | Q(return_delivery__return_order__customer__name__icontains=self.search)
             )
         return qs
-    
+
     def _get_returned_pickup_date(self, return_delivery_obj):
 
-        today_date = now().date().isoformat()  
-        returned_pickup_date = return_delivery_obj.returned_pickup_date.isoformat() if return_delivery_obj.returned_pickup_date else None
+        today_date = now().date().isoformat()
+        returned_pickup_date = (
+            return_delivery_obj.returned_pickup_date.isoformat() if return_delivery_obj.returned_pickup_date else None
+        )
 
         t = get_template("rental/rent_process/delivery_returned_pickup_date.html")
-        return t.render({"return_delivery_obj": return_delivery_obj, "today_date": today_date, "returned_pickup_date": returned_pickup_date})
+        return t.render(
+            {
+                "return_delivery_obj": return_delivery_obj,
+                "today_date": today_date,
+                "returned_pickup_date": returned_pickup_date,
+            }
+        )
 
     def prepare_results(self, qs):
         """Format delivery data for DataTables with grouped deliveries."""
@@ -2408,13 +2449,11 @@ class CreateReturnDeliveryListAjaxView(CustomDataTableMixin):
                         if return_delivery.contract_end_date
                         else "-"
                     ),
-                    "returned_pickup_date":self._get_returned_pickup_date(return_delivery),
+                    "returned_pickup_date": self._get_returned_pickup_date(return_delivery),
                     "removal_date": (
-                        return_delivery.removal_date.strftime("%d %B, %Y")
-                        if return_delivery.removal_date
-                        else "-"
+                        return_delivery.removal_date.strftime("%d %B, %Y") if return_delivery.removal_date else "-"
                     ),
-                    'actions':self._get_actions(return_id),
+                    "actions": self._get_actions(return_id),
                     "products": "",
                 }
 
@@ -2433,7 +2472,7 @@ class CreateReturnDeliveryListAjaxView(CustomDataTableMixin):
 
     def _get_item_row(self, return_item, index):
         """Generate a table row for an individual return item with a dynamic Sr No."""
-        
+
         if not return_item.product:
             return ""
 
@@ -2443,18 +2482,17 @@ class CreateReturnDeliveryListAjaxView(CustomDataTableMixin):
                 <td>{return_item.product.equipment_id if return_item.product else '-'}</td>
                 <td>{return_item.product.equipment_name}</td>
                 <td>
-                    <input type="text" name="delivery_site" class="form-control delivery-site-input" 
-                        value="{return_item.return_delivery.returned_delivery_site if return_item.return_delivery else ''}" 
+                    <input type="text" name="delivery_site" class="form-control delivery-site-input"
+                        value="{return_item.return_delivery.returned_delivery_site if return_item.return_delivery else ''}"
                         data-return-delivery-id="{return_item.return_delivery.return_unique_id if return_item.return_delivery else ''}">
                 </td>
                 <td>
-                    <input type="number" name="quantity" class="form-control quantity-input" 
-                        value="{return_item.return_qty}" min="1" 
+                    <input type="number" name="quantity" class="form-control quantity-input"
+                        value="{return_item.return_qty}" min="1"
                         data-return-delivery-item-pk="{return_item.pk}">
                 </td>
             </tr>
         """
-
 
     def _wrap_item_table(self, rows, return_id, delivery_id):
         """Wrap item rows in a full table structure with a unique ID."""
@@ -2501,19 +2539,21 @@ class CreateReturnDeliveryListAjaxView(CustomDataTableMixin):
             return context
         except Exception as e:
             return {"error": str(e)}
-        
-        
+
+
 class ReturnDeliveryUpdateView(ViewMixin):
     def get(self, request, *args, **kwargs):
         # obj = get_object_or_404(ReturnDelivery, return_unique_id=self.kwargs["pk"]).exclude(direct_delivery=True)
-        obj = get_object_or_404(ReturnDelivery.objects.exclude(direct_delivery=True), return_unique_id=self.kwargs["pk"])
+        obj = get_object_or_404(
+            ReturnDelivery.objects.exclude(direct_delivery=True), return_unique_id=self.kwargs["pk"]
+        )
         return_items = obj.return_items.all
         context = {
             "obj": obj,
             "return_items": return_items,
         }
         return render(request, "rental/orders/update_return_delivery.html", context)
-    
+
     def post(self, request, *args, **kwargs):
         obj = get_object_or_404(ReturnDelivery, return_unique_id=self.kwargs["pk"])
         removal_date = request.POST.get("removal_date")
@@ -2521,14 +2561,14 @@ class ReturnDeliveryUpdateView(ViewMixin):
             data = json.loads(request.body.decode("utf-8")) if request.body else {}
         except json.JSONDecodeError:
             data = {}
-            
+
         selected_products = data.get("selected_products", [])
         deliver_to_customer = data.get("deliver_to_customer", False)
         order = data.get("order")
         return_order_id = order
-        print('return_order_id: ', return_order_id)
+        print("return_order_id: ", return_order_id)
         if deliver_to_customer:
-         return_order = ReturnOrder.objects.get(order__order_id=return_order_id)
+            return_order = ReturnOrder.objects.get(order__order_id=return_order_id)
         if order:
             order = Order.objects.filter(order_id=order).first()
             if not order:
@@ -2540,7 +2580,7 @@ class ReturnDeliveryUpdateView(ViewMixin):
             obj.removal_date = removal_date
             obj.save()
             return JsonResponse({"status": "success", "message": "Removal date updated successfully!"})
-        
+
         if deliver_to_customer:
             for product in selected_products:
                 product_id = product.get("id")
@@ -2551,7 +2591,7 @@ class ReturnDeliveryUpdateView(ViewMixin):
                 if return_item:
                     return_item.return_qty = update_qty
                     return_item.save()
-                
+
                 unique_delivery_id = tasks.generate_delivery_id(order)
                 product_id = RentalProduct.objects.get(equipment_id=product_id)
                 Delivery.objects.create(
@@ -2560,36 +2600,35 @@ class ReturnDeliveryUpdateView(ViewMixin):
                     product=product_id,
                     delivery_qty=quantity,
                     delivery_date=obj.returned_delivery_date,
-                    pickup_date = obj.returned_pickup_date,
+                    pickup_date=obj.returned_pickup_date,
                     pickup_site=obj.returned_pickup_site,
                     delivery_site=obj.returned_delivery_site,
-                    po_number=obj.return_po_number, 
+                    po_number=obj.return_po_number,
                     shipping_carrier=obj.shipping_carrier,
                     delivery_status=Delivery.STAGE_1,
-                    direct_delivery=True
+                    direct_delivery=True,
                 )
                 return_delivery = ReturnDelivery.objects.create(
-                return_order=return_order,
-                returned_pickup_date=obj.returned_pickup_date,
-                returned_delivery_date=obj.returned_delivery_date,
-                returned_pickup_site=obj.returned_pickup_site,
-                returned_delivery_site=obj.returned_delivery_site,
-                return_po_number=obj.return_po_number,
-                removal_date=obj.removal_date,
-                shipping_carrier=obj.shipping_carrier,
-                deliver_to_customer=deliver_to_customer,
-                direct_delivery=True)
-                
-                ReturnDeliveryItem.objects.create(
-                    return_delivery=return_delivery,
-                    product=product1,
-                    return_qty=int(quantity)
+                    return_order=return_order,
+                    returned_pickup_date=obj.returned_pickup_date,
+                    returned_delivery_date=obj.returned_delivery_date,
+                    returned_pickup_site=obj.returned_pickup_site,
+                    returned_delivery_site=obj.returned_delivery_site,
+                    return_po_number=obj.return_po_number,
+                    removal_date=obj.removal_date,
+                    shipping_carrier=obj.shipping_carrier,
+                    deliver_to_customer=deliver_to_customer,
+                    direct_delivery=True,
                 )
-            
+
+                ReturnDeliveryItem.objects.create(
+                    return_delivery=return_delivery, product=product1, return_qty=int(quantity)
+                )
+
             # obj.deliver_to_customer = True
             # obj.save()
             return JsonResponse({"status": "success", "message": "Delivery created successfully for customer!"})
-        
+
         else:
             for product in selected_products:
                 product_id = product.get("id")
@@ -2601,7 +2640,8 @@ class ReturnDeliveryUpdateView(ViewMixin):
                     return_item.save()
 
             return JsonResponse({"status": "success", "message": "products quantity updated successfully!"})
-                    
+
+
 class UpdateReturnDeliverySiteView(ViewMixin):
     """Class-Based View for updating Delivery Site"""
 
@@ -2616,6 +2656,7 @@ class UpdateReturnDeliverySiteView(ViewMixin):
             return JsonResponse({"status": "success", "message": "Delivery site updated successfully!"})
         except ReturnDelivery.DoesNotExist:
             return JsonResponse({"status": "error", "message": "Return Delivery not found!"})
+
 
 class UpdateReturnDeliveryQtyView(ViewMixin):
     """Class-Based View for updating Quantity"""
@@ -2642,19 +2683,33 @@ class ReturnPickupListAjaxView(CustomDataTableMixin):
 
         return_orders = ReturnOrder.objects.filter(order__order_id=order_id)
         return_deliveries = ReturnDelivery.objects.filter(return_order__in=return_orders).exclude(direct_delivery=True)
-        return_items = ReturnDeliveryItem.objects.filter(return_delivery__in=return_deliveries,return_status__in=[ReturnDeliveryItem.STAGE_5, ReturnDeliveryItem.STAGE_6,ReturnDeliveryItem.STAGE_7,ReturnDeliveryItem.STAGE_8])
+        return_items = ReturnDeliveryItem.objects.filter(
+            return_delivery__in=return_deliveries,
+            return_status__in=[
+                ReturnDeliveryItem.STAGE_5,
+                ReturnDeliveryItem.STAGE_6,
+                ReturnDeliveryItem.STAGE_7,
+                ReturnDeliveryItem.STAGE_8,
+            ],
+        )
 
         return return_items
 
     def _get_returned_pickup_date(self, return_delivery_obj):
 
-        today_date = now().date().isoformat()  
-        returned_pickup_date = return_delivery_obj.returned_pickup_date.isoformat() if return_delivery_obj.returned_pickup_date else None
+        today_date = now().date().isoformat()
+        returned_pickup_date = (
+            return_delivery_obj.returned_pickup_date.isoformat() if return_delivery_obj.returned_pickup_date else None
+        )
 
         t = get_template("rental/rent_process/delivery_returned_pickup_date.html")
-        return t.render({"return_delivery_obj": return_delivery_obj, "today_date": today_date, "returned_pickup_date": returned_pickup_date})
-
-
+        return t.render(
+            {
+                "return_delivery_obj": return_delivery_obj,
+                "today_date": today_date,
+                "returned_pickup_date": returned_pickup_date,
+            }
+        )
 
     def filter_queryset(self, qs):
         """Return filtered queryset based on search input."""
@@ -2681,16 +2736,14 @@ class ReturnPickupListAjaxView(CustomDataTableMixin):
                     "return_id": return_id,
                     "delivery_id": return_delivery.pk,
                     "total_qty": 0,
-                    "returned_pickup_date": (
-                        return_delivery.returned_pickup_date.strftime("%d %B, %Y")
-                        if return_delivery.returned_pickup_date
-                        else "-"
-                    ),
-                    "returned_pickup_date":self._get_returned_pickup_date(return_delivery),
+                    # "returned_pickup_date": (
+                    #     return_delivery.returned_pickup_date.strftime("%d %B, %Y")
+                    #     if return_delivery.returned_pickup_date
+                    #     else "-"
+                    # ),
+                    "returned_pickup_date": self._get_returned_pickup_date(return_delivery),
                     "delivery_date": (
-                        return_delivery.removal_date.strftime("%d %B, %Y")
-                        if return_delivery.removal_date
-                        else "-"
+                        return_delivery.removal_date.strftime("%d %B, %Y") if return_delivery.removal_date else "-"
                     ),
                     "products": "",
                 }
@@ -2708,10 +2761,14 @@ class ReturnPickupListAjaxView(CustomDataTableMixin):
 
         return data
 
-
     def _get_item_row(self, return_item, index):
         """Generate a table row for an individual return item with a dynamic Sr No."""
-        selected_none = "" if return_item.return_status in [ReturnDeliveryItem.STAGE_6,ReturnDeliveryItem.STAGE_7,ReturnDeliveryItem.STAGE_8] else "selected"
+        selected_none = (
+            ""
+            if return_item.return_status
+            in [ReturnDeliveryItem.STAGE_6, ReturnDeliveryItem.STAGE_7, ReturnDeliveryItem.STAGE_8]
+            else "selected"
+        )
         selected_return_pick_up_ticket = "selected" if return_item.return_status == "Return Pick Up Ticket" else ""
         if not return_item.product:
             return ""
@@ -2812,7 +2869,7 @@ class UpdateReturnPickupDateView(View):
             return JsonResponse({"success": False, "error": "Invalid JSON data."})
         except Exception as e:
             return JsonResponse({"success": False, "error": f"Unexpected error: {str(e)}"})
-        
+
 
 class ReturnPickupStatusView(View):
     def post(self, request, *args, **kwargs):
@@ -2835,7 +2892,7 @@ class ReturnPickupStatusView(View):
         except json.JSONDecodeError:
             return JsonResponse({"success": False, "error": "Invalid JSON data"})
 
-    def update_single_delivery(self,return_delivery_item_pk):
+    def update_single_delivery(self, return_delivery_item_pk):
         """Handles updating a single delivery's status"""
         delivery = ReturnDeliveryItem.objects.filter(pk=return_delivery_item_pk).first()
 
@@ -2856,8 +2913,12 @@ class ReturnPickupStatusView(View):
             delivery_obj.save()
 
         return JsonResponse(
-            {"success": True,}
+            {
+                "success": True,
+            }
         )
+
+
 class CheckInListAjaxView(CustomDataTableMixin):
     """AJAX view for listing Return Pickups in a DataTable format."""
 
@@ -2867,14 +2928,17 @@ class CheckInListAjaxView(CustomDataTableMixin):
 
         return_orders = ReturnOrder.objects.filter(order__order_id=order_id)
         return_deliveries = ReturnDelivery.objects.filter(return_order__in=return_orders).exclude(direct_delivery=True)
-        return_items = ReturnDeliveryItem.objects.filter(return_delivery__in=return_deliveries,return_status__in=[ReturnDeliveryItem.STAGE_6,ReturnDeliveryItem.STAGE_7,ReturnDeliveryItem.STAGE_8])
+        return_items = ReturnDeliveryItem.objects.filter(
+            return_delivery__in=return_deliveries,
+            return_status__in=[ReturnDeliveryItem.STAGE_6, ReturnDeliveryItem.STAGE_7, ReturnDeliveryItem.STAGE_8],
+        )
 
         return return_items
 
     def _get_check_in_date(self, return_delivery_obj):
         # Get today's date in ISO format
         today_date = datetime.datetime.utcnow().date().isoformat()
-        
+
         # Get the check-in date from the return_delivery_obj, if available
         check_in_date = return_delivery_obj.check_in_date
         if check_in_date:
@@ -2882,14 +2946,9 @@ class CheckInListAjaxView(CustomDataTableMixin):
 
         # Render the template with the provided context
         t = get_template("rental/rent_process/delivery_check_in_date.html")
-        return t.render({
-            "return_delivery_obj": return_delivery_obj,
-            "today_date": today_date,
-            "check_in_date": check_in_date
-        })
-
-
-
+        return t.render(
+            {"return_delivery_obj": return_delivery_obj, "today_date": today_date, "check_in_date": check_in_date}
+        )
 
     def filter_queryset(self, qs):
         """Return filtered queryset based on search input."""
@@ -2916,12 +2975,12 @@ class CheckInListAjaxView(CustomDataTableMixin):
                     "return_id": return_id,
                     "delivery_id": return_delivery.pk,
                     "total_qty": 0,
-                    "returned_pickup_date": (
-                        return_delivery.returned_pickup_date.strftime("%d %B, %Y")
-                        if return_delivery.returned_pickup_date
-                        else "-"
-                    ),
-                    "returned_pickup_date":self._get_check_in_date(return_delivery),
+                    # "returned_pickup_date": (
+                    #     return_delivery.returned_pickup_date.strftime("%d %B, %Y")
+                    #     if return_delivery.returned_pickup_date
+                    #     else "-"
+                    # ),
+                    "returned_pickup_date": self._get_check_in_date(return_delivery),
                     "products": "",
                 }
 
@@ -2938,29 +2997,32 @@ class CheckInListAjaxView(CustomDataTableMixin):
 
         return data
 
-
     def _get_item_row(self, return_item, index):
         """Generate a table row for an individual return item with a dynamic Sr No."""
-        selected_none = "" if return_item.return_status in [ReturnDeliveryItem.STAGE_6] else "selected"
-        selected_return_pick_up_ticket = "selected" if return_item.return_status == "Return Pick Up Ticket" else ""
+        # selected_none = "" if return_item.return_status in [ReturnDeliveryItem.STAGE_6] else "selected"
+        # selected_return_pick_up_ticket = "selected" if return_item.return_status == "Return Pick Up Ticket" else ""
         if not return_item.product:
             return ""
         stock_adjustments = return_item.product.stock_adjustments.all()  # This returns a queryset
-        stock_adjustments_pk = stock_adjustments.first().pk if stock_adjustments.exists() else ''  # Access the first element's pk
-        stock_adjustments_stock = stock_adjustments.first().quantity if stock_adjustments.exists() else ''  # Access the first element's pk
+        stock_adjustments_pk = (
+            stock_adjustments.first().pk if stock_adjustments.exists() else ""
+        )  # Access the first element's pk
+        stock_adjustments_stock = (
+            stock_adjustments.first().quantity if stock_adjustments.exists() else ""
+        )  # Access the first element's pk
         return f"""
             <tr>
                 <td>{index}</td>
                 <td>{return_item.product.equipment_id if return_item.product else '-'}</td>
                 <td>{return_item.product.equipment_name}</td>
                 <td>
-                    <input type="text" 
-                        id="quantity-{return_item.product.equipment_id}" 
-                        data-return-delivery-unique_id="{return_item.return_delivery.return_unique_id}" 
-                        data-pick-up-ticket-items-pk="{return_item.pk}" 
+                    <input type="text"
+                        id="quantity-{return_item.product.equipment_id}"
+                        data-return-delivery-unique_id="{return_item.return_delivery.return_unique_id}"
+                        data-pick-up-ticket-items-pk="{return_item.pk}"
                         data-stock-id="{stock_adjustments_pk}"
-                        data-value="{return_item.return_qty}" 
-                        data-current-stock="{stock_adjustments_stock}" 
+                        data-value="{return_item.return_qty}"
+                        data-current-stock="{stock_adjustments_stock}"
                         value="{return_item.return_qty}"
                         class="form-control check-in-qty wizard-required">
                     <small class="quantityMessage text-danger"></small>
@@ -3014,7 +3076,6 @@ class CheckInListAjaxView(CustomDataTableMixin):
             return {"error": str(e)}
 
 
-
 class UpdateCheckInDateView(View):
     def post(self, request, *args, **kwargs):
         try:
@@ -3047,42 +3108,40 @@ class UpdateCheckInDateView(View):
         except Exception as e:
             return JsonResponse({"success": False, "error": f"Unexpected error: {str(e)}"})
 
+
 class ReturnDeliveryItemMismatchUpdateView(View):
     def post(self, request, pk):
         # Retrieve plus and minus quantities from POST data.
         pulse_quantity = request.POST.get("pulse_quantity")
         minus_quantity = request.POST.get("minus_quantity")
-        print('pulse_quantity:', pulse_quantity)
-        print('minus_quantity:', minus_quantity)
-        
+        print("pulse_quantity:", pulse_quantity)
+        print("minus_quantity:", minus_quantity)
+
         if pulse_quantity is None or minus_quantity is None:
             return JsonResponse({"success": False, "message": "Plus or minus quantity missing."}, status=400)
-        
+
         try:
             plus_val = int(pulse_quantity)
             minus_val = int(minus_quantity)
         except ValueError:
             return JsonResponse({"success": False, "message": "Invalid quantity values."}, status=400)
-        
+
         # Compute the net mismatch.
         # For example, if minus (missing qty) is greater than plus (extra qty), then net_mismatch is positive.
         net_mismatch = minus_val - plus_val
         print("Calculated net_mismatch:", net_mismatch)
-        
+
         # Get the ReturnDeliveryItem
         item = get_object_or_404(ReturnDeliveryItem, pk=pk)
         try:
-            print('Before item.return_qty:', item.return_qty)
+            print("Before item.return_qty:", item.return_qty)
             # Subtract the net mismatch from the current return_qty
             item.return_qty -= net_mismatch
             item.save()
-            print('After item.return_qty:', item.return_qty)
+            print("After item.return_qty:", item.return_qty)
             return JsonResponse({"success": True, "message": "Return Delivery Item updated."})
         except Exception as e:
             return JsonResponse({"success": False, "message": str(e)}, status=400)
-        
-
-
 
 
 class InspectionListAjaxView(CustomDataTableMixin):
@@ -3094,30 +3153,28 @@ class InspectionListAjaxView(CustomDataTableMixin):
 
         return_orders = ReturnOrder.objects.filter(order__order_id=order_id)
         return_deliveries = ReturnDelivery.objects.filter(return_order__in=return_orders).exclude(direct_delivery=True)
-        return_items = ReturnDeliveryItem.objects.filter(return_delivery__in=return_deliveries,return_status__in=[ReturnDeliveryItem.STAGE_7,ReturnDeliveryItem.STAGE_8])
+        return_items = ReturnDeliveryItem.objects.filter(
+            return_delivery__in=return_deliveries,
+            return_status__in=[ReturnDeliveryItem.STAGE_7, ReturnDeliveryItem.STAGE_8],
+        )
 
         return return_items
 
     def _get_inspection_date(self, return_delivery_obj):
         # Get today's date in ISO format
         today_date = datetime.datetime.utcnow().date().isoformat()
-        
+
         # Get the check-in date from the return_delivery_obj, if available
         inspection_date = return_delivery_obj.inspection_date
-        print('inspection_date: ======================++>>>', inspection_date)
+        print("inspection_date: ======================++>>>", inspection_date)
         if inspection_date:
             inspection_date = inspection_date.isoformat()  # Strip time and timezone
 
         # Render the template with the provided context
         t = get_template("rental/rent_process/delivery_inspection_date.html")
-        return t.render({
-            "return_delivery_obj": return_delivery_obj,
-            "today_date": today_date,
-            "inspection_date": inspection_date
-        })
-
-
-
+        return t.render(
+            {"return_delivery_obj": return_delivery_obj, "today_date": today_date, "inspection_date": inspection_date}
+        )
 
     def filter_queryset(self, qs):
         """Return filtered queryset based on search input."""
@@ -3145,11 +3202,9 @@ class InspectionListAjaxView(CustomDataTableMixin):
                     "delivery_id": return_delivery.pk,
                     "total_qty": 0,
                     "check_in_date": (
-                        return_delivery.check_in_date.strftime("%d %B, %Y")
-                        if return_delivery.check_in_date
-                        else "-"
+                        return_delivery.check_in_date.strftime("%d %B, %Y") if return_delivery.check_in_date else "-"
                     ),
-                    "inspection_date":self._get_inspection_date(return_delivery),
+                    "inspection_date": self._get_inspection_date(return_delivery),
                     "products": "",
                 }
 
@@ -3166,17 +3221,16 @@ class InspectionListAjaxView(CustomDataTableMixin):
 
         return data
 
-
     def _get_item_row(self, return_item, index):
         """Generate a table row for an individual return item with a dynamic Sr No."""
         if not return_item.product:
             return ""
         stock_adjustments = return_item.product.stock_adjustments.all()  # This returns a queryset
-        stock_adjustments_pk = stock_adjustments.first().pk if stock_adjustments.exists() else ''
-        stock_adjustments_stock = stock_adjustments.first().quantity if stock_adjustments.exists() else ''
+        stock_adjustments_pk = stock_adjustments.first().pk if stock_adjustments.exists() else ""
+        stock_adjustments_stock = stock_adjustments.first().quantity if stock_adjustments.exists() else ""
         # Build the AJAX URL using reverse:
-        complete_inspection_url = reverse('rental:rent_process:mark-inspection-completed-ajax', args=[return_item.pk])
-        
+        complete_inspection_url = reverse("rental:rent_process:mark-inspection-completed-ajax", args=[return_item.pk])
+
         # Only show the mark-completed block if status is not already completed.
         if return_item.return_status != ReturnDeliveryItem.STAGE_8:
             mark_block = f"""
@@ -3192,20 +3246,20 @@ class InspectionListAjaxView(CustomDataTableMixin):
             """
         else:
             mark_block = ""
-        
+
         return f"""
             <tr>
                 <td>{index}</td>
                 <td>{return_item.product.equipment_id if return_item.product else '-'}</td>
                 <td>{return_item.product.equipment_name}</td>
                 <td>
-                    <input type="text" 
-                        id="quantity-{return_item.product.equipment_id}" 
-                        data-return-delivery-unique_id="{return_item.return_delivery.return_unique_id}" 
-                        data-pick-up-ticket-items-pk="{return_item.pk}" 
+                    <input type="text"
+                        id="quantity-{return_item.product.equipment_id}"
+                        data-return-delivery-unique_id="{return_item.return_delivery.return_unique_id}"
+                        data-pick-up-ticket-items-pk="{return_item.pk}"
                         data-stock-id="{stock_adjustments_pk}"
-                        data-value="{return_item.return_qty}" 
-                        data-current-stock="{stock_adjustments_stock}" 
+                        data-value="{return_item.return_qty}"
+                        data-current-stock="{stock_adjustments_stock}"
                         value="{return_item.return_qty}"
                         class="form-control inspection-qty wizard-required">
                     <small class="quantityMessage text-danger"></small>
@@ -3259,6 +3313,7 @@ class InspectionListAjaxView(CustomDataTableMixin):
         except Exception as e:
             return {"error": str(e)}
 
+
 class MarkInspectionCompletedAjaxView(View):
     def post(self, request, pk):
         # Get the ReturnDeliveryItem instance
@@ -3266,10 +3321,8 @@ class MarkInspectionCompletedAjaxView(View):
         # Update its status to "Inspection Completed" (STAGE_8)
         item.return_status = ReturnDeliveryItem.STAGE_8
         item.save()
-        return JsonResponse({
-            "success": True,
-            "message": "Inspection marked as completed."
-        })
+        return JsonResponse({"success": True, "message": "Inspection marked as completed."})
+
 
 class UpdateInspectionDateView(View):
     def post(self, request, *args, **kwargs):
@@ -3303,51 +3356,53 @@ class UpdateInspectionDateView(View):
         except Exception as e:
             return JsonResponse({"success": False, "error": f"Unexpected error: {str(e)}"})
 
+
 class UpdateCheckInStatusView(View):
     def post(self, request, *args, **kwargs):
         try:
             order_identifier = self.kwargs.get("order_id")  # This is your order_id string, e.g., "O20250200001"
-            
+
             # Filter by the order_id field, not the primary key.
             order_obj = Order.objects.filter(order_id=order_identifier).first()
             if not order_obj:
                 return JsonResponse({"success": False, "error": "Order not found"})
-            
+
             return_order_obj = ReturnOrder.objects.filter(order=order_obj).first()
             if not return_order_obj:
                 return JsonResponse({"success": False, "error": "Return order not found"})
-            
+
             return_order_objs = ReturnDelivery.objects.filter(return_order=return_order_obj)
             if not return_order_objs.exists():
                 return JsonResponse({"success": False, "error": "Return deliveries not found"})
-            
+
             # Update the return status of ReturnDeliveryItems in bulk
             updated_count = 0
             for return_delivery in return_order_objs:
                 updated_count += ReturnDeliveryItem.objects.filter(
-                    return_delivery=return_delivery,
-                    return_status=ReturnDeliveryItem.STAGE_6
+                    return_delivery=return_delivery, return_status=ReturnDeliveryItem.STAGE_6
                 ).update(return_status=ReturnDeliveryItem.STAGE_7)
-            
+
             if updated_count == 0:
                 return JsonResponse({"success": False, "error": "No items to update"})
-            
+
             return JsonResponse({"success": True, "message": "Status updated successfully"})
-        
+
         except json.JSONDecodeError:
             return JsonResponse({"success": False, "error": "Invalid JSON data"})
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
 
-    
+
 class CustomerAddressAjaxView(View):
     def get(self, request, *args, **kwargs):
-        customer_id = request.GET.get('customer_id')
+        customer_id = request.GET.get("customer_id")
         data = {}
         if customer_id:
             try:
                 customer = RentalCustomer.objects.get(pk=customer_id)
-                data['address'] = customer.billing_address_1 if customer.billing_address_1 else customer.billing_address_2
+                data["address"] = (
+                    customer.billing_address_1 if customer.billing_address_1 else customer.billing_address_2
+                )
             except RentalCustomer.DoesNotExist:
-                data['address'] = ''
+                data["address"] = ""
         return JsonResponse(data)
