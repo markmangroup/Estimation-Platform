@@ -31,7 +31,7 @@
                 <!-- Buttons -->
                 <div class="float-left ml-4">
                   <data class="row">
-                    <h4>Order</h4>
+                    <h4>Order Management</h4>
                   </data>
                 </div>
 
@@ -156,7 +156,7 @@
                           <th>Status</th>
                           <th>Customer</th>
                           <th>Order Amount</th> <!-- Added based on your request -->
-                          <th>Project Manager</th>
+                          <th>Account Manager</th>
                           <th>Start Date</th>
                           <th>End Date</th>
                           <th>RECCURENCE TYPE</th>
@@ -384,11 +384,12 @@
     { data: 'actions', name: 'actions', orderable: false, searchable: false }
   ];
 </script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 <script src="{% static 'app/js/jquery.min.js' %}"></script>
 <script src="{% static 'vendors/js/datatable/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'vendors/js/datatable/dataTables.bootstrap4.min.js' %}"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
   var table_task = initializeDataTable();
 

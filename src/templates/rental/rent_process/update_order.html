@@ -1,4 +1,35 @@
 {% load static %}
+<style>
+  /* Adjust column widths */
+  .order-item-row td:nth-child(2) { /* Equipment ID */
+      min-width: 150px; 
+      max-width: 180px;
+  }
+
+  .order-item-row td:nth-child(3) { /* Equipment Name */
+      min-width: 220px; /* Wider than Equipment ID */
+      max-width: 280px;
+  }
+
+  /* Reduce width of other columns */
+  .order-item-row td:nth-child(4), /* Quantity */
+  .order-item-row td:nth-child(5) { /* Per Unit Price */
+      width: 100px;
+  }
+
+  /* Button column should not take too much space */
+  .order-item-row td:last-child {
+      width: 80px;
+      text-align: center;
+  }
+
+  /* Ensure Select2 adapts */
+  .select2-container {
+      width: 100% !important;
+  }
+
+  
+</style>
 {% load crispy_forms_tags %}
 <form method="post" hx-post="{% url 'rental:rent_process:order-update' order_obj.pk %}" enctype="multipart/form-data">
   {% csrf_token %}
@@ -268,28 +299,466 @@
   </div>
 </form>
 <!-- Js Start -->
-<script src="{% static 'app/js/jquery.min.js' %}"></script>
-<script src="{% static 'vendors/js/select2.full.min.js' %}"></script>
-<script src="{% static 'app/js/select2.min.js' %}"></script>
-<!-- Js End -->
-
-<!-- Date picker Start -->
+<!-- Load Select2 CSS and JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script type="text/javascript" src="{% static 'datepicker/moment.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'datepicker/daterangepicker.min.js' %}" defer></script>
-
-
-
-<!-- This will calculate rant par month -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/daterangepicker/moment.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
 <!-- Date picker End -->
 
 <script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
 
+<!-- Add Selecet 2 -->
+<script>
+  $(document).ready(function() {
+    
+    
+    if ($.fn.select2 && $.fn.select2.amd) {
+      $.fn.select2.amd.define('select2/compat/matcher', [], function () {
+        return function(params, data) {
+          if ($.trim(params.term) === '') {
+            return data;
+          }
+          if (typeof data.text === 'undefined') {
+            return null;
+          }
+          if (data.text.toLowerCase().indexOf(params.term.toLowerCase()) > -1) {
+            return data;
+          }
+          return null;
+        };
+      });
+    }
+    var $customerSelect = $("#id_customer");
+    var initialData = [];
+    
+    $customerSelect.find("option").each(function() {
+      var val = $(this).attr("value");
+      var text = $(this).text();
+      if(val) { 
+        initialData.push({ id: val, text: text });
+      }
+    });
+    
+    console.log("Initial Data:", initialData);
+    var customer_search_url =  "{% url 'rental:rent_process:search_customers' %}"
+    $customerSelect.select2({
+      data: initialData,  
+      ajax: {
+        url: customer_search_url, 
+        dataType: "json",
+        delay: 250,
+        data: function(params) {
+          return { q: params.term };
+        },
+        processResults: function(data) {
+          return { results: data.results };
+        },
+        cache: true
+      },
+      placeholder: "Search for a customer",
+      allowClear: true,
+      minimumInputLength: 0,      
+      minimumResultsForSearch: 0,   
+      width: '100%'
+    });
 
+    var $accountManagerSelect = $("#id_account_manager");
+    var initialAccountManagerData = [];
+    $accountManagerSelect.find("option").each(function() {
+      var val = $(this).attr("value");
+      var text = $(this).text();
+      if(val) {  
+        initialAccountManagerData.push({ id: val, text: text });
+      }
+    });
+    console.log("Account Manager Initial Data:", initialAccountManagerData);
+    
+    var accountManagerSearchUrl = "{% url 'rental:rent_process:search_account_managers' %}";
+    
+    $accountManagerSelect.select2({
+      data: initialAccountManagerData, 
+      ajax: {
+        url: accountManagerSearchUrl,  
+        dataType: "json",
+        delay: 250,
+        data: function(params) {
+          return { q: params.term };
+        },
+        processResults: function(data) {
+          return { results: data.results };
+        },
+        cache: true
+      },
+      placeholder: "Search for an account manager",
+      allowClear: true,
+      minimumInputLength: 0,      
+      minimumResultsForSearch: 0,   
+      width: '100%'
+    });
+
+    var $pick_up_locationSelect = $("#id_pick_up_location");
+    var pick_up_locationData = [];
+    $pick_up_locationSelect.find("option").each(function() {
+      var val = $(this).attr("value");
+      var text = $(this).text();
+      if (val) { 
+        pick_up_locationData.push({ id: val, text: text });
+      }
+    });
+    console.log("Pick Up Location Initial Data:", pick_up_locationData);
+
+    var pickUpLocationSearchUrl = "{% url 'rental:rent_process:search_pick_up_location' %}";
+
+    $pick_up_locationSelect.select2({
+      data: pick_up_locationData, 
+      ajax: {
+        url: pickUpLocationSearchUrl,  
+        dataType: "json",
+        delay: 250,
+        data: function(params) {
+          return { q: params.term };
+        },
+        processResults: function(data) {
+          return { results: data.results };
+        },
+        cache: true
+      },
+      placeholder: "Search for a pick-up location",
+      allowClear: true,
+      minimumInputLength: 0,      
+      minimumResultsForSearch: 0,   
+      width: '100%'
+    });
+
+    var $equipmentIdSelect = $(".order_item_equipment_id");
+    var equipmentIdData = [];
+
+    $equipmentIdSelect.find("option").each(function() {
+      var val = $(this).attr("value");
+      var text = $(this).text();
+      if (val) {  
+        equipmentIdData.push({ id: val, text: text });
+      }
+    });
+    console.log("Equipment ID Initial Data:", equipmentIdData);
+
+    var equipment_id_SearchUrl = "{% url 'rental:rent_process:search_rental_product_id' %}";
+
+    $equipmentIdSelect.select2({
+      data: equipmentIdData,  
+      ajax: {
+        url: "{% url 'rental:rent_process:search_rental_product_id' %}",
+        dataType: "json",
+        delay: 250,
+        data: function(params) {
+          return { q: params.term };
+        },
+        processResults: function(data) {
+          return { results: data.results };
+        },
+        cache: true
+      },
+      placeholder: "Search for equipment (ID)",
+      allowClear: true,
+      minimumInputLength: 0,
+      minimumResultsForSearch: 0,
+    });
+    
+
+    var equipment_name_SearchUrl = "{% url 'rental:rent_process:search_rental_product_name' %}";
+    var $equipmentNameSelect = $(".order_item_equipment_name");
+    var equipmentNameData = [];
+    $equipmentNameSelect.find("option").each(function() {
+      var val = $(this).attr("value");
+      var text = $(this).text();
+      if (val) {  
+        equipmentNameData.push({ id: val, text: text });
+      }
+    });
+    console.log("Equipment Name Initial Data:", equipmentNameData);
+    
+   
+    $equipmentNameSelect.select2({
+      data: equipmentNameData,
+      ajax: {
+        url: equipment_name_SearchUrl,
+        dataType: "json",
+        delay: 250,
+        data: function(params) {
+          return { q: params.term };
+        },
+        processResults: function(data) {
+          return { results: data.results };
+        },
+        cache: true
+      },
+      placeholder: "Search for equipment (Name)",
+      allowClear: true,
+      minimumInputLength: 0,
+      minimumResultsForSearch: 0,
+    });
+  });
+</script>
+<!-- Add Selecet 2 -->
+ <!--Dynamic Data Of Selecet 2 -->
+<script>
+  var item_code_changed = false; // Prevents infinite loops
+
+  // 🔹 Select Equipment ID → Fetch Equipment Name
+  $(document).on('select2:select', '.order_item_equipment_id', function (e) {
+    console.log('item_code_changed: ', item_code_changed);
+      if (item_code_changed) return; // Prevent looping
+      item_code_changed = true;
+  
+      var selectedValue = $(this).val();
+      var rowIndex = this.name.split('-')[1];
+      var $nameSelect = $("#id_orders-" + rowIndex + "-equipment_name");
+  
+      console.log("Equipment ID selected:", selectedValue);
+  
+      $.ajax({
+          url: "{% url 'rental:rent_process:search_rental_product_name' %}",
+          type: "GET",
+          data: { q: selectedValue },
+          dataType: "json",
+          success: function (data) {
+              console.log("Response for Equipment ID:", data);
+              if (data.results.length > 0) {
+                  updateDropdown($nameSelect, data.results);
+              }
+          },
+          error: function (xhr, status, error) {
+              console.error("Error fetching Equipment Name:", xhr.responseText);
+          },
+          complete: function () {
+              setTimeout(() => { item_code_changed = false; }, 200); // 🔹 Delay reset to prevent race conditions
+          }
+      });
+  });
+  
+  // 🔹 Select Equipment Name → Fetch Equipment ID
+  $(document).on('select2:select', '.order_item_equipment_name', function (e) {
+    console.log('item_code_changed: ', item_code_changed);
+      if (item_code_changed) return; // Prevent looping
+      item_code_changed = true;
+  
+      var selectedValue = $(this).val();
+      var rowIndex = this.name.split('-')[1];
+      var $idSelect = $("#id_orders-" + rowIndex + "-equipment_id");
+  
+      console.log("Equipment Name selected:", selectedValue);
+  
+      $.ajax({
+          url: "{% url 'rental:rent_process:search_rental_product_id' %}",
+          type: "GET",
+          data: { q: selectedValue },
+          dataType: "json",
+          success: function (data) {
+              console.log("Response for Equipment Name:", data);
+              if (data.results.length > 0) {
+                  updateDropdown($idSelect, data.results);
+              }
+          },
+          error: function (xhr, status, error) {
+              console.error("Error fetching Equipment ID:", xhr.responseText);
+          },
+          complete: function () {
+              setTimeout(() => { item_code_changed = false; }, 200); // 🔹 Delay reset to prevent race conditions
+          }
+      });
+  });
+  
+  // 🔹 Generic Dropdown Updater Function
+  function updateDropdown($select, results) {
+      console.log("Updating dropdown:", results);
+      $select.empty(); // Clear old options
+  
+      results.forEach(item => {
+          var newOption = new Option(item.text, item.id, false, false);
+          $select.append(newOption);
+      });
+  
+      if (results.length > 0) {
+          $select.val(results[0].id).trigger('change'); // 🔹 Set first result as selected
+      }
+  }
+</script>
+<!-- Dynamic Data Of Selecet 2 -->
+
+  <!-- Add Row And Remove Row -->
+<script>
+    // Initialize Select2 for existing rows
+    $(".order_item_equipment_id").each(function () {
+        initializeSelect2ForEquipmentId($(this));
+    });
+    $(".order_item_equipment_name").each(function () {
+        initializeSelect2ForEquipmentName($(this));
+    });
+
+    // Add new row event
+    $("#add-row").on("click", function () {
+        addNewRow();
+    });
+
+    function addNewRow() {
+      console.log("=== addNewRow() called ===");
+  
+      var formsetTable = $("#order-item-formset");
+      var totalFormsInput = $("#id_orders-TOTAL_FORMS");
+      var totalForms = parseInt(totalFormsInput.val(), 10);
+  
+      var firstRow = formsetTable.find(".order-item-row").first();
+      if (!firstRow.length) {
+          console.error("No row found to clone!");
+          return;
+      }
+  
+      var newRow = firstRow.clone();
+      console.log("Cloned newRow BEFORE cleanup:", newRow);
+  
+      // Remove stale Select2 attributes and instances
+      newRow.find("[data-select2-id]").removeAttr("data-select2-id");
+      newRow.find(".select2-container").remove();
+
+      newRow.find(".order_item_equipment_id, .order_item_equipment_name").each(function () {
+        $(this).removeAttr('data-select2-id').removeClass('select2-hidden-accessible');
+      });
+  
+      // Update name, id attributes and reset values
+      newRow.find("input, select").each(function () {
+          if (this.name) this.name = this.name.replace(/\d+/, totalForms);
+          if (this.id) this.id = this.id.replace(/\d+/, totalForms);
+  
+          if (this.tagName.toLowerCase() === "input") {
+              this.value = "";
+          } else if (this.tagName.toLowerCase() === "select") {
+              $(this).val(null).trigger("change");
+          }
+      });
+  
+      // Append the new row
+      formsetTable.append(newRow);
+      totalFormsInput.val(totalForms + 1);
+  
+      // Reinitialize Select2
+      newRow.find(".order_item_equipment_id").each(function () {
+          initializeSelect2ForEquipmentId($(this));
+      });
+  
+      newRow.find(".order_item_equipment_name").each(function () {
+          initializeSelect2ForEquipmentName($(this));
+      });
+  
+      console.log("New row added and Select2 reinitialized.");
+  }
+  
+
+  // Initialize Select2 for Equipment ID
+  function initializeSelect2ForEquipmentId($select) {
+      $select.select2({
+          ajax: {
+              url: "{% url 'rental:rent_process:search_rental_product_id' %}",
+              dataType: "json",
+              delay: 250,
+              data: function (params) {
+                  return { q: params.term };
+              },
+              processResults: function (data) {
+                  return { results: data.results };
+              },
+              cache: true
+          },
+          placeholder: "Search for equipment (ID)",
+          allowClear: true,
+          width: "100%",
+          dropdownParent: $select.parent()
+      }).on("select2:select", function (e) {
+          var selectedId = $(this).val();
+          var $equipmentNameSelect = $(this).closest("tr").find(".order_item_equipment_name");
+          updateEquipmentNameSelect($equipmentNameSelect, selectedId);
+      });
+  }
+
+  // Initialize Select2 for Equipment Name
+  function initializeSelect2ForEquipmentName($select) {
+      $select.select2({
+          ajax: {
+              url: "{% url 'rental:rent_process:search_rental_product_name' %}",
+              dataType: "json",
+              delay: 250,
+              data: function (params) {
+                  return { q: params.term };
+              },
+              processResults: function (data) {
+                  return { results: data.results };
+              },
+              cache: true
+          },
+          placeholder: "Search for equipment (Name)",
+          allowClear: true,
+          width: "100%",
+          dropdownParent: $select.parent()
+      }).on("select2:select", function (e) {
+          var selectedValue = $(this).val();
+          var $equipmentIdSelect = $(this).closest("tr").find(".order_item_equipment_id");
+          updateEquipmentIdSelect($equipmentIdSelect, selectedValue);
+      });
+  }
+
+  // Update Equipment Name based on selected Equipment ID
+  function updateEquipmentNameSelect($select, equipmentId) {
+      $.ajax({
+          url: "{% url 'rental:rent_process:search_rental_product_name' %}",
+          type: "GET",
+          data: { q: equipmentId },
+          dataType: "json",
+          success: function (data) {
+              console.log("Response for Equipment ID:", data);
+              if (data.results.length > 0) {
+                  updateDropdown($select, data.results);
+              }
+          },
+          error: function (xhr, status, error) {
+              console.error("Error fetching Equipment Name:", xhr.responseText);
+          }
+      });
+  }
+
+  // Update Equipment ID based on selected Equipment Name
+  function updateEquipmentIdSelect($select, selectedValue) {
+      $.ajax({
+          url: "{% url 'rental:rent_process:search_rental_product_id' %}",
+          type: "GET",
+          data: { q: selectedValue },
+          dataType: "json",
+          success: function (data) {
+              console.log("Response for Equipment Name:", data);
+              if (data.results.length > 0) {
+                  updateDropdown($select, data.results);
+              }
+          },
+          error: function (xhr, status, error) {
+              console.error("Error fetching Equipment ID:", xhr.responseText);
+          }
+      });
+  }
+
+  // Function to update dropdown options
+  function updateDropdown($select, options) {
+      $select.empty();
+      $.each(options, function (index, item) {
+          $select.append(new Option(item.text, item.id));
+      });
+      $select.trigger("change");
+  }
+</script>
+  
 <!-- Date picker End -->
  <!-- CheckBox Modal -->
 <script>
@@ -312,8 +781,10 @@
       checkbox.on('change', function () {
           if (this.checked) {
               fildset.show();
+              $('.reportrange').closest('.col').hide();
           } else {
               fildset.hide();
+              $('.reportrange').closest('.col').show();
           }
       });
   });
@@ -325,13 +796,13 @@
   $(document).ready(function() {
     var recurringCheckbox = $('#recurring-checkbox');
     var rentalPeriod = $('.reportrange');
-
-    toggleRentalPeriod(recurringCheckbox.is(':checked'));
-    
-    recurringCheckbox.on('change', function() {
-      toggleRentalPeriod(this.checked);
-    });
-
+    setTimeout(function () {
+      toggleRentalPeriod(recurringCheckbox.is(':checked'));
+      
+      recurringCheckbox.on('change', function() {
+        toggleRentalPeriod(this.checked);
+      });
+    }, 500);
     function toggleRentalPeriod(isRecurring) {
       if (isRecurring) {
         rentalPeriod.prop('disabled', true);
@@ -531,53 +1002,7 @@ function updateTotalForms() {
   // Update TOTAL_FORMS value
   totalFormsInput.value = activeFormsCount;
 }
-  function addNewRow() {
-    console.log("Adding new row...");
-
-    var formsetTable = document.getElementById("order-item-formset");
-    var totalFormsInput = document.getElementById("id_orders-TOTAL_FORMS");
-
-    if (!totalFormsInput || !formsetTable) {
-        console.error("Error: TOTAL_FORMS input ya table body nahi mila.");
-        return;
-    }
-
-    var totalForms = parseInt(totalFormsInput.value, 10);
-    var firstRow = formsetTable.querySelector(".order-item-row");
-
-    if (!firstRow) {
-        console.error("Error: Koi row nahi mili clone karne ke liye!");
-        return;
-    }
-
-    var newRow = firstRow.cloneNode(true);
-
-    var inputs = newRow.querySelectorAll("input, select");
-    inputs.forEach(function (input) {
-        if (input.name) {
-            var newName = input.name.replace(/-\d+-/, "-" + totalForms + "-");
-            input.name = newName;
-        }
-        if (input.id) {
-            var newId = input.id.replace(/-\d+-/, "-" + totalForms + "-");
-            input.id = newId;
-        }
-        if (input.type !== "hidden") {
-            input.value = "";
-        }
-    });
-
-    var deleteButton = newRow.querySelector(".btn-danger");
-    if (deleteButton) {
-        deleteButton.onclick = function () {
-            removeRow(this);
-        };
-    }
-
-    formsetTable.appendChild(newRow);
-
-    totalFormsInput.value = totalForms + 1;
-  }
+  
 
 
 </script>

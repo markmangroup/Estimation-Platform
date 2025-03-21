@@ -140,6 +140,11 @@ urlpatterns = [
     path("update-inspection-date/", views.UpdateInspectionDateView.as_view(), name="update_inspection_date"),
     path("return-delivery-item/update/<int:pk>/",views.ReturnDeliveryItemMismatchUpdateView.as_view(),name="return-delivery-item-update"),
     path("mark-inspection-completed-ajax/<int:pk>/",views.MarkInspectionCompletedAjaxView.as_view(),name="mark-inspection-completed-ajax"),
+    path("search/customers/", views.CustomerSearchView.as_view(), name="search_customers"),
+    path("search/account-managers/", views.AccountManagerSearchView.as_view(), name="search_account_managers"),
+    path("search/pick-up-location/", views.PickUpLocationSearchView.as_view(), name="search_pick_up_location"),
+    path("search/rental-product/id/", views.RentalProductIDSearchView.as_view(), name="search_rental_product_id"),
+    path("search/rental-product/name/", views.RentalProductNameSearchView.as_view(), name="search_rental_product_name"),
 
 
     

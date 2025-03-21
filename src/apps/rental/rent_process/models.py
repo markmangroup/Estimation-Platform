@@ -67,7 +67,7 @@ class Order(BaseModel):
     account_manager = models.ForeignKey(
         AccountManager, on_delete=models.CASCADE, related_name="account_manager_order", blank=True, null=True
     )
-    link_netsuite = models.URLField(max_length=500, blank=True, null=True)
+    link_netsuite = models.CharField(max_length=255, blank=True, null=True)
     region = CountryField(null=True, blank=True, max_length=255)
     pick_up_location = models.CharField(max_length=255, blank=True, null=True)
     delivery_location = models.CharField(max_length=255, blank=True, null=True)
