@@ -12,6 +12,8 @@ from django.template.loader import get_template, render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.timezone import now
 from isodate import parse_date
+from apps.rental.account_manager.models import AccountManager
+from apps.rental.warehouse.models import RentalWarehouse
 
 from apps.constants import ERROR_RESPONSE, LOGGER
 from apps.mixin import (
@@ -117,12 +119,7 @@ class OrderListAjaxView(CustomDataTableMixin):
             qs = qs.filter(
                 Q(order_id__icontains=self.search)
                 | Q(customer__name__icontains=self.search)
-                | Q(rent_amount__icontains=self.search)
                 | Q(account_manager__name__icontains=self.search)
-                | Q(repeat_start_date__icontains=self.search)
-                | Q(repeat_end_date__icontains=self.search)
-                | Q(updated_at__icontains=self.search)
-                | Q(order_status__icontains=self.search)
                 | Q(delivery_order__delivery_status__icontains=self.search)
             ).distinct()
         return qs
@@ -734,16 +731,16 @@ class OrderCreate(CreateViewMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         OrderItemFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemForm, extra=1)
-
+        rental_products = RentalProduct.objects.all()
+        # rental_customers = RentalCustomer.objects.only("id", "name")
         if self.request.POST:
             context["order_item_formset"] = OrderItemFormSet(self.request.POST)
         else:
             formset = OrderItemFormSet()
-            for form in formset.forms:
-                form.fields["product"].queryset = RentalProduct.objects.all()
+            formset.empty_form.fields["product"].queryset = rental_products
             context["order_item_formset"] = formset
 
-        context["form"].fields["customer"].queryset = RentalCustomer.objects.all()
+        # context["form"].fields["customer"].queryset = rental_customers
         context["permission"] = OrderFormPermissionModel.objects.first()
         return context
 
@@ -752,7 +749,8 @@ class OrderCreate(CreateViewMixin):
 
         OrderItemFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemForm, extra=1)
         order_item_formset = OrderItemFormSet(self.request.POST, instance=order)
-
+        if not order_item_formset.is_valid():
+            return self.form_invalid(form)
         if order_item_formset.is_valid():
             order_item_formset.save()
             ReturnOrder.objects.create(order=order)
@@ -810,12 +808,20 @@ class OrderCreate(CreateViewMixin):
             order.rent_amount = total_rent_amount
             order.save()
             messages.success(self.request, "Order Created Successfully")
-            return HttpResponse("success")
+            return JsonResponse({"status": "success"})
         else:
-            print("OrderItem FormSet Errors:", order_item_formset.errors)
+            print("OrderItem FormSet Errors:===============+>>>>>fgfdgfd", order_item_formset.errors)
             return self.form_invalid(form)
 
     def form_invalid(self, form):
+        print("OrderItem FormSet Errors:===============+>>>>>sdfsdfsdfdsfsdfd", form.errors)
+        print("Selected Customer ID: ", form.cleaned_data.get("customer"))
+        print("Selected Account Manager ID: ", form.cleaned_data.get("account_manager"))
+        print("Selected Pick-up Location ID: ", form.cleaned_data.get("pick_up_location"))
+        print("Incoming POST Data: ", self.request.POST)
+        for i in form.errors:
+            print('--------------->>i: ', i)
+
         messages.error(self.request, "Please correct the errors in the form.")
         return self.render_to_response(self.get_context_data(form=form))
 
@@ -837,27 +843,40 @@ class OrderUpdateView(UpdateViewMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print("OrderUpdateView.get_context_data: self.object ====>", self.object)
+        order_obj = self.object
+
         OrderItemFormSet = inlineformset_factory(
             Order, OrderItem, form=UpdateOrderItemForm, extra=0, can_delete=True, formset=BaseOrderItemFormSet
         )
 
         if self.request.POST:
-            context["order_item_formset"] = OrderItemFormSet(self.request.POST, instance=self.object)
+            context["order_item_formset"] = OrderItemFormSet(self.request.POST, instance=order_obj)
         else:
-            formset = OrderItemFormSet(instance=self.object)
-            for form in formset.forms:
-                form.fields["product"].queryset = RentalProduct.objects.all()
-            context["order_item_formset"] = formset
-            print("Using instance data for formset. Total forms:", len(formset.forms))
+            formset = OrderItemFormSet(instance=order_obj)
 
-        # Update queryset for customer field if needed
-        context["form"].fields["customer"].queryset = RentalCustomer.objects.all()
+            for form in formset.forms:
+                if form.instance.pk and form.instance.product:
+                    form.fields["equipment_id"].queryset = RentalProduct.objects.filter(
+                        Q(equipment_id=form.instance.product.equipment_id) | 
+                        Q(equipment_id__in=RentalProduct.objects.values_list("equipment_id", flat=True)[:7])
+                    )
+                    form.fields["equipment_name"].queryset = RentalProduct.objects.filter(
+                        Q(equipment_id=form.instance.product.equipment_id) |  # ✅ Compare using ID
+                        Q(equipment_id__in=RentalProduct.objects.values_list("equipment_id", flat=True)[:7])
+                    )
+
+
+            context["order_item_formset"] = formset
+
+
+        # Ensure Select2 fields retain selected values outside queryset limit
+        if order_obj:
+            context["selected_customer"] = order_obj.customer.id if order_obj.customer else None
+            context["selected_account_manager"] = order_obj.account_manager.id if order_obj.account_manager else None
+            context["selected_pick_up_location"] = order_obj.pick_up_location if order_obj.pick_up_location else None
+
         context["permission"] = OrderFormPermissionModel.objects.first()
-        # Here, ensure that order_obj is correctly retrieved
-        order_obj = Order.objects.filter(id=self.kwargs.get("pk")).first()
         context["order_obj"] = order_obj
-        print("Order object in context:", order_obj)
         return context
 
     def form_valid(self, form):
@@ -2261,6 +2280,7 @@ class ReturnDeliveryModalView(View):
             "order": order_id,
             "order_items": pending_return_items,
             "return_order_created_at": return_order_created_at,
+            "return_order_obj":return_order
         }
         return render(request, self.template_name, context)
 
@@ -3406,3 +3426,69 @@ class CustomerAddressAjaxView(View):
             except RentalCustomer.DoesNotExist:
                 data["address"] = ""
         return JsonResponse(data)
+class CustomerSearchView(View):
+    def get(self, request, *args, **kwargs):
+        term = request.GET.get("q", "")  # Get search term
+        customers = RentalCustomer.objects.only("id", "name").order_by("name")
+        if term:
+            customers = customers.filter(name__icontains=term)
+        else:
+            customers = customers[:7]  # Return first 7 when term is empty
+        data = [{"id": c.pk, "text": c.name} for c in customers]
+        return JsonResponse({"results": data})
+class AccountManagerSearchView(View):
+    def get(self, request, *args, **kwargs):
+        term = request.GET.get("q", "")
+        managers = AccountManager.objects.all().order_by("name")
+        if term:
+            managers = managers.filter(name__icontains=term)
+        else:
+            managers = managers[:7]  # Return first 7 when no term is provided
+        data = [{"id": m.pk, "text": m.name} for m in managers]
+        return JsonResponse({"results": data})
+    
+class PickUpLocationSearchView(View):
+    def get(self, request, *args, **kwargs):
+        term = request.GET.get("q", "")
+        locations = RentalWarehouse.objects.all().order_by("location")
+        if term:
+            locations = locations.filter(location__icontains=term)
+        else:
+            locations = locations[:7]  
+        data = [{"id": m.pk, "text": m.location} for m in locations]
+        return JsonResponse({"results": data})
+class RentalProductIDSearchView(View):
+    def get(self, request, *args, **kwargs):
+        term = request.GET.get("q", "")
+        products = RentalProduct.objects.all().order_by("equipment_id")
+        if term:
+            products = products.filter(
+                Q(equipment_id__icontains=term) | Q(equipment_name__icontains=term)
+            )
+        else:
+            products = products[:7]  # Return first 7 when no search term is provided
+
+        data = [{
+            "id": p.equipment_id,
+            # Concatenate equipment_id and equipment_name, or change as needed
+            "text": f"{p.equipment_id}"
+        } for p in products]
+        return JsonResponse({"results": data})
+
+class RentalProductNameSearchView(View):
+    def get(self, request, *args, **kwargs):
+        term = request.GET.get("q", "")
+        products = RentalProduct.objects.all().order_by("equipment_id")
+        if term:
+            products = products.filter(
+                Q(equipment_id__icontains=term) | Q(equipment_name__icontains=term)
+            )
+        else:
+            products = products[:7]  # Return first 7 when no search term is provided
+
+        data = [{
+            "id": p.equipment_id,
+            # Concatenate equipment_id and equipment_name, or change as needed
+            "text": f"{p.equipment_name}"
+        } for p in products]
+        return JsonResponse({"results": data})

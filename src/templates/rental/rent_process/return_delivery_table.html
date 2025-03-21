@@ -15,7 +15,7 @@
             <div class="row mb-3">
               <div class="col-6 mb-3">
                 <label for="" class="form-label">Pick Up Date</label>
-                <input type="date" name="returned_pickup_date" class="form-control">
+                <input type="date" name="returned_pickup_date" value="{{ return_order_obj.order.rental_end_date|date:'Y-m-d' }}" class="form-control">
               </div>
               <div class="col-6 mb-3">
                 <label for="" class="form-label">Delivery Date</label>
