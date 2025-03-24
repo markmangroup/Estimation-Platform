@@ -306,8 +306,6 @@ class TaskMapping(BaseModel):
                 opportunity=self.opportunity, task__description__icontains="labor"
             ).filter(models.Q(id=self.id) | models.Q(code=self.code))
 
-            print("-- task_mappings --", task_mappings)
-
             # Initialize total calculations
             total_quantity = 0
             total_price = 0.0
