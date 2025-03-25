@@ -3,17 +3,21 @@
         <tr>
             <td class="text-left">
                 {% if delivery.delivery_status == delivery.STAGE_1 %}
-                    <span class="badge bg-light-info">Pick Up</span>
+                <span class="badge bg-light-info">Create Delivery</span>
                 {% elif delivery.delivery_status == delivery.STAGE_2 %}
-                    <span class="badge bg-light-danger">Check Out</span>
+                    <span class="badge bg-light-info">Pick Up</span>
                 {% elif delivery.delivery_status == delivery.STAGE_3 %}
-                    <span class="badge bg-light-success">Delivered</span>
+                    <span class="badge bg-light-danger">Check Out</span>
                 {% elif delivery.delivery_status == delivery.STAGE_4 %}
-                    <span class="badge bg-light-info">Check In</span>
+                    <span class="badge bg-light-success">Delivered To Customer</span>
                 {% elif delivery.delivery_status == delivery.STAGE_5 %}
-                    <span class="badge bg-light-primary">Create Return Delivery</span>
+                    <span class="badge bg-light-warning">Create Return Delivery</span>
                 {% elif delivery.delivery_status == delivery.STAGE_6 %}
-                    <span class="badge bg-grey">Create Delivery</span>
+                    <span class="badge bg-light-info">Return Pick Up</span>
+                {% elif delivery.delivery_status == delivery.STAGE_7 %}
+                    <span class="badge bg-grey">Check In</span>
+                {% elif delivery.delivery_status == delivery.STAGE_8 %}
+                    <span class="badge bg-light-primary">Inspection</span>
                 {% endif %}
             </td>
         </tr>

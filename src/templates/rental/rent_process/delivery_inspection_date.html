@@ -1,0 +1,6 @@
+<input type="date" id="inspection-{{ return_delivery_obj.return_unique_id }}" 
+       name="inspection_date" 
+       class="form-control inspection-date"
+       value="{% if inspection_date %}{{ inspection_date }}{% else %}{{ today_date }}{% endif %}" 
+       min="{{ today_date }}"
+       data-delivery-id="{{ return_delivery_obj.return_unique_id }}">

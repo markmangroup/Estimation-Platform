@@ -1,0 +1,132 @@
+<!-- Wizard Starts -->
+<section id="icon-tabs">
+    <div class="row">
+        <div class="col-12">
+          <div class="card p-0 m-0">
+            <div class="card-content">
+            <div class="card-body py-8">
+                <div>
+                    <table id="table1" class="table table-striped table-bordered print-table">
+                        <h5>Customer Details :</h5>
+                        <thead>
+                            <tr>
+                                <th style="max-width:100px">Customer ID</th>
+                                <th style="max-width:100px">Customer Name</th>
+                            <th style="max-width:100px">Customer Email</th> 
+                                <th style="max-width:100px">Delivery Location</th> 
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <!--Main Row 1 -->
+                            <tr>    
+                                <td>{{order.customer.customer_id}}</td> 
+                                <td>{{order.customer.name}}</td>
+                                <td>{{order.customer.customer_email}}</td>
+                                <td>{{order.delivery_location}}</td>
+                            </tr>      
+                        </tbody>
+                    </table>
+                    <table id="table1" class="table table-striped table-bordered print-table">
+                        <h5>Internal Details :</h5>
+                        <thead>
+                            <tr>
+                                <th style="max-width:100px">Account Manager</th>
+                                <th style="max-width:100px">Link Netsuite</th>
+                                <th style="max-width:100px">Region</th> 
+                                <th style="max-width:100px">Pick-up Location</th> 
+                                <th style="max-width:100px">Water Source</th> 
+                                <th style="max-width:100px">Crop</th> 
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <!--Main Row 1 -->
+                            <tr>    
+                                <td>{{order.account_manager.name}}</td>
+                                <td>{{order.link_netsuite}}</td>
+                                <td>{{order.region.name}}</td>
+                                <td>{{order.pick_up_location}}</td>
+                                <td>{{order.water_source}}</td>
+                                <td>{{order.crop}}</td>
+                            </tr>      
+                        </tbody>
+                    </table>
+                    <table id="table1" class="table table-striped table-bordered print-table">
+                        <h5>Duration Details :</h5>
+                        <div class="row mb-2 pl-2">
+                            <label for="recurring-checkbox" class="mr-2">Recurring Order</label>
+                            <input type="checkbox" id="recurring-checkbox" 
+                                {% if order.recurring_order %}checked{% endif %} disabled />
+                        </div>
+                        <thead>
+                            <tr>
+                                <!-- <th style="max-width:100px"><input type="checkbox" id="recurring-checkbox" /></th> -->
+                                <th style="max-width:100px">Rental Period</th>
+                                <th style="max-width:100px">Reccuring Order Number List</th> 
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <!--Main Row 1 -->
+                            <tr>    
+                                <!-- <td style="size: 50px;"><input type="checkbox" id="recurring-checkbox"/></td> -->
+                                <td>
+                                    <div class="form-control col-4" id="daterangepicker">
+                                        <i class="fa fa-calendar"></i>&nbsp;
+                                        <span id="rentalPeriod">{{order.rental_start_date}} - {{order.rental_end_date}}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    {% for recurring in recurring_order %}
+                                        <p><a href="{% url 'rental:order_detail' %}">{{recurring.recurring_order_id}}</a></p>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table id="table1" class="table table-striped table-bordered print-table">
+                        <h5>Line Details :</h5>
+                        <thead>
+                            <tr>
+                                <th style="max-width:100px">Item No.</th>
+                                <th style="max-width:100px">Item Name</th> 
+                                <th style="max-width:100px">Quantity</th> 
+                                <th style="max-width:100px">Per Unit Price</th> 
+                                <th style="max-width:100px">Rent Amount</th> 
+                                <th style="max-width:100px">Rent per month</th> 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order_items %}
+                                <tr>
+                                    <td>{{ item.product.equipment_id }}</td>
+                                    <td>{{ item.product.equipment_name }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.per_unit_price }}</td>
+                                    <td>
+                                        {% for rent_detail in rent_details %}
+                                            {% if rent_detail.item_id == item.id %}
+                                                {{ rent_detail.rent.rent_amount }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% for rent_detail in rent_details %}
+                                            {% if rent_detail.item_id == item.id %}
+                                                {% for month, amount in rent_detail.rent.items %}
+                                                    {% if month != "rent_amount" %}
+                                                        {{ month }} - {{ amount }} <br>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+</section>

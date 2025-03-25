@@ -1,0 +1,6 @@
+<input type="date" id="checkout-date-{{ delivery_obj.unique_delivery_id }}" 
+       name="checkout_date" 
+       class="form-control checkout-date"
+       value="{% if check_out_date %}{{ check_out_date }}{% else %}{{ today_date }}{% endif %}" 
+       min="{{ today_date }}"
+       data-delivery-id="{{ delivery_obj.unique_delivery_id }}">

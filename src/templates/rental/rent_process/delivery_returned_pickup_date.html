@@ -1,0 +1,6 @@
+<input type="date" id="returned-pickup-date-{{ return_delivery_obj.return_unique_id }}" 
+       name="checkout_date" 
+       class="form-control returned-pickup-date"
+       value="{% if returned_pickup_date %}{{ returned_pickup_date }}{% else %}{{ today_date }}{% endif %}" 
+       min="{{ today_date }}"
+       data-delivery-id="{{ return_delivery_obj.return_unique_id }}">

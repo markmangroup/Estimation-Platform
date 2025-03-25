@@ -1,28 +1,22 @@
 {% load static %}
-<div class="ml-3">
+  <div class="ml-3">
   <div class="row">
     <h5>
       Customer
     </h5>
     <span class="ml-1 border-right pr-2">
-      John Parker
-    </span>
-    <h5 class=" pl-2">
-      Document Number
-    </h5>
-    <span class="border-right pr-2 ml-1">
-      INVLAWS-045268
+      {{order.customer.name}}
     </span>
     <h5 class="ml-1">
       Order ID
     </h5>
     <span class="ml-1">
-      ORD-001
+      {{order.order_id}}
+
     </span>
 
   </div>
 </div>
-
 <!-- Wizard Starts -->
 <section id="icon-tabs">
   <div class="row">
@@ -30,71 +24,66 @@
       <div class="card p-0 m-0">
         <div class="card-content">
         <div class="card-body py-0">
-            <form class="icons-tab-steps">
+            <form class="rental-icons-tab-steps">
 
                 <h6>Create Delivery</h6>
-                <fieldset id="tab-1" class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
-                    {% include "./create_delivery.html" %}
-                    {% include "../file_upload.html" %}
-                    {% include '../comment_table.html' %}
+                <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                    {% include "rental/orders/create_delivery.html" %}
+                    {% include "rental/rent_process/document/stage_1_file_upload.html" %}
                 </fieldset>
 
                 <h6>Pickup Ticket</h6>
-                <fieldset id="tab-2" class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
-                    {% include "./pickup_ticket.html" %}
-                    {% include "../file_upload.html" %}
-                    {% include '../comment_table.html' %}
+                <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                    {% include "rental/orders/pickup_ticket.html" %}
+                    {% include "rental/rent_process/document/stage_2_file_upload.html" %}
                 </fieldset>
 
                 <h6>Check out</h6>
-                <fieldset id="tab-3" class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
-                    {% include "./checkout.html" %}
-                    {% include "../file_upload.html" %}
-                    {% include '../comment_table.html' %}
+                <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                    {% include "rental/orders/checkout.html" %}
+                    {% include "rental/rent_process/document/stage_3_file_upload.html" %}
                 </fieldset>
 
                 <h6>Delivered to customer</h6>
-                <fieldset id="tab-4" class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
-                    {% include "./delivery.html" %}
-                    {% include "../file_upload.html" %}
-                    {% include '../comment_table.html' %}
+                <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                    {% include "rental/orders/delivery.html" %}
+                    {% include "rental/rent_process/document/stage_4_file_upload.html" %}
                 </fieldset>
 
                 <h6>Create Return Deliveries</h6>
-                <fieldset id="tab-5" class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
-                    {% include "./create_return_delivery.html" %}
-                    {% include "../file_upload.html" %}
-                    {% include '../comment_table.html' %}
+                <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                    {% include "rental/orders/create_return_delivery.html" %}
+                    {% include "rental/rent_process/document/stage_5_file_upload.html" %}
                 </fieldset>
 
               <h6>Pickup Ticket</h6>
-              <fieldset id="tab-6" class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
-                  {% include "./return_pickup_ticket.html" %}
-                  {% include "../file_upload.html" %}
-                  {% include '../comment_table.html' %}
+              <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                  {% include "rental/orders/return_pickup_ticket.html" %}
+                  {% include "rental/rent_process/document/stage_6_file_upload.html" %}
               </fieldset>
 
               <h6>Check In</h6>
-              <fieldset id="tab-7" class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
-                  {% include "./checkin.html" %}
-                  {% include "../file_upload.html" %}
-                  {% include '../comment_table.html' %}
+              <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                  {% include "rental/orders/checkin.html" %}
+                  {% include "rental/rent_process/document/stage_7_file_upload.html" %}
               </fieldset>
 
               <h6>Inspection completed</h6>
-              <fieldset id="tab-8" class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
-                {% include "./inspection.html" %}
-                {% include "../file_upload.html" %}
-                {% include '../comment_table.html' %}
+              <fieldset class="mt-2" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+                {% include "rental/orders/inspection.html" %}
+                {% include "rental/rent_process/document/stage_8_file_upload.html" %}
               </fieldset>
 
             </form>
+            
           </div>
         </div>
       </div>
     </div>
   </div>
-
+  <div id="stockform">
+      
+  </div>
 </section>
 
 
@@ -124,5 +113,5 @@
   });
   </script> -->
   <script>
-    var Stagevalue = 0;
+    var Stagevalue = "{{stage}}";
   </script>

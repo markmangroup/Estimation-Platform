@@ -1,7 +1,7 @@
 """
 Custom Context Processors for Application Access.
 """
-
+from django.conf import settings
 
 def get_user_application_access(request) -> dict:
     """
@@ -26,3 +26,6 @@ def get_user_application_access(request) -> dict:
 
     # Return access status as a context dictionary
     return {"ACCESS": access_granted}
+
+def get_google_api_key(request) -> dict:
+    return {"GOOGLE_API_KEY" : settings.GOOGLE_API_KEY}

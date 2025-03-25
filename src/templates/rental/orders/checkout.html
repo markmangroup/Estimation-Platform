@@ -1,10 +1,35 @@
   {% load static %}
 <!-- Custom CSS start -->
 <style>
-    .checkout-qty{
-        width: 100px;
-    }
+  .checkout-qty {
+      width: 100px;
+  }
+
+  /* Custom striped table effect */
+  .table-striped tbody tr:nth-of-type(odd) {
+      background-color: rgba(0, 0, 0, 0.05) !important;
+  }
+
+  .table-dark.table-striped tbody tr:nth-of-type(odd) {
+      background-color: #342E49 !important;
+  }
+
+  /* Ensure table borders and spacing */
+  .table-bordered {
+      border: 1px solid #ddd;
+  }
+
+  .table-bordered th, .table-bordered td {
+      border: 1px solid #ddd;
+      padding: 8px;
+  }
+
+  .table {
+      width: 100%;
+      border-collapse: collapse;
+  }
 </style>
+
 <!-- Custom CSS end -->
 
 <!-- Print Button Start -->
@@ -23,7 +48,7 @@
 
 <!-- New Table View Start -->
 <div class="mt-5">
-    <table id="table3" class="table table-striped table-bordered print-table">
+    {% comment %} <table id="table3" class="table table-striped table-bordered print-table">
       <thead>
         <tr>
           <th style="max-width:100px">Delivery ID</th>
@@ -33,13 +58,21 @@
         </tr>
       </thead>
       <tbody>
-
-        <!--Main Row 1 -->
+    {% for delivery_id, data in delivery_dict.items %}
         <tr>
-          <td> O20240200018-1 </td>
-          <td> 28 </td>
-          <td><input type="date" class="form-control today-date wizard-required"></td>
-          <td>3 Apr, 2024</td>
+          <td>{{ delivery_id }}</td>
+          <td>{{ data.total_qty }}</td>
+          <td>{% if data.contract_start_date %}{{ data.contract_start_date|date:"j F, Y"}}{% else %}-{% endif %}</td>
+          <td>{{ data.delivery_date|date:"j F, Y" }}</td>
+          <td>
+            <a href="" data-backdrop="false" data-toggle="modal" data-target="#" title="Edit">
+              <i class="ft-edit font-medium-3 mr-2"></i>
+            </a>
+            <a href="" data-backdrop="false" data-toggle="modal" data-target="#" title="Remove">
+              <i class="fa fa-times font-medium-3 mr-2"></i>
+            </a>
+          </td>      
+      </tr>
         </tr>
 
         <tr>
@@ -68,11 +101,13 @@
                 </thead>
   
                 <tbody>
+                   {% for product in data.products %}
                     <tr>
-                      <td>1</td>
-                      <td> 20315 </td>
-                      <td class="text-nowrap">Rental: 10" Plain Coupler</td>
+                      <td>{{forloop.counter}}</td>
+                      <td> {{ product.equipment_id }} </td>
+                      <td class="text-nowrap">{{ product.equipment_name }}</td>
                       <td class="text-nowrap">
+                        {{ product.quantity}}
                         <input type="text" id="quantity1" data-value="14" class="form-control checkout-qty wizard-required">
                         <small id="quantityMessage"></small>
                       </td>
@@ -83,20 +118,7 @@
                         </select>
                       </td>
                     </tr>
-                    <tr>
-                      <td>2</td>
-                      <td> 20314 </td>
-                      <td class="text-nowrap">Rental: 10" Tapped Coupler</td>
-                      <td class="text-nowrap"> 
-                        <input type="text" data-value="14" class="form-control wizard-required"  style="width: 100px;"> 
-                      </td>
-                      <td>
-                        <select name="status" class="select2 form-control wizard-required another-select-checkout">
-                          <option value="" disabled selected>None</option>
-                          <option value="Check Out">Check Out</option>
-                        </select>
-                      </td>
-                    </tr>
+                   {% endfor %}
                 </tbody>
                 
               </table>
@@ -104,9 +126,26 @@
             
           </td>
         </tr> 
+    {% endfor %}
         
       </tbody>
-    </table>
+    </table> {% endcomment %}
+ 
+  <table id="deliveryTable" class="table table-bordered" style="width:100% !important;">
+    <thead>
+        <tr>
+            <th>Delivery ID</th>
+            <th>Total Quantity</th>
+            <th>Checkout Date</th>
+            <th>Delivery Date</th>
+            {% comment %} <th>Actions</th> {% endcomment %}
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+
+  
 </div>
 <!-- New Table View End -->
 
@@ -212,4 +251,372 @@
   }
   })
 
+</script>
+<script>
+  {% comment %} var update_delivery_stock_url = "{% url 'rental:rent_process:update_delivery_stock' %}"; {% endcomment %}
+  var csrf_token = "{{ csrf_token }}";
+  
+  $(document).ready(function () {
+
+    
+    if ($.fn.dataTable.isDataTable('#deliveryTable')) {
+        $('#deliveryTable').DataTable().clear().destroy();
+    }
+    var order_obj_id = "{{order.order_id}}"
+    var url = "{% url 'rental:rent_process:checkout-list-ajax' order_id='ORDER_ID' %}".replace('ORDER_ID', order_obj_id);
+    let table = $("#deliveryTable").DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: url,
+            type: "GET",
+        },
+        columns: [
+            { data: "delivery_id" },
+            { data: "total_qty" },
+            { data: "checkout_date" },
+            { data: "delivery_date" },
+            //{ data: "actions", orderable: false, searchable: false },
+        ],
+        rowCallback: function (row, data, index) {
+          if (data.products) {
+              let totalQtyCell = $(row).find('td:eq(1)');
+              let checkoutCell = $(row).find('td:eq(2)');
+              let deliveryCell = $(row).find('td:eq(3)');
+
+              // Merge the columns to fit all data in one row
+              totalQtyCell.attr('colspan', 3).css({ "vertical-align": "top" });
+
+              let summaryRow = `
+                 <table class="table table-striped table-bordered">
+                    <tbody>
+                        <tr>
+                            <td style="width: 28.5%;">${data.total_qty}</td>
+                            <td style="width: 29.1%;">${data.checkout_date}</td>
+                            <td style="width: 27.7%;">${data.delivery_date}</td>
+                        </tr>
+                    </tbody>
+                </table>
+              `;
+
+              totalQtyCell.html(`
+                  ${summaryRow}
+                  <div>${data.products}</div>
+              `);
+
+              checkoutCell.hide();
+              deliveryCell.hide();
+              //actionsCell.hide();
+          }
+      }
+
+    });
+
+    setInterval(function () {
+        table.ajax.reload(null, false);
+    }, 60000);
+
+    $(document).on('input', '.checkout-qty', function() {
+      // Get the expected quantity from the data-value attribute
+      const expectedQty = parseInt($(this).data('value'), 10) || 0;
+      // Get the entered quantity, allowing only numbers
+      const filteredValue = $(this).val().replace(/[^0-9]/g, '');
+      $(this).val(filteredValue);
+      const enteredQty = parseInt(filteredValue, 10) || 0;
+  
+      // Find the specific message element for this input
+      const messageElement = $(this).siblings(".quantityMessage");
+  
+      if (filteredValue === "") {
+          messageElement.html('');
+      } else if (enteredQty < expectedQty) {
+          messageElement.html(`<span class="warning"><i class="ft-alert-triangle"></i> Quantity does not match. Please resolve it....</span>`);
+          console.log("Entered quantity is less than required.");
+      } else if (enteredQty > expectedQty) {
+          messageElement.html(`<span class="warning"><i class="ft-alert-triangle"></i> Quantity does not match. Please resolve it....</span>`);
+          console.log("Entered quantity is more than required.");
+      } else {
+          messageElement.html('');
+          console.log('Quantity matched correctly.');
+      }
+  });
+  
+});
+
+
+
+</script>
+{% comment %} <script>
+  let debounceTimer;
+$(document).on("change", ".checkout-date", function () {
+    alert("------")
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        let selectedDate = $(this).val();
+        let deliveryId = $(this).data("delivery-id");
+        let successMessage = $(this).siblings(".success-message");
+        let errorMessage = $(this).siblings(".error-message");
+        var update_checkout_date_url = "{% url 'rental:rent_process:update_checkout_date' %}";
+
+        console.log(`Updating delivery ${deliveryId} with date: ${selectedDate}`);
+
+        $.ajax({
+            url: update_checkout_date_url,
+            type: "POST",
+            headers: {
+                "X-CSRFToken": csrf_token,
+            },
+            data: JSON.stringify({
+                delivery_id: deliveryId,
+                checkout_date: selectedDate,
+            }),
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    toastr.success("Date Updated Successfully!", 'Success', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-bottom-right',
+                        timeOut: 6000
+                    });
+                } else {
+                    errorMessage.text(response.error).show().delay(2000).fadeOut();
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log("Error:", error);
+                errorMessage.text("Failed to update date.").show().delay(2000).fadeOut();
+            },
+        });
+    }, 300); // 300ms debounce
+});
+</script> {% endcomment %}
+<script>
+    let isUpdating = false;
+
+$(document).on("change", ".checkout-date", function () {
+    if (isUpdating) return; // Don't allow another request if one is already in progress
+    isUpdating = true;
+
+    let selectedDate = $(this).val();
+    let deliveryId = $(this).data("delivery-id");
+    let successMessage = $(this).siblings(".success-message");
+    let errorMessage = $(this).siblings(".error-message");
+    var update_checkout_date_url = "{% url 'rental:rent_process:update_checkout_date' %}";
+
+    console.log(`Updating delivery ${deliveryId} with date: ${selectedDate}`);
+
+    $.ajax({
+        url: update_checkout_date_url,
+        type: "POST",
+        headers: {
+            "X-CSRFToken": csrf_token,
+        },
+        data: JSON.stringify({
+            delivery_id: deliveryId,
+            checkout_date: selectedDate,
+        }),
+        contentType: "application/json",
+        dataType: "json",
+        success: function (response) {
+            isUpdating = false; // Reset the flag when the request is complete
+
+            if (response.success) {
+                toastr.success("Date Updated Successfully!", 'Success', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-bottom-right',
+                    timeOut: 6000
+                });
+            } else {
+                errorMessage.text(response.error).show().delay(2000).fadeOut();
+            }
+        },
+        error: function (xhr, status, error) {
+            isUpdating = false; // Reset the flag even in case of error
+            console.log("Error:", error);
+            errorMessage.text("Failed to update date.").show().delay(2000).fadeOut();
+        },
+    });
+});
+</script>
+
+<script>
+var update_quantity_url = "{% url 'rental:rent_process:update_quantity' %}";
+{% comment %} function sendQuantityAjaxRequest(changedQuantities) {
+    return new Promise((resolve) => {
+        if (changedQuantities.length === 0) {
+            /*Swal.fire({
+                title: "No Changes",
+                text: "No quantity changes detected.",
+                icon: "info",
+                confirmButtonText: "OK"
+            });*/
+            resolve(false);
+            return;
+        }
+
+        console.log('changedQuantities: ==========++>>', changedQuantities);
+        $.ajax({
+            url: update_quantity_url,
+            type: "POST",
+            headers: { "X-CSRFToken": csrf_token },
+            data: JSON.stringify({ updatedQuantities: changedQuantities }),
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                resolve(true); // AJAX success, return true
+
+            },
+            error: function (error) {
+                Swal.fire({
+                    title: "Error",
+                    text: "Failed to update quantities. Please try again.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+                console.log("AJAX Error:", error);
+                resolve(false); // AJAX failed, return false
+            }
+        });
+    });
+}
+function sendQuantityUpdateAjax() {
+    return new Promise((resolve) => {
+        let changedQuantities = [];
+        let quantityErrors = [];
+
+        $(".checkout-products-table").each(function () {
+            $(this).find('.wizard-required').each(function () {
+                let productId = $(this).data('product-id');
+                let newQuantity = parseInt($(this).val()) || 0;
+                let expectedQuantity = parseInt($(this).data('value')) || 0;
+                let deliveryPk = $(this).data('delivery-pk');
+                let deliveryUniqueId = $(this).data('delivery-unique_id');
+
+                if (newQuantity !== expectedQuantity) {
+                    changedQuantities.push({
+                        product_id: productId,
+                        new_quantity: newQuantity,
+                        delivery_pk: deliveryPk,
+                        delivery_unique_id: deliveryUniqueId
+                    });
+
+                    quantityErrors.push({
+                        product_id: productId,
+                        expected: expectedQuantity,
+                        entered: newQuantity,
+                        delivery_pk: deliveryPk,
+                        delivery_unique_id: deliveryUniqueId
+                    });
+                }
+            });
+        });
+
+        console.log("Changed Quantities:", changedQuantities);
+        console.log("Quantity Errors:", quantityErrors);
+
+        if (quantityErrors.length > 0) {
+            Swal.fire({
+                title: "Quantity Mismatch",
+                text: "All quantities in the linked documents will be updated based on the new quantity. Do you want to proceed?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "OK",
+                cancelButtonText: "Cancel"
+            }).then((result) => {
+                if (result.value) {
+                    sendQuantityAjaxRequest(changedQuantities).then(resolve);
+                } else {
+                    resolve(false);
+                }
+            });
+        } else {
+            sendQuantityAjaxRequest(changedQuantities).then(resolve);
+        }
+    });
+} {% endcomment %}
+</script>
+<script>
+    $(document).ready(function () {
+        // Global status change
+        $("#global-select-template-checkout").on("change", function () {
+            var selectedValue = $(this).val();
+            var order_obj_id = "{{ order.order_id }}";
+    
+            if (selectedValue === "Check Out") {
+                $.ajax({
+                    url: "{% url 'rental:rent_process:change_delivery_checkout_status' %}",
+                    type: "POST",
+                    headers: {
+                        'X-CSRFToken': "{{ csrf_token }}",
+                    },
+                    data: JSON.stringify({
+                        global_status_change: true,
+                        order_id: order_obj_id
+                    }),
+                    contentType: "application/json",
+                    success: function (response) {
+                        if (response.success) {
+                            $(".another-select-checkout").val("Check Out").trigger('change');
+                        } else {
+                            $(".another-select-checkout").val("").trigger('change');
+                        }
+                    },
+                    error: function () {
+                        console.error("Error checking delivery status.");
+                    }
+                });
+            } else {
+                $(".another-select-checkout").val("").trigger('change');
+            }
+        });
+    
+        // Individual status change
+
+        $(document).off("change", ".another-select-checkout").on("change", ".another-select-checkout", function () {
+            var selectedValue = $(this).val();
+            console.log('selectedValue: ', selectedValue);
+            var deliveryId = $(this).data("delivery-id");
+            console.log('deliveryId: ', deliveryId);
+            var deliveryPK = $(this).data("delivery-pk");
+            console.log('deliveryPK: ', deliveryPK);
+            var $this = $(this); // Store reference to 'this'
+        
+            if (selectedValue === "Check Out") {
+                $.ajax({
+                    url: "{% url 'rental:rent_process:change_delivery_checkout_status' %}",
+                    type: "POST",
+                    headers: {
+                        'X-CSRFToken': "{{ csrf_token }}",
+                    },
+                    data: JSON.stringify({
+                        global_status_change: false,
+                        delivery_id: deliveryId,
+                        delivery_pk: deliveryPK
+                    }),
+                    contentType: "application/json",
+                    success: function (response) {
+                        if (!response.success) {
+                            $this.val(""); 
+                        }else{
+                            toastr.success("Status Updated Successfully!", 'Success', {
+                                closeButton: true,
+                                progressBar: true,
+                                positionClass: 'toast-bottom-right',
+                                timeOut: 6000
+                            });
+                        }
+                    },
+                    error: function () {
+                        console.error("Error updating individual delivery status.");
+                        $this.val(""); 
+                    }
+                });
+            }
+        });
+        
+    });
+    
 </script>

@@ -8,7 +8,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <form method="post" hx-post="{% url 'rental:stock_management:rental-stock-management-edit' stock_adjustment.id %}" hx-target="#stockform" hx-swap="innerHTML">
+          <form method="post" hx-post="{% url 'rental:stock_management:rental-stock-management-edit' stock_adjustment.id %}"  id="stockform" hx-target="#stockform" hx-swap="innerHTML">
                 {% csrf_token %}
                 <div class="modal-body">
                   <div class="row">
@@ -113,6 +113,10 @@
                     </div>
                   </div>
               </div>
+              <!-- Hidden fields for the ReturnDeliveryItem update -->
+              <input type="hidden" id="returnDeliveryItemPk" name="return_delivery_item_pk" value="">
+              <!-- This field will be updated via JS with the mismatched quantity -->
+              <input type="hidden" id="updatedMismatch" name="updated_mismatch" value="">
               <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Cancel</button>
                 <button type="submit" class="btn btn-success">Save</button>

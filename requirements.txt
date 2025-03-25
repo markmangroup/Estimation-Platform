@@ -66,3 +66,6 @@ django-auto-logout~=0.5.1
 django-celery~=3.1.17
 django-celery-beat~=2.7.0
 django-celery-results~=2.5.1
+
+# Region Lib
+django-countries~=7.6.1

@@ -1,0 +1,95 @@
+<style>
+    .modal-dialog {
+        cursor: move;
+    }
+</style>
+<div id="myModal2" class="modal fade" role="dialog" data-backdrop='false'>
+    <div class="modal-dialog modal-dialog-centereds">
+        <div class="modal-content">
+            <div class="modal-body">
+                <label for="" class="form-label">Search Pick Up Site  Locations</label>
+                <input id="searchInput1" class="form-control mb-3" type="text" placeholder="Search Location">
+                <div id="map1" style="height: 400px; width: 100%;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="saveLocations">Save Locations</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}&libraries=places&callback=initMap1" async defer></script>
+<script>
+    $(document).ready(function(){
+        $("#myModal2 .modal-dialog").draggable({
+            handle: ".modal-content"
+        });
+    });
+</script>
+<script>
+    let map1, marker1, geocoder1, searchAutocomplete1;
+    let pickupLocation;
+
+    function initMap1() {
+        geocoder1 = new google.maps.Geocoder();
+        const defaultLocation = { lat: 40.7128, lng: -74.0060 };
+
+        map1 = new google.maps.Map(document.getElementById("map1"), {
+            center: defaultLocation,
+            zoom: 12,
+        });
+
+        marker1 = new google.maps.Marker({
+            map: map1,
+            position: defaultLocation,
+            draggable: true,
+        });
+
+        initAutocomplete();
+
+        map1.addListener("click", (event) => {
+            pickupLocation = event.latLng;
+            marker1.setPosition(pickupLocation);
+            updateAddress(pickupLocation, "returned_pickup_site");
+        });
+
+        marker1.addListener("dragend", () => {
+            pickupLocation = marker1.getPosition();
+            updateAddress(pickupLocation, "returned_pickup_site");
+        });
+    }
+
+    function initAutocomplete() {
+        const searchInput = document.getElementById("searchInput1");
+
+        searchAutocomplete1 = new google.maps.places.Autocomplete(searchInput);
+
+        searchAutocomplete1.addListener("place_changed", function () {
+            const place = searchAutocomplete1.getPlace();
+            if (!place.geometry) return;
+            map1.setCenter(place.geometry.location);
+            marker1.setPosition(place.geometry.location);
+            pickupLocation = place.geometry.location;
+            updateAddress(pickupLocation, "returned_pickup_site");
+        });
+    }
+
+    function updateAddress(latLng) {
+        geocoder1.geocode({ location: latLng }, (results, status) => {
+            if (status === "OK" && results[0]) {
+                document.getElementById("returned_pickup_site").value = results[0].formatted_address;
+            } else {
+                console.error("Geocoder failed: ", status);
+            }
+        });
+    }
+    $("#saveLocations").click(function () {
+        $("#myModal2").modal("hide"); 
+        $(".modal-backdrop").remove();
+        $("body").removeClass("modal-open");
+    });
+    
+    
+</script>

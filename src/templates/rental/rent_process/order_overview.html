@@ -1,9 +1,17 @@
 {% load static %}
+<link rel="stylesheet" href="{% static 'vendors/css/sweetalert2.min.css' %}">
 <h4>Order Overview : {{order.order_id}}</h4>
 <br>
 <!-- Wizard Starts -->
 <section id="icon-tabs">
     <div class="row">
+        <div class="col-12 d-flex justify-content-end my-2 mt-3">
+            <a href="{% url 'rental:rent_process:create_delivery_modal' order.order_id %}"
+               class="btn bg-light-primary open-modal" data-backdrop="false" data-toggle="modal" data-target="#show">
+               <i class="ft-plus font-medium-5"></i> Create Delivery
+            </a>
+            {% include "rental/rent_process/drag_and_select.html" %}
+        </div>         
         <div class="col-12">
           <div class="card p-0 m-0">
             <div class="card-content">
@@ -24,7 +32,7 @@
                             <tr>    
                                 <td>{{order.customer.customer_id}}</td>
                                 <td>{{order.customer.name}}</td>
-                                <td>johnsmith@laurel.com</td>
+                                <td>{{order.customer.customer_email}}</td>
                                 <td>{{order.delivery_location}}</td>
                             </tr>      
                         </tbody>
@@ -46,7 +54,7 @@
                             <tr>    
                                 <td>{{order.account_manager.name}}</td>
                                 <td>{{order.link_netsuite}}</td>
-                                <td>{{order.region}}</td>
+                                <td>{{order.region.name}}</td>
                                 <td>{{order.pick_up_location}}</td>
                                 <td>{{order.water_source}}</td>
                                 <td>{{order.crop}}</td>
@@ -99,28 +107,30 @@
                         </thead>
                         <tbody>
                             {% for item in order_items %}
-                            <tr>
-                                <td>{{ item.product.equipment_id }}</td>
-                                <td>{{ item.product.equipment_name }}</td>
-                                <td>{{ item.quantity }}</td>
-                                <td>{{ item.per_unit_price }}</td>
-                                
-                                <!-- Print rent_amount in its own <td> -->
-                                {% for rent_detail in rent_details %}
-                                    <td>{{ rent_detail.rent.rent_amount }}</td>
-                                {% endfor %}
-                                
-                                <!-- Print the other months in another <td> -->
-                                <td>
-                                    {% for rent_detail in rent_details %}
-                                        {% for month, amount in rent_detail.rent.items %}
-                                            {% if month != "rent_amount" %}
-                                                {{ month }} - {{ amount }} <br>
+                                <tr>
+                                    <td>{{ item.product.equipment_id }}</td>
+                                    <td>{{ item.product.equipment_name }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.per_unit_price }}</td>
+                                    <td>
+                                        {% for rent_detail in rent_details %}
+                                            {% if rent_detail.item_id == item.id %}
+                                                {{ rent_detail.rent.rent_amount }}
                                             {% endif %}
                                         {% endfor %}
-                                    {% endfor %}
-                                </td>
-                            </tr>
+                                    </td>
+                                    <td>
+                                        {% for rent_detail in rent_details %}
+                                            {% if rent_detail.item_id == item.id %}
+                                                {% for month, amount in rent_detail.rent.items %}
+                                                    {% if month != "rent_amount" %}
+                                                        {{ month }} - {{ amount }} <br>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                </tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -134,4 +144,84 @@
 
 
 <script src="{% static 'app/js/ex-component-upload.min.js' %}"></script>
+<script src="{% static 'vendors/js/sweetalert2.all.min.js' %}"></script>
+
+<script>
+    // Print Script Start
+    document.querySelectorAll('.print-button').forEach(button => {
+      button.addEventListener('click', function() {
+          // Get the ID of the table to print from the button's data-table-id attribute
+          var tableId = this.getAttribute('data-table-id');
+          var table = document.getElementById(tableId);
   
+          if (table) {
+              // Hide print-ignore elements
+              var printIgnoreElements = table.querySelectorAll('.print-ignore');
+              printIgnoreElements.forEach(el => el.style.display = 'none');
+  
+              // Find the table HTML to print
+              var tableHtml = table.outerHTML;
+  
+              // Create a new window or tab for printing
+              var printWindow = window.open('', '', 'height=600,width=800');
+  
+              // URL for CSS (adjust this if needed)
+              var url = "{% static 'vendors/css/sweetalert2.min.css' %}";
+  
+              // Construct the HTML for the print window
+              printWindow.document.write('<html><head><title>Print Table</title>');
+              printWindow.document.write(`<link rel="stylesheet" href="${url}">`); // Include your CSS file
+              printWindow.document.write('<style>table { width: 100%; border-collapse: collapse; } th, td { border: 1px solid #ddd; padding: 8px; } th { background-color: #f2f2f2; }</style>'); // Inline styles for print
+              printWindow.document.write('</head><body>');
+              printWindow.document.write('<h1>Table Print</h1>');
+              printWindow.document.write(tableHtml);
+              printWindow.document.write('</body></html>');
+  
+              // Close the document and trigger print
+              printWindow.document.close();
+              printWindow.focus();
+              printWindow.print();
+  
+              // Restore the print-ignore elements
+              printIgnoreElements.forEach(el => el.style.display = '');
+          } else {
+              console.error("Table with ID " + tableId + " not found.");
+          }
+      });
+    });
+  </script>
+
+<script>
+    $(document).ready(function () {
+        $(".open-modal").click(function (e) {
+            e.preventDefault();
+            var url = $(this).attr("href");
+
+            $.get(url, function (data) {
+                $("#show .modal-body");
+                $("#show").modal("show");
+            });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $(".open-modal").click(function (event) {
+        event.preventDefault();
+        let url = $(this).attr("href");
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+            $("#modal-body").html(data.html);
+            $("#show").modal("show");
+            },
+            error: function () {
+            alert("Error loading modal data!");
+            },
+        });
+        });
+    });
+</script>

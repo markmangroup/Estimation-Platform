@@ -10,5 +10,6 @@ python src/manage.py migrate
 # collect static files (if applicable)
 python src/manage.py collectstatic --noinput
 
-# start the Django development server
-python src/manage.py runserver 0.0.0.0:8000
+# Start Gunicorn server
+export PYTHONPATH=$(pwd)/src
+gunicorn src.laurel.wsgi:application --bind 0.0.0.0:8000

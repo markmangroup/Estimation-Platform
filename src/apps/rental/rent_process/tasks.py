@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime ,date
 import os
 
 import pandas as pd
@@ -9,6 +9,7 @@ from apps.rental.product.models import RentalProduct
 from apps.rental.rent_process.models import Delivery, Order, OrderItem
 from apps.rental.customer.models import RentalCustomer
 from apps.rental.account_manager.models import AccountManager
+from django.utils.timezone import now
 
 
 def convert_date(date_str):
@@ -141,15 +142,46 @@ def import_order_from_file(file: InMemoryUploadedFile) -> dict:
     return context
 
 def generate_delivery_id(order, delivery_type="DEL"):
-    """
-    Generate a unique delivery_id for a new delivery.
-    
-    Format:
-    - Delivery: 'O20240200018-1'
-    - Return Delivery: 'O20240200018-R1'
-    """
     order_prefix = f"O{now().strftime('%Y%m')}{str(order.id).zfill(5)}"
-    count = Delivery.objects.filter(order=order).count() + 1
+    last_delivery = Delivery.objects.filter(order=order).order_by("-delivery_id").first()
+
+    if last_delivery:
+        last_suffix = last_delivery.unique_delivery_id.split("-",1)[-1]
+        try:
+            count = int(last_suffix) + 1
+        except ValueError:
+            count = 1
+    else:
+        count = 1
+
     suffix = f"-R{count}" if delivery_type == "RET" else f"-{count}"
-    
     return f"{order_prefix}{suffix}"
+
+def calculation_of_rent_amount(quantity, price, start_date=None, end_date=None):
+    rent_details = {}
+    if isinstance(start_date, str):
+        start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+    
+    if isinstance(end_date, str):
+        end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
+    
+    if not start_date or not end_date:
+        rent_details['rent_amount'] = None
+        return rent_details
+    if quantity and price:
+        rent_amount = quantity * price
+        rent_details['rent_amount'] = rent_amount
+    else:
+        rent_amount = 0
+        rent_details['rent_amount'] = 0
+
+    while start_date <= end_date:
+        month_name = start_date.strftime("%B %Y")
+        rent_details[month_name] = rent_amount
+        
+        if start_date.month == 12:
+            start_date = date(start_date.year + 1, 1, 1)
+        else:
+            start_date = date(start_date.year, start_date.month + 1, 1)
+    
+    return rent_details

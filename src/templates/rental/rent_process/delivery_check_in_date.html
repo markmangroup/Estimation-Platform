@@ -1,0 +1,6 @@
+<input type="date" id="check-in-{{ return_delivery_obj.return_unique_id }}" 
+       name="check_in_date" 
+       class="form-control check-in-date"
+       value="{% if check_in_date %}{{ check_in_date }}{% else %}{{ today_date }}{% endif %}" 
+       min="{{ today_date }}"
+       data-delivery-id="{{ return_delivery_obj.return_unique_id }}">

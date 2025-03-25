@@ -31,14 +31,14 @@
   <div class="form-group">
 
     <!-- Add manully task button -->
-    <div class="text-right my-2">
+    {% comment %} <div class="text-right my-2">
       <button type="button" class="btn bg-light-primary htmx-trigger-btn-add-task"
               data-url="{% url 'proposal_app:opportunity:add-task' opportunity.document_number %}"
               hx-get="{% url 'proposal_app:opportunity:add-task' opportunity.document_number %}"
               hx-target="#model-add-task" hx-trigger="click" data-toggle="modal" data-target="#add-task-btn">
               <em class="ft-plus font-medium-5"></em> Add Task
       </button>
-    </div>
+    </div> {% endcomment %}
 
     <div>
       {% include "proposal/opportunity/stage/task_mapping/task_table.html" %}
@@ -2065,37 +2065,7 @@
     </script>
 
     <!-- Add Task Htmx -->
-    <script>
-        $(document).on('click', '.htmx-trigger-btn-add-task' , function (e) {
-
-          var url = $(this).data('url');
-          htmx.ajax('GET',
-              url,
-              {
-                target:'#model-add-task',
-                swap:'innerHTML',
-              }).then(() => {
-              $('#add-task').toggleClass('hidden');
-            })
-          });
-
-          document.body.addEventListener('htmx:beforeSwap', function(evt) {
-
-            if(evt.detail.xhr.status === 200){
-                // console.log("evt.detail.xhr.status", evt.detail.xhr.status)
-                // console.log("evt.detail.xhr.response", evt.detail.xhr.response)
-                $("#add-task").modal('hide');
-                $("#add-task .modal-body").html('');
-
-                // Parse the JSON response
-                var response = JSON.parse(evt.detail.xhr.response);
-
-                if (response.status === 'success') {
-                  window.location.reload();
-                }
-            }
-          });
-    </script>
+    
 
     <!-- Assign Labor for task -->
     <!-- Feature: Link labor with tasks -->
@@ -2125,48 +2095,6 @@
             cache: true
           }
         });
-
-        /*$(".select-labor-task").on("change", function(e){
-
-          var value = $(this).val();
-          var current_task_id = $(this).data("id");
-          var document_number = $(this).data("document");
-          var url = $(this).data("url");
-
-          // Payload data
-          data = {
-            value: value,
-            id: current_task_id,
-            document_number: document_number
-          }
-
-          // Ajax call
-          $.ajax({
-            url: url,
-            type: 'POST',
-            data: data,
-            headers: {
-              'X-CSRFToken': "{{ csrf_token }}",
-            },
-            success: function(response) {
-              toastr.success(response.message, 'Success', {
-                closeButton: true,
-                progressBar: true,
-                positionClass: 'toast-bottom-right',
-                timeOut: 6000
-              });
-              estimation_task_table.ajax.reload();
-            },
-            error: function(xhr, status, error) {
-              toastr.error(xhr.responseJSON.message, 'Error', {
-                closeButton: true,
-                progressBar: true,
-                positionClass: 'toast-bottom-right',
-                timeOut: 6000
-              });
-            }
-          });
-        });*/
 
         // TODO: Test function
         $(".select-labor-task").on("change", function(e){

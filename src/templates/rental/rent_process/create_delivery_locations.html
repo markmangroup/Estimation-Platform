@@ -1,0 +1,104 @@
+<style>
+    .modal-dialog {
+        cursor: move;
+    }
+</style>
+<div id="myModal" class="modal fade" role="dialog" data-backdrop='false'>
+    <div class="modal-dialog modal-dialog-centereds">
+        <div class="modal-content">
+            <div class="modal-body">
+                <label for="" class="form-label">Search Pick Up Site & Delivery Site Locations</label>
+                <input id="searchInput" class="form-control mb-3" type="text" placeholder="Search Location">
+                <div id="map" style="height: 400px; width: 100%;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="saveLocations">Save Locations</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}&libraries=places&callback=initMap" async defer></script>
+<script>
+    $(document).ready(function(){
+        $("#myModal .modal-dialog").draggable({
+            handle: ".modal-content"
+        });
+    });
+</script>
+<script>
+
+        let map, marker, geocoder, searchAutocomplete;
+        let deliveryLocation;
+    
+        function initMap() {
+            geocoder = new google.maps.Geocoder();
+            const defaultLocation = { lat: 40.7128, lng: -74.0060 };
+    
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: defaultLocation,
+                zoom: 12,
+            });
+    
+            marker = new google.maps.Marker({
+                map: map,
+                position: defaultLocation,
+                draggable: true,
+            });
+    
+            initAutocomplete();
+    
+            map.addListener("click", (event) => {
+                deliveryLocation = event.latLng;
+                marker.setPosition(deliveryLocation);
+                updateAddress(deliveryLocation, "locationInput");
+            });
+    
+            marker.addListener("dragend", () => {
+                deliveryLocation = marker.getPosition();
+                updateAddress(deliveryLocation, "locationInput");
+            });
+        }
+    
+        function initAutocomplete() {
+            const searchInput = document.getElementById("searchInput");
+    
+            searchAutocomplete = new google.maps.places.Autocomplete(searchInput);
+    
+            searchAutocomplete.addListener("place_changed", function () {
+                const place = searchAutocomplete.getPlace();
+                if (!place.geometry) return;
+                map.setCenter(place.geometry.location);
+                marker.setPosition(place.geometry.location);
+                deliveryLocation = place.geometry.location;
+                updateAddress(deliveryLocation, "locationInput");
+            });
+        }
+    
+        function updateAddress(latLng, inputId) {
+            geocoder.geocode({ location: latLng }, (results, status) => {
+                if (status === "OK" && results[0]) {
+                    document.getElementById(inputId).value = results[0].formatted_address;
+                } else {
+                    console.error("Geocoder failed: ", status);
+                }
+            });
+        }
+    
+        document.getElementById("saveLocation").addEventListener("click", function () {
+            if (deliveryLocation) {
+                document.getElementById("locationInput").value = deliveryLocation.toString();
+                
+                // Ensure Bootstrap modal hides properly
+                setTimeout(() => {
+                    $('#myModal').modal('hide');
+                }, 200);
+                
+            } else {
+                alert("Please select a Delivery location.");
+            }
+        });
+        
+</script>
