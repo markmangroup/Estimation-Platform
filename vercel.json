@@ -1,0 +1,42 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/laurel/wsgi.py",
+      "use": "@vercel/python",
+      "config": { 
+        "maxLambdaSize": "50mb", 
+        "runtime": "python3.9"
+      }
+    },
+    {
+      "src": "src/static/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/src/static/$1"
+    },
+    {
+      "src": "/media/(.*)",
+      "dest": "/src/media/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "src/laurel/wsgi.py"
+    }
+  ],
+  "env": {
+    "DJANGO_SETTINGS_MODULE": "laurel.settings.prod",
+    "DEBUG": "False",
+    "ALLOWED_HOSTS": "*",
+    "CSRF_TRUSTED_ORIGINS": "https://*.vercel.app",
+    "DB_NAME": "placeholder",
+    "DB_USER": "placeholder", 
+    "DB_PASSWORD": "placeholder",
+    "DB_HOST": "placeholder",
+    "DB_PORT": "5432"
+  }
+} 
