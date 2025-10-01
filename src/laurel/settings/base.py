@@ -77,6 +77,7 @@ LOCAL_APPS = [
     "apps.proposal.customer.apps.CustomerConfig",
     "apps.proposal.labour_cost.apps.LabourCostConfig",
     "apps.proposal.opportunity.apps.OpportunityConfig",
+    "apps.proposal.template.apps.TemplateConfig",
     # Celery
     "django_celery_results",
     "django_celery_beat",
