@@ -6,21 +6,18 @@ class TemplateTaskInline(admin.TabularInline):
     model = TemplateTask
     extra = 1
     fields = ["task", "default_hours", "sequence", "hours_formula"]
-    autocomplete_fields = ["task"]
 
 
 class TemplateProductInline(admin.TabularInline):
     model = TemplateProduct
     extra = 1
     fields = ["product", "template_task", "default_quantity", "markup_percent", "sequence"]
-    autocomplete_fields = ["product", "template_task"]
 
 
 class TemplateLabourInline(admin.TabularInline):
     model = TemplateLabour
     extra = 1
     fields = ["labour_cost", "template_task", "default_hours", "is_local", "sequence"]
-    autocomplete_fields = ["labour_cost", "template_task"]
 
 
 @admin.register(EstimationTemplate)
@@ -68,7 +65,6 @@ class TemplateTaskAdmin(admin.ModelAdmin):
     list_display = ["template", "task", "default_hours", "sequence"]
     list_filter = ["template"]
     search_fields = ["template__name", "task__name"]
-    autocomplete_fields = ["template", "task"]
 
 
 @admin.register(TemplateProduct)
@@ -76,7 +72,6 @@ class TemplateProductAdmin(admin.ModelAdmin):
     list_display = ["template", "product", "default_quantity", "markup_percent", "sequence"]
     list_filter = ["template"]
     search_fields = ["template__name", "product__description"]
-    autocomplete_fields = ["template", "product", "template_task"]
 
 
 @admin.register(TemplateLabour)
@@ -84,4 +79,3 @@ class TemplateLabourAdmin(admin.ModelAdmin):
     list_display = ["template", "labour_cost", "default_hours", "is_local", "sequence"]
     list_filter = ["template", "is_local"]
     search_fields = ["template__name", "labour_cost__labour_task"]
-    autocomplete_fields = ["template", "labour_cost", "template_task"]
