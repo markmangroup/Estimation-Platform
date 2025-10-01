@@ -77,15 +77,6 @@ LOCAL_APPS = [
     "apps.proposal.customer.apps.CustomerConfig",
     "apps.proposal.labour_cost.apps.LabourCostConfig",
     "apps.proposal.opportunity.apps.OpportunityConfig",
-    # Rental
-    "apps.rental",
-    "apps.rental.customer.apps.CustomerConfig",
-    "apps.rental.warehouse.apps.WarehouseConfig",
-    "apps.rental.account_manager.apps.AccountManagerConfig",
-    "apps.rental.product.apps.ProductConfig",
-    "apps.rental.workflow.apps.WorkflowConfig",
-    "apps.rental.stock_management.apps.StockManagementConfig",
-    "apps.rental.rent_process.apps.RentProcessConfig",
     # Celery
     "django_celery_results",
     "django_celery_beat",

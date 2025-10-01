@@ -17,16 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-from apps.rental import views
-
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("allauth.urls")),
     path("proposal/", include(("apps.proposal.urls", "proposal_app"), namespace="proposal_app")),
-    path("rental/", include(("apps.rental.urls", "rental_app"), namespace="rental_app")),
-    # path("", include(("apps.proposal.urls", "proposal"), namespace="proposal")),
     path("", include(("apps.user.urls", "user"), namespace="user")),
-    path("choose_screens", views.ChooseScreens.as_view(), name="choose_screens"),
 ]
 
 # API URLS

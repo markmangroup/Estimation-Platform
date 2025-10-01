@@ -1,4 +1,18 @@
-## Steps to install and run Laurel Project
+# Estimation Platform
+
+Irrigation system estimation and proposal generation platform for contractors.
+
+## Overview
+
+This platform handles the complete proposal workflow including:
+- Task code selection and CAD file uploads
+- Material list generation and task mapping
+- Labor cost calculation with location-based pricing
+- Automated margin, tax, and profit calculations
+- Proposal creation with grouping and customization
+- Invoice generation with deposit/payment tracking
+
+## Installation & Setup
 
 ---
 
