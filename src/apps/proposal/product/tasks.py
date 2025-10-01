@@ -15,21 +15,22 @@ def import_product_from_file(file: InMemoryUploadedFile) -> dict:
     :return: A context dictionary with messages about created/updated products
             or errors if the columns do not match or records are skipped.
     """
-    # Define the expected columns
-    expected_columns = {
-        "Internal ID",
-        "Family",
-        "Parent",
-        "Description",
-        "Primary Units Type",
-        "Primary Stock Unit",
-        "Std Cost",
-        "Preferred Vendor",
-        "Formula",
-        "Type",
-        "Name",
-        "Display Name",
-        "Tax Schedule",
+    # Define required columns (minimum needed)
+    required_columns = {"Internal ID", "Name", "Description"}
+
+    # Define optional columns with defaults
+    optional_columns = {
+        "Family": "",
+        "Parent": "",
+        "Primary Units Type": "EA",
+        "Primary Stock Unit": "EA",
+        "Std Cost": 0,
+        "Standard Cost": 0,  # Alternative name for NetSuite exports
+        "Preferred Vendor": "",
+        "Formula": "",
+        "Type": "",
+        "Display Name": "",
+        "Tax Schedule": "",
     }
 
     # Check for empty file
@@ -51,9 +52,14 @@ def import_product_from_file(file: InMemoryUploadedFile) -> dict:
     except (ImportError, pd.errors.EmptyDataError) as e:
         return {"error": f"Failed to process the file: {str(e)}."}
 
-    # Check if DataFrame is empty or columns don't match
-    if df.empty or set(df.columns) != expected_columns:
-        return {"error": "The columns do not match or the file is empty."}
+    # Check if DataFrame is empty
+    if df.empty:
+        return {"error": "The file is empty."}
+
+    # Check if required columns exist
+    missing_required = required_columns - set(df.columns)
+    if missing_required:
+        return {"error": f"Missing required columns: {', '.join(missing_required)}. File has: {', '.join(df.columns)}"}
 
     df = df.fillna("")
     records = df.to_dict(orient="records")
@@ -76,19 +82,22 @@ def import_product_from_file(file: InMemoryUploadedFile) -> dict:
             continue
 
         # Prepare data for updating or creating the product
+        # Support both "Std Cost" and "Standard Cost" column names
+        std_cost = record.get("Std Cost") or record.get("Standard Cost") or 0
+
         product_data = {
-            "family": record["Family"],
-            "parent": record["Parent"],
-            "description": record["Description"],
-            "primary_units_type": record["Primary Units Type"],
-            "primary_stock_unit": record["Primary Stock Unit"],
-            "std_cost": record["Std Cost"] if record["Std Cost"] else 0 ,
-            "preferred_vendor": record["Preferred Vendor"],
-            "type": record["Type"],
-            "name": record["Name"],
-            "display_name": record["Display Name"],
-            "tax_schedule": record["Tax Schedule"],
-            "formula": record["Formula"],
+            "family": record.get("Family", ""),
+            "parent": record.get("Parent", ""),
+            "description": record.get("Description", ""),
+            "primary_units_type": record.get("Primary Units Type", "EA"),
+            "primary_stock_unit": record.get("Primary Stock Unit", "EA"),
+            "std_cost": std_cost if std_cost else 0,
+            "preferred_vendor": record.get("Preferred Vendor", ""),
+            "type": record.get("Type", ""),
+            "name": record.get("Name", ""),
+            "display_name": record.get("Display Name", record.get("Name", "")),  # Use Name if Display Name missing
+            "tax_schedule": record.get("Tax Schedule", ""),
+            "formula": record.get("Formula", ""),
         }
 
         try:
