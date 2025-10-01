@@ -96,12 +96,17 @@ class ProductImportView(FormViewMixin):
             form.add_error("csv_file", response["error"])
             return self.render_to_response(self.get_context_data(form=form), status=201)
 
+        # Count successful imports
+        messages_list = response.get("messages", [])
+        import_count = len([m for m in messages_list if "Created" in m or "Updated" in m])
+
         return JsonResponse(
             {
                 "redirect": reverse("proposal_app:product:product-list"),
-                "message": "Product imported successfully!",
+                "message": f"✓ {import_count:,} products imported successfully! Search for a product to test it.",
                 "status": "success",
                 "code": 200,
+                "import_count": import_count,
             }
         )
 
