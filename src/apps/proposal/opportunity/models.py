@@ -57,14 +57,16 @@ class Opportunity(BaseModel):
     opportunity_status = models.CharField(_("Opportunity Status"), max_length=255)
     projected_total = models.CharField(
         _("Projected Total"),
+        max_length=255,
     )
     expected_margin = models.FloatField(
         _("Expected Margin"),
     )
     margin_amount = models.CharField(
         _("Margin Amount"),
+        max_length=255,
     )
-    win_probability = models.CharField(_("Win Probability"), blank=True, null=True)
+    win_probability = models.CharField(_("Win Probability"), max_length=255, blank=True, null=True)
     expected_close = models.DateField(
         _("Expected Close"),
     )
@@ -85,7 +87,7 @@ class Opportunity(BaseModel):
     job_name = models.CharField(_("Job Name"), max_length=255, blank=True, null=True)
     ranch_name = models.CharField(_("Ranch Name"), max_length=255, blank=True, null=True)
     project = models.CharField(_("Project"), max_length=255, blank=True, null=True)
-    tax_rate = models.CharField(_("Tax Rate"), default="25.00%", blank=True, null=True)
+    tax_rate = models.CharField(_("Tax Rate"), max_length=50, default="25.00%", blank=True, null=True)
     term_and_condition = models.JSONField(_("Term & Condition"), blank=True, null=True)
 
     def __str__(self):

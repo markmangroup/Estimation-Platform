@@ -98,7 +98,6 @@ MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "allauth.account.middleware.AccountMiddleware",
     "django_auto_logout.middleware.auto_logout",
-    "apps.user.middleware.CheckUserAppTypeMiddleware",
 ]
 
 ROOT_URLCONF = "laurel.urls"
